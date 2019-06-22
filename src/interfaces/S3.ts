@@ -1,7 +1,7 @@
-export interface S3Params {
-  bucketName?: string;
-  region?: string;
-  key?: string;
-  accessKeyId?: string;
-  secretAccessKey?: string;
+export interface S3BucketParams {
+  Bucket: string;
+  CreateBucketConfiguration?: {
+    LocationConstraint: string;
+  };
+  Key?: string;
 }

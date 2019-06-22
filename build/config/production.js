@@ -1,6 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+module.exports = {
     node_env: 'production',
     rsa_public_key: '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbN70vkrouYjrxyK6PpIFCY0U/EYO8J\nebTY1fzcLE8Ks9Bh6kZhg49YoqqSqmgCqm0e8oGwRo/ZZq/HLeEZgCMCAwEAAQ==\n-----END PUBLIC KEY-----',
     port: 9000,
