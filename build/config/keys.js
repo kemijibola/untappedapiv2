@@ -18,7 +18,7 @@ switch (environment) {
         module.exports = envs['default'];
         break;
     case globalEnums_1.Environment.STAGING:
-        envs = require('./staging');
+        envs = module.require('./staging');
         module.exports = envs['default'];
         break;
     default:
