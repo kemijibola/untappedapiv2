@@ -60,7 +60,7 @@ typings/
 # next.js build output
 .next
 
-#json files
+#json config files
 ci.json
 development.json
 bucketConfig.json

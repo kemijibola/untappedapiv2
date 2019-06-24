@@ -28,6 +28,7 @@ function requestValidators(requesType, keys) {
                         return;
                     }
                 }
+                next();
                 break;
             default:
                 break;
