@@ -1,15 +1,48 @@
 import 'reflect-metadata';
-import express from 'express';
-
-export const router = express.Router();
+import { AppRouter } from '../AppRouter';
+import { Methods } from '../interfaces/Methods';
+import { MetadataKeys } from '../interfaces/MetadataKeys';
+import { requestValidators } from '../utils/lib/requestValidator';
 
 export function controller(routePrefix: string) {
   return function(target: Function) {
+    const router = AppRouter.getInstance;
+
     for (let key in target.prototype) {
       const routeHandler = target.prototype[key];
-      const path = Reflect.getMetadata('path', target.prototype, key);
+
+      const path = Reflect.getMetadata(
+        MetadataKeys.path,
+        target.prototype,
+        key
+      );
+
+      const method: Methods = Reflect.getMetadata(
+        MetadataKeys.method,
+        target.prototype,
+        key
+      );
+
+      const middlewares =
+        Reflect.getMetadata(MetadataKeys.middleware, target.prototype, key) ||
+        [];
+
+      const requiredProps =
+        Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
+        [];
+
+      const requestType =
+        Reflect.getMetadata(MetadataKeys.requesttype, target.prototype, key) ||
+        '';
+      const validator = requestValidators(requestType, requiredProps);
+
       if (path) {
-        router.get(`${routePrefix}${path}`, routeHandler);
+        router[method](
+          `${routePrefix}${path}`,
+          ...middlewares,
+          validator,
+          routeHandler
+        );
       }
     }
   };
