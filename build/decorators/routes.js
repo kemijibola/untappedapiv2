@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-var Methods_1 = require("../interfaces/Methods");
-var MetadataKeys_1 = require("../interfaces/MetadataKeys");
+const Methods_1 = require("../interfaces/Methods");
+const MetadataKeys_1 = require("../interfaces/MetadataKeys");
 function routeBinder(method) {
     return function (path) {
         return function (target, key, desc) {

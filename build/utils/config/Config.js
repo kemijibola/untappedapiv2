@@ -1,12 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppSettings = /** @class */ (function () {
-    function AppSettings(configuration) {
+class AppSettings {
+    constructor(configuration) {
         this.configuration = configuration;
     }
-    AppSettings.prototype.configureAppSettings = function (config) {
+    configureAppSettings(config) {
         this.configuration.setConfig(config);
-    };
-    return AppSettings;
-}());
+    }
+}
 exports.AppSettings = AppSettings;

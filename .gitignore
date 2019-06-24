@@ -61,8 +61,7 @@ typings/
 .next
 
 #json files
-bucketConfig.ts
-ci.ts
-development.ts
-production.ts
-keys.ts
+ci.json
+development.json
+bucketConfig.json
+

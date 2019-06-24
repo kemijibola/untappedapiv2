@@ -3,16 +3,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = __importDefault(require("mongoose"));
-var Schema = mongoose_1.default.Schema;
-var redeemableSchema = new Schema({
+const mongoose_1 = __importDefault(require("mongoose"));
+const Schema = mongoose_1.default.Schema;
+const redeemableSchema = new Schema({
     prizeType: { type: Schema.Types.ObjectId, ref: 'PrizeType', required: true },
     winners: [{ type: Number, required: true }]
 });
-var evaluationSchema = new Schema({
+const evaluationSchema = new Schema({
     name: { type: String }
 });
-var contestSchema = new Schema({
+const contestSchema = new Schema({
     title: { type: String, required: true },
     information: { type: String, required: true },
     bannerImage: { type: String },
@@ -29,5 +29,5 @@ var contestSchema = new Schema({
     evaluations: [evaluationSchema],
     createdBy: { type: Schema.Types.ObjectId, required: true }
 }, { timestamps: true });
-var Contest = mongoose_1.default.model('Contest', contestSchema);
+const Contest = mongoose_1.default.model('Contest', contestSchema);
 exports.default = Contest;

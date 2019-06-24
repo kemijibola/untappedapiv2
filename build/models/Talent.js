@@ -3,18 +3,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = __importDefault(require("mongoose"));
-var Schema = mongoose_1.default.Schema;
+const mongoose_1 = __importDefault(require("mongoose"));
+const Schema = mongoose_1.default.Schema;
 exports.socialMediaSchema = new Schema({
     type: { type: String },
     handles: [{ type: String }]
 });
-var physicalStatisticsSchema = new Schema({
+const physicalStatisticsSchema = new Schema({
     height: { type: String },
     bodyType: { type: String },
     color: { type: String }
 });
-var talentSchema = new Schema({
+const talentSchema = new Schema({
     stageName: { type: String, required: true },
     location: { type: String, required: true },
     phoneNumber: { type: String },
@@ -27,5 +27,5 @@ var talentSchema = new Schema({
     profileImagePath: { type: String },
     physicalStats: physicalStatisticsSchema
 }, { timestamps: true });
-var Talent = mongoose_1.default.model('Talent', talentSchema);
+const Talent = mongoose_1.default.model('Talent', talentSchema);
 exports.default = Talent;

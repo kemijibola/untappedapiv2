@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Development = /** @class */ (function () {
-    function Development(environment) {
+class Development {
+    constructor(environment) {
         this.environment = environment;
     }
-    Development.prototype.setConfig = function (appConfig) {
+    setConfig(appConfig) {
         console.log(appConfig);
         module.exports = {
             NODE_ENV: this.environment,
@@ -25,7 +25,6 @@ var Development = /** @class */ (function () {
                 RSA_TYPE: appConfig.RSA_TYPE
             }
         };
-    };
-    return Development;
-}());
+    }
+}
 exports.Development = Development;

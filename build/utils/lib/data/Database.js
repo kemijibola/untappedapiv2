@@ -1,15 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var DbServer = /** @class */ (function () {
-    function DbServer(db) {
+class DbServer {
+    constructor(db) {
         this.db = db;
     }
-    DbServer.prototype.createConnection = function (params) {
+    createConnection(params) {
         this.db.connect(params);
-    };
-    DbServer.prototype.closeConnection = function () {
+    }
+    closeConnection() {
         this.db.disconnect();
-    };
-    return DbServer;
-}());
+    }
+}
 exports.DbServer = DbServer;

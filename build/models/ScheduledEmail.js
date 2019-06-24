@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = __importDefault(require("mongoose"));
-var Schema = mongoose_1.default.Schema;
-var scheduledEmailSchema = new Schema({
+const mongoose_1 = __importDefault(require("mongoose"));
+const Schema = mongoose_1.default.Schema;
+const scheduledEmailSchema = new Schema({
     mailType: { type: String, required: true },
     subject: { type: String },
     body: { type: String, required: true },
@@ -18,5 +18,5 @@ var scheduledEmailSchema = new Schema({
     sentDate: { type: Date },
     errorMessage: { type: String }
 }, { timestamps: true });
-var ScheduledEmail = mongoose_1.default.model('ScheduledEmail', scheduledEmailSchema);
+const ScheduledEmail = mongoose_1.default.model('ScheduledEmail', scheduledEmailSchema);
 exports.default = ScheduledEmail;

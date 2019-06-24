@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = __importDefault(require("mongoose"));
-var Schema = mongoose_1.default.Schema;
-var Talent_1 = require("./Talent");
-var professionalSchema = new Schema({
+const mongoose_1 = __importDefault(require("mongoose"));
+const Schema = mongoose_1.default.Schema;
+const Talent_1 = require("./Talent");
+const professionalSchema = new Schema({
     businessName: { type: String, required: true },
     name: { type: String, required: true },
     officialAddress: { type: String, required: true },
@@ -21,5 +21,5 @@ var professionalSchema = new Schema({
     profileImagePath: { type: String },
     bannerImagePath: { type: String }
 }, { timestamps: true });
-var Professional = mongoose_1.default.model('Professional', professionalSchema);
+const Professional = mongoose_1.default.model('Professional', professionalSchema);
 exports.default = Professional;

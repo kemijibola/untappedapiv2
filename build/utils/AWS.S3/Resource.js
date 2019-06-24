@@ -7,9 +7,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var AWS = __importStar(require("aws-sdk"));
-var S3Resource = /** @class */ (function () {
-    function S3Resource(bucket, resource) {
+const AWS = __importStar(require("aws-sdk"));
+class S3Resource {
+    constructor(bucket, resource) {
         this.bucket = bucket;
         this.resource = resource;
         AWS.config.update({
@@ -20,35 +20,35 @@ var S3Resource = /** @class */ (function () {
             secretAccessKey: bucket.secretAccessKey
         });
     }
-    S3Resource.prototype.getResource = function (params) {
+    getResource(params) {
         this.resource.getObject(params, this.s3);
-    };
-    S3Resource.prototype.putResource = function (params) {
+    }
+    putResource(params) {
         this.resource.putObject(params, this.s3);
-    };
-    S3Resource.prototype.listBuckets = function (callback) {
+    }
+    listBuckets(callback) {
         this.s3.listBuckets(function (err, data) {
             if (err) {
             }
             else {
                 if (data.Buckets) {
-                    for (var i = 0; i < data.Buckets.length; i++) {
+                    for (let i = 0; i < data.Buckets.length; i++) {
                         console.log(data.Buckets[i].Name);
                     }
                 }
             }
             callback(err);
         });
-    };
-    S3Resource.prototype.createBucket = function (params, callback) {
+    }
+    createBucket(params, callback) {
         this.s3.createBucket(params, function (err, data) {
             if (err) {
                 // handle error
             }
             callback(err);
         });
-    };
-    S3Resource.prototype.deleteBucket = function (params, callback) {
+    }
+    deleteBucket(params, callback) {
         console.log("\nDeleting the bucket named '" + params.Bucket + "'...\n");
         this.s3.deleteBucket(params, function (err, data) {
             if (err) {
@@ -56,7 +56,6 @@ var S3Resource = /** @class */ (function () {
             }
             callback(err);
         });
-    };
-    return S3Resource;
-}());
+    }
+}
 exports.S3Resource = S3Resource;
