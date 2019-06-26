@@ -1,6 +1,6 @@
 import { IError } from './GlobalError';
 
-export class NotFound implements IError {
+export class RecordNotFound implements IError {
   message: string;
   code: number;
   constructor(message?: string, code?: number) {

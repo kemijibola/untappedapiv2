@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { AppRouter } from '../AppRouter';
-import { Methods } from '../interfaces/Methods';
-import { MetadataKeys } from '../interfaces/MetadataKeys';
+import { Methods } from '../app/models/interfaces/custom/Methods';
+import { MetadataKeys } from '../app/models/interfaces/custom/MetadataKeys';
 import { requestValidators } from '../utils/lib/requestValidator';
 
 export function controller(routePrefix: string) {

@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { Environment } from '../interfaces/Environment';
+import { Environment } from '../app/models/interfaces/custom/Environment';
 import * as development from './development.json';
 import * as ci from './ci.json';
-import { AppConfig } from '../interfaces/AppConfig';
+import { AppConfig } from '../app/models/interfaces/custom/AppConfig';
 
 let environment: string = process.env.NODE_ENV || '';
 let envs: AppConfig = {
@@ -22,19 +22,19 @@ let envs: AppConfig = {
 
 switch (environment) {
   case Environment.CI:
-    envs = Object.assign(envs, ci);
-    module.exports = envs;
+    Object.seal(ci);
+    module.exports = ci;
     break;
   case Environment.PRODUCTION:
-    // envs = Object.assign(envs, production);
-    // module.exports = envs['default'];
+    // Object.seal(production);
+    // module.exports = production;
     break;
   case Environment.STAGING:
-    // envs = Object.assign(envs, development);
-    // module.exports = envs;
+    // Object.seal(staging);
+    // module.exports = staging;
     break;
   default:
-    envs = Object.assign(envs, development);
-    module.exports = envs;
+    Object.seal(development);
+    module.exports = development;
     break;
 }

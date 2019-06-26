@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { Methods } from '../interfaces/Methods';
-import { MetadataKeys } from '../interfaces/MetadataKeys';
+import { Methods } from '../app/models/interfaces/custom/Methods';
+import { MetadataKeys } from '../app/models/interfaces/custom/MetadataKeys';
 import { RequestHandler } from 'express';
 
 interface RouteHandlerDescriptor extends PropertyDescriptor {
@@ -17,6 +17,7 @@ export function routeBinder(method: string) {
 }
 
 export const get = routeBinder(Methods.get);
+export const post = routeBinder(Methods.post);
 export const put = routeBinder(Methods.put);
 export const del = routeBinder(Methods.del);
 export const patch = routeBinder(Methods.patch);

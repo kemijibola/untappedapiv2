@@ -1,4 +1,4 @@
-import { Connection } from '../../../interfaces/Connection';
+import { Connection } from '../../../app/models/interfaces/custom/Connection';
 
 export interface Database {
   disconnect(): void;

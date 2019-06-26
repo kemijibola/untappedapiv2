@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class NotFound {
+class RecordNotFound {
     constructor(message, code) {
         this.message = message || 'Record not found.';
         this.code = code || 404;
     }
 }
-exports.NotFound = NotFound;
+exports.RecordNotFound = RecordNotFound;
 class InvalidContent {
     constructor(message, code) {
         this.message = message || 'Provide valid json data.';

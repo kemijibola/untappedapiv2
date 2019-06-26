@@ -1,4 +1,4 @@
-import { AppConfig } from '../../interfaces/AppConfig';
+import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('../config/keys');
 
 export function getPrivateKey(keyId: string): string {

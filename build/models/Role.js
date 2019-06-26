@@ -8,10 +8,7 @@ const Schema = mongoose_1.default.Schema;
 const roleSchema = new Schema({
     name: { type: String, required: true },
     userType: { type: Schema.Types.ObjectId, ref: 'UserType', required: true },
-    roleType: { type: String, required: true },
-    permissions: [
-        { type: Schema.Types.ObjectId, ref: 'Permission', required: true }
-    ]
+    roleType: { type: String, required: true }
 }, { timestamps: true });
 const Role = mongoose_1.default.model('Role', roleSchema);
 exports.default = Role;

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const AppRouter_1 = require("../AppRouter");
-const MetadataKeys_1 = require("../interfaces/MetadataKeys");
+const MetadataKeys_1 = require("../app/models/interfaces/custom/MetadataKeys");
 const requestValidator_1 = require("../utils/lib/requestValidator");
 function controller(routePrefix) {
     return function (target) {

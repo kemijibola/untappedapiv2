@@ -1,5 +1,5 @@
 import { Model } from './Model';
-import { Bucket } from '../../interfaces/Bucket';
+import { Bucket } from '../../app/models/interfaces/custom/Bucket';
 import { AwsStorage } from './AwsStorage';
 
 export class AWS extends Model<Bucket> {

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Request_1 = require("../../interfaces/Request");
+const RequestType_1 = require("../../app/models/interfaces/custom/RequestType");
 function requestValidators(requesType, keys) {
     return function (req, res, next) {
         switch (requesType) {
-            case Request_1.RequestType.BODY:
+            case RequestType_1.RequestType.BODY:
                 if (!req.body) {
                     res.send({ error: 'Change to error handler' });
                     return;
@@ -17,7 +17,7 @@ function requestValidators(requesType, keys) {
                 }
                 next();
                 break;
-            case Request_1.RequestType.PARAMS:
+            case RequestType_1.RequestType.PARAMS:
                 if (!req.params) {
                     res.send({ error: 'Change to error handler' });
                     return;

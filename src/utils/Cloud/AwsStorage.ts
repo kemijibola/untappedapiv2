@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk';
-import { Bucket } from '../../interfaces/Bucket';
+import { Bucket } from '../../app/models/interfaces/custom/Bucket';
 
 export interface ObjectParam {
   Bucket: string;

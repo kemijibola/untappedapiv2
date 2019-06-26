@@ -1,4 +1,4 @@
-import { RequestType } from '../../interfaces/Request';
+import { RequestType } from '../../app/models/interfaces/custom/RequestType';
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 
 export function requestValidators(

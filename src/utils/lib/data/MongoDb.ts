@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import * as mongodb from 'mongodb';
 import _ from 'underscore';
 import { Mongoose } from 'mongoose';
-import { Connection } from '../../../interfaces/Connection';
+import { Connection } from '../../../app/models/interfaces/custom/Connection';
 const Schema = mongoose.Schema;
 
 export class Mongo implements Database {

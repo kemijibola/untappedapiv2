@@ -12,7 +12,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const Environment_1 = require("../interfaces/Environment");
+const Environment_1 = require("../app/models/interfaces/custom/Environment");
 const development = __importStar(require("./development.json"));
 const ci = __importStar(require("./ci.json"));
 let environment = process.env.NODE_ENV || '';
@@ -31,19 +31,19 @@ let envs = {
 };
 switch (environment) {
     case Environment_1.Environment.CI:
-        envs = Object.assign(envs, ci);
-        module.exports = envs;
+        Object.seal(ci);
+        module.exports = ci;
         break;
     case Environment_1.Environment.PRODUCTION:
-        // envs = Object.assign(envs, production);
-        // module.exports = envs['default'];
+        // Object.seal(production);
+        // module.exports = production;
         break;
     case Environment_1.Environment.STAGING:
-        // envs = Object.assign(envs, development);
-        // module.exports = envs;
+        // Object.seal(staging);
+        // module.exports = staging;
         break;
     default:
-        envs = Object.assign(envs, development);
-        module.exports = envs;
+        Object.seal(development);
+        module.exports = development;
         break;
 }

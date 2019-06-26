@@ -1,5 +1,5 @@
 import { Configuration } from './Config';
-import { AppConfig } from '../../interfaces/AppConfig';
+import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
 
 export class Development implements Configuration {
   constructor(public environment: string) {}

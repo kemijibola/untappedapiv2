@@ -1,4 +1,4 @@
-import { AppConfig } from '../../interfaces/AppConfig';
+import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
 
 export interface Configuration {
   setConfig(config: AppConfig): void;
