@@ -9,8 +9,9 @@ class MongodataAccess {
         MongodataAccess.connect();
     }
     static connect() {
-        if (this.mongooseInstance)
+        if (this.mongooseInstance) {
             return this.mongooseInstance;
+        }
         this.mongooseConnection = mongoose_1.default.connection;
         this.mongooseConnection.once('open', () => {
             console.log('Connected to mongodb');

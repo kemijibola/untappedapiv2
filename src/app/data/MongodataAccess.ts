@@ -12,7 +12,9 @@ class MongodataAccess {
   }
 
   static connect(): mongoose.Connection {
-    if (this.mongooseInstance) return this.mongooseInstance;
+    if (this.mongooseInstance) {
+      return this.mongooseInstance;
+    }
 
     this.mongooseConnection = mongoose.connection;
     this.mongooseConnection.once('open', () => {
