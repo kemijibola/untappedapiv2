@@ -16,3 +16,4 @@ export * from './Portfolio';
 export * from './Comment';
 export * from './Gig';
 export * from './Resource';
+export * from './Timestamp';

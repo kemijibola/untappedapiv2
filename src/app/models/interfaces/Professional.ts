@@ -14,6 +14,6 @@ export interface IProfessional extends ITimeStamp, mongoose.Document {
   shortBio: string;
   categories: ICategory[];
   socialMedias: IUserSocialMedia;
-  profileImagePath: string;
-  bannerImagePath: string;
+  profileImagePath?: string;
+  bannerImagePath?: string;
 }

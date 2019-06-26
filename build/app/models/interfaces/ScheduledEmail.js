@@ -5,4 +5,4 @@ var MailType;
     MailType["MARKETING"] = "MARKETING";
     MailType["TRANSACTIONAL"] = "TRANSACTIONAL";
     MailType["NOTIFICATION"] = "NOTIFICATION";
-})(MailType || (MailType = {}));
+})(MailType = exports.MailType || (exports.MailType = {}));

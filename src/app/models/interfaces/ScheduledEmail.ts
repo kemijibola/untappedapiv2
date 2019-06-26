@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { ITimeStamp } from './Timestamp';
 
-enum MailType {
+export enum MailType {
   MARKETING = 'MARKETING',
   TRANSACTIONAL = 'TRANSACTIONAL',
   NOTIFICATION = 'NOTIFICATION'

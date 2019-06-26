@@ -3,7 +3,7 @@ import { IUser } from './User';
 import { ICategory } from './Category';
 import { ITimeStamp } from './Timestamp';
 
-interface IPhysicalStatistics {
+export interface IPhysicalStatistics {
   height: string;
   bodyType: string;
   color: string;
@@ -22,13 +22,13 @@ export interface IUserSocialMedia {
 }
 
 export interface ITalent extends ITimeStamp, mongoose.Document {
-  stageName: string;
+  stageName?: string;
   location: string;
   phoneNumber: string;
   user: IUser;
-  shortBio: string;
+  shortBio?: string;
   categories: ICategory[];
-  socialMedias: IUserSocialMedia;
-  profileImagePath: string;
+  socialMedias?: IUserSocialMedia;
+  profileImagePath?: string;
   physicalStats: IPhysicalStatistics;
 }

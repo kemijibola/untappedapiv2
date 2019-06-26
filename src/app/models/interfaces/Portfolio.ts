@@ -8,12 +8,12 @@ export enum MediaType {
   IMAGE = 'VIDEO'
 }
 
-enum UploadType {
+export enum UploadType {
   SINGLE = 'SINGLE',
   ALBUM = 'ALBUM'
 }
 
-interface ICollection {
+export interface ICollection {
   path: string;
   likes: number;
 }

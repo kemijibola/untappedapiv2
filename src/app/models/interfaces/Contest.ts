@@ -11,10 +11,10 @@ export interface IRedeemable {
 }
 
 export interface IOffline {
-  maxContestant: number;
-  grandFinaleDate: Date;
-  grandFinaleLocation: string;
-  evaluations: IEvaluation[];
+  maxContestant?: number;
+  grandFinaleDate?: Date;
+  grandFinaleLocation?: string;
+  evaluations?: IEvaluation[];
 }
 
 export interface IContest extends IOffline, ITimeStamp, mongoose.Document {

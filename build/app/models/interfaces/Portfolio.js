@@ -10,4 +10,4 @@ var UploadType;
 (function (UploadType) {
     UploadType["SINGLE"] = "SINGLE";
     UploadType["ALBUM"] = "ALBUM";
-})(UploadType || (UploadType = {}));
+})(UploadType = exports.UploadType || (exports.UploadType = {}));

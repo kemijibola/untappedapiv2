@@ -1,2 +1,11 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+class PermissionModel {
+    constructor(permissionModel) {
+        this._permissionModel = permissionModel;
+    }
+    get name() {
+        return this._permissionModel.name;
+    }
+}
+Object.seal(PermissionModel);
+module.exports = PermissionModel;

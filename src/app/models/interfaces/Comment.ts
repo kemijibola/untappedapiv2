@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { IUser } from './User';
 import { ITimeStamp } from './Timestamp';
 
-interface IReply extends ITimeStamp {
+export interface IReply extends ITimeStamp {
   user: IUser;
   comment: string;
 }

@@ -4,4 +4,4 @@ var RoleType;
 (function (RoleType) {
     RoleType["PAID"] = "PAID";
     RoleType["FREE"] = "FREE";
-})(RoleType || (RoleType = {}));
+})(RoleType = exports.RoleType || (exports.RoleType = {}));

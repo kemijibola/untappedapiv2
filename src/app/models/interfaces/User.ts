@@ -7,7 +7,7 @@ enum AccountStatus {
   SUSPENDED = 'SUSPENDED',
   DELETED = 'DELETED'
 }
-interface IUserAccountStatus {
+export interface IUserAccountStatus {
   status: AccountStatus;
   updatedAt: Date;
 }
