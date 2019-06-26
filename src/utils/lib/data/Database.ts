@@ -1,5 +1,4 @@
 import { Connection } from '../../../interfaces/Connection';
-import mongoose from 'mongoose';
 
 export interface Database {
   disconnect(): void;
