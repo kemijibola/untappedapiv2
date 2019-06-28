@@ -1,16 +1,16 @@
 "use strict";
 const MongodataAccess = require("../MongodataAccess");
-const mongoose = MongodataAccess.mongooseInstance;
+const mongoose_1 = require("mongoose");
 const mongooseConnection = MongodataAccess.mongooseConnection;
 class RoleSchema {
     static get schema() {
-        const schema = mongoose.Schema({
+        const schema = new mongoose_1.Schema({
             name: {
                 type: String,
                 required: true
             },
             userType: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'UserType',
                 required: true
             },

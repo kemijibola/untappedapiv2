@@ -1,21 +1,21 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IPortfolio } from '../../models/interfaces';
 
 class PortfolioSchema {
   static get schema() {
-    const collectionSchema = mongoose.Schema({
+    const collectionSchema = new Schema({
       path: { type: String, required: true },
       likes: { type: Number, required: true, default: 0 }
     });
 
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         title: { type: String, required: true },
         description: { type: String },
         user: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'User',
           required: true
         },

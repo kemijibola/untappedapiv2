@@ -1,18 +1,18 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IRole } from '../../models/interfaces';
 
 class RoleSchema {
   static get schema() {
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         name: {
           type: String,
           required: true
         },
         userType: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'UserType',
           required: true
         },

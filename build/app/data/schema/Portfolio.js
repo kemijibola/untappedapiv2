@@ -1,18 +1,18 @@
 "use strict";
 const MongodataAccess = require("../MongodataAccess");
-const mongoose = MongodataAccess.mongooseInstance;
+const mongoose_1 = require("mongoose");
 const mongooseConnection = MongodataAccess.mongooseConnection;
 class PortfolioSchema {
     static get schema() {
-        const collectionSchema = mongoose.Schema({
+        const collectionSchema = new mongoose_1.Schema({
             path: { type: String, required: true },
             likes: { type: Number, required: true, default: 0 }
         });
-        const schema = mongoose.Schema({
+        const schema = new mongoose_1.Schema({
             title: { type: String, required: true },
             description: { type: String },
             user: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'User',
                 required: true
             },

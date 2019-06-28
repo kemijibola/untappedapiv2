@@ -1,19 +1,19 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IContestEntry } from '../../models/interfaces';
 
 class ContestEntrySchema {
   static get schema() {
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         user: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'User',
           required: true
         },
         contest: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'Contest',
           required: true
         },

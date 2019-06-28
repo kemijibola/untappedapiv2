@@ -1,17 +1,17 @@
 "use strict";
 const MongodataAccess = require("../MongodataAccess");
-const mongoose = MongodataAccess.mongooseInstance;
+const mongoose_1 = require("mongoose");
 const mongooseConnection = MongodataAccess.mongooseConnection;
 class ContestEntrySchema {
     static get schema() {
-        const schema = mongoose.Schema({
+        const schema = new mongoose_1.Schema({
             user: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'User',
                 required: true
             },
             contest: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'Contest',
                 required: true
             },

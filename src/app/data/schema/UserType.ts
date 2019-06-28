@@ -1,11 +1,11 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IUserType } from '../../models/interfaces';
 
 class UserTypeSchema {
   static get schema() {
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         name: {
           type: String,

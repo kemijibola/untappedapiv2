@@ -1,11 +1,11 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IScheduledEmail } from '../../models/interfaces';
 
 class ScheduledEmailSchema {
   static get schema() {
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         mailType: { type: String, required: true },
         subject: { type: String },

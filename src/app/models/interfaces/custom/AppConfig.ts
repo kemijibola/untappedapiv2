@@ -7,12 +7,15 @@ export interface AppConfig {
   PORT: number;
   REDIS_HOST: string;
   REDIS_PORT: number;
-  RSA_PUBLIC_KEY: SecretKey[];
-  RSA_PRIVATE_KEY: SecretKey[];
+  RSA_PUBLIC_KEY: {[x: string]: string};
+  RSA_PRIVATE_KEY: {[x: string]: string};
   RSA_KEYID: string;
-  RSA_TYPE: string;
+  RSA_ALG_TYPE: string;
   DATABASE_HOST: string;
   DATABASE_NAME: string;
   DATABASE_USER: string;
   DATABASE_PASSWORD: string;
+  ISSUER: string;
+  AUTH_EXPIRESIN: string;
+  MAIL_EXPIRESIN: string;
 }

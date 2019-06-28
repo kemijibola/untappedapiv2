@@ -1,7 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function sample(req, res, next) {
-    console.log('Request was made');
-    next();
+function errorHandler(err, req, res, next) {
+    const status = err.status;
+    const message = err.message;
+    res.status(status).send({
+        status,
+        message,
+        data: null
+    });
 }
-exports.sample = sample;
+exports.errorHandler = errorHandler;

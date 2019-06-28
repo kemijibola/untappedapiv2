@@ -1,15 +1,18 @@
-import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import MongodataAccess from '../MongodataAccess';
+import { IUserModel } from '../../models/interfaces';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { SignInOptions } from '../../models/interfaces/custom/Global';
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IUser } from '../../models/interfaces';
 
 class UserSchema {
   static get schema() {
-    const userAccountStatusSchema = mongoose.Schema({
+    const userAccountStatusSchema: Schema = new Schema({
       status: { type: String },
       updatedAt: { type: Date }
     });
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         email: { type: String, required: true, unique: true },
         name: { type: String, required: true },
@@ -23,7 +26,7 @@ class UserSchema {
         loginCount: { type: Number, default: 0 },
         status: userAccountStatusSchema,
         roles: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'Role',
           required: true
         },
@@ -35,5 +38,29 @@ class UserSchema {
   }
 }
 
-const schema = mongooseConnection.model<IUser>('User', UserSchema.schema);
+UserSchema.schema.methods.comparePassword = async function(
+  candidatePassword: string
+) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+UserSchema.schema.methods.generateToken = async function<IuserModel>(
+  privateKey: string,
+  signOptions: SignInOptions,
+  payload: any
+): Promise<string> {
+  /*  extra data to be sent back to user is an object = { scopes: [], user_type: ''}
+   **   and any extra  information the system might need
+   */
+  signOptions.subject = this._id;
+  return await jwt.sign(payload, privateKey, signOptions);
+};
+
+// UserSchema.schema.pre<IUserModel>('save', function(next: any) {
+//   console.log('pre-saving hook called');
+//   const user = this;
+//   console.log(user.name);
+// });
+
+const schema = mongooseConnection.model<IUserModel>('User', UserSchema.schema);
 export = schema;

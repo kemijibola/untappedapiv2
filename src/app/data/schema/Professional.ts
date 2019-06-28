@@ -1,16 +1,16 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IProfessional } from '../../models/interfaces';
 
 class ProfessionalSchema {
   static get schema() {
-    const socialMediaSchema = mongoose.Schema({
+    const socialMediaSchema = new Schema({
       type: { type: String },
       handles: [{ type: String }]
     });
 
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         businessName: { type: String, required: true },
         name: { type: String, required: true },
@@ -18,14 +18,14 @@ class ProfessionalSchema {
         rcNumber: { type: String },
         phoneNumbers: [{ type: Number, required: true }],
         user: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'User',
           required: true
         },
         shortBio: { type: String },
         categories: [
           {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Category',
             required: true
           }

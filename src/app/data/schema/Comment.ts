@@ -1,16 +1,16 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IComment } from '../../models/interfaces';
 
 class CommentSchema {
   static get schema() {
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         entity: { type: String, required: true },
         comment: { type: String, required: true },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
+        replies: [{ type: Schema.Types.ObjectId, ref: 'Reply' }]
       },
       { timestamps: true }
     );

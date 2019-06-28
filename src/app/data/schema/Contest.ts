@@ -1,30 +1,28 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IContest } from '../../models/interfaces';
 
 class ContestSchema {
   static get schema() {
-    const evaluationSchema = mongoose.Schema({
+    const evaluationSchema = new Schema({
       name: { type: String }
     });
-    const redeemableSchema = mongoose.Schema({
+    const redeemableSchema = new Schema({
       prizeType: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'PrizeType',
         required: true
       },
       winners: [{ type: Number, required: true }]
     });
 
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         title: { type: String, required: true },
         information: { type: String, required: true },
         bannerImage: { type: String },
-        eligibleCategories: [
-          { type: mongoose.Schema.Types.ObjectId, ref: 'Category' }
-        ],
+        eligibleCategories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
         eligibilityInfo: { type: String },
         submissionRules: { type: String },
         startDate: { type: Date, required: true },
@@ -35,7 +33,7 @@ class ContestSchema {
         grandFinaleDate: { type: Date },
         grandFinaleLocation: { type: String },
         evaluations: [evaluationSchema],
-        createdBy: { type: mongoose.Schema.Types.ObjectId, required: true }
+        createdBy: { type: Schema.Types.ObjectId, required: true }
       },
       { timestamps: true }
     );

@@ -1,8 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-const mongoose_1 = __importDefault(require("mongoose"));
+// import mongoose from 'mongoose';
+const Mongoose = require("mongoose");
 const config = module.require('../../config/keys');
 class MongodataAccess {
     constructor() {
@@ -12,14 +10,16 @@ class MongodataAccess {
         if (this.mongooseInstance) {
             return this.mongooseInstance;
         }
-        this.mongooseConnection = mongoose_1.default.connection;
+        this.mongooseConnection = Mongoose.connection;
         this.mongooseConnection.once('open', () => {
             console.log('Connected to mongodb');
         });
         const params = {
             uri: `${config.DATABASE_HOST}/${config.DATABASE_NAME}`
         };
-        this.mongooseInstance = mongoose_1.default.connect(params.uri);
+        this.mongooseInstance = Mongoose.connect(params.uri, {
+            useNewUrlParser: true
+        });
         return this.mongooseInstance;
     }
     static disconnect() {

@@ -1,27 +1,25 @@
 "use strict";
 const MongodataAccess = require("../MongodataAccess");
-const mongoose = MongodataAccess.mongooseInstance;
+const mongoose_1 = require("mongoose");
 const mongooseConnection = MongodataAccess.mongooseConnection;
 class ContestSchema {
     static get schema() {
-        const evaluationSchema = mongoose.Schema({
+        const evaluationSchema = new mongoose_1.Schema({
             name: { type: String }
         });
-        const redeemableSchema = mongoose.Schema({
+        const redeemableSchema = new mongoose_1.Schema({
             prizeType: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'PrizeType',
                 required: true
             },
             winners: [{ type: Number, required: true }]
         });
-        const schema = mongoose.Schema({
+        const schema = new mongoose_1.Schema({
             title: { type: String, required: true },
             information: { type: String, required: true },
             bannerImage: { type: String },
-            eligibleCategories: [
-                { type: mongoose.Schema.Types.ObjectId, ref: 'Category' }
-            ],
+            eligibleCategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Category' }],
             eligibilityInfo: { type: String },
             submissionRules: { type: String },
             startDate: { type: Date, required: true },
@@ -32,7 +30,7 @@ class ContestSchema {
             grandFinaleDate: { type: Date },
             grandFinaleLocation: { type: String },
             evaluations: [evaluationSchema],
-            createdBy: { type: mongoose.Schema.Types.ObjectId, required: true }
+            createdBy: { type: mongoose_1.Schema.Types.ObjectId, required: true }
         }, { timestamps: true });
         return schema;
     }

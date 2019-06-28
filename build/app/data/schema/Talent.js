@@ -1,31 +1,31 @@
 "use strict";
 const MongodataAccess = require("../MongodataAccess");
-const mongoose = MongodataAccess.mongooseInstance;
+const mongoose_1 = require("mongoose");
 const mongooseConnection = MongodataAccess.mongooseConnection;
 class TalentSchema {
     static get schema() {
-        const socialMediaSchema = mongoose.Schema({
+        const socialMediaSchema = new mongoose_1.Schema({
             type: { type: String },
             handles: [{ type: String }]
         });
-        const physicalStatisticsSchema = mongoose.Schema({
+        const physicalStatisticsSchema = new mongoose_1.Schema({
             height: { type: String },
             bodyType: { type: String },
             color: { type: String }
         });
-        const schema = mongoose.Schema({
+        const schema = new mongoose_1.Schema({
             stageName: { type: String, required: true },
             location: { type: String, required: true },
             phoneNumber: { type: String },
             user: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'User',
                 required: true
             },
             shortBio: { type: String },
             categories: [
                 {
-                    type: mongoose.Schema.Types.ObjectId,
+                    type: mongoose_1.Schema.Types.ObjectId,
                     ref: 'Category',
                     required: true
                 }

@@ -1,6 +1,5 @@
 interface Read<T> {
-  fetch: (callback: (error: any, result: any) => void) => void;
-  findById: (id: string, callback: (error: any, result: T) => void) => void;
+  fetch: () => Promise<T>;
+  findById: (id: string) => Promise<T>;
 }
-
 export = Read;

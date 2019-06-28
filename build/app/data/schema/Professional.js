@@ -1,28 +1,28 @@
 "use strict";
 const MongodataAccess = require("../MongodataAccess");
-const mongoose = MongodataAccess.mongooseInstance;
+const mongoose_1 = require("mongoose");
 const mongooseConnection = MongodataAccess.mongooseConnection;
 class ProfessionalSchema {
     static get schema() {
-        const socialMediaSchema = mongoose.Schema({
+        const socialMediaSchema = new mongoose_1.Schema({
             type: { type: String },
             handles: [{ type: String }]
         });
-        const schema = mongoose.Schema({
+        const schema = new mongoose_1.Schema({
             businessName: { type: String, required: true },
             name: { type: String, required: true },
             officialAddress: { type: String, required: true },
             rcNumber: { type: String },
             phoneNumbers: [{ type: Number, required: true }],
             user: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose_1.Schema.Types.ObjectId,
                 ref: 'User',
                 required: true
             },
             shortBio: { type: String },
             categories: [
                 {
-                    type: mongoose.Schema.Types.ObjectId,
+                    type: mongoose_1.Schema.Types.ObjectId,
                     ref: 'Category',
                     required: true
                 }

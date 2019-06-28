@@ -1,34 +1,34 @@
 import MongodataAccess = require('../MongodataAccess');
-const mongoose = MongodataAccess.mongooseInstance;
+import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { ITalent } from '../../models/interfaces';
 
 class TalentSchema {
   static get schema() {
-    const socialMediaSchema = mongoose.Schema({
+    const socialMediaSchema = new Schema({
       type: { type: String },
       handles: [{ type: String }]
     });
 
-    const physicalStatisticsSchema = mongoose.Schema({
+    const physicalStatisticsSchema = new Schema({
       height: { type: String },
       bodyType: { type: String },
       color: { type: String }
     });
-    const schema = mongoose.Schema(
+    const schema = new Schema(
       {
         stageName: { type: String, required: true },
         location: { type: String, required: true },
         phoneNumber: { type: String },
         user: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'User',
           required: true
         },
         shortBio: { type: String },
         categories: [
           {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Category',
             required: true
           }
