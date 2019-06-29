@@ -10,6 +10,10 @@ export function controller(routePrefix: string) {
 
     for (let key in target.prototype) {
       const routeHandler = target.prototype[key];
+      //console.log('line 15', target.prototype[key]);
+
+      const g = Reflect.getMetadata(MetadataKeys.method, target.prototype);
+      console.log('line ', target.prototype);
 
       const path = Reflect.getMetadata(
         MetadataKeys.path,
@@ -27,20 +31,20 @@ export function controller(routePrefix: string) {
         Reflect.getMetadata(MetadataKeys.middleware, target.prototype, key) ||
         [];
 
-      const requiredProps =
-        Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
-        [];
+      // const requiredProps =
+      //   Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
+      //   [];
 
-      const requestType =
-        Reflect.getMetadata(MetadataKeys.requesttype, target.prototype, key) ||
-        '';
-      const validator = requestValidators(requestType, requiredProps);
+      // const requestType =
+      //   Reflect.getMetadata(MetadataKeys.requesttype, target.prototype, key) ||
+      //   '';
+      //const validator = requestValidators(requiredProps);
 
       if (path) {
         router[method](
           `${routePrefix}${path}`,
           ...middlewares,
-          validator,
+          // validator,
           routeHandler
         );
       }

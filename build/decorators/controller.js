@@ -1,27 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const AppRouter_1 = require("../AppRouter");
-const MetadataKeys_1 = require("../app/models/interfaces/custom/MetadataKeys");
-const requestValidator_1 = require("../utils/lib/requestValidator");
+var AppRouter_1 = require("../AppRouter");
+var MetadataKeys_1 = require("../app/models/interfaces/custom/MetadataKeys");
 function controller(routePrefix) {
     return function (target) {
-        const router = AppRouter_1.AppRouter.getInstance;
-        for (let key in target.prototype) {
-            const routeHandler = target.prototype[key];
-            const path = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.path, target.prototype, key);
-            const method = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.method, target.prototype, key);
-            const middlewares = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.middleware, target.prototype, key) ||
+        var router = AppRouter_1.AppRouter.getInstance;
+        for (var key in target.prototype) {
+            var routeHandler = target.prototype[key];
+            //console.log('line 15', target.prototype[key]);
+            var g = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.method, target.prototype);
+            console.log('line ', target.prototype);
+            var path = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.path, target.prototype, key);
+            var method = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.method, target.prototype, key);
+            var middlewares = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.middleware, target.prototype, key) ||
                 [];
-            const requiredProps = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.validator, target.prototype, key) ||
-                [];
-            const requestType = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.requesttype, target.prototype, key) ||
-                '';
-            const validator = requestValidator_1.requestValidators(requestType, requiredProps);
+            // const requiredProps =
+            //   Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
+            //   [];
+            // const requestType =
+            //   Reflect.getMetadata(MetadataKeys.requesttype, target.prototype, key) ||
+            //   '';
+            //const validator = requestValidators(requiredProps);
             if (path) {
-                router[method](`${routePrefix}${path}`, ...middlewares, validator, routeHandler);
+                router[method].apply(router, ["" + routePrefix + path].concat(middlewares, [
+                    // validator,
+                    routeHandler]));
             }
         }
     };
 }
 exports.controller = controller;
+//# sourceMappingURL=controller.js.map

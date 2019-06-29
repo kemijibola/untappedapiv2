@@ -1,27 +1,35 @@
 "use strict";
-const MongodataAccess = require("../MongodataAccess");
-const mongoose_1 = require("mongoose");
-const mongooseConnection = MongodataAccess.mongooseConnection;
-class GigSchema {
-    static get schema() {
-        const schema = new mongoose_1.Schema({
-            sender: {
-                type: mongoose_1.Schema.Types.ObjectId,
-                ref: 'User',
-                required: true
-            },
-            receiver: {
-                type: mongoose_1.Schema.Types.ObjectId,
-                ref: 'User',
-                required: true
-            },
-            note: { type: String },
-            items: [{ type: String }],
-            deletedBySender: { type: Boolean, default: false },
-            deletedByReciver: { type: Boolean, default: false }
-        }, { timestamps: true });
-        return schema;
+var MongodataAccess = require("../MongodataAccess");
+var mongoose_1 = require("mongoose");
+var mongooseConnection = MongodataAccess.mongooseConnection;
+var GigSchema = /** @class */ (function () {
+    function GigSchema() {
     }
-}
-const schema = mongooseConnection.model('Gig', GigSchema.schema);
+    Object.defineProperty(GigSchema, "schema", {
+        get: function () {
+            var schema = new mongoose_1.Schema({
+                sender: {
+                    type: mongoose_1.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true
+                },
+                receiver: {
+                    type: mongoose_1.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true
+                },
+                note: { type: String },
+                items: [{ type: String }],
+                deletedBySender: { type: Boolean, default: false },
+                deletedByReciver: { type: Boolean, default: false }
+            }, { timestamps: true });
+            return schema;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return GigSchema;
+}());
+var schema = mongooseConnection.model('Gig', GigSchema.schema);
 module.exports = schema;
+//# sourceMappingURL=Gig.js.map

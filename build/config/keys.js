@@ -10,13 +10,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
+var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const Environment_1 = require("../app/models/interfaces/custom/Environment");
-const development = __importStar(require("./development.json"));
-const ci = __importStar(require("./ci.json"));
-let environment = process.env.NODE_ENV || '';
-let envs = {
+var Environment_1 = require("../app/models/interfaces/custom/Environment");
+var development = __importStar(require("./development.json"));
+var ci = __importStar(require("./ci.json"));
+var environment = process.env.NODE_ENV || '';
+var envs = {
     PORT: 0,
     RSA_PUBLIC_KEY: {},
     DATABASE_HOST: '',
@@ -50,3 +50,4 @@ switch (environment) {
         module.exports = development;
         break;
 }
+//# sourceMappingURL=keys.js.map

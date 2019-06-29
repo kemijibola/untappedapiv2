@@ -1,14 +1,22 @@
 "use strict";
-const MongodataAccess = require("../MongodataAccess");
-const mongoose_1 = require("mongoose");
-const mongooseConnection = MongodataAccess.mongooseConnection;
-class CategorySchema {
-    static get schema() {
-        const schema = new mongoose_1.Schema({
-            name: { type: String, required: true }
-        }, { timestamps: true });
-        return schema;
+var MongodataAccess = require("../MongodataAccess");
+var mongoose_1 = require("mongoose");
+var mongooseConnection = MongodataAccess.mongooseConnection;
+var CategorySchema = /** @class */ (function () {
+    function CategorySchema() {
     }
-}
-const schema = mongooseConnection.model('Category', CategorySchema.schema);
+    Object.defineProperty(CategorySchema, "schema", {
+        get: function () {
+            var schema = new mongoose_1.Schema({
+                name: { type: String, required: true }
+            }, { timestamps: true });
+            return schema;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return CategorySchema;
+}());
+var schema = mongooseConnection.model('Category', CategorySchema.schema);
 module.exports = schema;
+//# sourceMappingURL=Category.js.map

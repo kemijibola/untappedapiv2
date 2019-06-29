@@ -1,17 +1,31 @@
 "use strict";
-class ResourcePermissionModel {
-    constructor(resourcePermissionModel) {
+var ResourcePermissionModel = /** @class */ (function () {
+    function ResourcePermissionModel(resourcePermissionModel) {
         this._resourcePermissionModel = resourcePermissionModel;
     }
-    get resource() {
-        return this._resourcePermissionModel.resource;
-    }
-    get role() {
-        return this._resourcePermissionModel.role;
-    }
-    get permissions() {
-        return this._resourcePermissionModel.permissions;
-    }
-}
+    Object.defineProperty(ResourcePermissionModel.prototype, "resource", {
+        get: function () {
+            return this._resourcePermissionModel.resource;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ResourcePermissionModel.prototype, "role", {
+        get: function () {
+            return this._resourcePermissionModel.role;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ResourcePermissionModel.prototype, "permissions", {
+        get: function () {
+            return this._resourcePermissionModel.permissions;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return ResourcePermissionModel;
+}());
 Object.seal(ResourcePermissionModel);
 module.exports = ResourcePermissionModel;
+//# sourceMappingURL=ResourcePermission.js.map

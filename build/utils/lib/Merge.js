@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Merger {
-    constructor(merge) {
+var Merger = /** @class */ (function () {
+    function Merger(merge) {
         this.merge = merge;
     }
-    mergeList(param1, param2) {
+    Merger.prototype.mergeList = function (param1, param2) {
         this.merge.mergeList(param1, param2);
-    }
-}
+    };
+    return Merger;
+}());
 exports.Merger = Merger;
+//# sourceMappingURL=Merge.js.map

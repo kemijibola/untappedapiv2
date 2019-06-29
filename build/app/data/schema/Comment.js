@@ -1,17 +1,25 @@
 "use strict";
-const MongodataAccess = require("../MongodataAccess");
-const mongoose_1 = require("mongoose");
-const mongooseConnection = MongodataAccess.mongooseConnection;
-class CommentSchema {
-    static get schema() {
-        const schema = new mongoose_1.Schema({
-            entity: { type: String, required: true },
-            comment: { type: String, required: true },
-            user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User' },
-            replies: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Reply' }]
-        }, { timestamps: true });
-        return schema;
+var MongodataAccess = require("../MongodataAccess");
+var mongoose_1 = require("mongoose");
+var mongooseConnection = MongodataAccess.mongooseConnection;
+var CommentSchema = /** @class */ (function () {
+    function CommentSchema() {
     }
-}
-const schema = mongooseConnection.model('Comment', CommentSchema.schema);
+    Object.defineProperty(CommentSchema, "schema", {
+        get: function () {
+            var schema = new mongoose_1.Schema({
+                entity: { type: String, required: true },
+                comment: { type: String, required: true },
+                user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User' },
+                replies: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Reply' }]
+            }, { timestamps: true });
+            return schema;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return CommentSchema;
+}());
+var schema = mongooseConnection.model('Comment', CommentSchema.schema);
 module.exports = schema;
+//# sourceMappingURL=Comment.js.map

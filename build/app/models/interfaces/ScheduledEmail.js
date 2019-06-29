@@ -6,3 +6,4 @@ var MailType;
     MailType["TRANSACTIONAL"] = "TRANSACTIONAL";
     MailType["NOTIFICATION"] = "NOTIFICATION";
 })(MailType = exports.MailType || (exports.MailType = {}));
+//# sourceMappingURL=ScheduledEmail.js.map

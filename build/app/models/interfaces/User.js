@@ -6,3 +6,4 @@ var AccountStatus;
     AccountStatus["SUSPENDED"] = "SUSPENDED";
     AccountStatus["DELETED"] = "DELETED";
 })(AccountStatus || (AccountStatus = {}));
+//# sourceMappingURL=User.js.map

@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { MetadataKeys } from '../app/models/interfaces/custom/MetadataKeys';
 
-export function requestValidators(requestType: string, ...keys: string[]) {
+export function requestValidators(...keys: string[]) {
   return function(target: any, key: string, desc: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKeys.validator, keys, target, key);
-    Reflect.defineMetadata(MetadataKeys.requesttype, requestType, target, key);
+    // Reflect.defineMetadata(MetadataKeys.requesttype, requestType, target, key);
   };
 }

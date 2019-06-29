@@ -5,3 +5,4 @@ var RoleType;
     RoleType["PAID"] = "PAID";
     RoleType["FREE"] = "FREE";
 })(RoleType = exports.RoleType || (exports.RoleType = {}));
+//# sourceMappingURL=Role.js.map

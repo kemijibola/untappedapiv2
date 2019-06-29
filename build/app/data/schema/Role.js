@@ -1,26 +1,34 @@
 "use strict";
-const MongodataAccess = require("../MongodataAccess");
-const mongoose_1 = require("mongoose");
-const mongooseConnection = MongodataAccess.mongooseConnection;
-class RoleSchema {
-    static get schema() {
-        const schema = new mongoose_1.Schema({
-            name: {
-                type: String,
-                required: true
-            },
-            userType: {
-                type: mongoose_1.Schema.Types.ObjectId,
-                ref: 'UserType',
-                required: true
-            },
-            roleType: {
-                type: String,
-                required: true
-            }
-        }, { timestamps: true });
-        return schema;
+var MongodataAccess = require("../MongodataAccess");
+var mongoose_1 = require("mongoose");
+var mongooseConnection = MongodataAccess.mongooseConnection;
+var RoleSchema = /** @class */ (function () {
+    function RoleSchema() {
     }
-}
-const schema = mongooseConnection.model('Role', RoleSchema.schema);
+    Object.defineProperty(RoleSchema, "schema", {
+        get: function () {
+            var schema = new mongoose_1.Schema({
+                name: {
+                    type: String,
+                    required: true
+                },
+                userType: {
+                    type: mongoose_1.Schema.Types.ObjectId,
+                    ref: 'UserType',
+                    required: true
+                },
+                roleType: {
+                    type: String,
+                    required: true
+                }
+            }, { timestamps: true });
+            return schema;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return RoleSchema;
+}());
+var schema = mongooseConnection.model('Role', RoleSchema.schema);
 module.exports = schema;
+//# sourceMappingURL=Role.js.map

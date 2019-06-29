@@ -1,14 +1,24 @@
 "use strict";
-class ModelBase {
-    constructor(timeStampModel) {
+var ModelBase = /** @class */ (function () {
+    function ModelBase(timeStampModel) {
         this._timeStampModel = timeStampModel;
     }
-    get createAt() {
-        return this._timeStampModel.createdAt;
-    }
-    get updatedAt() {
-        return this._timeStampModel.updateAt || new Date();
-    }
-}
+    Object.defineProperty(ModelBase.prototype, "createAt", {
+        get: function () {
+            return this._timeStampModel.createdAt;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ModelBase.prototype, "updatedAt", {
+        get: function () {
+            return this._timeStampModel.updateAt || new Date();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return ModelBase;
+}());
 Object.seal(ModelBase);
 module.exports = ModelBase;
+//# sourceMappingURL=ModelBase.js.map

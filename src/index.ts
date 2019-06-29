@@ -1,13 +1,33 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import { AppRouter } from './AppRouter';
+import './controllers/AccountController';
 import { AppConfig } from './app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('./config/keys');
-import MiddlewaresBase = require('./middlewares/base/MiddlewaresBase');
-import './controllers';
+import { ApiResponse } from './app/models/interfaces/custom/ApiResponse';
+import { errorHandler } from './middlewares/ErrorMiddleware';
 
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(AppRouter.getInstance);
+
+// app.use(function(req: Request, res: Response, next: NextFunction) {
+//   console.log('hit');
+// });
+
+// app.use(function(
+//   error: ApiResponse<null>,
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) {
+//   errorHandler(error, req, res, next);
+// });
+
 const port = config.PORT || 5000;
 app.set('port', port);
-app.use(MiddlewaresBase.configuration);
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);

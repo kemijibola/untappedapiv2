@@ -5,3 +5,4 @@ var TokenType;
     TokenType["MAIL"] = "MAIL";
     TokenType["AUTH"] = "AUTH";
 })(TokenType = exports.TokenType || (exports.TokenType = {}));
+//# sourceMappingURL=GlobalEnum.js.map

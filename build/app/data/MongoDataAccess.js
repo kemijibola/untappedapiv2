@@ -1,30 +1,32 @@
 "use strict";
 // import mongoose from 'mongoose';
-const Mongoose = require("mongoose");
-const config = module.require('../../config/keys');
-class MongodataAccess {
-    constructor() {
+var Mongoose = require("mongoose");
+var config = module.require('../../config/keys');
+var MongodataAccess = /** @class */ (function () {
+    function MongodataAccess() {
         MongodataAccess.connect();
     }
-    static connect() {
+    MongodataAccess.connect = function () {
         if (this.mongooseInstance) {
             return this.mongooseInstance;
         }
         this.mongooseConnection = Mongoose.connection;
-        this.mongooseConnection.once('open', () => {
+        this.mongooseConnection.once('open', function () {
             console.log('Connected to mongodb');
         });
-        const params = {
-            uri: `${config.DATABASE_HOST}/${config.DATABASE_NAME}`
+        var params = {
+            uri: config.DATABASE_HOST + "/" + config.DATABASE_NAME
         };
         this.mongooseInstance = Mongoose.connect(params.uri, {
             useNewUrlParser: true
         });
         return this.mongooseInstance;
-    }
-    static disconnect() {
+    };
+    MongodataAccess.disconnect = function () {
         this.mongooseConnection.close();
-    }
-}
+    };
+    return MongodataAccess;
+}());
 MongodataAccess.connect();
 module.exports = MongodataAccess;
+//# sourceMappingURL=MongodataAccess.js.map

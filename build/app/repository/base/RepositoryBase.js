@@ -1,63 +1,70 @@
 "use strict";
-const mongoose = require("mongoose");
-const async_1 = require("async");
-const path_1 = require("path");
-class RepositoryBase {
-    constructor(schemaModel) {
+var mongoose = require("mongoose");
+var async_1 = require("async");
+var path_1 = require("path");
+var RepositoryBase = /** @class */ (function () {
+    function RepositoryBase(schemaModel) {
         this._model = schemaModel;
     }
-    create(item) {
-        return new Promise((resolve, reject) => {
-            this._model.create(item, (error, result) => {
+    RepositoryBase.prototype.create = function (item) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.create(item, function (error, result) {
                 if (error)
                     reject(error);
                 else
                     resolve(result);
             });
         });
-    }
-    fetch() {
-        return new Promise(() => {
-            this._model.find({}, (error, result) => {
+    };
+    RepositoryBase.prototype.fetch = function () {
+        var _this = this;
+        return new Promise(function () {
+            _this._model.find({}, function (error, result) {
                 if (error)
                     async_1.reject(error, error);
                 else
                     path_1.resolve(result);
             });
         });
-    }
-    update(_id, item) {
-        return new Promise((resolve, reject) => {
-            this._model.update({ _id: _id }, item, (error, result) => {
+    };
+    RepositoryBase.prototype.update = function (_id, item) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.update({ _id: _id }, item, function (error, result) {
                 if (error)
                     reject(error);
                 else
                     resolve(result);
             });
         });
-    }
-    delete(_id) {
-        return new Promise((resolve, reject) => {
-            this._model.remove({ _id: this.toObjectId(_id) }, err => {
+    };
+    RepositoryBase.prototype.delete = function (_id) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.remove({ _id: _this.toObjectId(_id) }, function (err) {
                 if (err)
                     reject(err);
                 else
                     resolve(true);
             });
         });
-    }
-    findById(_id) {
-        return new Promise((resolve, reject) => {
-            this._model.findById(_id, (error, result) => {
+    };
+    RepositoryBase.prototype.findById = function (_id) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.findById(_id, function (error, result) {
                 if (error)
                     reject(error);
                 else
                     resolve(result);
             });
         });
-    }
-    toObjectId(_id) {
+    };
+    RepositoryBase.prototype.toObjectId = function (_id) {
         return mongoose.Types.ObjectId.createFromHexString(_id);
-    }
-}
+    };
+    return RepositoryBase;
+}());
 module.exports = RepositoryBase;
+//# sourceMappingURL=RepositoryBase.js.map

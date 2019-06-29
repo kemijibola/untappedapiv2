@@ -5,3 +5,4 @@ var RequestType;
     RequestType["BODY"] = "BODY";
     RequestType["PARAMS"] = "PARAMS";
 })(RequestType = exports.RequestType || (exports.RequestType = {}));
+//# sourceMappingURL=RequestType.js.map

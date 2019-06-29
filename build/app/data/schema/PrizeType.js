@@ -1,14 +1,22 @@
 "use strict";
-const MongodataAccess = require("../MongodataAccess");
-const mongoose_1 = require("mongoose");
-const mongooseConnection = MongodataAccess.mongooseConnection;
-class PrizeTypeSchema {
-    static get schema() {
-        const schema = new mongoose_1.Schema({
-            name: { type: String, required: true }
-        }, { timestamps: true });
-        return schema;
+var MongodataAccess = require("../MongodataAccess");
+var mongoose_1 = require("mongoose");
+var mongooseConnection = MongodataAccess.mongooseConnection;
+var PrizeTypeSchema = /** @class */ (function () {
+    function PrizeTypeSchema() {
     }
-}
-const schema = mongooseConnection.model('PrizeType', PrizeTypeSchema.schema);
+    Object.defineProperty(PrizeTypeSchema, "schema", {
+        get: function () {
+            var schema = new mongoose_1.Schema({
+                name: { type: String, required: true }
+            }, { timestamps: true });
+            return schema;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return PrizeTypeSchema;
+}());
+var schema = mongooseConnection.model('PrizeType', PrizeTypeSchema.schema);
 module.exports = schema;
+//# sourceMappingURL=PrizeType.js.map

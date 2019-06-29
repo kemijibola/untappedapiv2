@@ -1,12 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class PrizeTypeModel {
-    constructor(prizeTypeModel) {
+var PrizeTypeModel = /** @class */ (function () {
+    function PrizeTypeModel(prizeTypeModel) {
         this._prizeTypeModel = prizeTypeModel;
     }
-    get name() {
-        return this._prizeTypeModel.name;
-    }
-}
+    Object.defineProperty(PrizeTypeModel.prototype, "name", {
+        get: function () {
+            return this._prizeTypeModel.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return PrizeTypeModel;
+}());
 Object.seal(PrizeTypeModel);
 exports = PrizeTypeModel;
+//# sourceMappingURL=PrizeType.js.map

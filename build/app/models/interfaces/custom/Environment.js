@@ -6,3 +6,4 @@ var Environment;
     Environment["PRODUCTION"] = "PRODUCTION";
     Environment["STAGING"] = "STAGING";
 })(Environment = exports.Environment || (exports.Environment = {}));
+//# sourceMappingURL=Environment.js.map

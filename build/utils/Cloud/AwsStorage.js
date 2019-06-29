@@ -7,9 +7,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const AWS = __importStar(require("aws-sdk"));
-class AwsStorage {
-    constructor(bucket) {
+var AWS = __importStar(require("aws-sdk"));
+var AwsStorage = /** @class */ (function () {
+    function AwsStorage(bucket) {
         this.objParams = { Bucket: '', Key: '' };
         AWS.config.update({
             region: bucket.region
@@ -19,7 +19,7 @@ class AwsStorage {
             secretAccessKey: bucket.secretAccessKey
         });
     }
-    getObject(params) {
+    AwsStorage.prototype.getObject = function (params) {
         console.log(params);
         this.objParams = Object.assign(this.objParams, params);
         this.s3.getObject(this.objParams, function (err, data) {
@@ -31,7 +31,9 @@ class AwsStorage {
             }
         });
         return 'get obj works';
-    }
-    putObject(params) { }
-}
+    };
+    AwsStorage.prototype.putObject = function (params) { };
+    return AwsStorage;
+}());
 exports.AwsStorage = AwsStorage;
+//# sourceMappingURL=AwsStorage.js.map

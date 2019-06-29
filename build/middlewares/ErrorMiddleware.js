@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function errorHandler(err, req, res, next) {
-    const status = err.status;
-    const message = err.message;
+    var status = err.status;
+    var message = err.message;
     res.status(status).send({
-        status,
-        message,
+        status: status,
+        message: message,
         data: null
     });
 }
 exports.errorHandler = errorHandler;
+//# sourceMappingURL=ErrorMiddleware.js.map

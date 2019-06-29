@@ -1,47 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class RecordNotFound {
-    constructor(message, code) {
+var RecordNotFound = /** @class */ (function () {
+    function RecordNotFound(message, code) {
         this.message = message || 'Record not found.';
         this.code = code || 404;
     }
-}
+    return RecordNotFound;
+}());
 exports.RecordNotFound = RecordNotFound;
-class InvalidContent {
-    constructor(message, code) {
+var InvalidContent = /** @class */ (function () {
+    function InvalidContent(message, code) {
         this.message = message || 'Provide valid json data.';
         this.code = code || 400;
     }
-}
+    return InvalidContent;
+}());
 exports.InvalidContent = InvalidContent;
-class InvalidCredentials {
-    constructor(message, code) {
+var InvalidCredentials = /** @class */ (function () {
+    function InvalidCredentials(message, code) {
         this.message = message || 'Invalid credentials';
         this.code = code || 400;
     }
-}
+    return InvalidCredentials;
+}());
 exports.InvalidCredentials = InvalidCredentials;
-class RecordExists {
-    constructor(message, code) {
+var RecordExists = /** @class */ (function () {
+    function RecordExists(message, code) {
         this.message = message || 'Record exists in database.';
         this.code = code || 400;
     }
-}
+    return RecordExists;
+}());
 exports.RecordExists = RecordExists;
-class FetchRecordFailed {
-    constructor(message, code) {
+var FetchRecordFailed = /** @class */ (function () {
+    function FetchRecordFailed(message, code) {
         this.message =
             message || 'Unable to fetch record at this time. Please try again later.';
         this.code = code || 400;
     }
-}
+    return FetchRecordFailed;
+}());
 exports.FetchRecordFailed = FetchRecordFailed;
-class FetchRecordsFailed {
-    constructor(message, code) {
+var FetchRecordsFailed = /** @class */ (function () {
+    function FetchRecordsFailed(message, code) {
         this.message =
             message ||
                 'Unable to fetchs records at this time. Please try again later.';
         this.code = code || 400;
     }
-}
+    return FetchRecordsFailed;
+}());
 exports.FetchRecordsFailed = FetchRecordsFailed;
+//# sourceMappingURL=ApplicationError.js.map

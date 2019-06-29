@@ -8,3 +8,4 @@ var Methods;
     Methods["del"] = "delete";
     Methods["put"] = "put";
 })(Methods = exports.Methods || (exports.Methods = {}));
+//# sourceMappingURL=Methods.js.map

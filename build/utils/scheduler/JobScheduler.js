@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class JobScheduler {
-    constructor(scheduler) { }
-}
+var JobScheduler = /** @class */ (function () {
+    function JobScheduler(scheduler) {
+    }
+    return JobScheduler;
+}());
 exports.JobScheduler = JobScheduler;
+//# sourceMappingURL=JobScheduler.js.map
