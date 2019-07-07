@@ -21,9 +21,9 @@ export async function tokenExchange(
 ): Promise<{ [x: string]: string }> {
   const resourceRepository = new ResourceRepository();
   const resourcePermissionRepository = new ResourcePermissionRepository();
-  const resourceModel = await resourceRepository.findByName(
-    exchangeParams.destinationUrl
-  );
+  const resourceModel = await resourceRepository.findByCriteria({
+    name: exchangeParams.destinationUrl
+  });
   console.log(resourceModel);
   for (let role of exchangeParams.roles) {
     console.log(1);
