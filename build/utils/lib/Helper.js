@@ -43,7 +43,7 @@ var ResourceRepository_1 = __importDefault(require("../../app/repository/Resourc
 var ResourcePermissionRepository = require("../../app/repository/ResourcePermissionRepository");
 var chunkedUserPermissons = {};
 exports.getPrivateKey = function (keyId) {
-    return config.RSA_PRIVATE_KEY[keyId].replace(/\\n/g, '\n');
+    return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
 };
 function tokenExchange(exchangeParams) {
     return __awaiter(this, void 0, void 0, function () {
@@ -56,11 +56,13 @@ function tokenExchange(exchangeParams) {
                     return [4 /*yield*/, resourceRepository.findByName(exchangeParams.destinationUrl)];
                 case 1:
                     resourceModel = _b.sent();
+                    console.log(resourceModel);
                     _i = 0, _a = exchangeParams.roles;
                     _b.label = 2;
                 case 2:
                     if (!(_i < _a.length)) return [3 /*break*/, 5];
                     role = _a[_i];
+                    console.log(1);
                     return [4 /*yield*/, resourcePermissionRepository.findPermissionsByRole(role, resourceModel._id)];
                 case 3:
                     resourcePermissionModel = _b.sent();

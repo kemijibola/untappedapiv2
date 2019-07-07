@@ -15,12 +15,12 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var ScheduledEmail_1 = __importDefault(require("../data/schema/ScheduledEmail"));
+var ScheduledEmail_1 = require("../data/schema/ScheduledEmail");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var ScheduledEmailRepository = /** @class */ (function (_super) {
     __extends(ScheduledEmailRepository, _super);
     function ScheduledEmailRepository() {
-        return _super.call(this, ScheduledEmail_1.default) || this;
+        return _super.call(this, ScheduledEmail_1.ScheduledEmailSchema) || this;
     }
     return ScheduledEmailRepository;
 }(RepositoryBase_1.default));

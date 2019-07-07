@@ -6,5 +6,5 @@ var SocialMedia;
     SocialMedia["TWITTER"] = "TWITTER";
     SocialMedia["INSTAGRAM"] = "INSTAGRAM";
     SocialMedia["OTHER"] = "OTHER";
-})(SocialMedia || (SocialMedia = {}));
+})(SocialMedia = exports.SocialMedia || (exports.SocialMedia = {}));
 //# sourceMappingURL=Talent.js.map

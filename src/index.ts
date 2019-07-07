@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { AppRouter } from './AppRouter';
 import './controllers/AccountController';
@@ -6,25 +6,22 @@ import { AppConfig } from './app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('./config/keys');
 import { ApiResponse } from './app/models/interfaces/custom/ApiResponse';
 import { errorHandler } from './middlewares/ErrorMiddleware';
+import { IError } from './utils/error/GlobalError';
 
 const app = express();
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(AppRouter.getInstance);
 
-// app.use(function(req: Request, res: Response, next: NextFunction) {
-//   console.log('hit');
-// });
-
-// app.use(function(
-//   error: ApiResponse<null>,
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   errorHandler(error, req, res, next);
-// });
+app.use(function(
+  error: IError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  errorHandler(error, req, res, next);
+});
 
 const port = config.PORT || 5000;
 app.set('port', port);

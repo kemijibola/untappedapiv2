@@ -15,12 +15,12 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var Evaluation_1 = __importDefault(require("../data/schema/Evaluation"));
+var Evaluation_1 = require("../data/schema/Evaluation");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var EvauationRepository = /** @class */ (function (_super) {
     __extends(EvauationRepository, _super);
     function EvauationRepository() {
-        return _super.call(this, Evaluation_1.default) || this;
+        return _super.call(this, Evaluation_1.EvaluationSchema) || this;
     }
     return EvauationRepository;
 }(RepositoryBase_1.default));

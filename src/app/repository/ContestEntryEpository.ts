@@ -1,5 +1,5 @@
 import { IContestEntry } from '../models/interfaces';
-import ContestEntrySchema from '../data/schema/ContestEntry';
+import { ContestEntrySchema } from '../data/schema/ContestEntry';
 import RepositoryBase from './base/RepositoryBase';
 
 class ContestEntryRepository extends RepositoryBase<IContestEntry> {

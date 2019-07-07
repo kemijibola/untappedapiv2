@@ -1,5 +1,5 @@
 import { IScheduledEmail } from '../models/interfaces';
-import ScheduledEmailSchema from '../data/schema/ScheduledEmail';
+import { ScheduledEmailSchema } from '../data/schema/ScheduledEmail';
 import RepositoryBase from './base/RepositoryBase';
 
 class ScheduledEmailRepository extends RepositoryBase<IScheduledEmail> {

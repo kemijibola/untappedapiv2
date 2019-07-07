@@ -57,6 +57,15 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  findByCriteria(criteria: any): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this._model.findOne(criteria, (error: any, result: T) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+    });
+  }
+
   private toObjectId(_id: string): mongoose.Types.ObjectId {
     return mongoose.Types.ObjectId.createFromHexString(_id);
   }

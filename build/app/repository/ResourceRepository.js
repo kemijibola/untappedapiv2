@@ -15,13 +15,13 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var Resource_1 = __importDefault(require("../data/schema/Resource"));
+var Resource_1 = require("../data/schema/Resource");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var ResourceRepository = /** @class */ (function (_super) {
     __extends(ResourceRepository, _super);
     function ResourceRepository() {
-        var _this = _super.call(this, Resource_1.default) || this;
-        _this.resourceModel = Resource_1.default;
+        var _this = _super.call(this, Resource_1.ResourceSchema) || this;
+        _this.resourceModel = Resource_1.ResourceSchema;
         return _this;
     }
     ResourceRepository.prototype.findByName = function (name) {

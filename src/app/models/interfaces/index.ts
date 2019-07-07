@@ -17,3 +17,6 @@ export * from './Comment';
 export * from './Gig';
 export * from './Resource';
 export * from './Timestamp';
+export * from './ScheduledComment';
+export * from './Approval';
+export * from './Media';

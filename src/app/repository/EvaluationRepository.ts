@@ -1,5 +1,5 @@
 import { IEvaluation } from '../models/interfaces';
-import EvaluationSchema from '../data/schema/Evaluation';
+import { EvaluationSchema } from '../data/schema/Evaluation';
 import RepositoryBase from './base/RepositoryBase';
 
 class EvauationRepository extends RepositoryBase<IEvaluation> {

@@ -1,58 +1,43 @@
-import { IError } from './GlobalError';
+import { IError, GlobalError } from './GlobalError';
 
-export class RecordNotFound implements IError {
-  message: string;
-  code: number;
-  constructor(message?: string, code?: number) {
-    this.message = message || 'Record not found.';
-    this.code = code || 404;
+export class RecordNotFound extends GlobalError {
+  constructor(public message: string, public code: number) {
+    super({ message: message, code: code });
   }
 }
 
-export class InvalidContent implements IError {
-  message: string;
-  code: number;
-  constructor(message?: string, code?: number) {
-    this.message = message || 'Provide valid json data.';
-    this.code = code || 400;
+export class InvalidContent extends GlobalError {
+  constructor(public message: string, public code: number) {
+    super({ message: message, code: code });
   }
 }
 
-export class InvalidCredentials implements IError {
-  message: string;
-  code: number;
-  constructor(message?: string, code?: number) {
-    this.message = message || 'Invalid credentials';
-    this.code = code || 400;
+export class InvalidCredentials extends GlobalError {
+  constructor(message: string, code: number) {
+    super({ message: message, code: code });
   }
 }
 
-export class RecordExists implements IError {
-  message: string;
-  code: number;
-  constructor(message?: string, code?: number) {
-    this.message = message || 'Record exists in database.';
-    this.code = code || 400;
+export class RecordExists extends GlobalError {
+  constructor(message: string, code: number) {
+    super({ message: message, code: code });
   }
 }
 
-export class FetchRecordFailed implements IError {
-  message: string;
-  code: number;
-  constructor(message?: string, code?: number) {
-    this.message =
-      message || 'Unable to fetch record at this time. Please try again later.';
-    this.code = code || 400;
+export class FetchRecordFailed extends GlobalError {
+  constructor(message: string, code: number) {
+    super({ message: message, code: code });
   }
 }
 
-export class FetchRecordsFailed implements IError {
-  message: string;
-  code: number;
-  constructor(message?: string, code?: number) {
-    this.message =
-      message ||
-      'Unable to fetchs records at this time. Please try again later.';
-    this.code = code || 400;
+export class FetchRecordsFailed extends GlobalError {
+  constructor(message: string, code: number) {
+    super({ message: message, code: code });
+  }
+}
+
+export class InternalServerError extends GlobalError {
+  constructor(message: string, code: number) {
+    super({ message: message, code: code });
   }
 }

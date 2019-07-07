@@ -3,20 +3,14 @@ import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IEvaluation } from '../../models/interfaces';
 
-class EvaluationSchema {
-  static get schema() {
-    const schema = new Schema(
-      {
-        name: { type: String, required: true }
-      },
-      { timestamps: true }
-    );
-    return schema;
-  }
-}
-
-const schema = mongooseConnection.model<IEvaluation>(
-  'Evaluation',
-  EvaluationSchema.schema
+const evaluationSchema: Schema = new Schema(
+  {
+    name: { type: String, required: true }
+  },
+  { timestamps: true }
 );
-export = schema;
+
+export const EvaluationSchema = mongooseConnection.model<IEvaluation>(
+  'Evaluation',
+  evaluationSchema
+);

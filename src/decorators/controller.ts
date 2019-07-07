@@ -10,10 +10,6 @@ export function controller(routePrefix: string) {
 
     for (let key in target.prototype) {
       const routeHandler = target.prototype[key];
-      //console.log('line 15', target.prototype[key]);
-
-      const g = Reflect.getMetadata(MetadataKeys.method, target.prototype);
-      console.log('line ', target.prototype);
 
       const path = Reflect.getMetadata(
         MetadataKeys.path,

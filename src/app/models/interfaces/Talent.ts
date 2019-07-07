@@ -9,7 +9,7 @@ export interface IPhysicalStatistics {
   color: string;
 }
 
-enum SocialMedia {
+export enum SocialMedia {
   FACEBOOK = 'FACEBOOK',
   TWITTER = 'TWITTER',
   INSTAGRAM = 'INSTAGRAM',

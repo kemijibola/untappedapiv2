@@ -1,6 +1,6 @@
 import mongoose = require('mongoose');
 import { IResourcePermission } from '../models/interfaces';
-import ResourcePermissionSchema from '../data/schema/ResourcePermission';
+import { ResourcePermissionSchema } from '../data/schema/ResourcePermission';
 import RepositoryBase from './base/RepositoryBase';
 
 class ResourcePermissionRepository extends RepositoryBase<IResourcePermission> {
@@ -21,7 +21,9 @@ class ResourcePermissionRepository extends RepositoryBase<IResourcePermission> {
             role: role,
             resource: resource
           },
+          'permissions',
           (error: any, result: IResourcePermission) => {
+            console.log(error);
             if (error) reject(error);
             else resolve(result);
           }

@@ -2,36 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 function requestValidators(keys) {
     return function (req, res, next) {
-        // switch (requesType) {
-        //   case RequestType.BODY:
-        //     if (!req.body) {
-        //       res.send({ error: 'Change to error handler' });
-        //       return;
-        //     }
-        //     for (let key of keys) {
-        //       if (!req.body[key]) {
-        //         res.send({ error: 'Change to error handler' });
-        //         return;
-        //       }
-        //     }
-        //     next();
-        //     break;
-        //   case RequestType.PARAMS:
-        //     if (!req.params) {
-        //       res.send({ error: 'Change to error handler' });
-        //       return;
-        //     }
-        //     for (let key of keys) {
-        //       if (!req.body[key]) {
-        //         res.send({ error: 'Change to error handler' });
-        //         return;
-        //       }
-        //     }
-        //     next();
-        //     break;
-        //   default:
-        //     break;
-        // }
+        if (!req.body) {
+            res.send({ error: 'Change to error handler' });
+            return;
+        }
+        for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+            var key = keys_1[_i];
+            if (!req.body[key]) {
+                res.send({ error: 'Change to error handler' });
+                return;
+            }
+        }
+        next();
     };
 }
 exports.requestValidators = requestValidators;

@@ -6,14 +6,14 @@ import ResourcePermissionRepository = require('../../app/repository/ResourcePerm
 
 export interface IExchangeToken {
   destinationUrl: string;
-  roles: IRole['_id'][];
+  roles: string[];
 }
 let chunkedUserPermissons: { [x: string]: string } = {};
 
 export const getPrivateKey: (keyId: string) => string = (
   keyId: string
 ): string => {
-  return config.RSA_PRIVATE_KEY[keyId].replace(/\\n/g, '\n');
+  return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
 };
 
 export async function tokenExchange(
@@ -24,7 +24,9 @@ export async function tokenExchange(
   const resourceModel = await resourceRepository.findByName(
     exchangeParams.destinationUrl
   );
+  console.log(resourceModel);
   for (let role of exchangeParams.roles) {
+    console.log(1);
     const resourcePermissionModel = await resourcePermissionRepository.findPermissionsByRole(
       role,
       resourceModel._id

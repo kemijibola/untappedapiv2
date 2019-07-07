@@ -34,6 +34,6 @@ export interface IUserModel extends IUser, mongoose.Document {
   generateToken(
     privateKey: string,
     signOptions: SignInOptions,
-    payload: Object
+    payload: any
   ): Promise<string>;
 }

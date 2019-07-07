@@ -17,6 +17,7 @@ var MongodataAccess = /** @class */ (function () {
         var params = {
             uri: config.DATABASE_HOST + "/" + config.DATABASE_NAME
         };
+        Mongoose.Promise = global.Promise;
         this.mongooseInstance = Mongoose.connect(params.uri, {
             useNewUrlParser: true
         });

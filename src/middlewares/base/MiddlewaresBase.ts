@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { AppRouter } from '../../AppRouter';
 import { ApiResponse } from '../../app/models/interfaces/custom/ApiResponse';
 import { errorHandler } from '../ErrorMiddleware';
+import { IError } from '../../utils/error/GlobalError';
 
 class MiddlewaresBase {
   static get configuration() {
@@ -12,7 +13,7 @@ class MiddlewaresBase {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(AppRouter.getInstance);
     app.use(function(
-      error: ApiResponse<null>,
+      error: IError,
       req: Request,
       res: Response,
       next: NextFunction

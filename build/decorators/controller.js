@@ -8,9 +8,6 @@ function controller(routePrefix) {
         var router = AppRouter_1.AppRouter.getInstance;
         for (var key in target.prototype) {
             var routeHandler = target.prototype[key];
-            //console.log('line 15', target.prototype[key]);
-            var g = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.method, target.prototype);
-            console.log('line ', target.prototype);
             var path = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.path, target.prototype, key);
             var method = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.method, target.prototype, key);
             var middlewares = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.middleware, target.prototype, key) ||

@@ -1,5 +1,5 @@
 import { IGig } from '../models/interfaces';
-import GigSchema from '../data/schema/Gig';
+import { GigSchema } from '../data/schema/Gig';
 import RepositoryBase from './base/RepositoryBase';
 
 class GigRepository extends RepositoryBase<IGig> {

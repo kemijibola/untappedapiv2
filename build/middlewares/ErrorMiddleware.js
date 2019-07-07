@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function errorHandler(err, req, res, next) {
-    var status = err.status;
+    var status = err.code;
     var message = err.message;
-    res.status(status).send({
+    return res.status(status).json({
         status: status,
         message: message,
         data: null

@@ -15,13 +15,26 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var Permission_1 = __importDefault(require("../data/schema/Permission"));
+var Permission_1 = require("../data/schema/Permission");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var PermissionRepository = /** @class */ (function (_super) {
     __extends(PermissionRepository, _super);
     function PermissionRepository() {
-        return _super.call(this, Permission_1.default) || this;
+        var _this = _super.call(this, Permission_1.PermissionSchema) || this;
+        _this._permissionModel = Permission_1.PermissionSchema;
+        return _this;
     }
+    PermissionRepository.prototype.findByName = function (name) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._permissionModel.findOne({ name: name }, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     return PermissionRepository;
 }(RepositoryBase_1.default));
 Object.seal(PermissionRepository);

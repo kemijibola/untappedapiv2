@@ -15,13 +15,26 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var Category_1 = __importDefault(require("../data/schema/Category"));
+var Category_1 = require("../data/schema/Category");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var CategoryRepository = /** @class */ (function (_super) {
     __extends(CategoryRepository, _super);
     function CategoryRepository() {
-        return _super.call(this, Category_1.default) || this;
+        var _this = _super.call(this, Category_1.CategorySchema) || this;
+        _this._categoryModel = Category_1.CategorySchema;
+        return _this;
     }
+    CategoryRepository.prototype.findByName = function (name) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._categoryModel.findOne({ name: name }, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     return CategoryRepository;
 }(RepositoryBase_1.default));
 Object.seal(CategoryRepository);

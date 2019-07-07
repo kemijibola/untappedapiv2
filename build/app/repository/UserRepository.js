@@ -15,13 +15,13 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var User_1 = __importDefault(require("../data/schema/User"));
+var User_1 = require("../data/schema/User");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var UserRepository = /** @class */ (function (_super) {
     __extends(UserRepository, _super);
     function UserRepository() {
-        var _this = _super.call(this, User_1.default) || this;
-        _this._userModel = User_1.default;
+        var _this = _super.call(this, User_1.UserSchema) || this;
+        _this._userModel = User_1.UserSchema;
         return _this;
     }
     UserRepository.prototype.findByEmail = function (email) {

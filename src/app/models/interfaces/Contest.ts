@@ -4,6 +4,7 @@ import { IPrizeType } from './PrizeType';
 import { IEvaluation } from './Evaluation';
 import { IUser } from './User';
 import { ITimeStamp } from './Timestamp';
+import { ContestType } from '../../data/schema/Contest';
 
 export interface IRedeemable {
   prizeType: IPrizeType;
@@ -28,5 +29,6 @@ export interface IContest extends IOffline, ITimeStamp, mongoose.Document {
   duration: number;
   redeemable: IRedeemable;
   endDate: Date;
+  contestType: ContestType;
   createdBy: IUser;
 }

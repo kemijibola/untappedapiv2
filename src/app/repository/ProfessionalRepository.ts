@@ -1,5 +1,5 @@
 import { IProfessional } from '../models/interfaces';
-import ProfessionalSchema from '../data/schema/Professional';
+import { ProfessionalSchema } from '../data/schema/Professional';
 import RepositoryBase from './base/RepositoryBase';
 
 class ProfessionalRepository extends RepositoryBase<IProfessional> {

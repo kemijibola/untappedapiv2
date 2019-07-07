@@ -9,7 +9,6 @@ function requestValidators() {
     }
     return function (target, key, desc) {
         Reflect.defineMetadata(MetadataKeys_1.MetadataKeys.validator, keys, target, key);
-        // Reflect.defineMetadata(MetadataKeys.requesttype, requestType, target, key);
     };
 }
 exports.requestValidators = requestValidators;

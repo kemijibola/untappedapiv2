@@ -26,4 +26,5 @@ var AWS = /** @class */ (function (_super) {
     return AWS;
 }(Model_1.Model));
 exports.AWS = AWS;
+AWS.setUpCloud();
 //# sourceMappingURL=CloudService.js.map

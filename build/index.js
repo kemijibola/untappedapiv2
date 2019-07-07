@@ -8,20 +8,14 @@ var body_parser_1 = __importDefault(require("body-parser"));
 var AppRouter_1 = require("./AppRouter");
 require("./controllers/AccountController");
 var config = module.require('./config/keys');
+var ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 var app = express_1.default();
+app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(AppRouter_1.AppRouter.getInstance);
-// app.use(function(req: Request, res: Response, next: NextFunction) {
-//   console.log('hit');
-// });
-// app.use(function(
-//   error: ApiResponse<null>,
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   errorHandler(error, req, res, next);
-// });
+app.use(function (error, req, res, next) {
+    ErrorMiddleware_1.errorHandler(error, req, res, next);
+});
 var port = config.PORT || 5000;
 app.set('port', port);
 app.listen(port, function () {

@@ -1,22 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess = require("../MongodataAccess");
 var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
-var CountrySchema = /** @class */ (function () {
-    function CountrySchema() {
-    }
-    Object.defineProperty(CountrySchema, "schema", {
-        get: function () {
-            var schema = new mongoose_1.Schema({
-                name: { type: String, required: true }
-            }, { timestamps: true });
-            return schema;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return CountrySchema;
-}());
-var schema = mongooseConnection.model('Country', CountrySchema.schema);
-module.exports = schema;
+var countrySchema = new mongoose_1.Schema({
+    name: { type: String, required: true }
+}, { timestamps: true });
+exports.CountrySchema = mongooseConnection.model('Country', countrySchema);
 //# sourceMappingURL=Country.js.map

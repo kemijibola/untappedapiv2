@@ -18,14 +18,14 @@ var ci = __importStar(require("./ci.json"));
 var environment = process.env.NODE_ENV || '';
 var envs = {
     PORT: 0,
-    RSA_PUBLIC_KEY: {},
+    RSA_PUBLIC_KEYS: {},
     DATABASE_HOST: '',
     DATABASE_NAME: '',
     DATABASE_PASSWORD: '',
     DATABASE_USER: '',
     REDIS_HOST: '',
     REDIS_PORT: 0,
-    RSA_PRIVATE_KEY: {},
+    RSA_PRIVATE_KEYS: {},
     RSA_KEYID: '',
     RSA_ALG_TYPE: '',
     ISSUER: '',

@@ -35,5 +35,4 @@ var AwsStorage = /** @class */ (function () {
     AwsStorage.prototype.putObject = function (params) { };
     return AwsStorage;
 }());
-exports.AwsStorage = AwsStorage;
 //# sourceMappingURL=AwsStorage.js.map

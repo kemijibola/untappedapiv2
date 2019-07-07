@@ -15,13 +15,13 @@ var __extends = (this && this.__extends) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var ResourcePermission_1 = __importDefault(require("../data/schema/ResourcePermission"));
+var ResourcePermission_1 = require("../data/schema/ResourcePermission");
 var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var ResourcePermissionRepository = /** @class */ (function (_super) {
     __extends(ResourcePermissionRepository, _super);
     function ResourcePermissionRepository() {
-        var _this = _super.call(this, ResourcePermission_1.default) || this;
-        _this.resourcePermissionModel = ResourcePermission_1.default;
+        var _this = _super.call(this, ResourcePermission_1.ResourcePermissionSchema) || this;
+        _this.resourcePermissionModel = ResourcePermission_1.ResourcePermissionSchema;
         return _this;
     }
     ResourcePermissionRepository.prototype.findPermissionsByRole = function (role, resource) {
@@ -31,7 +31,8 @@ var ResourcePermissionRepository = /** @class */ (function (_super) {
                 .findOne({
                 role: role,
                 resource: resource
-            }, function (error, result) {
+            }, 'permissions', function (error, result) {
+                console.log(error);
                 if (error)
                     reject(error);
                 else

@@ -37,47 +37,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess_1 = __importDefault(require("../MongodataAccess"));
+var mongoose_1 = require("mongoose");
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess_1.default.mongooseConnection;
-var UserSchema = /** @class */ (function () {
-    function UserSchema() {
-    }
-    Object.defineProperty(UserSchema, "schema", {
-        get: function () {
-            var userAccountStatusSchema = new mongoose_1.Schema({
-                status: { type: String },
-                updatedAt: { type: Date }
-            });
-            var schema = new mongoose_1.Schema({
-                email: { type: String, required: true, unique: true },
-                name: { type: String, required: true },
-                password: { type: String, required: true },
-                isEmailConfirmed: { type: Boolean, default: false },
-                isPhoneConfirmed: { type: Boolean, default: false },
-                isProfileCompleted: { type: Boolean, default: false },
-                generalNotification: { type: Boolean, default: true },
-                emailNotification: { type: Boolean, default: true },
-                profileVisibility: { type: Boolean, default: false },
-                loginCount: { type: Number, default: 0 },
-                status: userAccountStatusSchema,
-                roles: {
-                    type: mongoose_1.Schema.Types.ObjectId,
-                    ref: 'Role',
-                    required: true
-                },
-                lastLogin: { type: Date }
-            }, { timestamps: true });
-            return schema;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return UserSchema;
-}());
-UserSchema.schema.methods.comparePassword = function (candidatePassword) {
+var userAccountStatusSchema = new mongoose_1.Schema({
+    status: { type: String },
+    updatedAt: { type: Date }
+});
+var userSchema = new mongoose_1.Schema({
+    email: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    password: { type: String, required: true },
+    isEmailConfirmed: { type: Boolean, default: false },
+    isPhoneConfirmed: { type: Boolean, default: false },
+    isProfileCompleted: { type: Boolean, default: false },
+    generalNotification: { type: Boolean, default: true },
+    emailNotification: { type: Boolean, default: true },
+    profileVisibility: { type: Boolean, default: false },
+    loginCount: { type: Number, default: 0 },
+    status: userAccountStatusSchema,
+    roles: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Role',
+            required: true
+        }
+    ],
+    lastLogin: { type: Date }
+}, { timestamps: true });
+userSchema.methods.comparePassword = function (candidatePassword) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -87,26 +78,27 @@ UserSchema.schema.methods.comparePassword = function (candidatePassword) {
         });
     });
 };
-UserSchema.schema.methods.generateToken = function (privateKey, signOptions, payload) {
+userSchema.methods.generateToken = function (privateKey, signOptions, payload) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     /*  extra data to be sent back to user is an object = { scopes: [], user_type: ''}
-                     **   and any extra  information the system might need
+                     **   and any extra information the system might need
                      */
-                    signOptions.subject = this._id;
+                    signOptions.subject = this._id.toString();
                     return [4 /*yield*/, jsonwebtoken_1.default.sign(payload, privateKey, signOptions)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });
     });
 };
-// UserSchema.schema.pre<IUserModel>('save', function(next: any) {
-//   console.log('pre-saving hook called');
-//   const user = this;
-//   console.log(user.name);
-// });
-var schema = mongooseConnection.model('User', UserSchema.schema);
-module.exports = schema;
+userSchema.pre('save', function (next) {
+    var now = new Date();
+    if (!this.createdAt) {
+        this.createdAt = now;
+    }
+    next();
+});
+exports.UserSchema = mongooseConnection.model('User', userSchema);
 //# sourceMappingURL=User.js.map

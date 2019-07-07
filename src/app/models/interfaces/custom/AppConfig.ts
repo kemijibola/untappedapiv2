@@ -7,8 +7,8 @@ export interface AppConfig {
   PORT: number;
   REDIS_HOST: string;
   REDIS_PORT: number;
-  RSA_PUBLIC_KEY: {[x: string]: string};
-  RSA_PRIVATE_KEY: {[x: string]: string};
+  RSA_PUBLIC_KEYS: { [x: string]: string };
+  RSA_PRIVATE_KEYS: { [x: string]: string };
   RSA_KEYID: string;
   RSA_ALG_TYPE: string;
   DATABASE_HOST: string;
