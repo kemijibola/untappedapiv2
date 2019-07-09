@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import { InternalServerError, InvalidContent } from '../utils/error';
 import { IEvaluation } from '../app/models/interfaces';
 
 @controller('/evaluation')
-class EvaluationController implements IBaseControler {
+class EvaluationController implements IBaseController {
   @post('/')
   @requestValidators('name')
   async create(req: Request, res: Response, next: NextFunction) {

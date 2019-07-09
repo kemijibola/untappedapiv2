@@ -18,13 +18,13 @@ const talentSchema: Schema = new Schema(
   {
     stageName: { type: String, required: true },
     location: { type: String, required: true },
-    phoneNumber: { type: String },
+    phoneNumbers: [{ type: String, required: true }],
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
-    shortBio: { type: String },
+    shortBio: { type: String, required: true, maxlength: 300 },
     categories: [
       {
         type: Schema.Types.ObjectId,

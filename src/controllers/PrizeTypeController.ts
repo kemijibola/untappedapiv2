@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import PrizeTypeRepository = require('../app/repository/PrizeTypeRepository');
 import { IPrizeType } from '../app/models/interfaces';
 import { RecordExists, InternalServerError } from '../utils/error';
 
 @controller('./prize-types')
-class PrizeTypeController implements IBaseControler {
+class PrizeTypeController implements IBaseController {
   @post('/')
   @requestValidators('name')
   async create(req: Request, res: Response, next: NextFunction) {

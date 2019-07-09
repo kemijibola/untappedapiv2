@@ -16,13 +16,13 @@ var physicalStatisticsSchema = new mongoose_1.Schema({
 var talentSchema = new mongoose_1.Schema({
     stageName: { type: String, required: true },
     location: { type: String, required: true },
-    phoneNumber: { type: String },
+    phoneNumbers: [{ type: String, required: true }],
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    shortBio: { type: String },
+    shortBio: { type: String, required: true, maxlength: 300 },
     categories: [
         {
             type: mongoose_1.Schema.Types.ObjectId,

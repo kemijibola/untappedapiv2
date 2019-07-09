@@ -100,7 +100,7 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
     ContestEntryController = __decorate([
-        decorators_1.controller('/contest-entry')
+        decorators_1.controller('/contest-entries')
     ], ContestEntryController);
     return ContestEntryController;
 }());

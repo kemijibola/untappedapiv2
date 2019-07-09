@@ -1,8 +1,8 @@
 import mongoose = require('mongoose');
 import IRead from '../interface/base/Read';
 import IWrite from '../interface/base/Write';
-import { reject } from 'async';
-import { resolve } from 'path';
+import redis from 'redis';
+import util from 'util';
 
 class RepositoryBase<T extends mongoose.Document>
   implements IRead<T>, IWrite<T> {
@@ -22,9 +22,9 @@ class RepositoryBase<T extends mongoose.Document>
   }
 
   fetch(): Promise<any> {
-    return new Promise(() => {
+    return new Promise((resolve, reject) => {
       this._model.find({}, (error: any, result: any) => {
-        if (error) reject(error, error);
+        if (error) reject(error);
         else resolve(result);
       });
     });
@@ -41,16 +41,18 @@ class RepositoryBase<T extends mongoose.Document>
 
   delete(_id: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this._model.remove({ _id: this.toObjectId(_id) }, err => {
-        if (err) reject(err);
-        else resolve(true);
-      });
+      this._model
+        .remove({ _id: this.toObjectId(_id) }, err => {
+          if (err) reject(err);
+          else resolve(true);
+        })
+        .cache({ collectionName: this._model.collection.name });
     });
   }
 
   findById(_id: string): Promise<T> {
     return new Promise((resolve, reject) => {
-      this._model.findById(_id, (error: any, result: T) => {
+      const run = this._model.findById(_id, (error: any, result: T) => {
         if (error) reject(error);
         else resolve(result);
       });
@@ -68,6 +70,12 @@ class RepositoryBase<T extends mongoose.Document>
 
   private toObjectId(_id: string): mongoose.Types.ObjectId {
     return mongoose.Types.ObjectId.createFromHexString(_id);
+  }
+
+  private cacheKey(query: any, collectionName: string): string {
+    return JSON.stringify(
+      Object.assign({}, query, { collection: collectionName })
+    );
   }
 }
 

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import { InternalServerError } from '../utils/error';
 import { IContestEntry } from '../app/models/interfaces';
-import ContestEntryEpository = require('../app/repository/ContestEntryEpository');
+import ContestEntryEpository = require('../app/repository/ContestEntryRepository');
 import {
   SqsScheduler,
   SqsSendMessage,
@@ -11,7 +11,7 @@ import {
 } from '../utils/schedule/SqsScheduler';
 
 @controller('/contest-entries')
-class ContestEntryController implements IBaseControler {
+class ContestEntryController implements IBaseController {
   @post('/')
   @requestValidators('contest', 'submissionPath')
   async create(req: Request, res: Response, next: NextFunction) {

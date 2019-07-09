@@ -22,6 +22,7 @@
   "dependencies": {
     "@types/async": "^3.0.0",
     "@types/bcrypt": "^3.0.0",
+    "@types/bluebird": "^3.5.27",
     "@types/body-parser": "^1.17.0",
     "@types/config": "0.0.34",
     "@types/dotenv": "^6.1.1",
@@ -45,7 +46,9 @@
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.0",
     "nodemon": "^1.19.1",
+    "redis": "^2.8.0",
     "reflect-metadata": "^0.1.13",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "util": "^0.12.1"
   }
 }

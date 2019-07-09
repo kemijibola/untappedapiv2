@@ -20,21 +20,8 @@ var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var CountryRepository = /** @class */ (function (_super) {
     __extends(CountryRepository, _super);
     function CountryRepository() {
-        var _this = _super.call(this, Country_1.CountrySchema) || this;
-        _this._countryModel = Country_1.CountrySchema;
-        return _this;
+        return _super.call(this, Country_1.CountrySchema) || this;
     }
-    CountryRepository.prototype.findByName = function (name) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this._countryModel.findOne({ name: name }, function (error, result) {
-                if (error)
-                    reject(error);
-                else
-                    resolve(result);
-            });
-        });
-    };
     return CountryRepository;
 }(RepositoryBase_1.default));
 Object.seal(CountryRepository);

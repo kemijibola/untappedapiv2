@@ -20,21 +20,8 @@ var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var PermissionRepository = /** @class */ (function (_super) {
     __extends(PermissionRepository, _super);
     function PermissionRepository() {
-        var _this = _super.call(this, Permission_1.PermissionSchema) || this;
-        _this._permissionModel = Permission_1.PermissionSchema;
-        return _this;
+        return _super.call(this, Permission_1.PermissionSchema) || this;
     }
-    PermissionRepository.prototype.findByName = function (name) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this._permissionModel.findOne({ name: name }, function (error, result) {
-                if (error)
-                    reject(error);
-                else
-                    resolve(result);
-            });
-        });
-    };
     return PermissionRepository;
 }(RepositoryBase_1.default));
 Object.seal(PermissionRepository);

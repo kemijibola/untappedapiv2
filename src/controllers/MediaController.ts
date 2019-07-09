@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import AudioRepository = require('../app/repository/AudioRepository');
 import VideoRepository = require('../app/repository/VideoRepository');
 import ImageRepository = require('../app/repository/ImageRepository');
@@ -17,7 +17,7 @@ import {
 } from '../utils/lib';
 
 @controller('./medias')
-class MediaController implements IBaseControler {
+class MediaController implements IBaseController {
   @post('/')
   @requestValidators('title', 'items')
   async create(req: Request, res: Response, next: NextFunction) {

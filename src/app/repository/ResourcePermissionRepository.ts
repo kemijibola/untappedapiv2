@@ -14,7 +14,7 @@ class ResourcePermissionRepository extends RepositoryBase<IResourcePermission> {
     role: string,
     resource: string
   ): Promise<IResourcePermission> {
-    const promise = new Promise<IResourcePermission>((resolve, reject) => {
+    return new Promise<IResourcePermission>((resolve, reject) => {
       this.resourcePermissionModel
         .findOne(
           {
@@ -30,7 +30,6 @@ class ResourcePermissionRepository extends RepositoryBase<IResourcePermission> {
         )
         .populate('permissions');
     });
-    return promise;
   }
 }
 

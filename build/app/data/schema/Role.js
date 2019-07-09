@@ -9,11 +9,6 @@ var roleSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
-    userType: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'UserType',
-        required: true
-    },
     roleType: {
         type: interfaces_1.RoleType,
         required: true

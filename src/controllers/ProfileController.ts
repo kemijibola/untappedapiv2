@@ -1,0 +1,56 @@
+import { Request, Response, NextFunction } from 'express';
+import { controller, post, requestValidators } from '../decorators';
+import IBaseController from './interfaces/base/BaseController';
+import TalentRepository = require('../app/repository/TalentRepository');
+import ProfessionalRepository = require('../app/repository/ProfessionalRepository');
+import UserTypeRepository = require('../app/repository/UserTypeRepository');
+import UserRepository = require('../app/repository/UserRepository');
+import CategoryRepository = require('../app/repository/CategoryRepository');
+import { ITalent, IProfessional } from '../app/models/interfaces';
+import { RecordNotFound, InternalServerError } from '../utils/error';
+import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
+import { IProfile } from '../app/models/interfaces/custom/Profile';
+import { UserTypes } from '../app/models/interfaces/custom/GlobalEnum';
+
+@controller('./profile')
+class ProfileController implements IBaseController {
+  @post('/')
+  @requestValidators('phoneNumbers', 'location', 'categories')
+  async create(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const userId: string = req.user;
+      const userType: string = await new UserRepository().userTypeByUser(
+        userId
+      );
+      if (!userType)
+        return next(
+          new RecordNotFound(`User with id ${userId} not found`, 404)
+        );
+      // validate categories sent by user
+      const profile: IProfile = req.body;
+      for (let item of profile.categories) {
+        const categoryModel = await new CategoryRepository().findById(item._id);
+        if (!categoryModel)
+          return next(
+            new RecordNotFound(`Invalid category of id ${item}`, 404)
+          );
+      }
+
+      switch (userType) {
+        case UserTypes.TALENT:
+          const talentModel
+          break;
+        case UserTypes.PROFESSIONAL:
+          break;
+        default:
+          break;
+      }
+    } catch (err) {
+      next(new InternalServerError('Internal Server error occured', 500));
+    }
+  }
+  update(): void {}
+  delete(): void {}
+  fetch(): void {}
+  findById(): void {}
+}

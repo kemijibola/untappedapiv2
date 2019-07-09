@@ -11,7 +11,6 @@ const socialMediaSchema: Schema = new Schema({
 const professionalSchema: Schema = new Schema(
   {
     businessName: { type: String, required: true },
-    name: { type: String, required: true },
     officialAddress: { type: String, required: true },
     rcNumber: { type: String },
     phoneNumbers: [{ type: Number, required: true }],

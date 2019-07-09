@@ -26,7 +26,7 @@ var ResourcePermissionRepository = /** @class */ (function (_super) {
     }
     ResourcePermissionRepository.prototype.findPermissionsByRole = function (role, resource) {
         var _this = this;
-        var promise = new Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             _this.resourcePermissionModel
                 .findOne({
                 role: role,
@@ -40,7 +40,6 @@ var ResourcePermissionRepository = /** @class */ (function (_super) {
             })
                 .populate('permissions');
         });
-        return promise;
     };
     return ResourcePermissionRepository;
 }(RepositoryBase_1.default));

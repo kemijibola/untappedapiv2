@@ -21,20 +21,21 @@ var UserRepository = /** @class */ (function (_super) {
     __extends(UserRepository, _super);
     function UserRepository() {
         var _this = _super.call(this, User_1.UserSchema) || this;
-        _this._userModel = User_1.UserSchema;
+        _this.userModel = User_1.UserSchema;
         return _this;
     }
-    UserRepository.prototype.findByEmail = function (email) {
+    UserRepository.prototype.userTypeByUser = function (user) {
         var _this = this;
-        var promise = new Promise(function (resolve, reject) {
-            _this._userModel.findOne({ email: email }, function (error, result) {
+        return new Promise(function (resolve, reject) {
+            _this.userModel
+                .findById(user)
+                .populate('userType', 'name', function (error, result) {
                 if (error)
                     reject(error);
                 else
                     resolve(result);
             });
         });
-        return promise;
     };
     return UserRepository;
 }(RepositoryBase_1.default));

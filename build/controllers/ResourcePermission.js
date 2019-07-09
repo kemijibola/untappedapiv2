@@ -25,7 +25,7 @@ var ResourcePermission = /** @class */ (function () {
         __metadata("design:returntype", void 0)
     ], ResourcePermission.prototype, "create", null);
     ResourcePermission = __decorate([
-        decorators_1.controller('/resource-permission')
+        decorators_1.controller('/resource-permissions')
     ], ResourcePermission);
     return ResourcePermission;
 }());

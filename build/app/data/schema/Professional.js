@@ -9,7 +9,6 @@ var socialMediaSchema = new mongoose_1.Schema({
 });
 var professionalSchema = new mongoose_1.Schema({
     businessName: { type: String, required: true },
-    name: { type: String, required: true },
     officialAddress: { type: String, required: true },
     rcNumber: { type: String },
     phoneNumbers: [{ type: Number, required: true }],

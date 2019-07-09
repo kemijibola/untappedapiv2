@@ -20,21 +20,8 @@ var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var CategoryRepository = /** @class */ (function (_super) {
     __extends(CategoryRepository, _super);
     function CategoryRepository() {
-        var _this = _super.call(this, Category_1.CategorySchema) || this;
-        _this._categoryModel = Category_1.CategorySchema;
-        return _this;
+        return _super.call(this, Category_1.CategorySchema) || this;
     }
-    CategoryRepository.prototype.findByName = function (name) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this._categoryModel.findOne({ name: name }, function (error, result) {
-                if (error)
-                    reject(error);
-                else
-                    resolve(result);
-            });
-        });
-    };
     return CategoryRepository;
 }(RepositoryBase_1.default));
 Object.seal(CategoryRepository);

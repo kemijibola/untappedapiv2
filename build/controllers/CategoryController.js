@@ -60,7 +60,9 @@ var CategoryController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, new CategoryRepository().findByName(item.name.toLowerCase())];
+                        return [4 /*yield*/, new CategoryRepository().findByCriteria({
+                                name: item.name.toLowerCase()
+                            })];
                     case 2:
                         categoryModel = _a.sent();
                         if (categoryModel)
@@ -93,7 +95,7 @@ var CategoryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CategoryController.prototype, "create", null);
     CategoryController = __decorate([
-        decorators_1.controller('/category')
+        decorators_1.controller('/categories')
     ], CategoryController);
     return CategoryController;
 }());

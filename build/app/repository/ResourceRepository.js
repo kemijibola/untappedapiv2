@@ -20,22 +20,8 @@ var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var ResourceRepository = /** @class */ (function (_super) {
     __extends(ResourceRepository, _super);
     function ResourceRepository() {
-        var _this = _super.call(this, Resource_1.ResourceSchema) || this;
-        _this.resourceModel = Resource_1.ResourceSchema;
-        return _this;
+        return _super.call(this, Resource_1.ResourceSchema) || this;
     }
-    ResourceRepository.prototype.findByName = function (name) {
-        var _this = this;
-        var promise = new Promise(function (resolve, reject) {
-            _this.resourceModel.findOne({ name: name }, function (error, result) {
-                if (error)
-                    reject(error);
-                else
-                    resolve(result);
-            });
-        });
-        return promise;
-    };
     return ResourceRepository;
 }(RepositoryBase_1.default));
 Object.seal(ResourceRepository);

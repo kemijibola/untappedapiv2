@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { ITimeStamp } from './Timestamp';
 import { IRole } from './Role';
 import { SignInOptions } from './custom/Global';
+import { IUserType } from './UserType';
 
 enum AccountStatus {
   ACTIVATED = 'ACTIVATED',
@@ -26,6 +27,7 @@ export interface IUser extends ITimeStamp, mongoose.Document {
   loginCount: number;
   status: IUserAccountStatus;
   roles: IRole[];
+  userType: IUserType;
   lastLogin: Date;
 }
 

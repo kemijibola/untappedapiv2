@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import ApprovalRepository = require('../app/repository/ApprovalRepository');
 import { IApproval } from '../app/models/interfaces';
 import { RecordExists, InternalServerError } from '../utils/error';
 
 @controller('./approvals')
-class ApprovalController implements IBaseControler {
+class ApprovalController implements IBaseController {
   @post('/')
   @requestValidators('entity', 'operation', 'approved')
   async create(req: Request, res: Response, next: NextFunction) {

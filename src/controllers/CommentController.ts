@@ -1,12 +1,12 @@
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import { Request, Response, NextFunction } from 'express';
 import { IComment } from '../app/models/interfaces';
 import { RecordExists, InternalServerError } from '../utils/error';
 import CommentRepository = require('../app/repository/CommentRepository');
 
 @controller('/comments')
-class CommentController implements IBaseControler {
+class CommentController implements IBaseController {
   @post('/')
   @requestValidators('entityId')
   async create(req: Request, res: Response, next: NextFunction) {

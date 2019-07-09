@@ -4,7 +4,7 @@ import { AppRouter } from './AppRouter';
 import './controllers/AccountController';
 import { AppConfig } from './app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('./config/keys');
-import { ApiResponse } from './app/models/interfaces/custom/ApiResponse';
+module.require('./utils/Cache');
 import { errorHandler } from './middlewares/ErrorMiddleware';
 import { IError } from './utils/error/GlobalError';
 

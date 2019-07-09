@@ -9,11 +9,6 @@ const roleSchema: Schema = new Schema(
       type: String,
       required: true
     },
-    userType: {
-      type: Schema.Types.ObjectId,
-      ref: 'UserType',
-      required: true
-    },
     roleType: {
       type: RoleType,
       required: true

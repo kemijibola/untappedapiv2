@@ -19,7 +19,7 @@ import { SignInOptions } from '../app/models/interfaces/custom/Global';
 import { AppConfig } from '../app/models/interfaces/custom/AppConfig';
 import { TokenType } from '../app/models/interfaces/custom/GlobalEnum';
 const config: AppConfig = require('../config/keys');
-import IBaseControler from './interfaces/base/BaseController';
+import BaseController from './interfaces/base/BaseController';
 import RoleRepository = require('../app/repository/RoleRepository');
 
 function logger(req: Request, res: Response, next: NextFunction) {
@@ -28,7 +28,7 @@ function logger(req: Request, res: Response, next: NextFunction) {
 }
 
 @controller('/account')
-class AuthController implements IBaseControler {
+class AuthController implements BaseController {
   @post('/login')
   async postLogin(req: Request, res: Response, next: NextFunction) {
     try {

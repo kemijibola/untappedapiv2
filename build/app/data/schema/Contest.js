@@ -34,7 +34,7 @@ var contestSchema = new mongoose_1.Schema({
     maxContestant: { type: Number },
     grandFinaleDate: { type: Date },
     grandFinaleLocation: { type: String },
-    evaluations: [evaluationSchema],
+    evaluations: [{ type: String }],
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, required: true }
 }, { timestamps: true });
 exports.ContestSchema = mongooseConnection.model('Contest', contestSchema);

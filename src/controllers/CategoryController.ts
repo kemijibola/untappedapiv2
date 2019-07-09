@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import CategoryRepository = require('../app/repository/CategoryRepository');
 import { ICategory } from '../app/models/interfaces';
 import { RecordExists, InternalServerError } from '../utils/error';
 
 @controller('/categories')
-class CategoryController implements IBaseControler {
+class CategoryController implements IBaseController {
   @post('/')
   @requestValidators('name')
   async create(req: Request, res: Response, next: NextFunction) {

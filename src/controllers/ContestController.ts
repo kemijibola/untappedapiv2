@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import { InternalServerError, InvalidContent } from '../utils/error';
 import { IContest } from '../app/models/interfaces';
 import { ContestType } from '../app/data/schema/Contest';
@@ -8,7 +8,7 @@ import { addDays, isAfter } from 'date-fns';
 import ContestRepository = require('../app/repository/ContestRepository');
 
 @controller('/contests')
-class ContestController implements IBaseControler {
+class ContestController implements IBaseController {
   @post('/')
   @requestValidators(
     'title',

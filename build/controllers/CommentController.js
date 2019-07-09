@@ -78,7 +78,7 @@ var CommentController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CommentController.prototype, "create", null);
     CommentController = __decorate([
-        decorators_1.controller('/comment')
+        decorators_1.controller('/comments')
     ], CommentController);
     return CommentController;
 }());

@@ -53,7 +53,9 @@ function tokenExchange(exchangeParams) {
                 case 0:
                     resourceRepository = new ResourceRepository_1.default();
                     resourcePermissionRepository = new ResourcePermissionRepository();
-                    return [4 /*yield*/, resourceRepository.findByName(exchangeParams.destinationUrl)];
+                    return [4 /*yield*/, resourceRepository.findByCriteria({
+                            name: exchangeParams.destinationUrl
+                        })];
                 case 1:
                     resourceModel = _b.sent();
                     console.log(resourceModel);

@@ -60,7 +60,9 @@ var CountryController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, new CountryRepository().findByName(item.name.toLowerCase())];
+                        return [4 /*yield*/, new CountryRepository().findByCriteria({
+                                name: item.name.toLowerCase()
+                            })];
                     case 2:
                         countryModel = _a.sent();
                         if (countryModel)
@@ -93,7 +95,7 @@ var CountryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CountryController.prototype, "create", null);
     CountryController = __decorate([
-        decorators_1.controller('/country')
+        decorators_1.controller('/countries')
     ], CountryController);
     return CountryController;
 }());

@@ -67,7 +67,9 @@ var AuthController = /** @class */ (function () {
                     case 0:
                         _b.trys.push([0, 4, , 5]);
                         _a = req.body, email = _a.email, password = _a.password, audience = _a.audience;
-                        return [4 /*yield*/, new UserRepository_1.default().findByEmail(email.toLowerCase())];
+                        return [4 /*yield*/, new UserRepository_1.default().findByCriteria({
+                                email: email.toLowerCase()
+                            })];
                     case 1:
                         userModel = _b.sent();
                         if (!userModel)

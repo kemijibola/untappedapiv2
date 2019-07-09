@@ -66,6 +66,11 @@ var userSchema = new mongoose_1.Schema({
             required: true
         }
     ],
+    userType: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'UserType',
+        required: true
+    },
     lastLogin: { type: Date }
 }, { timestamps: true });
 userSchema.methods.comparePassword = function (candidatePassword) {

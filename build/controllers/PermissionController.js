@@ -60,7 +60,9 @@ var PermissionController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, new PermissionRepository().findByName(item.name.toLowerCase())];
+                        return [4 /*yield*/, new PermissionRepository().findByCriteria({
+                                name: item.name.toLowerCase()
+                            })];
                     case 2:
                         permissionModel = _a.sent();
                         if (permissionModel)
@@ -93,7 +95,7 @@ var PermissionController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], PermissionController.prototype, "create", null);
     PermissionController = __decorate([
-        decorators_1.controller('/country')
+        decorators_1.controller('/permissions')
     ], PermissionController);
     return PermissionController;
 }());
