@@ -46,7 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
-var ContestEntryEpository = require("../app/repository/ContestEntryEpository");
+var ContestEntryEpository = require("../app/repository/ContestEntryRepository");
 var SqsScheduler_1 = require("../utils/schedule/SqsScheduler");
 var ContestEntryController = /** @class */ (function () {
     function ContestEntryController() {

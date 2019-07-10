@@ -19,8 +19,9 @@ import { SignInOptions } from '../app/models/interfaces/custom/Global';
 import { AppConfig } from '../app/models/interfaces/custom/AppConfig';
 import { TokenType } from '../app/models/interfaces/custom/GlobalEnum';
 const config: AppConfig = require('../config/keys');
-import BaseController from './interfaces/base/BaseController';
+import IBaseController from './interfaces/base/BaseController';
 import RoleRepository = require('../app/repository/RoleRepository');
+import UserBusiness from '../app/business/UserBusiness';
 
 function logger(req: Request, res: Response, next: NextFunction) {
   console.log('Request was made');
@@ -28,7 +29,7 @@ function logger(req: Request, res: Response, next: NextFunction) {
 }
 
 @controller('/account')
-class AuthController implements BaseController {
+class AuthController {
   @post('/login')
   async postLogin(req: Request, res: Response, next: NextFunction) {
     try {
@@ -89,7 +90,7 @@ class AuthController implements BaseController {
       );
     }
   }
-  create(req: Request, res: Response, next: NextFunction): void {}
+  create(req: Request, res: Response, next: NextFunction) {}
   update(): void {}
   delete(): void {}
   fetch(): void {}

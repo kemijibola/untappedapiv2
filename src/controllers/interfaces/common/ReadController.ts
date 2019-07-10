@@ -1,7 +1,7 @@
-import { RequestHandler } from 'express';
+import express = require('express');
 
 interface ReadController {
-  fetch: RequestHandler;
-  findById: RequestHandler;
+  fetch: express.RequestHandler;
+  findById: express.RequestHandler;
 }
 export = ReadController;

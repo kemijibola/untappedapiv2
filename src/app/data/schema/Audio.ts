@@ -1,7 +1,7 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IMedia } from '../../models/interfaces/Media';
+import { IAudio } from '../../models/interfaces/Media';
 
 const audioItemSchema = new Schema({
   type: { path: String, required: true },
@@ -15,7 +15,7 @@ const audioSchema = new Schema({
   items: [audioItemSchema]
 });
 
-export const AudioSchema = mongooseConnection.model<IMedia>(
+export const AudioSchema = mongooseConnection.model<IAudio>(
   'Audio',
   audioSchema
 );

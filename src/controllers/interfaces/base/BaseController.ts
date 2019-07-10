@@ -1,7 +1,7 @@
 import IReadController from './../common/ReadController';
 import IWriteController from './../common/WriteController';
-import { ApiResponse } from '../../../app/models/interfaces/custom/ApiResponse';
+import IBaseBusiness from '../../../app/business/interfaces/base/BaseBusiness';
 
-interface IBaseController extends IReadController, IWriteController {}
+interface BaseController extends IReadController, IWriteController {}
 
-export = IBaseController;
+export = BaseController;

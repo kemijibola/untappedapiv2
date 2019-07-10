@@ -10,11 +10,11 @@ class UserRepository extends RepositoryBase<IUserModel> {
     this.userModel = UserSchema;
   }
 
-  userTypeByUser(user: string): Promise<string> {
+  userTypeByUser(user: string): Promise<IUserModel> {
     return new Promise((resolve, reject) => {
       this.userModel
         .findById(user)
-        .populate('userType', 'name', (error: any, result: string) => {
+        .populate('userType', 'name', (error: any, result: IUserModel) => {
           if (error) reject(error);
           else resolve(result);
         });

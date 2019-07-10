@@ -1,8 +1,8 @@
-import { RequestHandler } from 'express';
+import express = require('express');
 
 interface WriteController {
-  create: RequestHandler;
-  update: RequestHandler;
-  delete: RequestHandler;
+  create: express.RequestHandler;
+  update: express.RequestHandler;
+  delete: express.RequestHandler;
 }
 export = WriteController;

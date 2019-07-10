@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { controller, post, requestValidators } from '../decorators';
+import { controller, post, patch, requestValidators } from '../decorators';
 import IBaseController from './interfaces/base/BaseController';
 import TalentRepository = require('../app/repository/TalentRepository');
 import ProfessionalRepository = require('../app/repository/ProfessionalRepository');
 import UserTypeRepository = require('../app/repository/UserTypeRepository');
 import UserRepository = require('../app/repository/UserRepository');
 import CategoryRepository = require('../app/repository/CategoryRepository');
-import { ITalent, IProfessional } from '../app/models/interfaces';
+import { ITalent, IProfessional, IUserModel } from '../app/models/interfaces';
 import { RecordNotFound, InternalServerError } from '../utils/error';
 import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
 import { IProfile } from '../app/models/interfaces/custom/Profile';
@@ -19,10 +19,10 @@ class ProfileController implements IBaseController {
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const userId: string = req.user;
-      const userType: string = await new UserRepository().userTypeByUser(
+      const userModel: IUserModel = await new UserRepository().userTypeByUser(
         userId
       );
-      if (!userType)
+      if (!userModel.userType.name)
         return next(
           new RecordNotFound(`User with id ${userId} not found`, 404)
         );
@@ -36,19 +36,19 @@ class ProfileController implements IBaseController {
           );
       }
 
-      switch (userType) {
-        case UserTypes.TALENT:
-          const talentModel
-          break;
-        case UserTypes.PROFESSIONAL:
-          break;
-        default:
-          break;
-      }
+      // switch (userModel.userType.name) {
+      //   case UserTypes.TALENT:
+      //     const talentModel = await new TalentRepository().break;
+      //   case UserTypes.PROFESSIONAL:
+      //     break;
+      //   default:
+      //     break;
+      // }
     } catch (err) {
       next(new InternalServerError('Internal Server error occured', 500));
     }
   }
+
   update(): void {}
   delete(): void {}
   fetch(): void {}

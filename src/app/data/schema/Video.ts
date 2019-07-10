@@ -1,7 +1,7 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IMedia } from '../../models/interfaces/Media';
+import { IVideo } from '../../models/interfaces/Media';
 
 const videoItemSchema = new Schema({
   type: { path: String, required: true },
@@ -15,7 +15,7 @@ const videoSchema = new Schema({
   items: [videoItemSchema]
 });
 
-export const VideoSchema = mongooseConnection.model<IMedia>(
+export const VideoSchema = mongooseConnection.model<IVideo>(
   'Video',
   videoSchema
 );

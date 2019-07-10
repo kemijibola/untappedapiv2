@@ -5,4 +5,10 @@ var TokenType;
     TokenType["MAIL"] = "MAIL";
     TokenType["AUTH"] = "AUTH";
 })(TokenType = exports.TokenType || (exports.TokenType = {}));
+var UserTypes;
+(function (UserTypes) {
+    UserTypes["TALENT"] = "TALENT";
+    UserTypes["PROFESSIONAL"] = "PROFESSIONAL";
+    UserTypes["AUDIENCE"] = "AUDIENCE";
+})(UserTypes = exports.UserTypes || (exports.UserTypes = {}));
 //# sourceMappingURL=GlobalEnum.js.map

@@ -74,10 +74,10 @@ var ApprovalController = /** @class */ (function () {
             });
         });
     };
-    ApprovalController.prototype.update = function () { };
-    ApprovalController.prototype.delete = function () { };
-    ApprovalController.prototype.fetch = function () { };
-    ApprovalController.prototype.findById = function () { };
+    ApprovalController.prototype.update = function (req, res, next) { };
+    ApprovalController.prototype.delete = function (req, res, next) { };
+    ApprovalController.prototype.fetch = function (req, res, next) { };
+    ApprovalController.prototype.findById = function (req, res, next) { };
     __decorate([
         decorators_1.post('/'),
         decorators_1.requestValidators('entity', 'operation', 'approved'),

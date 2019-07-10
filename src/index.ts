@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { AppRouter } from './AppRouter';
-import './controllers/AccountController';
+// import './controllers/CategoryController';
+import './controllers';
 import { AppConfig } from './app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('./config/keys');
-module.require('./utils/Cache');
+// module.require('./utils/Cache');
 import { errorHandler } from './middlewares/ErrorMiddleware';
 import { IError } from './utils/error/GlobalError';
 
