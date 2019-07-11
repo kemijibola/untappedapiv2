@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ScheduledEmailRepository_1 = __importDefault(require("../repository/ScheduledEmailRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var ScheduleEmailBusiness = /** @class */ (function () {
     function ScheduleEmailBusiness() {
         this._scheduledEmailRepository = new ScheduledEmailRepository_1.default();
     }
     ScheduleEmailBusiness.prototype.fetch = function () {
-        return this._scheduledEmailRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var scheduledEmails, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._scheduledEmailRepository.fetch()];
+                    case 1:
+                        scheduledEmails = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, scheduledEmails)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ScheduleEmailBusiness.prototype.findById = function (id) {
-        return this._scheduledEmailRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var scheduledEmail, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._scheduledEmailRepository.findById(id)];
+                    case 1:
+                        scheduledEmail = _a.sent();
+                        if (!scheduledEmail._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Scheduled Email of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, scheduledEmail)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ScheduleEmailBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var scheduledEmail, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._scheduledEmailRepository.findByCriteria(criteria)];
+                    case 1:
+                        scheduledEmail = _a.sent();
+                        if (!scheduledEmail._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Scheduled Email not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, scheduledEmail)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ScheduleEmailBusiness.prototype.create = function (item) {
-        return this._scheduledEmailRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newScheduledEmail, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._scheduledEmailRepository.create(item)];
+                    case 1:
+                        newScheduledEmail = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newScheduledEmail)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ScheduleEmailBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var roleModel;
+            var scheduledEmail, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._scheduledEmailRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._scheduledEmailRepository.findById(id)];
                     case 1:
-                        roleModel = _a.sent();
-                        if (!roleModel)
-                            throw new error_1.RecordNotFound("Scheduled Email with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._scheduledEmailRepository.update(roleModel._id, item)];
+                        scheduledEmail = _a.sent();
+                        if (!scheduledEmail._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update scheduled email.Scheduled Email of Id " + id + " not found")];
+                        return [4 /*yield*/, this._scheduledEmailRepository.update(scheduledEmail._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ScheduleEmailBusiness.prototype.delete = function (id) {
-        return this._scheduledEmailRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._scheduledEmailRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return ScheduleEmailBusiness;
 }());

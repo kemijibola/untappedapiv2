@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ApprovalRepository_1 = __importDefault(require("../repository/ApprovalRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var ApprovalBusiness = /** @class */ (function () {
     function ApprovalBusiness() {
         this._approvalRepository = new ApprovalRepository_1.default();
     }
     ApprovalBusiness.prototype.fetch = function () {
-        return this._approvalRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var approvals, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._approvalRepository.fetch()];
+                    case 1:
+                        approvals = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, approvals)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ApprovalBusiness.prototype.findById = function (id) {
-        return this._approvalRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var approval, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._approvalRepository.findById(id)];
+                    case 1:
+                        approval = _a.sent();
+                        if (!approval._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Approval of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, approval)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ApprovalBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var approval, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._approvalRepository.findByCriteria(criteria)];
+                    case 1:
+                        approval = _a.sent();
+                        if (!approval._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Approval not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, approval)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ApprovalBusiness.prototype.create = function (item) {
-        return this._approvalRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newApproval, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._approvalRepository.create(item)];
+                    case 1:
+                        newApproval = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newApproval)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ApprovalBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalModel;
+            var approval, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._approvalRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._approvalRepository.findById(id)];
                     case 1:
-                        approvalModel = _a.sent();
-                        if (!approvalModel)
-                            throw new error_1.RecordNotFound("Approval with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._approvalRepository.update(approvalModel._id, item)];
+                        approval = _a.sent();
+                        if (!approval._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                        return [4 /*yield*/, this._approvalRepository.update(approval._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ApprovalBusiness.prototype.delete = function (id) {
-        return this._approvalRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._approvalRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return ApprovalBusiness;
 }());

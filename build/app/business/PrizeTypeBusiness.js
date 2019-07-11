@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var PrizeTypeRepository_1 = __importDefault(require("../repository/PrizeTypeRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var PrizeTypeBusiness = /** @class */ (function () {
     function PrizeTypeBusiness() {
         this._prizeTypeRepository = new PrizeTypeRepository_1.default();
     }
     PrizeTypeBusiness.prototype.fetch = function () {
-        return this._prizeTypeRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var prizeTypes, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._prizeTypeRepository.fetch()];
+                    case 1:
+                        prizeTypes = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, prizeTypes)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     PrizeTypeBusiness.prototype.findById = function (id) {
-        return this._prizeTypeRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var prizeType, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._prizeTypeRepository.findById(id)];
+                    case 1:
+                        prizeType = _a.sent();
+                        if (!prizeType._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Prize type of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, prizeType)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     PrizeTypeBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var prizeType, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._prizeTypeRepository.findByCriteria(criteria)];
+                    case 1:
+                        prizeType = _a.sent();
+                        if (!prizeType._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Prize type not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, prizeType)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     PrizeTypeBusiness.prototype.create = function (item) {
-        return this._prizeTypeRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newPrizeType, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._prizeTypeRepository.create(item)];
+                    case 1:
+                        newPrizeType = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newPrizeType)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     PrizeTypeBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var prizeTypeModel;
+            var prizeType, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._prizeTypeRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._prizeTypeRepository.findById(id)];
                     case 1:
-                        prizeTypeModel = _a.sent();
-                        if (!prizeTypeModel)
-                            throw new error_1.RecordNotFound("Prize Type with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._prizeTypeRepository.update(prizeTypeModel._id, item)];
+                        prizeType = _a.sent();
+                        if (!prizeType._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update prize type.Prize type of Id " + id + " not found")];
+                        return [4 /*yield*/, this._prizeTypeRepository.update(prizeType._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     PrizeTypeBusiness.prototype.delete = function (id) {
-        return this._prizeTypeRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._prizeTypeRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return PrizeTypeBusiness;
 }());

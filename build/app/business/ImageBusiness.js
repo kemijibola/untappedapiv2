@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ImageRepository_1 = __importDefault(require("../repository/ImageRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var ImageBusiness = /** @class */ (function () {
     function ImageBusiness() {
         this._imageRepository = new ImageRepository_1.default();
     }
     ImageBusiness.prototype.fetch = function () {
-        return this._imageRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var images, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._imageRepository.fetch()];
+                    case 1:
+                        images = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, images)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ImageBusiness.prototype.findById = function (id) {
-        return this._imageRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var image, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._imageRepository.findById(id)];
+                    case 1:
+                        image = _a.sent();
+                        if (!image._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Image of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, image)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ImageBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var image, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._imageRepository.findByCriteria(criteria)];
+                    case 1:
+                        image = _a.sent();
+                        if (!image._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Image not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, image)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ImageBusiness.prototype.create = function (item) {
-        return this._imageRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newImage, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._imageRepository.create(item)];
+                    case 1:
+                        newImage = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newImage)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ImageBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var imageModel;
+            var image, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._imageRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._imageRepository.findById(id)];
                     case 1:
-                        imageModel = _a.sent();
-                        if (!imageModel)
-                            throw new error_1.RecordNotFound("Image with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._imageRepository.update(imageModel._id, item)];
+                        image = _a.sent();
+                        if (!image._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update image.Image of Id " + id + " not found")];
+                        return [4 /*yield*/, this._imageRepository.update(image._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ImageBusiness.prototype.delete = function (id) {
-        return this._imageRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._imageRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return ImageBusiness;
 }());

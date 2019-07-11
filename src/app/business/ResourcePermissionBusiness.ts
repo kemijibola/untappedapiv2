@@ -1,7 +1,7 @@
 import ResourcePermissionRepository from '../repository/ResourcePermissionRepository';
 import IResourcePermissionBusiness = require('./interfaces/ResourcePermissionBusiness');
 import { IResourcePermission } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class ResourcePermissionBusiness implements IResourcePermissionBusiness {
   private _resourcePermissionRepository: ResourcePermissionRepository;
@@ -10,33 +10,105 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
     this._resourcePermissionRepository = new ResourcePermissionRepository();
   }
 
-  fetch(): Promise<IResourcePermission> {
-    return this._resourcePermissionRepository.fetch();
+  async fetch(): Promise<Result<IResourcePermission>> {
+    try {
+      const resourcePermissions = await this._resourcePermissionRepository.fetch();
+      return Result.ok<IResourcePermission>(200, resourcePermissions);
+    } catch (err) {
+      return Result.fail<IResourcePermission>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<IResourcePermission> {
-    return this._resourcePermissionRepository.findById(id);
+  async findById(id: string): Promise<Result<IResourcePermission>> {
+    try {
+      const resourcePermission = await this._resourcePermissionRepository.findById(
+        id
+      );
+      if (!resourcePermission._id)
+        return Result.fail<IResourcePermission>(
+          404,
+          `Resource permission of Id ${id} not found`
+        );
+      else return Result.ok<IResourcePermission>(200, resourcePermission);
+    } catch (err) {
+      return Result.fail<IResourcePermission>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IResourcePermission> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IResourcePermission>> {
+    try {
+      const resourcePermission = await this._resourcePermissionRepository.findByCriteria(
+        criteria
+      );
+      if (!resourcePermission._id)
+        return Result.fail<IResourcePermission>(
+          404,
+          `Resource permission not found`
+        );
+      else return Result.ok<IResourcePermission>(200, resourcePermission);
+    } catch (err) {
+      return Result.fail<IResourcePermission>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: IResourcePermission): Promise<IResourcePermission> {
-    return this._resourcePermissionRepository.create(item);
+  async create(
+    item: IResourcePermission
+  ): Promise<Result<IResourcePermission>> {
+    try {
+      const newResourcePermission = await this._resourcePermissionRepository.create(
+        item
+      );
+      return Result.ok<IResourcePermission>(201, newResourcePermission);
+    } catch (err) {
+      return Result.fail<IResourcePermission>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: IResourcePermission): Promise<IResourcePermission> {
-    const resourcePermissionModel = await this._resourcePermissionRepository.findById(
-      id
-    );
-    if (!resourcePermissionModel)
-      throw new RecordNotFound(`Resource Permission with id: ${id} not found`, 404);
-    return this._resourcePermissionRepository.update(resourcePermissionModel._id, item);
+  async update(
+    id: string,
+    item: IResourcePermission
+  ): Promise<Result<IResourcePermission>> {
+    try {
+      const resourcePermission = await this._resourcePermissionRepository.findById(
+        id
+      );
+      if (!resourcePermission._id)
+        return Result.fail<IResourcePermission>(
+          404,
+          `Could not update resource permission.Resource permission of Id ${id} not found`
+        );
+      const updateObj = await this._resourcePermissionRepository.update(
+        resourcePermission._id,
+        item
+      );
+      return Result.ok<IResourcePermission>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IResourcePermission>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._resourcePermissionRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._resourcePermissionRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

@@ -55,27 +55,27 @@ var CategoryController = /** @class */ (function () {
     }
     CategoryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, categoryBusiness, categoryModel, err_1;
+            var item, categoryBusiness, newCategory, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
                         categoryBusiness = new CategoryBusiness_1.default();
-                        return [4 /*yield*/, categoryBusiness.findByCriteria({
-                                name: item.name.toLowerCase()
+                        return [4 /*yield*/, categoryBusiness.create(item)];
+                    case 1:
+                        newCategory = _a.sent();
+                        if (!newCategory.successful) {
+                            return [2 /*return*/, next(new error_1.RecordExists("Error occured.Reason " + newCategory.error, 404))];
+                        }
+                        return [2 /*return*/, res.status(201).json({
+                                message: 'Operation successful',
+                                data: newCategory.value
                             })];
                     case 2:
-                        categoryModel = _a.sent();
-                        res.status(200).json(categoryModel);
-                        return [3 /*break*/, 4];
-                    case 3:
                         err_1 = _a.sent();
-                        new error_1.InternalServerError('Internal Server error occured', 500);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        return [2 /*return*/, next(new error_1.InternalServerError('Internal Server error occured', 500))];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

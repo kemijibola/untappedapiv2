@@ -38,41 +38,144 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var CategoryRepository_1 = __importDefault(require("../repository/CategoryRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var CategoryBusiness = /** @class */ (function () {
     function CategoryBusiness() {
         this._categoryRepository = new CategoryRepository_1.default();
     }
     CategoryBusiness.prototype.fetch = function () {
-        return this._categoryRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var categories, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._categoryRepository.fetch()];
+                    case 1:
+                        categories = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, categories)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CategoryBusiness.prototype.findById = function (id) {
-        return this._categoryRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var category, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._categoryRepository.findById(id)];
+                    case 1:
+                        category = _a.sent();
+                        if (!category._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Category of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, category)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CategoryBusiness.prototype.findByCriteria = function (criteria) {
-        console.log(criteria);
-        return this._categoryRepository.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var category, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._categoryRepository.findByCriteria(criteria)];
+                    case 1:
+                        category = _a.sent();
+                        if (!category._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Approval not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, category)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CategoryBusiness.prototype.create = function (item) {
-        return this._categoryRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var category, newCategory, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this._categoryRepository.findByCriteria({
+                                name: item.name
+                            })];
+                    case 1:
+                        category = _a.sent();
+                        if (!(category === null)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this._categoryRepository.create(item)];
+                    case 2:
+                        newCategory = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newCategory)];
+                    case 3: return [2 /*return*/, Result_1.Result.fail(400, "Category with name " + category.name + " exists.")];
+                    case 4:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
     };
     CategoryBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var categoryModel;
+            var category, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._categoryRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._categoryRepository.findById(id)];
                     case 1:
-                        categoryModel = _a.sent();
-                        if (!categoryModel)
-                            throw new error_1.RecordNotFound("Category with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._categoryRepository.update(categoryModel._id, item)];
+                        category = _a.sent();
+                        if (!category._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                        return [4 /*yield*/, this._categoryRepository.update(category._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     CategoryBusiness.prototype.delete = function (id) {
-        return this._categoryRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._categoryRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return CategoryBusiness;
 }());

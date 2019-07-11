@@ -1,7 +1,7 @@
 import GigRepository from '../repository/GigRepository';
 import IGigBusiness = require('./interfaces/GigBusiness');
 import { IGig } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class GigBusiness implements IGigBusiness {
   private _gigRepository: GigRepository;
@@ -10,31 +10,66 @@ class GigBusiness implements IGigBusiness {
     this._gigRepository = new GigRepository();
   }
 
-  fetch(): Promise<IGig> {
-    return this._gigRepository.fetch();
+  async fetch(): Promise<Result<IGig>> {
+    try {
+      const gigs = await this._gigRepository.fetch();
+      return Result.ok<IGig>(200, gigs);
+    } catch (err) {
+      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  findById(id: string): Promise<IGig> {
-    return this._gigRepository.findById(id);
+  async findById(id: string): Promise<Result<IGig>> {
+    try {
+      const gig = await this._gigRepository.findById(id);
+      if (!gig._id) return Result.fail<IGig>(404, `Gig of Id ${id} not found`);
+      else return Result.ok<IGig>(200, gig);
+    } catch (err) {
+      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IGig> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IGig>> {
+    try {
+      const gig = await this._gigRepository.findByCriteria(criteria);
+      if (!gig._id) return Result.fail<IGig>(404, `Gig not found`);
+      else return Result.ok<IGig>(200, gig);
+    } catch (err) {
+      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  create(item: IGig): Promise<IGig> {
-    return this._gigRepository.create(item);
+  async create(item: IGig): Promise<Result<IGig>> {
+    try {
+      const newGig = await this._gigRepository.create(item);
+      return Result.ok<IGig>(201, newGig);
+    } catch (err) {
+      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  async update(id: string, item: IGig): Promise<IGig> {
-    const gigModel = await this._gigRepository.findById(id);
-    if (!gigModel)
-      throw new RecordNotFound(`Comment with id: ${id} not found`, 404);
-    return this._gigRepository.update(gigModel._id, item);
+  async update(id: string, item: IGig): Promise<Result<IGig>> {
+    try {
+      const gig = await this._gigRepository.findById(id);
+      if (!gig._id)
+        return Result.fail<IGig>(
+          404,
+          `Could not update approval.Approval of Id ${id} not found`
+        );
+      const updateObj = await this._gigRepository.update(gig._id, item);
+      return Result.ok<IGig>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._gigRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._gigRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

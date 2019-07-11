@@ -71,12 +71,6 @@ class RepositoryBase<T extends mongoose.Document>
   private toObjectId(_id: string): mongoose.Types.ObjectId {
     return mongoose.Types.ObjectId.createFromHexString(_id);
   }
-
-  private cacheKey(query: any, collectionName: string): string {
-    return JSON.stringify(
-      Object.assign({}, query, { collection: collectionName })
-    );
-  }
 }
 
 export = RepositoryBase;

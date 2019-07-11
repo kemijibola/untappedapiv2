@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var GigRepository_1 = __importDefault(require("../repository/GigRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var GigBusiness = /** @class */ (function () {
     function GigBusiness() {
         this._gigRepository = new GigRepository_1.default();
     }
     GigBusiness.prototype.fetch = function () {
-        return this._gigRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var gigs, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._gigRepository.fetch()];
+                    case 1:
+                        gigs = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, gigs)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     GigBusiness.prototype.findById = function (id) {
-        return this._gigRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var gig, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._gigRepository.findById(id)];
+                    case 1:
+                        gig = _a.sent();
+                        if (!gig._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Gig of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, gig)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     GigBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var gig, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._gigRepository.findByCriteria(criteria)];
+                    case 1:
+                        gig = _a.sent();
+                        if (!gig._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Gig not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, gig)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     GigBusiness.prototype.create = function (item) {
-        return this._gigRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newGig, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._gigRepository.create(item)];
+                    case 1:
+                        newGig = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newGig)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     GigBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var gigModel;
+            var gig, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._gigRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._gigRepository.findById(id)];
                     case 1:
-                        gigModel = _a.sent();
-                        if (!gigModel)
-                            throw new error_1.RecordNotFound("Comment with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._gigRepository.update(gigModel._id, item)];
+                        gig = _a.sent();
+                        if (!gig._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                        return [4 /*yield*/, this._gigRepository.update(gig._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     GigBusiness.prototype.delete = function (id) {
-        return this._gigRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._gigRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return GigBusiness;
 }());

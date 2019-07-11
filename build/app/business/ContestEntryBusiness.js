@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function () {
-        return this._contestEntryRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntries, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._contestEntryRepository.fetch()];
+                    case 1:
+                        contestEntries = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, contestEntries)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ContestBusiness.prototype.findById = function (id) {
-        return this._contestEntryRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntry, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._contestEntryRepository.findById(id)];
+                    case 1:
+                        contestEntry = _a.sent();
+                        if (!contestEntry._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest entry of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, contestEntry)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ContestBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntry, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria(criteria)];
+                    case 1:
+                        contestEntry = _a.sent();
+                        if (!contestEntry._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest entry not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, contestEntry)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ContestBusiness.prototype.create = function (item) {
-        return this._contestEntryRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newContestEntry, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._contestEntryRepository.create(item)];
+                    case 1:
+                        newContestEntry = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newContestEntry)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ContestBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestEntryModel;
+            var contestEntry, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._contestEntryRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._contestEntryRepository.findById(id)];
                     case 1:
-                        contestEntryModel = _a.sent();
-                        if (!contestEntryModel)
-                            throw new error_1.RecordNotFound("Contest with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._contestEntryRepository.update(contestEntryModel._id, item)];
+                        contestEntry = _a.sent();
+                        if (!contestEntry._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                        return [4 /*yield*/, this._contestEntryRepository.update(contestEntry._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ContestBusiness.prototype.delete = function (id) {
-        return this._contestEntryRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._contestEntryRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return ContestBusiness;
 }());

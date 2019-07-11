@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._userRepository = new UserRepository_1.default();
     }
     UserBusiness.prototype.fetch = function () {
-        return this._userRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var users, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.fetch()];
+                    case 1:
+                        users = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, users)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     UserBusiness.prototype.findById = function (id) {
-        return this._userRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var user, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "User with Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, user)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     UserBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var user, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, user)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     UserBusiness.prototype.create = function (item) {
-        return this._userRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newUser, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.create(item)];
+                    case 1:
+                        newUser = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newUser)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     UserBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var userTypeModel;
+            var user, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
-                        userTypeModel = _a.sent();
-                        if (!userTypeModel)
-                            throw new error_1.RecordNotFound("User with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._userRepository.update(userTypeModel._id, item)];
+                        user = _a.sent();
+                        if (!user._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update user.User of Id " + id + " not found")];
+                        return [4 /*yield*/, this._userRepository.update(user._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.delete = function (id) {
-        return this._userRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return UserBusiness;
 }());

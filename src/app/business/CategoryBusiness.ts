@@ -1,7 +1,7 @@
 import CategoryRepository from '../repository/CategoryRepository';
 import ICategoryBusiness = require('./interfaces/CategoryBusiness');
 import { ICategory } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class CategoryBusiness implements ICategoryBusiness {
   private _categoryRepository: CategoryRepository;
@@ -10,32 +10,95 @@ class CategoryBusiness implements ICategoryBusiness {
     this._categoryRepository = new CategoryRepository();
   }
 
-  fetch(): Promise<ICategory> {
-    return this._categoryRepository.fetch();
+  async fetch(): Promise<Result<ICategory>> {
+    try {
+      const categories = await this._categoryRepository.fetch();
+      return Result.ok<ICategory>(200, categories);
+    } catch (err) {
+      return Result.fail<ICategory>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<ICategory> {
-    return this._categoryRepository.findById(id);
+  async findById(id: string): Promise<Result<ICategory>> {
+    try {
+      const category = await this._categoryRepository.findById(id);
+      if (!category._id)
+        return Result.fail<ICategory>(404, `Category of Id ${id} not found`);
+      else return Result.ok<ICategory>(200, category);
+    } catch (err) {
+      return Result.fail<ICategory>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<ICategory> {
-    console.log(criteria);
-    return this._categoryRepository.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<ICategory>> {
+    try {
+      const category = await this._categoryRepository.findByCriteria(criteria);
+      if (!category._id)
+        return Result.fail<ICategory>(404, `Approval not found`);
+      else return Result.ok<ICategory>(200, category);
+    } catch (err) {
+      return Result.fail<ICategory>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: ICategory): Promise<ICategory> {
-    return this._categoryRepository.create(item);
+  async create(item: ICategory): Promise<Result<ICategory>> {
+    try {
+      const category = await this._categoryRepository.findByCriteria({
+        name: item.name
+      });
+      if (category === null) {
+        const newCategory = await this._categoryRepository.create(item);
+        return Result.ok<ICategory>(201, newCategory);
+      }
+      return Result.fail<ICategory>(
+        400,
+        `Category with name ${category.name} exists.`
+      );
+    } catch (err) {
+      return Result.fail<ICategory>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: ICategory): Promise<ICategory> {
-    const categoryModel = await this._categoryRepository.findById(id);
-    if (!categoryModel)
-      throw new RecordNotFound(`Category with id: ${id} not found`, 404);
-    return this._categoryRepository.update(categoryModel._id, item);
+  async update(id: string, item: ICategory): Promise<Result<ICategory>> {
+    try {
+      const category = await this._categoryRepository.findById(id);
+      if (!category._id)
+        return Result.fail<ICategory>(
+          404,
+          `Could not update approval.Approval of Id ${id} not found`
+        );
+      const updateObj = await this._categoryRepository.update(
+        category._id,
+        item
+      );
+      return Result.ok<ICategory>(200, updateObj);
+    } catch (err) {
+      return Result.fail<ICategory>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._categoryRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._categoryRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 import CountryRepository from '../repository/CountryRepository';
 import ICountryBusiness = require('./interfaces/CountryBusiness');
 import { ICountry } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class CountryBusiness implements ICountryBusiness {
   private _countryRepository: CountryRepository;
@@ -10,31 +10,82 @@ class CountryBusiness implements ICountryBusiness {
     this._countryRepository = new CountryRepository();
   }
 
-  fetch(): Promise<ICountry> {
-    return this._countryRepository.fetch();
+  async fetch(): Promise<Result<ICountry>> {
+    try {
+      const countries = await this._countryRepository.fetch();
+      return Result.ok<ICountry>(200, countries);
+    } catch (err) {
+      return Result.fail<ICountry>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<ICountry> {
-    return this._countryRepository.findById(id);
+  async findById(id: string): Promise<Result<ICountry>> {
+    try {
+      const country = await this._countryRepository.findById(id);
+      if (!country._id)
+        return Result.fail<ICountry>(404, `Country of Id ${id} not found`);
+      else return Result.ok<ICountry>(200, country);
+    } catch (err) {
+      return Result.fail<ICountry>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<ICountry> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<ICountry>> {
+    try {
+      const country = await this._countryRepository.findByCriteria(criteria);
+      if (!country._id) return Result.fail<ICountry>(404, `Country not found`);
+      else return Result.ok<ICountry>(200, country);
+    } catch (err) {
+      return Result.fail<ICountry>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: ICountry): Promise<ICountry> {
-    return this._countryRepository.create(item);
+  async create(item: ICountry): Promise<Result<ICountry>> {
+    try {
+      const newCountry = await this._countryRepository.create(item);
+      return Result.ok<ICountry>(200, newCountry);
+    } catch (err) {
+      return Result.fail<ICountry>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: ICountry): Promise<ICountry> {
-    const countryModel = await this._countryRepository.findById(id);
-    if (!countryModel)
-      throw new RecordNotFound(`Comment with id: ${id} not found`, 404);
-    return this._countryRepository.update(countryModel._id, item);
+  async update(id: string, item: ICountry): Promise<Result<ICountry>> {
+    try {
+      const country = await this._countryRepository.findById(id);
+      if (!country._id)
+        return Result.fail<ICountry>(
+          404,
+          `Could not update country.Country of Id ${id} not found`
+        );
+      const updateObj = await this._countryRepository.update(country._id, item);
+      return Result.ok<ICountry>(200, updateObj);
+    } catch (err) {
+      return Result.fail<ICountry>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._countryRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._countryRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

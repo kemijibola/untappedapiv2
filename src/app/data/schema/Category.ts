@@ -5,7 +5,7 @@ import { ICategory } from '../../models/interfaces';
 
 const categorySchema: Schema = new Schema(
   {
-    name: { type: String, required: true }
+    name: { type: String, required: true, unique: true }
   },
   { timestamps: true }
 );

@@ -75,9 +75,6 @@ var RepositoryBase = /** @class */ (function () {
     RepositoryBase.prototype.toObjectId = function (_id) {
         return mongoose.Types.ObjectId.createFromHexString(_id);
     };
-    RepositoryBase.prototype.cacheKey = function (query, collectionName) {
-        return JSON.stringify(Object.assign({}, query, { collection: collectionName }));
-    };
     return RepositoryBase;
 }());
 module.exports = RepositoryBase;

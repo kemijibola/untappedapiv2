@@ -1,7 +1,7 @@
 import RoleRepository from '../repository/RoleRepository';
 import IRoleBusiness = require('./interfaces/RoleBusiness');
 import { IRole } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class RoleBusiness implements IRoleBusiness {
   private _roleRepository: RoleRepository;
@@ -10,31 +10,67 @@ class RoleBusiness implements IRoleBusiness {
     this._roleRepository = new RoleRepository();
   }
 
-  fetch(): Promise<IRole> {
-    return this._roleRepository.fetch();
+  async fetch(): Promise<Result<IRole>> {
+    try {
+      const roles = await this._roleRepository.fetch();
+      return Result.ok<IRole>(200, roles);
+    } catch (err) {
+      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  findById(id: string): Promise<IRole> {
-    return this._roleRepository.findById(id);
+  async findById(id: string): Promise<Result<IRole>> {
+    try {
+      const role = await this._roleRepository.findById(id);
+      if (!role._id)
+        return Result.fail<IRole>(404, `Role of Id ${id} not found`);
+      else return Result.ok<IRole>(200, role);
+    } catch (err) {
+      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IRole> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IRole>> {
+    try {
+      const role = await this._roleRepository.findByCriteria(criteria);
+      if (!role._id) return Result.fail<IRole>(404, `Role not found`);
+      else return Result.ok<IRole>(200, role);
+    } catch (err) {
+      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  create(item: IRole): Promise<IRole> {
-    return this._roleRepository.create(item);
+  async create(item: IRole): Promise<Result<IRole>> {
+    try {
+      const newRole = await this._roleRepository.create(item);
+      return Result.ok<IRole>(201, newRole);
+    } catch (err) {
+      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  async update(id: string, item: IRole): Promise<IRole> {
-    const roleModel = await this._roleRepository.findById(id);
-    if (!roleModel)
-      throw new RecordNotFound(`Role with id: ${id} not found`, 404);
-    return this._roleRepository.update(roleModel._id, item);
+  async update(id: string, item: IRole): Promise<Result<IRole>> {
+    try {
+      const role = await this._roleRepository.findById(id);
+      if (!role._id)
+        return Result.fail<IRole>(
+          500,
+          `Could not update approval.Approval of Id ${id} not found`
+        );
+      const updateObj = await this._roleRepository.update(role._id, item);
+      return Result.ok<IRole>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._roleRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._roleRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

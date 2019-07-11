@@ -1,7 +1,7 @@
 import ContestRepository from '../repository/ContestRepository';
 import IContestBusiness = require('./interfaces/ContestBusiness');
 import { IContest } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
@@ -10,31 +10,82 @@ class ContestBusiness implements IContestBusiness {
     this._contestRepository = new ContestRepository();
   }
 
-  fetch(): Promise<IContest> {
-    return this._contestRepository.fetch();
+  async fetch(): Promise<Result<IContest>> {
+    try {
+      const contests = await this._contestRepository.fetch();
+      return Result.ok<IContest>(200, contests);
+    } catch (err) {
+      return Result.fail<IContest>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<IContest> {
-    return this._contestRepository.findById(id);
+  async findById(id: string): Promise<Result<IContest>> {
+    try {
+      const contest = await this._contestRepository.findById(id);
+      if (!contest._id)
+        return Result.fail<IContest>(404, `Contest of Id ${id} not found`);
+      else return Result.ok<IContest>(200, contest);
+    } catch (err) {
+      return Result.fail<IContest>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IContest> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IContest>> {
+    try {
+      const contest = await this._contestRepository.findByCriteria(criteria);
+      if (!contest._id) return Result.fail<IContest>(404, `Contest not found`);
+      else return Result.ok<IContest>(200, contest);
+    } catch (err) {
+      return Result.fail<IContest>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: IContest): Promise<IContest> {
-    return this._contestRepository.create(item);
+  async create(item: IContest): Promise<Result<IContest>> {
+    try {
+      const newContest = await this._contestRepository.create(item);
+      return Result.ok<IContest>(201, newContest);
+    } catch (err) {
+      return Result.fail<IContest>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: IContest): Promise<IContest> {
-    const contestModel = await this._contestRepository.findById(id);
-    if (!contestModel)
-      throw new RecordNotFound(`Contest with id: ${id} not found`, 404);
-    return this._contestRepository.update(contestModel._id, item);
+  async update(id: string, item: IContest): Promise<Result<IContest>> {
+    try {
+      const contest = await this._contestRepository.findById(id);
+      if (!contest._id)
+        return Result.fail<IContest>(
+          404,
+          `Could not update approval.Approval of Id ${id} not found`
+        );
+      const updateObj = await this._contestRepository.update(contest._id, item);
+      return Result.ok<IContest>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IContest>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._contestRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._contestRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var CountryRepository_1 = __importDefault(require("../repository/CountryRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var CountryBusiness = /** @class */ (function () {
     function CountryBusiness() {
         this._countryRepository = new CountryRepository_1.default();
     }
     CountryBusiness.prototype.fetch = function () {
-        return this._countryRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var countries, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._countryRepository.fetch()];
+                    case 1:
+                        countries = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, countries)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CountryBusiness.prototype.findById = function (id) {
-        return this._countryRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var country, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._countryRepository.findById(id)];
+                    case 1:
+                        country = _a.sent();
+                        if (!country._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Country of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, country)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CountryBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var country, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._countryRepository.findByCriteria(criteria)];
+                    case 1:
+                        country = _a.sent();
+                        if (!country._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Country not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, country)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CountryBusiness.prototype.create = function (item) {
-        return this._countryRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newCountry, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._countryRepository.create(item)];
+                    case 1:
+                        newCountry = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, newCountry)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     CountryBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var countryModel;
+            var country, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._countryRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._countryRepository.findById(id)];
                     case 1:
-                        countryModel = _a.sent();
-                        if (!countryModel)
-                            throw new error_1.RecordNotFound("Comment with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._countryRepository.update(countryModel._id, item)];
+                        country = _a.sent();
+                        if (!country._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update country.Country of Id " + id + " not found")];
+                        return [4 /*yield*/, this._countryRepository.update(country._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     CountryBusiness.prototype.delete = function (id) {
-        return this._countryRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._countryRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return CountryBusiness;
 }());

@@ -38,40 +38,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
-var error_1 = require("../../utils/error");
+var Result_1 = require("../../utils/Result");
 var RoleBusiness = /** @class */ (function () {
     function RoleBusiness() {
         this._roleRepository = new RoleRepository_1.default();
     }
     RoleBusiness.prototype.fetch = function () {
-        return this._roleRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var roles, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._roleRepository.fetch()];
+                    case 1:
+                        roles = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, roles)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     RoleBusiness.prototype.findById = function (id) {
-        return this._roleRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var role, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._roleRepository.findById(id)];
+                    case 1:
+                        role = _a.sent();
+                        if (!role._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Role of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, role)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     RoleBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var role, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._roleRepository.findByCriteria(criteria)];
+                    case 1:
+                        role = _a.sent();
+                        if (!role._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Role not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, role)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     RoleBusiness.prototype.create = function (item) {
-        return this._roleRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newRole, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._roleRepository.create(item)];
+                    case 1:
+                        newRole = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newRole)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     RoleBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var roleModel;
+            var role, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._roleRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._roleRepository.findById(id)];
                     case 1:
-                        roleModel = _a.sent();
-                        if (!roleModel)
-                            throw new error_1.RecordNotFound("Role with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._roleRepository.update(roleModel._id, item)];
+                        role = _a.sent();
+                        if (!role._id)
+                            return [2 /*return*/, Result_1.Result.fail(500, "Could not update approval.Approval of Id " + id + " not found")];
+                        return [4 /*yield*/, this._roleRepository.update(role._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     RoleBusiness.prototype.delete = function (id) {
-        return this._roleRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._roleRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return RoleBusiness;
 }());

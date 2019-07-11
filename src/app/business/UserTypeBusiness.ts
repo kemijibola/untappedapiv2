@@ -1,7 +1,7 @@
 import UserTypeRepository from '../repository/UserTypeRepository';
 import IUserTypeBusiness = require('./interfaces/UserTypeBusiness');
 import { IUserType } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class UserTypeBusiness implements IUserTypeBusiness {
   private _userTypeRepository: UserTypeRepository;
@@ -10,31 +10,86 @@ class UserTypeBusiness implements IUserTypeBusiness {
     this._userTypeRepository = new UserTypeRepository();
   }
 
-  fetch(): Promise<IUserType> {
-    return this._userTypeRepository.fetch();
+  async fetch(): Promise<Result<IUserType>> {
+    try {
+      const userTypes = await this._userTypeRepository.fetch();
+      return Result.ok<IUserType>(200, userTypes);
+    } catch (err) {
+      return Result.fail<IUserType>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<IUserType> {
-    return this._userTypeRepository.findById(id);
+  async findById(id: string): Promise<Result<IUserType>> {
+    try {
+      const userType = await this._userTypeRepository.findById(id);
+      if (!userType._id)
+        return Result.fail<IUserType>(404, `User type of Id ${id} not found`);
+      else return Result.ok<IUserType>(200, userType);
+    } catch (err) {
+      return Result.fail<IUserType>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IUserType> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IUserType>> {
+    try {
+      const userType = await this._userTypeRepository.findByCriteria(criteria);
+      if (!userType._id)
+        return Result.fail<IUserType>(404, `User type not found`);
+      else return Result.ok<IUserType>(200, userType);
+    } catch (err) {
+      return Result.fail<IUserType>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: IUserType): Promise<IUserType> {
-    return this._userTypeRepository.create(item);
+  async create(item: IUserType): Promise<Result<IUserType>> {
+    try {
+      const newUserType = await this._userTypeRepository.create(item);
+      return Result.ok<IUserType>(201, newUserType);
+    } catch (err) {
+      return Result.fail<IUserType>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: IUserType): Promise<IUserType> {
-    const userTypeModel = await this._userTypeRepository.findById(id);
-    if (!userTypeModel)
-      throw new RecordNotFound(`User Type with id: ${id} not found`, 404);
-    return this._userTypeRepository.update(userTypeModel._id, item);
+  async update(id: string, item: IUserType): Promise<Result<IUserType>> {
+    try {
+      const userType = await this._userTypeRepository.findById(id);
+      if (!userType._id)
+        return Result.fail<IUserType>(
+          404,
+          `Could not update user type.User type of Id ${id} not found`
+        );
+      const updateObj = await this._userTypeRepository.update(
+        userType._id,
+        item
+      );
+      return Result.ok<IUserType>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IUserType>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._userTypeRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._userTypeRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

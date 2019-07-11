@@ -1,7 +1,7 @@
 import EvaluationRepository from '../repository/EvaluationRepository';
 import IEvaluationBusiness = require('./interfaces/EvaluationBusiness');
 import { IEvaluation } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class EvaluationBusiness implements IEvaluationBusiness {
   private _evaluationRepository: EvaluationRepository;
@@ -10,31 +10,91 @@ class EvaluationBusiness implements IEvaluationBusiness {
     this._evaluationRepository = new EvaluationRepository();
   }
 
-  fetch(): Promise<IEvaluation> {
-    return this._evaluationRepository.fetch();
+  async fetch(): Promise<Result<IEvaluation>> {
+    try {
+      const evaluations = await this._evaluationRepository.fetch();
+      return Result.ok<IEvaluation>(200, evaluations);
+    } catch (err) {
+      return Result.fail<IEvaluation>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<IEvaluation> {
-    return this._evaluationRepository.findById(id);
+  async findById(id: string): Promise<Result<IEvaluation>> {
+    try {
+      const evaluation = await this._evaluationRepository.findById(id);
+      if (!evaluation._id)
+        return Result.fail<IEvaluation>(
+          404,
+          `Evaluation of Id ${id} not found`
+        );
+      else return Result.ok<IEvaluation>(200, evaluation);
+    } catch (err) {
+      return Result.fail<IEvaluation>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IEvaluation> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IEvaluation>> {
+    try {
+      const evaluation = await this._evaluationRepository.findByCriteria(
+        criteria
+      );
+      if (!evaluation._id)
+        return Result.fail<IEvaluation>(404, `Evaluation not found`);
+      else return Result.ok<IEvaluation>(200, evaluation);
+    } catch (err) {
+      return Result.fail<IEvaluation>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: IEvaluation): Promise<IEvaluation> {
-    return this._evaluationRepository.create(item);
+  async create(item: IEvaluation): Promise<Result<IEvaluation>> {
+    try {
+      const newEvaluation = await this._evaluationRepository.create(item);
+      return Result.ok<IEvaluation>(201, newEvaluation);
+    } catch (err) {
+      return Result.fail<IEvaluation>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: IEvaluation): Promise<IEvaluation> {
-    const evaluationModel = await this._evaluationRepository.findById(id);
-    if (!evaluationModel)
-      throw new RecordNotFound(`Evaluation with id: ${id} not found`, 404);
-    return this._evaluationRepository.update(evaluationModel._id, item);
+  async update(id: string, item: IEvaluation): Promise<Result<IEvaluation>> {
+    try {
+      const evaluation = await this._evaluationRepository.findById(id);
+      if (!evaluation._id)
+        return Result.fail<IEvaluation>(
+          404,
+          `Could not update evaluation.Evaluation of Id ${id} not found`
+        );
+      const updateObj = await this._evaluationRepository.update(
+        evaluation._id,
+        item
+      );
+      return Result.ok<IEvaluation>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IEvaluation>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._evaluationRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._evaluationRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 

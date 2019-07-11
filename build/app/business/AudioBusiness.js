@@ -34,40 +34,141 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var error_1 = require("../../utils/error");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var AudioRepository_1 = __importDefault(require("../repository/AudioRepository"));
+var Result_1 = require("../../utils/Result");
 var AudioBusiness = /** @class */ (function () {
     function AudioBusiness() {
-        this._audioRepository = new AudioBusiness();
+        this._audioRepository = new AudioRepository_1.default();
     }
     AudioBusiness.prototype.fetch = function () {
-        return this._audioRepository.fetch();
+        return __awaiter(this, void 0, void 0, function () {
+            var audios, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._audioRepository.fetch()];
+                    case 1:
+                        audios = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, audios)];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     AudioBusiness.prototype.findById = function (id) {
-        return this._audioRepository.findById(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var audio, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._audioRepository.findById(id)];
+                    case 1:
+                        audio = _a.sent();
+                        if (!audio._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Audio of Id " + id + " not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, audio)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     AudioBusiness.prototype.findByCriteria = function (criteria) {
-        return this.findByCriteria(criteria);
+        return __awaiter(this, void 0, void 0, function () {
+            var audio, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._audioRepository.findByCriteria(criteria)];
+                    case 1:
+                        audio = _a.sent();
+                        if (!audio._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Audio not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, audio)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     AudioBusiness.prototype.create = function (item) {
-        return this._audioRepository.create(item);
+        return __awaiter(this, void 0, void 0, function () {
+            var newAudio, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._audioRepository.create(item)];
+                    case 1:
+                        newAudio = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newAudio)];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     AudioBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var audioModel;
+            var audio, updateObj, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._audioRepository.findById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._audioRepository.findById(id)];
                     case 1:
-                        audioModel = _a.sent();
-                        if (!audioModel)
-                            throw new error_1.RecordNotFound("Audio with id: " + id + " not found", 404);
-                        return [2 /*return*/, this._audioRepository.update(audioModel._id, item)];
+                        audio = _a.sent();
+                        if (!audio._id)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update audio.Audio of Id " + id + " not found")];
+                        return [4 /*yield*/, this._audioRepository.update(audio._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     AudioBusiness.prototype.delete = function (id) {
-        return this._audioRepository.delete(id);
+        return __awaiter(this, void 0, void 0, function () {
+            var isDeleted, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._audioRepository.delete(id)];
+                    case 1:
+                        isDeleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return AudioBusiness;
 }());

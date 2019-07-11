@@ -1,7 +1,7 @@
 import ProfessionalRepository from '../repository/ProfessionalRepository';
 import IProfessionalBusiness = require('./interfaces/ProfessionalBusiness');
 import { IProfessional } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
+import { Result } from '../../utils/Result';
 
 class ProfessionalBusiness implements IProfessionalBusiness {
   private _professionalRepository: ProfessionalRepository;
@@ -10,31 +10,94 @@ class ProfessionalBusiness implements IProfessionalBusiness {
     this._professionalRepository = new ProfessionalRepository();
   }
 
-  fetch(): Promise<IProfessional> {
-    return this._professionalRepository.fetch();
+  async fetch(): Promise<Result<IProfessional>> {
+    try {
+      const professionals = await this._professionalRepository.fetch();
+      return Result.ok<IProfessional>(200, professionals);
+    } catch (err) {
+      return Result.fail<IProfessional>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findById(id: string): Promise<IProfessional> {
-    return this._professionalRepository.findById(id);
+  async findById(id: string): Promise<Result<IProfessional>> {
+    try {
+      const professional = await this._professionalRepository.findById(id);
+      if (!professional._id)
+        return Result.fail<IProfessional>(
+          404,
+          `Professional of Id ${id} not found`
+        );
+      else return Result.ok<IProfessional>(200, professional);
+    } catch (err) {
+      return Result.fail<IProfessional>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  findByCriteria(criteria: any): Promise<IProfessional> {
-    return this.findByCriteria(criteria);
+  async findByCriteria(criteria: any): Promise<Result<IProfessional>> {
+    try {
+      const professional = await this._professionalRepository.findByCriteria(
+        criteria
+      );
+      if (!professional._id)
+        return Result.fail<IProfessional>(404, `Professional not found`);
+      else return Result.ok<IProfessional>(200, professional);
+    } catch (err) {
+      return Result.fail<IProfessional>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  create(item: IProfessional): Promise<IProfessional> {
-    return this._professionalRepository.create(item);
+  async create(item: IProfessional): Promise<Result<IProfessional>> {
+    try {
+      const newProfessional = await this._professionalRepository.create(item);
+      return Result.ok<IProfessional>(201, newProfessional);
+    } catch (err) {
+      return Result.fail<IProfessional>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  async update(id: string, item: IProfessional): Promise<IProfessional> {
-    const permissionModel = await this._professionalRepository.findById(id);
-    if (!permissionModel)
-      throw new RecordNotFound(`Professional with id: ${id} not found`, 404);
-    return this._professionalRepository.update(permissionModel._id, item);
+  async update(
+    id: string,
+    item: IProfessional
+  ): Promise<Result<IProfessional>> {
+    try {
+      const professional = await this._professionalRepository.findById(id);
+      if (!professional._id)
+        return Result.fail<IProfessional>(
+          404,
+          `Could not update professional.Professional of Id ${id} not found`
+        );
+      const updateObj = await this._professionalRepository.update(
+        professional._id,
+        item
+      );
+      return Result.ok<IProfessional>(200, updateObj);
+    } catch (err) {
+      return Result.fail<IProfessional>(
+        500,
+        `Internal server error occured. ${err}`
+      );
+    }
   }
 
-  delete(id: string): Promise<boolean> {
-    return this._professionalRepository.delete(id);
+  async delete(id: string): Promise<Result<boolean>> {
+    try {
+      const isDeleted = await this._professionalRepository.delete(id);
+      return Result.ok<boolean>(200, isDeleted);
+    } catch (err) {
+      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+    }
   }
 }
 
