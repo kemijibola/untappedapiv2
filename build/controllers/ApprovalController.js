@@ -43,31 +43,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var ApprovalRepository = require("../app/repository/ApprovalRepository");
+var ApprovalBusiness_1 = __importDefault(require("../app/business/ApprovalBusiness"));
 var error_1 = require("../utils/error");
 var ApprovalController = /** @class */ (function () {
     function ApprovalController() {
     }
     ApprovalController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, approval, err_1;
+            var item, approvalBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        return [4 /*yield*/, new ApprovalRepository().create(item)];
+                        approvalBusiness = new ApprovalBusiness_1.default();
+                        return [4 /*yield*/, approvalBusiness.create(item)];
                     case 1:
-                        approval = _a.sent();
-                        return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
-                                data: approval
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                })];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: 'Operation Successful',
+                                data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        next(new error_1.InternalServerError('Internal Server error occured', 500));
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

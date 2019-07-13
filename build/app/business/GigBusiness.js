@@ -72,7 +72,7 @@ var GigBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._gigRepository.findById(id)];
                     case 1:
                         gig = _a.sent();
-                        if (!gig._id)
+                        if (!gig)
                             return [2 /*return*/, Result_1.Result.fail(404, "Gig of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, gig)];
@@ -95,7 +95,7 @@ var GigBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._gigRepository.findByCriteria(criteria)];
                     case 1:
                         gig = _a.sent();
-                        if (!gig._id)
+                        if (!gig)
                             return [2 /*return*/, Result_1.Result.fail(404, "Gig not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, gig)];
@@ -137,7 +137,7 @@ var GigBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._gigRepository.findById(id)];
                     case 1:
                         gig = _a.sent();
-                        if (!gig._id)
+                        if (!gig)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
                         return [4 /*yield*/, this._gigRepository.update(gig._id, item)];
                     case 2:

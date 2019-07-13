@@ -45,40 +45,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var PermissionRepository = require("../app/repository/PermissionRepository");
 var error_1 = require("../utils/error");
+var PermissionBusiness = require("../app/business/PermissionBusiness");
 var PermissionController = /** @class */ (function () {
     function PermissionController() {
     }
     PermissionController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, permissionModel, permission, err_1;
+            var item, item_1, permissionBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         item = req.body;
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, new PermissionRepository().findByCriteria({
-                                name: item.name.toLowerCase()
-                            })];
+                        _a.trys.push([1, 3, , 4]);
+                        item_1 = req.body;
+                        permissionBusiness = new PermissionBusiness();
+                        return [4 /*yield*/, permissionBusiness.create(item_1)];
                     case 2:
-                        permissionModel = _a.sent();
-                        if (permissionModel)
-                            return [2 /*return*/, next(new error_1.RecordExists("Permission with name " + permissionModel.name + " exists.", 400))];
-                        return [4 /*yield*/, new PermissionRepository().create(item)];
-                    case 3:
-                        permission = _a.sent();
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
                         return [2 /*return*/, res.status(201).json({
                                 message: 'Operation successful',
-                                data: permission
+                                data: result.data
                             })];
-                    case 4:
+                    case 3:
                         err_1 = _a.sent();
-                        new error_1.InternalServerError('Internal Server error occured', 500);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -89,7 +89,7 @@ var PermissionController = /** @class */ (function () {
     PermissionController.prototype.findById = function () { };
     __decorate([
         decorators_1.post('/'),
-        decorators_1.requestValidators('name'),
+        decorators_1.requestValidators('name', 'type'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
@@ -99,4 +99,5 @@ var PermissionController = /** @class */ (function () {
     ], PermissionController);
     return PermissionController;
 }());
+exports.PermissionController = PermissionController;
 //# sourceMappingURL=PermissionController.js.map

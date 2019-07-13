@@ -3,14 +3,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess = require("../MongodataAccess");
 var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
-var interfaces_1 = require("../../models/interfaces");
 var roleSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: true
     },
-    roleType: {
-        type: interfaces_1.RoleType,
+    global: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    description: {
+        type: String,
         required: true
     }
 }, { timestamps: true });

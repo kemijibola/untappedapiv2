@@ -72,7 +72,7 @@ var ResourceBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._resourceRepository.findById(id)];
                     case 1:
                         resource = _a.sent();
-                        if (!resource._id)
+                        if (!resource)
                             return [2 /*return*/, Result_1.Result.fail(404, "Resource of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, resource)];
@@ -95,7 +95,7 @@ var ResourceBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._resourceRepository.findByCriteria(criteria)];
                     case 1:
                         resource = _a.sent();
-                        if (!resource._id)
+                        if (!resource)
                             return [2 /*return*/, Result_1.Result.fail(404, "Resource not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, resource)];
@@ -110,19 +110,26 @@ var ResourceBusiness = /** @class */ (function () {
     };
     ResourceBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newResource, err_4;
+            var resource, newResource, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._resourceRepository.create(item)];
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this._resourceRepository.findByCriteria({
+                                name: item.name
+                            })];
                     case 1:
+                        resource = _a.sent();
+                        if (!(resource === null)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this._resourceRepository.create(item)];
+                    case 2:
                         newResource = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newResource)];
-                    case 2:
+                    case 3: return [2 /*return*/, Result_1.Result.fail(400, "Resource with name " + resource.name + " exists")];
+                    case 4:
                         err_4 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
-                    case 3: return [2 /*return*/];
+                        throw new Error("InternalServer error occured." + err_4.message);
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -137,7 +144,7 @@ var ResourceBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._resourceRepository.findById(id)];
                     case 1:
                         resource = _a.sent();
-                        if (!resource._id)
+                        if (!resource)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update resource.Resource of Id " + id + " not found")];
                         return [4 /*yield*/, this._resourceRepository.update(resource._id, item)];
                     case 2:

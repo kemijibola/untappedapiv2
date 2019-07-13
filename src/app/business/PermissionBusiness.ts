@@ -25,7 +25,7 @@ class PermissionBusiness implements IPermissionBusiness {
   async findById(id: string): Promise<Result<IPermission>> {
     try {
       const permission = await this._permissionRepository.findById(id);
-      if (!permission._id)
+      if (!permission)
         return Result.fail<IPermission>(
           404,
           `Permission of Id ${id} not found`
@@ -44,7 +44,7 @@ class PermissionBusiness implements IPermissionBusiness {
       const permission = await this._permissionRepository.findByCriteria(
         criteria
       );
-      if (!permission._id)
+      if (!permission)
         return Result.fail<IPermission>(404, `Permission not found`);
       else return Result.ok<IPermission>(200, permission);
     } catch (err) {
@@ -57,20 +57,29 @@ class PermissionBusiness implements IPermissionBusiness {
 
   async create(item: IPermission): Promise<Result<IPermission>> {
     try {
-      const newPermission = await this._permissionRepository.create(item);
-      return Result.ok<IPermission>(201, newPermission);
-    } catch (err) {
+      const permission = await this._permissionRepository.findByCriteria({
+        name: item.name,
+        type: item.type
+      });
+      if (permission === null) {
+        const newPermission = await this._permissionRepository.create(item);
+        return Result.ok<IPermission>(201, newPermission);
+      }
       return Result.fail<IPermission>(
-        500,
-        `Internal server error occured. ${err}`
+        400,
+        `Permission with name '${permission.name}' and type '${
+          permission.type
+        }' exists.`
       );
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
   async update(id: string, item: IPermission): Promise<Result<IPermission>> {
     try {
       const permission = await this._permissionRepository.findById(id);
-      if (!permission._id)
+      if (!permission)
         return Result.fail<IPermission>(
           404,
           `Could not update permission.Permission of Id ${id} not found`

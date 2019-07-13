@@ -39,10 +39,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var Result_1 = require("../../utils/Result");
+var lib_1 = require("../../utils/lib");
+var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
+var config = require('../../config/keys');
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._userRepository = new UserRepository_1.default();
     }
+    UserBusiness.prototype.login = function (params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userModel, passwordMatched, permissionParams, permissions, signInOptions, payload, privateKey, userToken, authData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
+                            email: params.email.toLowerCase()
+                        })];
+                    case 1:
+                        userModel = _a.sent();
+                        if (!userModel)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Invalid credentials')];
+                        return [4 /*yield*/, userModel.comparePassword(params.password)];
+                    case 2:
+                        passwordMatched = _a.sent();
+                        if (!passwordMatched)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Invalid credentials')];
+                        permissionParams = {
+                            destinationUrl: params.destinationUrl.toLowerCase(),
+                            roles: userModel.roles.map(function (x) { return x._id; }).slice()
+                        };
+                        return [4 /*yield*/, lib_1.tokenExchange(permissionParams)];
+                    case 3:
+                        permissions = _a.sent();
+                        signInOptions = {
+                            issuer: config.ISSUER.toLowerCase(),
+                            audience: params.audience,
+                            expiresIn: config.AUTH_EXPIRESIN,
+                            algorithm: config.RSA_ALG_TYPE,
+                            keyid: config.RSA_KEYID,
+                            subject: ''
+                        };
+                        payload = {
+                            tokenType: GlobalEnum_1.TokenType.AUTH
+                        };
+                        privateKey = lib_1.getPrivateKey(config.RSA_KEYID);
+                        if (!privateKey)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'The token key provided is invalid')];
+                        return [4 /*yield*/, userModel.generateToken(privateKey, signInOptions, payload)];
+                    case 4:
+                        userToken = _a.sent();
+                        authData = {
+                            _id: userModel._id,
+                            email: userModel.email,
+                            roles: userModel.roles.map(function (role) { return role.name; }).slice(),
+                            permissions: permissions,
+                            token: userToken
+                        };
+                        return [2 /*return*/, Result_1.Result.ok(200, authData)];
+                }
+            });
+        });
+    };
+    // async register(params: IRegister): Promise<Result<IAuthData>> {
+    //   return;
+    // }
     UserBusiness.prototype.fetch = function () {
         return __awaiter(this, void 0, void 0, function () {
             var users, err_1;
@@ -72,7 +131,7 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
-                        if (!user._id)
+                        if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "User with Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, user)];
@@ -95,7 +154,7 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
                     case 1:
                         user = _a.sent();
-                        if (!user._id)
+                        if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, user)];
@@ -137,7 +196,7 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
-                        if (!user._id)
+                        if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update user.User of Id " + id + " not found")];
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
                     case 2:

@@ -45,7 +45,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var error_1 = require("../utils/error");
 var CommentController = /** @class */ (function () {
     function CommentController() {
     }
@@ -60,7 +59,7 @@ var CommentController = /** @class */ (function () {
                     // TODO:: using entityId has lookup
                 }
                 catch (err) {
-                    new error_1.InternalServerError('Internal Server error occured', 500);
+                    //new InternalServerError('Internal Server error occured', 500);
                 }
                 return [2 /*return*/];
             });

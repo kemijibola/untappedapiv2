@@ -25,7 +25,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
   async findById(id: string): Promise<Result<IEvaluation>> {
     try {
       const evaluation = await this._evaluationRepository.findById(id);
-      if (!evaluation._id)
+      if (!evaluation)
         return Result.fail<IEvaluation>(
           404,
           `Evaluation of Id ${id} not found`
@@ -44,7 +44,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
       const evaluation = await this._evaluationRepository.findByCriteria(
         criteria
       );
-      if (!evaluation._id)
+      if (!evaluation)
         return Result.fail<IEvaluation>(404, `Evaluation not found`);
       else return Result.ok<IEvaluation>(200, evaluation);
     } catch (err) {
@@ -70,7 +70,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
   async update(id: string, item: IEvaluation): Promise<Result<IEvaluation>> {
     try {
       const evaluation = await this._evaluationRepository.findById(id);
-      if (!evaluation._id)
+      if (!evaluation)
         return Result.fail<IEvaluation>(
           404,
           `Could not update evaluation.Evaluation of Id ${id} not found`

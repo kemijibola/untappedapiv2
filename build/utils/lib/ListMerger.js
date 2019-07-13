@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ListMerger = /** @class */ (function () {
     function ListMerger() {
     }
-    ListMerger.prototype.mergeList = function (list1, list2) {
+    ListMerger.mergeList = function (list1, list2) {
         var listMap1 = list1.reduce(function (theMap, theItem) {
             if (theItem)
                 theMap[theItem] = theItem;
@@ -14,7 +14,9 @@ var ListMerger = /** @class */ (function () {
                 theMap[theItem] = theItem;
             return theMap;
         }, {});
-        return Object.assign(listMap1, listMap2);
+        var merged = Object.assign(listMap1, listMap2);
+        Object.seal(merged);
+        return Object.keys(merged);
     };
     return ListMerger;
 }());

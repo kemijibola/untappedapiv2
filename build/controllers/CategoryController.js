@@ -48,14 +48,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var error_1 = require("../utils/error");
 var CategoryBusiness_1 = __importDefault(require("../app/business/CategoryBusiness"));
+var error_1 = require("../utils/error");
 var CategoryController = /** @class */ (function () {
     function CategoryController() {
     }
     CategoryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, categoryBusiness, newCategory, err_1;
+            var item, categoryBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -64,17 +64,23 @@ var CategoryController = /** @class */ (function () {
                         categoryBusiness = new CategoryBusiness_1.default();
                         return [4 /*yield*/, categoryBusiness.create(item)];
                     case 1:
-                        newCategory = _a.sent();
-                        if (!newCategory.successful) {
-                            return [2 /*return*/, next(new error_1.RecordExists("Error occured.Reason " + newCategory.error, 404))];
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
                         }
                         return [2 /*return*/, res.status(201).json({
                                 message: 'Operation successful',
-                                data: newCategory.value
+                                data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        return [2 /*return*/, next(new error_1.InternalServerError('Internal Server error occured', 500))];
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
                     case 3: return [2 /*return*/];
                 }
             });

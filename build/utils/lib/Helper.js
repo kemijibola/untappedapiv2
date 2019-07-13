@@ -41,6 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var config = require('../../config/keys');
 var ResourceRepository_1 = __importDefault(require("../../app/repository/ResourceRepository"));
 var ResourcePermissionRepository = require("../../app/repository/ResourcePermissionRepository");
+var error_1 = require("../error");
 var chunkedUserPermissons = {};
 exports.getPrivateKey = function (keyId) {
     return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
@@ -58,16 +59,24 @@ function tokenExchange(exchangeParams) {
                         })];
                 case 1:
                     resourceModel = _b.sent();
-                    console.log(resourceModel);
+                    if (!resourceModel._id)
+                        throw error_1.PlatformError.error({
+                            code: 404,
+                            message: exchangeParams.destinationUrl + " is not a valid route"
+                        });
                     _i = 0, _a = exchangeParams.roles;
                     _b.label = 2;
                 case 2:
                     if (!(_i < _a.length)) return [3 /*break*/, 5];
                     role = _a[_i];
-                    console.log(1);
                     return [4 /*yield*/, resourcePermissionRepository.findPermissionsByRole(role, resourceModel._id)];
                 case 3:
                     resourcePermissionModel = _b.sent();
+                    if (resourcePermissionModel.permissions.length < 1)
+                        throw error_1.PlatformError.error({
+                            code: 404,
+                            message: "There are no permissions configured for route " + resourceModel.name
+                        });
                     chunckPermission(resourcePermissionModel.permissions);
                     _b.label = 4;
                 case 4:

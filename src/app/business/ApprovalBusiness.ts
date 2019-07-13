@@ -24,8 +24,9 @@ class ApprovalBusiness implements IApprovalBusiness {
 
   async findById(id: string): Promise<Result<IApproval>> {
     try {
+      if (!id) return Result.fail<IApproval>(400, 'Invalid id');
       const approval = await this._approvalRepository.findById(id);
-      if (!approval._id)
+      if (!approval)
         return Result.fail<IApproval>(404, `Approval of Id ${id} not found`);
       else return Result.ok<IApproval>(200, approval);
     } catch (err) {
@@ -39,8 +40,7 @@ class ApprovalBusiness implements IApprovalBusiness {
   async findByCriteria(criteria: any): Promise<Result<IApproval>> {
     try {
       const approval = await this._approvalRepository.findByCriteria(criteria);
-      if (!approval._id)
-        return Result.fail<IApproval>(404, `Approval not found`);
+      if (!approval) return Result.fail<IApproval>(404, `Approval not found`);
       else return Result.ok<IApproval>(200, approval);
     } catch (err) {
       return Result.fail<IApproval>(
@@ -65,7 +65,7 @@ class ApprovalBusiness implements IApprovalBusiness {
   async update(id: string, item: IApproval): Promise<Result<IApproval>> {
     try {
       const approval = await this._approvalRepository.findById(id);
-      if (!approval._id)
+      if (!approval)
         return Result.fail<IApproval>(
           404,
           `Could not update approval.Approval of Id ${id} not found`

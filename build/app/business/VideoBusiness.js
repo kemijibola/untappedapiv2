@@ -72,7 +72,7 @@ var VideoBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._videoRepository.findById(id)];
                     case 1:
                         video = _a.sent();
-                        if (!video._id)
+                        if (!video)
                             return [2 /*return*/, Result_1.Result.fail(404, "Video of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, video)];
@@ -95,7 +95,7 @@ var VideoBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._videoRepository.findByCriteria(criteria)];
                     case 1:
                         video = _a.sent();
-                        if (!video._id)
+                        if (!video)
                             return [2 /*return*/, Result_1.Result.fail(404, "Video not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, video)];
@@ -137,7 +137,7 @@ var VideoBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._videoRepository.findById(id)];
                     case 1:
                         video = _a.sent();
-                        if (!video._id)
+                        if (!video)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update video.Video of Id " + id + " not found")];
                         return [4 /*yield*/, this._videoRepository.update(video._id, item)];
                     case 2:

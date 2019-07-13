@@ -22,8 +22,7 @@ class RoleBusiness implements IRoleBusiness {
   async findById(id: string): Promise<Result<IRole>> {
     try {
       const role = await this._roleRepository.findById(id);
-      if (!role._id)
-        return Result.fail<IRole>(404, `Role of Id ${id} not found`);
+      if (!role) return Result.fail<IRole>(404, `Role of Id ${id} not found`);
       else return Result.ok<IRole>(200, role);
     } catch (err) {
       return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
@@ -33,7 +32,7 @@ class RoleBusiness implements IRoleBusiness {
   async findByCriteria(criteria: any): Promise<Result<IRole>> {
     try {
       const role = await this._roleRepository.findByCriteria(criteria);
-      if (!role._id) return Result.fail<IRole>(404, `Role not found`);
+      if (!role) return Result.fail<IRole>(404, `Role not found`);
       else return Result.ok<IRole>(200, role);
     } catch (err) {
       return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
@@ -42,8 +41,14 @@ class RoleBusiness implements IRoleBusiness {
 
   async create(item: IRole): Promise<Result<IRole>> {
     try {
-      const newRole = await this._roleRepository.create(item);
-      return Result.ok<IRole>(201, newRole);
+      const role = await this._roleRepository.findByCriteria({
+        name: item.name
+      });
+      if (role === null) {
+        const newRole = await this._roleRepository.create(item);
+        return Result.ok<IRole>(201, newRole);
+      }
+      return Result.fail<IRole>(400, `Role with name ${role.name} exists`);
     } catch (err) {
       return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
     }
@@ -52,7 +57,7 @@ class RoleBusiness implements IRoleBusiness {
   async update(id: string, item: IRole): Promise<Result<IRole>> {
     try {
       const role = await this._roleRepository.findById(id);
-      if (!role._id)
+      if (!role)
         return Result.fail<IRole>(
           500,
           `Could not update approval.Approval of Id ${id} not found`

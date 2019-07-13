@@ -25,7 +25,7 @@ class ContestBusiness implements IContestEntryBusiness {
   async findById(id: string): Promise<Result<IContestEntry>> {
     try {
       const contestEntry = await this._contestEntryRepository.findById(id);
-      if (!contestEntry._id)
+      if (!contestEntry)
         return Result.fail<IContestEntry>(
           404,
           `Contest entry of Id ${id} not found`
@@ -44,7 +44,7 @@ class ContestBusiness implements IContestEntryBusiness {
       const contestEntry = await this._contestEntryRepository.findByCriteria(
         criteria
       );
-      if (!contestEntry._id)
+      if (!contestEntry)
         return Result.fail<IContestEntry>(404, `Contest entry not found`);
       else return Result.ok<IContestEntry>(200, contestEntry);
     } catch (err) {
@@ -73,7 +73,7 @@ class ContestBusiness implements IContestEntryBusiness {
   ): Promise<Result<IContestEntry>> {
     try {
       const contestEntry = await this._contestEntryRepository.findById(id);
-      if (!contestEntry._id)
+      if (!contestEntry)
         return Result.fail<IContestEntry>(
           404,
           `Could not update approval.Approval of Id ${id} not found`

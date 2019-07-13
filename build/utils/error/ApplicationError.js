@@ -14,66 +14,17 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var GlobalError_1 = require("./GlobalError");
-var RecordNotFound = /** @class */ (function (_super) {
-    __extends(RecordNotFound, _super);
-    function RecordNotFound(message, code) {
-        var _this = _super.call(this, { message: message, code: code }) || this;
-        _this.message = message;
-        _this.code = code;
+var PlatformError = /** @class */ (function (_super) {
+    __extends(PlatformError, _super);
+    function PlatformError(error) {
+        var _this = _super.call(this, error) || this;
+        _this.error = error;
         return _this;
     }
-    return RecordNotFound;
+    PlatformError.error = function (error) {
+        return new PlatformError(error);
+    };
+    return PlatformError;
 }(GlobalError_1.GlobalError));
-exports.RecordNotFound = RecordNotFound;
-var InvalidContent = /** @class */ (function (_super) {
-    __extends(InvalidContent, _super);
-    function InvalidContent(message, code) {
-        var _this = _super.call(this, { message: message, code: code }) || this;
-        _this.message = message;
-        _this.code = code;
-        return _this;
-    }
-    return InvalidContent;
-}(GlobalError_1.GlobalError));
-exports.InvalidContent = InvalidContent;
-var InvalidCredentials = /** @class */ (function (_super) {
-    __extends(InvalidCredentials, _super);
-    function InvalidCredentials(message, code) {
-        return _super.call(this, { message: message, code: code }) || this;
-    }
-    return InvalidCredentials;
-}(GlobalError_1.GlobalError));
-exports.InvalidCredentials = InvalidCredentials;
-var RecordExists = /** @class */ (function (_super) {
-    __extends(RecordExists, _super);
-    function RecordExists(message, code) {
-        return _super.call(this, { message: message, code: code }) || this;
-    }
-    return RecordExists;
-}(GlobalError_1.GlobalError));
-exports.RecordExists = RecordExists;
-var FetchRecordFailed = /** @class */ (function (_super) {
-    __extends(FetchRecordFailed, _super);
-    function FetchRecordFailed(message, code) {
-        return _super.call(this, { message: message, code: code }) || this;
-    }
-    return FetchRecordFailed;
-}(GlobalError_1.GlobalError));
-exports.FetchRecordFailed = FetchRecordFailed;
-var FetchRecordsFailed = /** @class */ (function (_super) {
-    __extends(FetchRecordsFailed, _super);
-    function FetchRecordsFailed(message, code) {
-        return _super.call(this, { message: message, code: code }) || this;
-    }
-    return FetchRecordsFailed;
-}(GlobalError_1.GlobalError));
-exports.FetchRecordsFailed = FetchRecordsFailed;
-var InternalServerError = /** @class */ (function (_super) {
-    __extends(InternalServerError, _super);
-    function InternalServerError(message, code) {
-        return _super.call(this, { message: message, code: code }) || this;
-    }
-    return InternalServerError;
-}(GlobalError_1.GlobalError));
-exports.InternalServerError = InternalServerError;
+exports.PlatformError = PlatformError;
 //# sourceMappingURL=ApplicationError.js.map

@@ -25,7 +25,7 @@ class CommentBusiness implements ICommentBusiness {
   async findById(id: string): Promise<Result<IComment>> {
     try {
       const comment = await this._commentRepository.findById(id);
-      if (!comment._id)
+      if (!comment)
         return Result.fail<IComment>(404, `Comment of Id ${id} not found`);
       else return Result.ok<IComment>(200, comment);
     } catch (err) {
@@ -39,7 +39,7 @@ class CommentBusiness implements ICommentBusiness {
   async findByCriteria(criteria: any): Promise<Result<IComment>> {
     try {
       const comment = await this._commentRepository.findByCriteria(criteria);
-      if (!comment._id) return Result.fail<IComment>(404, `Comment not found`);
+      if (!comment) return Result.fail<IComment>(404, `Comment not found`);
       else return Result.ok<IComment>(200, comment);
     } catch (err) {
       return Result.fail<IComment>(
@@ -64,7 +64,7 @@ class CommentBusiness implements ICommentBusiness {
   async update(id: string, item: IComment): Promise<Result<IComment>> {
     try {
       const comment = await this._commentRepository.findById(id);
-      if (!comment._id)
+      if (!comment)
         return Result.fail<IComment>(
           404,
           `Could not update comment.Comment of Id ${id} not found`

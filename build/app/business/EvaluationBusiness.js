@@ -72,7 +72,7 @@ var EvaluationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._evaluationRepository.findById(id)];
                     case 1:
                         evaluation = _a.sent();
-                        if (!evaluation._id)
+                        if (!evaluation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Evaluation of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
@@ -95,7 +95,7 @@ var EvaluationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._evaluationRepository.findByCriteria(criteria)];
                     case 1:
                         evaluation = _a.sent();
-                        if (!evaluation._id)
+                        if (!evaluation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Evaluation not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
@@ -137,7 +137,7 @@ var EvaluationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._evaluationRepository.findById(id)];
                     case 1:
                         evaluation = _a.sent();
-                        if (!evaluation._id)
+                        if (!evaluation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update evaluation.Evaluation of Id " + id + " not found")];
                         return [4 /*yield*/, this._evaluationRepository.update(evaluation._id, item)];
                     case 2:

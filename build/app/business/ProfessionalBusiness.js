@@ -72,7 +72,7 @@ var ProfessionalBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._professionalRepository.findById(id)];
                     case 1:
                         professional = _a.sent();
-                        if (!professional._id)
+                        if (!professional)
                             return [2 /*return*/, Result_1.Result.fail(404, "Professional of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, professional)];
@@ -95,7 +95,7 @@ var ProfessionalBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._professionalRepository.findByCriteria(criteria)];
                     case 1:
                         professional = _a.sent();
-                        if (!professional._id)
+                        if (!professional)
                             return [2 /*return*/, Result_1.Result.fail(404, "Professional not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, professional)];
@@ -137,7 +137,7 @@ var ProfessionalBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._professionalRepository.findById(id)];
                     case 1:
                         professional = _a.sent();
-                        if (!professional._id)
+                        if (!professional)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update professional.Professional of Id " + id + " not found")];
                         return [4 /*yield*/, this._professionalRepository.update(professional._id, item)];
                     case 2:

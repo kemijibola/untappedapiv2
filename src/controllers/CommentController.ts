@@ -2,11 +2,10 @@ import { controller, post, requestValidators } from '../decorators';
 import IBaseController from './interfaces/base/BaseController';
 import { Request, Response, NextFunction } from 'express';
 import { IComment } from '../app/models/interfaces';
-import { RecordExists, InternalServerError } from '../utils/error';
 import CommentRepository = require('../app/repository/CommentRepository');
 
 @controller('/comments')
-class CommentController implements IBaseController {
+class CommentController {
   @post('/')
   @requestValidators('entityId')
   async create(req: Request, res: Response, next: NextFunction) {
@@ -16,7 +15,7 @@ class CommentController implements IBaseController {
       // TODO:: Perform update when there is an actual comment to be posted on the entity
       // TODO:: using entityId has lookup
     } catch (err) {
-      new InternalServerError('Internal Server error occured', 500);
+      //new InternalServerError('Internal Server error occured', 500);
     }
   }
   update(): void {}

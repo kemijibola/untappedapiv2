@@ -72,7 +72,7 @@ var AudioBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._audioRepository.findById(id)];
                     case 1:
                         audio = _a.sent();
-                        if (!audio._id)
+                        if (!audio)
                             return [2 /*return*/, Result_1.Result.fail(404, "Audio of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, audio)];
@@ -95,7 +95,7 @@ var AudioBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._audioRepository.findByCriteria(criteria)];
                     case 1:
                         audio = _a.sent();
-                        if (!audio._id)
+                        if (!audio)
                             return [2 /*return*/, Result_1.Result.fail(404, "Audio not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, audio)];
@@ -137,7 +137,7 @@ var AudioBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._audioRepository.findById(id)];
                     case 1:
                         audio = _a.sent();
-                        if (!audio._id)
+                        if (!audio)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update audio.Audio of Id " + id + " not found")];
                         return [4 /*yield*/, this._audioRepository.update(audio._id, item)];
                     case 2:

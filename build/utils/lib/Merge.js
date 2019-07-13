@@ -4,8 +4,11 @@ var Merger = /** @class */ (function () {
     function Merger(merge) {
         this.merge = merge;
     }
-    Merger.prototype.mergeList = function (param1, param2) {
-        this.merge.mergeList(param1, param2);
+    // mergeList<T, K>(param1: T, param2: K): void {
+    //   this.merge.mergeList(param1, param2);
+    // }
+    Merger.merge = function (merger) {
+        return new Merger(merger);
     };
     return Merger;
 }());

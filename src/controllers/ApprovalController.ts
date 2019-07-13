@@ -2,24 +2,31 @@ import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
 import ApprovalRepository = require('../app/repository/ApprovalRepository');
 import { IApproval } from '../app/models/interfaces';
-import { RecordExists, InternalServerError } from '../utils/error';
 import ApprovalBusiness from '../app/business/ApprovalBusiness';
 import BaseController from './interfaces/base/BaseController';
+import { PlatformError } from '../utils/error';
 
 @controller('./approvals')
-class ApprovalController implements BaseController {
+class ApprovalController {
   @post('/')
   @requestValidators('entity', 'operation', 'approved')
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const item: IApproval = req.body;
-      const approval = await new ApprovalRepository().create(item);
-      return res.status(201).json({
-        message: 'Operation successful',
-        data: approval
+      const approvalBusiness = new ApprovalBusiness();
+      const result = await approvalBusiness.create(item);
+      if (result.error) {
+        return PlatformError.error({
+          code: result.responseCode,
+          message: `Error occured. ${result.error}`
+        });
+      }
+      return res.status(200).json({
+        message: 'Operation Successful',
+        data: result.data
       });
     } catch (err) {
-      next(new InternalServerError('Internal Server error occured', 500));
+      //next(new InternalServerError('Internal Server error occured', 500));
     }
   }
   update(req: Request, res: Response, next: NextFunction): void {}

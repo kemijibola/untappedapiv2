@@ -1,8 +1,6 @@
 import mongoose = require('mongoose');
 import IRead from '../interface/base/Read';
 import IWrite from '../interface/base/Write';
-import redis from 'redis';
-import util from 'util';
 
 class RepositoryBase<T extends mongoose.Document>
   implements IRead<T>, IWrite<T> {

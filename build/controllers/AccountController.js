@@ -48,10 +48,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var UserRepository_1 = __importDefault(require("../app/repository/UserRepository"));
-var ApplicationError_1 = require("../utils/error/ApplicationError");
-var lib_1 = require("../utils/lib");
-var config = require('../config/keys');
+var UserBusiness_1 = __importDefault(require("../app/business/UserBusiness"));
+var error_1 = require("../utils/error");
 function logger(req, res, next) {
     console.log('Request was made');
     next();
@@ -61,39 +59,37 @@ var AuthController = /** @class */ (function () {
     }
     AuthController.prototype.postLogin = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, email, password, audience, userModel, matched, params, permissions, err_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var loginParams, userBusiness, result, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _b.trys.push([0, 4, , 5]);
-                        _a = req.body, email = _a.email, password = _a.password, audience = _a.audience;
-                        return [4 /*yield*/, new UserRepository_1.default().findByCriteria({
-                                email: email.toLowerCase()
-                            })];
-                    case 1:
-                        userModel = _b.sent();
-                        if (!userModel)
-                            return [2 /*return*/, next(new ApplicationError_1.RecordNotFound('Invalid user.', 404))];
-                        return [4 /*yield*/, userModel.comparePassword(password)];
-                    case 2:
-                        matched = _b.sent();
-                        if (!matched)
-                            return [2 /*return*/, next(new ApplicationError_1.InvalidCredentials('Invalid credentials.', 400))];
-                        params = {
-                            destinationUrl: req.url.toLowerCase(),
-                            roles: userModel.roles.map(function (x) { return x._id; }).slice()
+                        _a.trys.push([0, 2, , 3]);
+                        loginParams = {
+                            email: req.body.email,
+                            password: req.body.password,
+                            audience: req.body.audience,
+                            destinationUrl: req.url.toLowerCase()
                         };
-                        console.log(params);
-                        return [4 /*yield*/, lib_1.tokenExchange(params)];
-                    case 3:
-                        permissions = _b.sent();
-                        console.log(permissions);
-                        return [3 /*break*/, 5];
-                    case 4:
-                        err_1 = _b.sent();
-                        console.log(err_1);
-                        return [2 /*return*/, next(new ApplicationError_1.InternalServerError('Internal Server error occured', 500))];
-                    case 5: return [2 /*return*/];
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.login(loginParams)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(200).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -105,6 +101,7 @@ var AuthController = /** @class */ (function () {
     AuthController.prototype.findById = function () { };
     __decorate([
         decorators_1.post('/login'),
+        decorators_1.requestValidators('email', 'password', 'audience'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

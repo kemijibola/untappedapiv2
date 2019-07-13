@@ -38,10 +38,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ResourcePermissionRepository_1 = __importDefault(require("../repository/ResourcePermissionRepository"));
+var ResourceRepository_1 = __importDefault(require("../repository/ResourceRepository"));
+var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
+var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var Result_1 = require("../../utils/Result");
+var StringMerger_1 = require("../../utils/lib/StringMerger");
 var ResourcePermissionBusiness = /** @class */ (function () {
     function ResourcePermissionBusiness() {
         this._resourcePermissionRepository = new ResourcePermissionRepository_1.default();
+        this._resourceRepository = new ResourceRepository_1.default();
+        this._roleRepository = new RoleRepository_1.default();
+        this._permissionRepository = new PermissionRepository_1.default();
     }
     ResourcePermissionBusiness.prototype.fetch = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -72,7 +79,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._resourcePermissionRepository.findById(id)];
                     case 1:
                         resourcePermission = _a.sent();
-                        if (!resourcePermission._id)
+                        if (!resourcePermission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Resource permission of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, resourcePermission)];
@@ -95,7 +102,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._resourcePermissionRepository.findByCriteria(criteria)];
                     case 1:
                         resourcePermission = _a.sent();
-                        if (!resourcePermission._id)
+                        if (!resourcePermission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Resource permission not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, resourcePermission)];
@@ -110,19 +117,56 @@ var ResourcePermissionBusiness = /** @class */ (function () {
     };
     ResourcePermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newResourcePermission, err_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var resource, role, _i, _a, key, permission, resourcePermission, permissionMerger, newResourcePermission, err_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._resourcePermissionRepository.create(item)];
+                        _b.trys.push([0, 11, , 12]);
+                        return [4 /*yield*/, this._resourceRepository.findById(item.resource)];
                     case 1:
-                        newResourcePermission = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(201, newResourcePermission)];
+                        resource = _b.sent();
+                        if (!resource)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Resource id " + item.resource + " is not a valid resource")];
+                        return [4 /*yield*/, this._roleRepository.findById(item.role)];
                     case 2:
-                        err_4 = _a.sent();
+                        role = _b.sent();
+                        if (!role)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Role id " + item.role + " is not a valid role")];
+                        _i = 0, _a = item.permissions;
+                        _b.label = 3;
+                    case 3:
+                        if (!(_i < _a.length)) return [3 /*break*/, 6];
+                        key = _a[_i];
+                        return [4 /*yield*/, this._permissionRepository.findById(key)];
+                    case 4:
+                        permission = _b.sent();
+                        if (!permission)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Permission id " + key + " is not a valid Permission")];
+                        _b.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6: return [4 /*yield*/, this._resourcePermissionRepository.findByCriteria({
+                            resource: resource._id,
+                            role: role._id
+                        })];
+                    case 7:
+                        resourcePermission = _b.sent();
+                        if (!(resourcePermission !== null)) return [3 /*break*/, 9];
+                        permissionMerger = new StringMerger_1.StringListMerger(resourcePermission.permissions, item.permissions);
+                        resourcePermission.permissions = permissionMerger.mergeList();
+                        return [4 /*yield*/, resourcePermission.save()];
+                    case 8:
+                        _b.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, resourcePermission)];
+                    case 9: return [4 /*yield*/, this._resourcePermissionRepository.create(item)];
+                    case 10:
+                        newResourcePermission = _b.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newResourcePermission)];
+                    case 11:
+                        err_4 = _b.sent();
                         return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
-                    case 3: return [2 /*return*/];
+                    case 12: return [2 /*return*/];
                 }
             });
         });

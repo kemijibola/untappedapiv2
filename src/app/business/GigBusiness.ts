@@ -22,7 +22,7 @@ class GigBusiness implements IGigBusiness {
   async findById(id: string): Promise<Result<IGig>> {
     try {
       const gig = await this._gigRepository.findById(id);
-      if (!gig._id) return Result.fail<IGig>(404, `Gig of Id ${id} not found`);
+      if (!gig) return Result.fail<IGig>(404, `Gig of Id ${id} not found`);
       else return Result.ok<IGig>(200, gig);
     } catch (err) {
       return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
@@ -32,7 +32,7 @@ class GigBusiness implements IGigBusiness {
   async findByCriteria(criteria: any): Promise<Result<IGig>> {
     try {
       const gig = await this._gigRepository.findByCriteria(criteria);
-      if (!gig._id) return Result.fail<IGig>(404, `Gig not found`);
+      if (!gig) return Result.fail<IGig>(404, `Gig not found`);
       else return Result.ok<IGig>(200, gig);
     } catch (err) {
       return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
@@ -51,7 +51,7 @@ class GigBusiness implements IGigBusiness {
   async update(id: string, item: IGig): Promise<Result<IGig>> {
     try {
       const gig = await this._gigRepository.findById(id);
-      if (!gig._id)
+      if (!gig)
         return Result.fail<IGig>(
           404,
           `Could not update approval.Approval of Id ${id} not found`

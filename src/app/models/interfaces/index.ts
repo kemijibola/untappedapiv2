@@ -20,3 +20,4 @@ export * from './Timestamp';
 export * from './ScheduledComment';
 export * from './Approval';
 export * from './Media';
+export * from './Account';

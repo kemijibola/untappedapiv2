@@ -22,7 +22,7 @@ class AudioBusiness implements IAudioBusiness {
   async findById(id: string): Promise<Result<IAudio>> {
     try {
       const audio = await this._audioRepository.findById(id);
-      if (!audio._id)
+      if (!audio)
         return Result.fail<IAudio>(404, `Audio of Id ${id} not found`);
       else return Result.ok<IAudio>(200, audio);
     } catch (err) {
@@ -33,7 +33,7 @@ class AudioBusiness implements IAudioBusiness {
   async findByCriteria(criteria: any): Promise<Result<IAudio>> {
     try {
       const audio = await this._audioRepository.findByCriteria(criteria);
-      if (!audio._id) return Result.fail<IAudio>(404, `Audio not found`);
+      if (!audio) return Result.fail<IAudio>(404, `Audio not found`);
       else return Result.ok<IAudio>(200, audio);
     } catch (err) {
       return Result.fail<IAudio>(500, `Internal server error occured. ${err}`);
@@ -52,7 +52,7 @@ class AudioBusiness implements IAudioBusiness {
   async update(id: string, item: IAudio): Promise<Result<IAudio>> {
     try {
       const audio = await this._audioRepository.findById(id);
-      if (!audio._id)
+      if (!audio)
         return Result.fail<IAudio>(
           404,
           `Could not update audio.Audio of Id ${id} not found`

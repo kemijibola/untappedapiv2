@@ -25,7 +25,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
   async findById(id: string): Promise<Result<IProfessional>> {
     try {
       const professional = await this._professionalRepository.findById(id);
-      if (!professional._id)
+      if (!professional)
         return Result.fail<IProfessional>(
           404,
           `Professional of Id ${id} not found`
@@ -44,7 +44,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
       const professional = await this._professionalRepository.findByCriteria(
         criteria
       );
-      if (!professional._id)
+      if (!professional)
         return Result.fail<IProfessional>(404, `Professional not found`);
       else return Result.ok<IProfessional>(200, professional);
     } catch (err) {
@@ -73,7 +73,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
   ): Promise<Result<IProfessional>> {
     try {
       const professional = await this._professionalRepository.findById(id);
-      if (!professional._id)
+      if (!professional)
         return Result.fail<IProfessional>(
           404,
           `Could not update professional.Professional of Id ${id} not found`

@@ -1,7 +1,7 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IRole, RoleType } from '../../models/interfaces';
+import { IRole } from '../../models/interfaces';
 
 const roleSchema: Schema = new Schema(
   {
@@ -9,8 +9,13 @@ const roleSchema: Schema = new Schema(
       type: String,
       required: true
     },
-    roleType: {
-      type: RoleType,
+    global: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    description: {
+      type: String,
       required: true
     }
   },

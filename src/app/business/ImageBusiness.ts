@@ -22,7 +22,7 @@ class ImageBusiness implements IImageBusiness {
   async findById(id: string): Promise<Result<IImage>> {
     try {
       const image = await this._imageRepository.findById(id);
-      if (!image._id)
+      if (!image)
         return Result.fail<IImage>(404, `Image of Id ${id} not found`);
       else return Result.ok<IImage>(200, image);
     } catch (err) {
@@ -33,7 +33,7 @@ class ImageBusiness implements IImageBusiness {
   async findByCriteria(criteria: any): Promise<Result<IImage>> {
     try {
       const image = await this._imageRepository.findByCriteria(criteria);
-      if (!image._id) return Result.fail<IImage>(404, `Image not found`);
+      if (!image) return Result.fail<IImage>(404, `Image not found`);
       else return Result.ok<IImage>(200, image);
     } catch (err) {
       return Result.fail<IImage>(500, `Internal server error occured. ${err}`);
@@ -52,7 +52,7 @@ class ImageBusiness implements IImageBusiness {
   async update(id: string, item: IImage): Promise<Result<IImage>> {
     try {
       const image = await this._imageRepository.findById(id);
-      if (!image._id)
+      if (!image)
         return Result.fail<IImage>(
           404,
           `Could not update image.Image of Id ${id} not found`

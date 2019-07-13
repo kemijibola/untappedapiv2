@@ -72,7 +72,7 @@ var ImageBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._imageRepository.findById(id)];
                     case 1:
                         image = _a.sent();
-                        if (!image._id)
+                        if (!image)
                             return [2 /*return*/, Result_1.Result.fail(404, "Image of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, image)];
@@ -95,7 +95,7 @@ var ImageBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._imageRepository.findByCriteria(criteria)];
                     case 1:
                         image = _a.sent();
-                        if (!image._id)
+                        if (!image)
                             return [2 /*return*/, Result_1.Result.fail(404, "Image not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, image)];
@@ -137,7 +137,7 @@ var ImageBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._imageRepository.findById(id)];
                     case 1:
                         image = _a.sent();
-                        if (!image._id)
+                        if (!image)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update image.Image of Id " + id + " not found")];
                         return [4 /*yield*/, this._imageRepository.update(image._id, item)];
                     case 2:

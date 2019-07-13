@@ -31,11 +31,6 @@ const userSchema: Schema = new Schema(
         required: true
       }
     ],
-    userType: {
-      type: Schema.Types.ObjectId,
-      ref: 'UserType',
-      required: true
-    },
     lastLogin: { type: Date }
   },
   { timestamps: true }

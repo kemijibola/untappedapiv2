@@ -25,7 +25,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
   async findById(id: string): Promise<Result<IPrizeType>> {
     try {
       const prizeType = await this._prizeTypeRepository.findById(id);
-      if (!prizeType._id)
+      if (!prizeType)
         return Result.fail<IPrizeType>(404, `Prize type of Id ${id} not found`);
       else return Result.ok<IPrizeType>(200, prizeType);
     } catch (err) {
@@ -41,7 +41,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
       const prizeType = await this._prizeTypeRepository.findByCriteria(
         criteria
       );
-      if (!prizeType._id)
+      if (!prizeType)
         return Result.fail<IPrizeType>(404, `Prize type not found`);
       else return Result.ok<IPrizeType>(200, prizeType);
     } catch (err) {
@@ -67,7 +67,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
   async update(id: string, item: IPrizeType): Promise<Result<IPrizeType>> {
     try {
       const prizeType = await this._prizeTypeRepository.findById(id);
-      if (!prizeType._id)
+      if (!prizeType)
         return Result.fail<IPrizeType>(
           404,
           `Could not update prize type.Prize type of Id ${id} not found`

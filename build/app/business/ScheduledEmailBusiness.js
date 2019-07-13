@@ -72,7 +72,7 @@ var ScheduleEmailBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._scheduledEmailRepository.findById(id)];
                     case 1:
                         scheduledEmail = _a.sent();
-                        if (!scheduledEmail._id)
+                        if (!scheduledEmail)
                             return [2 /*return*/, Result_1.Result.fail(404, "Scheduled Email of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, scheduledEmail)];
@@ -95,7 +95,7 @@ var ScheduleEmailBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._scheduledEmailRepository.findByCriteria(criteria)];
                     case 1:
                         scheduledEmail = _a.sent();
-                        if (!scheduledEmail._id)
+                        if (!scheduledEmail)
                             return [2 /*return*/, Result_1.Result.fail(404, "Scheduled Email not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, scheduledEmail)];
@@ -137,7 +137,7 @@ var ScheduleEmailBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._scheduledEmailRepository.findById(id)];
                     case 1:
                         scheduledEmail = _a.sent();
-                        if (!scheduledEmail._id)
+                        if (!scheduledEmail)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update scheduled email.Scheduled Email of Id " + id + " not found")];
                         return [4 /*yield*/, this._scheduledEmailRepository.update(scheduledEmail._id, item)];
                     case 2:

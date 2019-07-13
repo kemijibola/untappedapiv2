@@ -45,78 +45,64 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var AudioRepository = require("../app/repository/AudioRepository");
-var VideoRepository = require("../app/repository/VideoRepository");
-var ImageRepository = require("../app/repository/ImageRepository");
-var error_1 = require("../utils/error");
-var lib_1 = require("../utils/lib");
 var MediaController = /** @class */ (function () {
     function MediaController() {
     }
     MediaController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, _a, _1, fileExtension, audioModel, audio, videoModel, video, imageModel, image, err_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 11, , 12]);
-                        item = req.body;
-                        _a = item.items[0].path.split('.'), _1 = _a[0], fileExtension = _a[1];
-                        if (!lib_1.audioExtentions.includes(fileExtension)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, new AudioRepository().findByCriteria({
-                                title: item.title.toLowerCase()
-                            })];
-                    case 1:
-                        audioModel = _b.sent();
-                        if (audioModel.title)
-                            return [2 /*return*/, next(new error_1.RecordExists("Audio title: " + item.title + " exists", 400))];
-                        return [4 /*yield*/, new AudioRepository().create(item)];
-                    case 2:
-                        audio = _b.sent();
-                        return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
-                                data: audio
-                            })];
-                    case 3:
-                        if (!lib_1.videoExtensions.includes(fileExtension)) return [3 /*break*/, 6];
-                        return [4 /*yield*/, new VideoRepository().findByCriteria({
-                                title: item.title.toLowerCase()
-                            })];
-                    case 4:
-                        videoModel = _b.sent();
-                        if (videoModel.title)
-                            next(new error_1.RecordExists("Video title: " + item.title + " exists", 400));
-                        return [4 /*yield*/, new VideoRepository().create(item)];
-                    case 5:
-                        video = _b.sent();
-                        return [2 /*return*/, res.status(201).json({
-                                message: 'Operational successful',
-                                data: video
-                            })];
-                    case 6:
-                        if (!lib_1.imageExtensions.includes(fileExtension)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, new ImageRepository().findByCriteria({
-                                title: item.title.toLowerCase()
-                            })];
-                    case 7:
-                        imageModel = _b.sent();
-                        if (imageModel)
-                            next(new error_1.RecordExists("Image title: " + item.title + " exists", 400));
-                        return [4 /*yield*/, new ImageRepository().create(item)];
-                    case 8:
-                        image = _b.sent();
-                        return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
-                                data: image
-                            })];
-                    case 9: return [2 /*return*/, next(new error_1.InvalidContent(fileExtension + " is not a supported format", 400))];
-                    case 10: return [3 /*break*/, 12];
-                    case 11:
-                        err_1 = _b.sent();
-                        next(new error_1.InternalServerError('Internal Server error occured', 500));
-                        return [3 /*break*/, 12];
-                    case 12: return [2 /*return*/];
+            return __generator(this, function (_a) {
+                try {
+                    // let criteria: { $and: any; $or: any } = {
+                    //   $and: null,
+                    //   $or: null
+                    // };
+                    // const item: IMedia = req.body;
+                    // const [_, fileExtension] = item.items[0].path.split('.');
+                    // if (audioExtentions.includes(fileExtension)) {
+                    //   const audioModel = await new AudioRepository().findByCriteria({
+                    //     title: item.title.toLowerCase()
+                    //   });
+                    //   if (audioModel.title)
+                    //     return next(
+                    //       new RecordExists(`Audio title: ${item.title} exists`, 400)
+                    //     );
+                    //   const audio = await new AudioRepository().create(item);
+                    //   return res.status(201).json({
+                    //     message: 'Operation successful',
+                    //     data: audio
+                    //   });
+                    // } else if (videoExtensions.includes(fileExtension)) {
+                    //   const videoModel = await new VideoRepository().findByCriteria({
+                    //     title: item.title.toLowerCase()
+                    //   });
+                    //   if (videoModel.title)
+                    //     next(new RecordExists(`Video title: ${item.title} exists`, 400));
+                    //   const video = await new VideoRepository().create(item);
+                    //   return res.status(201).json({
+                    //     message: 'Operational successful',
+                    //     data: video
+                    //   });
+                    // } else if (imageExtensions.includes(fileExtension)) {
+                    //   const imageModel = await new ImageRepository().findByCriteria({
+                    //     title: item.title.toLowerCase()
+                    //   });
+                    //   if (imageModel)
+                    //     next(new RecordExists(`Image title: ${item.title} exists`, 400));
+                    //   const image = await new ImageRepository().create(item);
+                    //   return res.status(201).json({
+                    //     message: 'Operation successful',
+                    //     data: image
+                    //   });
+                    // } else {
+                    //   return next(
+                    //     new InvalidContent(`${fileExtension} is not a supported format`, 400)
+                    //   );
+                    // }
                 }
+                catch (err) {
+                    // next(new InternalServerError('Internal Server error occured', 500));
+                }
+                return [2 /*return*/];
             });
         });
     };

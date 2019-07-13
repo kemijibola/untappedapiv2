@@ -72,7 +72,7 @@ var PermissionBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._permissionRepository.findById(id)];
                     case 1:
                         permission = _a.sent();
-                        if (!permission._id)
+                        if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Permission of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, permission)];
@@ -95,7 +95,7 @@ var PermissionBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._permissionRepository.findByCriteria(criteria)];
                     case 1:
                         permission = _a.sent();
-                        if (!permission._id)
+                        if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Permission not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, permission)];
@@ -110,19 +110,27 @@ var PermissionBusiness = /** @class */ (function () {
     };
     PermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newPermission, err_4;
+            var permission, newPermission, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._permissionRepository.create(item)];
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this._permissionRepository.findByCriteria({
+                                name: item.name,
+                                type: item.type
+                            })];
                     case 1:
+                        permission = _a.sent();
+                        if (!(permission === null)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this._permissionRepository.create(item)];
+                    case 2:
                         newPermission = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newPermission)];
-                    case 2:
+                    case 3: return [2 /*return*/, Result_1.Result.fail(400, "Permission with name '" + permission.name + "' and type '" + permission.type + "' exists.")];
+                    case 4:
                         err_4 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
-                    case 3: return [2 /*return*/];
+                        throw new Error("InternalServer error occured." + err_4.message);
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -137,7 +145,7 @@ var PermissionBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._permissionRepository.findById(id)];
                     case 1:
                         permission = _a.sent();
-                        if (!permission._id)
+                        if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update permission.Permission of Id " + id + " not found")];
                         return [4 /*yield*/, this._permissionRepository.update(permission._id, item)];
                     case 2:

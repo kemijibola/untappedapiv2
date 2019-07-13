@@ -45,41 +45,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var CountryRepository = require("../app/repository/CountryRepository");
-var error_1 = require("../utils/error");
 var CountryController = /** @class */ (function () {
     function CountryController() {
     }
     CountryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, countryModel, country, err_1;
+            var item;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        item = req.body;
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, new CountryRepository().findByCriteria({
-                                name: item.name.toLowerCase()
-                            })];
-                    case 2:
-                        countryModel = _a.sent();
-                        if (countryModel)
-                            return [2 /*return*/, next(new error_1.RecordExists("Country with name " + countryModel.name + " exists.", 400))];
-                        return [4 /*yield*/, new CountryRepository().create(item)];
-                    case 3:
-                        country = _a.sent();
-                        return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
-                                data: country
-                            })];
-                    case 4:
-                        err_1 = _a.sent();
-                        new error_1.InternalServerError('Internal Server error occured', 500);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
-                }
+                item = req.body;
+                return [2 /*return*/];
             });
         });
     };

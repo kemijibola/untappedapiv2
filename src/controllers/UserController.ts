@@ -3,11 +3,10 @@ import { controller, post, requestValidators } from '../decorators';
 import IBaseController from './interfaces/base/BaseController';
 import UserRepository = require('../app/repository/UserRepository');
 import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
-import Helper from '../utils/Helper';
 import { IUserModel } from '../app/models/interfaces';
 
 @controller('/users')
-class UsersController implements IBaseController {
+class UsersController {
   @post('/')
   @requestValidators('phoneNumbers', 'location', 'categories')
   async create(req: RequestWithUser, res: Response, next: NextFunction) {

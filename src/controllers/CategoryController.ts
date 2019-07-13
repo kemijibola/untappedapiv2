@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
 import IBaseController from './interfaces/base/BaseController';
 import { ICategory } from '../app/models/interfaces';
-import { RecordExists, InternalServerError } from '../utils/error';
 import CategoryBusiness from '../app/business/CategoryBusiness';
+import { Result } from '../utils/Result';
+import { PlatformError } from '../utils/error';
 
 @controller('/categories')
 export class CategoryController {
@@ -13,19 +14,25 @@ export class CategoryController {
     try {
       const item: ICategory = req.body;
       const categoryBusiness = new CategoryBusiness();
-      const newCategory = await categoryBusiness.create(item);
-      if (!newCategory.successful) {
+      const result = await categoryBusiness.create(item);
+      if (result.error) {
         return next(
-          new RecordExists(`Error occured.Reason ${newCategory.error}`, 404)
+          PlatformError.error({
+            code: result.responseCode,
+            message: `Error occured. ${result.error}`
+          })
         );
       }
       return res.status(201).json({
         message: 'Operation successful',
-        data: newCategory.value
+        data: result.data
       });
     } catch (err) {
       return next(
-        new InternalServerError('Internal Server error occured', 500)
+        PlatformError.error({
+          code: 500,
+          message: `Internal Server error occured.${err}`
+        })
       );
     }
   }

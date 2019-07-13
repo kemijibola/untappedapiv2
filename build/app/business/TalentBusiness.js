@@ -72,7 +72,7 @@ var TalentBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._talentRepository.findById(id)];
                     case 1:
                         talent = _a.sent();
-                        if (!talent._id)
+                        if (!talent)
                             return [2 /*return*/, Result_1.Result.fail(404, "Talent of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, talent)];
@@ -95,7 +95,7 @@ var TalentBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._talentRepository.findByCriteria(criteria)];
                     case 1:
                         talent = _a.sent();
-                        if (!talent._id)
+                        if (!talent)
                             return [2 /*return*/, Result_1.Result.fail(404, "Talent not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, talent)];
@@ -137,7 +137,7 @@ var TalentBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._talentRepository.findById(id)];
                     case 1:
                         talent = _a.sent();
-                        if (!talent._id)
+                        if (!talent)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update talent.Talent of Id " + id + " not found")];
                         return [4 /*yield*/, this._talentRepository.update(talent._id, item)];
                     case 2:

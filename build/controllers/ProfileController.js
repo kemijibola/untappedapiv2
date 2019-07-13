@@ -45,47 +45,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var UserRepository = require("../app/repository/UserRepository");
-var CategoryRepository = require("../app/repository/CategoryRepository");
-var error_1 = require("../utils/error");
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
     ProfileController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userId, userModel, profile, _i, _a, item, categoryModel, err_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 6, , 7]);
-                        userId = req.user;
-                        return [4 /*yield*/, new UserRepository().userTypeByUser(userId)];
-                    case 1:
-                        userModel = _b.sent();
-                        if (!userModel.userType.name)
-                            return [2 /*return*/, next(new error_1.RecordNotFound("User with id " + userId + " not found", 404))];
-                        profile = req.body;
-                        _i = 0, _a = profile.categories;
-                        _b.label = 2;
-                    case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 5];
-                        item = _a[_i];
-                        return [4 /*yield*/, new CategoryRepository().findById(item._id)];
-                    case 3:
-                        categoryModel = _b.sent();
-                        if (!categoryModel)
-                            return [2 /*return*/, next(new error_1.RecordNotFound("Invalid category of id " + item, 404))];
-                        _b.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        err_1 = _b.sent();
-                        next(new error_1.InternalServerError('Internal Server error occured', 500));
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+            return __generator(this, function (_a) {
+                try {
+                    // const userId: string = req.user;
+                    // const userModel: IUserModel = await new UserRepository().userTypeByUser(
+                    //   userId
+                    // );
+                    // if (!userModel.userType.name)
+                    //   return next(
+                    //     new RecordNotFound(`User with id ${userId} not found`, 404)
+                    //   );
+                    // // validate categories sent by user
+                    // const profile: IProfile = req.body;
+                    // for (let item of profile.categories) {
+                    //   const categoryModel = await new CategoryRepository().findById(item._id);
+                    //   if (!categoryModel)
+                    //     return next(
+                    //       new RecordNotFound(`Invalid category of id ${item}`, 404)
+                    //     );
+                    // }
+                    // switch (userModel.userType.name) {
+                    //   case UserTypes.TALENT:
+                    //     const talentModel = await new TalentRepository().break;
+                    //   case UserTypes.PROFESSIONAL:
+                    //     break;
+                    //   default:
+                    //     break;
+                    // }
                 }
+                catch (err) {
+                    //next(new InternalServerError('Internal Server error occured', 500));
+                }
+                return [2 /*return*/];
             });
         });
     };

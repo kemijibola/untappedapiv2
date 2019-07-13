@@ -1,7 +1,6 @@
 import VideoRepository from '../repository/VideoRepository';
 import IVideoBusiness = require('./interfaces/VideoBusiness');
 import { IVideo } from '../models/interfaces';
-import { RecordNotFound } from '../../utils/error';
 import { Result } from '../../utils/Result';
 
 class VideoBusiness implements IVideoBusiness {
@@ -23,7 +22,7 @@ class VideoBusiness implements IVideoBusiness {
   async findById(id: string): Promise<Result<IVideo>> {
     try {
       const video = await this._videoRepository.findById(id);
-      if (!video._id)
+      if (!video)
         return Result.fail<IVideo>(404, `Video of Id ${id} not found`);
       else return Result.ok<IVideo>(200, video);
     } catch (err) {
@@ -34,7 +33,7 @@ class VideoBusiness implements IVideoBusiness {
   async findByCriteria(criteria: any): Promise<Result<IVideo>> {
     try {
       const video = await this._videoRepository.findByCriteria(criteria);
-      if (!video._id) return Result.fail<IVideo>(404, `Video not found`);
+      if (!video) return Result.fail<IVideo>(404, `Video not found`);
       else return Result.ok<IVideo>(200, video);
     } catch (err) {
       return Result.fail<IVideo>(500, `Internal server error occured. ${err}`);
@@ -53,7 +52,7 @@ class VideoBusiness implements IVideoBusiness {
   async update(id: string, item: IVideo): Promise<Result<IVideo>> {
     try {
       const video = await this._videoRepository.findById(id);
-      if (!video._id)
+      if (!video)
         return Result.fail<IVideo>(
           404,
           `Could not update video.Video of Id ${id} not found`

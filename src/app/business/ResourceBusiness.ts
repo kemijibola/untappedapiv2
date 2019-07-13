@@ -25,7 +25,7 @@ class ResourceBusiness implements IResourceBusiness {
   async findById(id: string): Promise<Result<IResource>> {
     try {
       const resource = await this._resourceRepository.findById(id);
-      if (!resource._id)
+      if (!resource)
         return Result.fail<IResource>(404, `Resource of Id ${id} not found`);
       else return Result.ok<IResource>(200, resource);
     } catch (err) {
@@ -39,8 +39,7 @@ class ResourceBusiness implements IResourceBusiness {
   async findByCriteria(criteria: any): Promise<Result<IResource>> {
     try {
       const resource = await this._resourceRepository.findByCriteria(criteria);
-      if (!resource._id)
-        return Result.fail<IResource>(404, `Resource not found`);
+      if (!resource) return Result.fail<IResource>(404, `Resource not found`);
       else return Result.ok<IResource>(200, resource);
     } catch (err) {
       return Result.fail<IResource>(
@@ -52,20 +51,26 @@ class ResourceBusiness implements IResourceBusiness {
 
   async create(item: IResource): Promise<Result<IResource>> {
     try {
-      const newResource = await this._resourceRepository.create(item);
-      return Result.ok<IResource>(201, newResource);
-    } catch (err) {
+      const resource = await this._resourceRepository.findByCriteria({
+        name: item.name
+      });
+      if (resource === null) {
+        const newResource = await this._resourceRepository.create(item);
+        return Result.ok<IResource>(201, newResource);
+      }
       return Result.fail<IResource>(
-        500,
-        `Internal server error occured. ${err}`
+        400,
+        `Resource with name ${resource.name} exists`
       );
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
   async update(id: string, item: IResource): Promise<Result<IResource>> {
     try {
       const resource = await this._resourceRepository.findById(id);
-      if (!resource._id)
+      if (!resource)
         return Result.fail<IResource>(
           404,
           `Could not update resource.Resource of Id ${id} not found`

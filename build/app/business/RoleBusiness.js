@@ -72,7 +72,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._roleRepository.findById(id)];
                     case 1:
                         role = _a.sent();
-                        if (!role._id)
+                        if (!role)
                             return [2 /*return*/, Result_1.Result.fail(404, "Role of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, role)];
@@ -95,7 +95,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._roleRepository.findByCriteria(criteria)];
                     case 1:
                         role = _a.sent();
-                        if (!role._id)
+                        if (!role)
                             return [2 /*return*/, Result_1.Result.fail(404, "Role not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, role)];
@@ -110,19 +110,26 @@ var RoleBusiness = /** @class */ (function () {
     };
     RoleBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newRole, err_4;
+            var role, newRole, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._roleRepository.create(item)];
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this._roleRepository.findByCriteria({
+                                name: item.name
+                            })];
                     case 1:
+                        role = _a.sent();
+                        if (!(role === null)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this._roleRepository.create(item)];
+                    case 2:
                         newRole = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newRole)];
-                    case 2:
+                    case 3: return [2 /*return*/, Result_1.Result.fail(400, "Role with name " + role.name + " exists")];
+                    case 4:
                         err_4 = _a.sent();
                         return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
-                    case 3: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -137,7 +144,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._roleRepository.findById(id)];
                     case 1:
                         role = _a.sent();
-                        if (!role._id)
+                        if (!role)
                             return [2 /*return*/, Result_1.Result.fail(500, "Could not update approval.Approval of Id " + id + " not found")];
                         return [4 /*yield*/, this._roleRepository.update(role._id, item)];
                     case 2:

@@ -72,7 +72,7 @@ var CategoryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._categoryRepository.findById(id)];
                     case 1:
                         category = _a.sent();
-                        if (!category._id)
+                        if (!category)
                             return [2 /*return*/, Result_1.Result.fail(404, "Category of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, category)];
@@ -95,7 +95,7 @@ var CategoryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._categoryRepository.findByCriteria(criteria)];
                     case 1:
                         category = _a.sent();
-                        if (!category._id)
+                        if (!category)
                             return [2 /*return*/, Result_1.Result.fail(404, "Approval not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, category)];
@@ -128,7 +128,7 @@ var CategoryBusiness = /** @class */ (function () {
                     case 3: return [2 /*return*/, Result_1.Result.fail(400, "Category with name " + category.name + " exists.")];
                     case 4:
                         err_4 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                        throw new Error("InternalServer error occured." + err_4.message);
                     case 5: return [2 /*return*/];
                 }
             });
@@ -144,7 +144,7 @@ var CategoryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._categoryRepository.findById(id)];
                     case 1:
                         category = _a.sent();
-                        if (!category._id)
+                        if (!category)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
                         return [4 /*yield*/, this._categoryRepository.update(category._id, item)];
                     case 2:

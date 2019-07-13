@@ -45,7 +45,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var error_1 = require("../utils/error");
 var EvaluationController = /** @class */ (function () {
     function EvaluationController() {
     }
@@ -57,7 +56,7 @@ var EvaluationController = /** @class */ (function () {
                     item = req.body;
                 }
                 catch (err) {
-                    new error_1.InternalServerError('Internal Server error occured', 500);
+                    //new InternalServerError('Internal Server error occured', 500);
                 }
                 return [2 /*return*/];
             });

@@ -72,7 +72,7 @@ var PrizeTypeBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._prizeTypeRepository.findById(id)];
                     case 1:
                         prizeType = _a.sent();
-                        if (!prizeType._id)
+                        if (!prizeType)
                             return [2 /*return*/, Result_1.Result.fail(404, "Prize type of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, prizeType)];
@@ -95,7 +95,7 @@ var PrizeTypeBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._prizeTypeRepository.findByCriteria(criteria)];
                     case 1:
                         prizeType = _a.sent();
-                        if (!prizeType._id)
+                        if (!prizeType)
                             return [2 /*return*/, Result_1.Result.fail(404, "Prize type not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, prizeType)];
@@ -137,7 +137,7 @@ var PrizeTypeBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._prizeTypeRepository.findById(id)];
                     case 1:
                         prizeType = _a.sent();
-                        if (!prizeType._id)
+                        if (!prizeType)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update prize type.Prize type of Id " + id + " not found")];
                         return [4 /*yield*/, this._prizeTypeRepository.update(prizeType._id, item)];
                     case 2:

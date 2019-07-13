@@ -69,10 +69,12 @@ var ApprovalBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!id)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Invalid id')];
                         return [4 /*yield*/, this._approvalRepository.findById(id)];
                     case 1:
                         approval = _a.sent();
-                        if (!approval._id)
+                        if (!approval)
                             return [2 /*return*/, Result_1.Result.fail(404, "Approval of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, approval)];
@@ -95,7 +97,7 @@ var ApprovalBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._approvalRepository.findByCriteria(criteria)];
                     case 1:
                         approval = _a.sent();
-                        if (!approval._id)
+                        if (!approval)
                             return [2 /*return*/, Result_1.Result.fail(404, "Approval not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, approval)];
@@ -137,7 +139,7 @@ var ApprovalBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._approvalRepository.findById(id)];
                     case 1:
                         approval = _a.sent();
-                        if (!approval._id)
+                        if (!approval)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
                         return [4 /*yield*/, this._approvalRepository.update(approval._id, item)];
                     case 2:

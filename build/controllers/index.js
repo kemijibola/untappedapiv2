@@ -4,4 +4,8 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./CategoryController"));
+__export(require("./RoleController"));
+__export(require("./ResourceController"));
+__export(require("./PermissionController"));
+__export(require("./ResourcePermissionController"));
 //# sourceMappingURL=index.js.map

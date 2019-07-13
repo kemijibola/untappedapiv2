@@ -72,7 +72,7 @@ var CountryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._countryRepository.findById(id)];
                     case 1:
                         country = _a.sent();
-                        if (!country._id)
+                        if (!country)
                             return [2 /*return*/, Result_1.Result.fail(404, "Country of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, country)];
@@ -95,7 +95,7 @@ var CountryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._countryRepository.findByCriteria(criteria)];
                     case 1:
                         country = _a.sent();
-                        if (!country._id)
+                        if (!country)
                             return [2 /*return*/, Result_1.Result.fail(404, "Country not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, country)];
@@ -137,7 +137,7 @@ var CountryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._countryRepository.findById(id)];
                     case 1:
                         country = _a.sent();
-                        if (!country._id)
+                        if (!country)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update country.Country of Id " + id + " not found")];
                         return [4 /*yield*/, this._countryRepository.update(country._id, item)];
                     case 2:

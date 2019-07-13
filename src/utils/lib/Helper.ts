@@ -3,11 +3,14 @@ import { IRole, IPermission } from '../../app/models/interfaces';
 const config: AppConfig = require('../../config/keys');
 import ResourceRepository from '../../app/repository/ResourceRepository';
 import ResourcePermissionRepository = require('../../app/repository/ResourcePermissionRepository');
+import { Result } from '../Result';
+import { PlatformError } from '../error';
 
 export interface IExchangeToken {
   destinationUrl: string;
   roles: string[];
 }
+
 let chunkedUserPermissons: { [x: string]: string } = {};
 
 export const getPrivateKey: (keyId: string) => string = (
@@ -24,13 +27,23 @@ export async function tokenExchange(
   const resourceModel = await resourceRepository.findByCriteria({
     name: exchangeParams.destinationUrl
   });
-  console.log(resourceModel);
+  if (!resourceModel._id)
+    throw PlatformError.error({
+      code: 404,
+      message: `${exchangeParams.destinationUrl} is not a valid route`
+    });
   for (let role of exchangeParams.roles) {
-    console.log(1);
     const resourcePermissionModel = await resourcePermissionRepository.findPermissionsByRole(
       role,
       resourceModel._id
     );
+    if (resourcePermissionModel.permissions.length < 1)
+      throw PlatformError.error({
+        code: 404,
+        message: `There are no permissions configured for route ${
+          resourceModel.name
+        }`
+      });
     chunckPermission(resourcePermissionModel.permissions);
   }
   return chunkedUserPermissons;

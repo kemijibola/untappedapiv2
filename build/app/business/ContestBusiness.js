@@ -72,7 +72,7 @@ var ContestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._contestRepository.findById(id)];
                     case 1:
                         contest = _a.sent();
-                        if (!contest._id)
+                        if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, contest)];
@@ -95,7 +95,7 @@ var ContestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._contestRepository.findByCriteria(criteria)];
                     case 1:
                         contest = _a.sent();
-                        if (!contest._id)
+                        if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, contest)];
@@ -137,7 +137,7 @@ var ContestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._contestRepository.findById(id)];
                     case 1:
                         contest = _a.sent();
-                        if (!contest._id)
+                        if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
                         return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
                     case 2:

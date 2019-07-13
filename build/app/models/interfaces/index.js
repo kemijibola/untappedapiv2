@@ -5,7 +5,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./Talent"));
 __export(require("./ScheduledEmail"));
-__export(require("./Role"));
+__export(require("./Permission"));
 __export(require("./Portfolio"));
 __export(require("./Approval"));
 //# sourceMappingURL=index.js.map

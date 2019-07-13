@@ -25,7 +25,7 @@ class CountryBusiness implements ICountryBusiness {
   async findById(id: string): Promise<Result<ICountry>> {
     try {
       const country = await this._countryRepository.findById(id);
-      if (!country._id)
+      if (!country)
         return Result.fail<ICountry>(404, `Country of Id ${id} not found`);
       else return Result.ok<ICountry>(200, country);
     } catch (err) {
@@ -39,7 +39,7 @@ class CountryBusiness implements ICountryBusiness {
   async findByCriteria(criteria: any): Promise<Result<ICountry>> {
     try {
       const country = await this._countryRepository.findByCriteria(criteria);
-      if (!country._id) return Result.fail<ICountry>(404, `Country not found`);
+      if (!country) return Result.fail<ICountry>(404, `Country not found`);
       else return Result.ok<ICountry>(200, country);
     } catch (err) {
       return Result.fail<ICountry>(
@@ -64,7 +64,7 @@ class CountryBusiness implements ICountryBusiness {
   async update(id: string, item: ICountry): Promise<Result<ICountry>> {
     try {
       const country = await this._countryRepository.findById(id);
-      if (!country._id)
+      if (!country)
         return Result.fail<ICountry>(
           404,
           `Could not update country.Country of Id ${id} not found`

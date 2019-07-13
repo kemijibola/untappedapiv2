@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
 import IBaseController from './interfaces/base/BaseController';
-import { InternalServerError } from '../utils/error';
 import { IContestEntry } from '../app/models/interfaces';
 import ContestEntryEpository = require('../app/repository/ContestEntryRepository');
 import {
@@ -11,7 +10,7 @@ import {
 } from '../utils/schedule/SqsScheduler';
 
 @controller('/contest-entries')
-class ContestEntryController implements IBaseController {
+class ContestEntryController {
   @post('/')
   @requestValidators('contest', 'submissionPath')
   async create(req: Request, res: Response, next: NextFunction) {
@@ -42,9 +41,9 @@ class ContestEntryController implements IBaseController {
         data: contestEntry
       });
     } catch (err) {
-      return next(
-        new InternalServerError('Internal Server error occured', 500)
-      );
+      // return next(
+      //   new InternalServerError('Internal Server error occured', 500)
+      // );
     }
   }
   update(): void {}

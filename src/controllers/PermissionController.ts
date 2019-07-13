@@ -1,34 +1,33 @@
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseController from './interfaces/base/BaseController';
-import PermissionRepository = require('../app/repository/PermissionRepository');
 import { IPermission } from '../app/models/interfaces';
-import { RecordExists, InternalServerError } from '../utils/error';
+import { PlatformError } from '../utils/error';
+import PermissionBusiness = require('../app/business/PermissionBusiness');
 
 @controller('/permissions')
-class PermissionController implements IBaseController {
+export class PermissionController {
   @post('/')
-  @requestValidators('name')
+  @requestValidators('name', 'type')
   async create(req: Request, res: Response, next: NextFunction) {
     const item: IPermission = req.body;
     try {
-      let permissionModel = await new PermissionRepository().findByCriteria({
-        name: item.name.toLowerCase()
-      });
-      if (permissionModel)
+      const item: IPermission = req.body;
+      const permissionBusiness = new PermissionBusiness();
+      const result = await permissionBusiness.create(item);
+      if (result.error) {
         return next(
-          new RecordExists(
-            `Permission with name ${permissionModel.name} exists.`,
-            400
-          )
+          PlatformError.error({
+            code: result.responseCode,
+            message: `Error occured. ${result.error}`
+          })
         );
-      const permission = await new PermissionRepository().create(item);
+      }
       return res.status(201).json({
         message: 'Operation successful',
-        data: permission
+        data: result.data
       });
     } catch (err) {
-      new InternalServerError('Internal Server error occured', 500);
+      //new InternalServerError('Internal Server error occured', 500);
     }
   }
   update(): void {}

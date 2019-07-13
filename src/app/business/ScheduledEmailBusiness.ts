@@ -25,7 +25,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
   async findById(id: string): Promise<Result<IScheduledEmail>> {
     try {
       const scheduledEmail = await this._scheduledEmailRepository.findById(id);
-      if (!scheduledEmail._id)
+      if (!scheduledEmail)
         return Result.fail<IScheduledEmail>(
           404,
           `Scheduled Email of Id ${id} not found`
@@ -44,7 +44,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
       const scheduledEmail = await this._scheduledEmailRepository.findByCriteria(
         criteria
       );
-      if (!scheduledEmail._id)
+      if (!scheduledEmail)
         return Result.fail<IScheduledEmail>(404, `Scheduled Email not found`);
       else return Result.ok<IScheduledEmail>(200, scheduledEmail);
     } catch (err) {
@@ -75,7 +75,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
   ): Promise<Result<IScheduledEmail>> {
     try {
       const scheduledEmail = await this._scheduledEmailRepository.findById(id);
-      if (!scheduledEmail._id)
+      if (!scheduledEmail)
         return Result.fail<IScheduledEmail>(
           404,
           `Could not update scheduled email.Scheduled Email of Id ${id} not found`

@@ -72,7 +72,7 @@ var CommentBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._commentRepository.findById(id)];
                     case 1:
                         comment = _a.sent();
-                        if (!comment._id)
+                        if (!comment)
                             return [2 /*return*/, Result_1.Result.fail(404, "Comment of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, comment)];
@@ -95,7 +95,7 @@ var CommentBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._commentRepository.findByCriteria(criteria)];
                     case 1:
                         comment = _a.sent();
-                        if (!comment._id)
+                        if (!comment)
                             return [2 /*return*/, Result_1.Result.fail(404, "Comment not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, comment)];
@@ -137,7 +137,7 @@ var CommentBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._commentRepository.findById(id)];
                     case 1:
                         comment = _a.sent();
-                        if (!comment._id)
+                        if (!comment)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update comment.Comment of Id " + id + " not found")];
                         return [4 /*yield*/, this._commentRepository.update(comment._id, item)];
                     case 2:
