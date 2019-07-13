@@ -23,7 +23,6 @@ export class StringListMerger extends Merger<string[], string[]> {
     }, {});
 
     const merged = Object.assign(listMap1, listMap2);
-    console.log(merged);
     return Object.seal(Object.keys(merged));
   }
 }

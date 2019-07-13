@@ -42,6 +42,7 @@ var config = require('../../config/keys');
 var ResourceRepository_1 = __importDefault(require("../../app/repository/ResourceRepository"));
 var ResourcePermissionRepository = require("../../app/repository/ResourcePermissionRepository");
 var error_1 = require("../error");
+var mongoose_1 = __importDefault(require("mongoose"));
 var chunkedUserPermissons = {};
 exports.getPrivateKey = function (keyId) {
     return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
@@ -96,4 +97,8 @@ function chunckPermission(permissions) {
         }
     }
 }
+function toObjectId(_id) {
+    return mongoose_1.default.Types.ObjectId.createFromHexString(_id);
+}
+exports.toObjectId = toObjectId;
 //# sourceMappingURL=Helper.js.map

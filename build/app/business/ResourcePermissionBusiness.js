@@ -42,7 +42,7 @@ var ResourceRepository_1 = __importDefault(require("../repository/ResourceReposi
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var Result_1 = require("../../utils/Result");
-var StringMerger_1 = require("../../utils/lib/StringMerger");
+var lib_1 = require("../../utils/lib");
 var ResourcePermissionBusiness = /** @class */ (function () {
     function ResourcePermissionBusiness() {
         this._resourcePermissionRepository = new ResourcePermissionRepository_1.default();
@@ -117,7 +117,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
     };
     ResourcePermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var resource, role, _i, _a, key, permission, resourcePermission, permissionMerger, newResourcePermission, err_4;
+            var resource, role, permissionIds, _i, _a, key, permission, resourcePermission, newResourcePermission, err_4;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -132,6 +132,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         role = _b.sent();
                         if (!role)
                             return [2 /*return*/, Result_1.Result.fail(400, "Role id " + item.role + " is not a valid role")];
+                        permissionIds = [];
                         _i = 0, _a = item.permissions;
                         _b.label = 3;
                     case 3:
@@ -142,6 +143,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         permission = _b.sent();
                         if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(400, "Permission id " + key + " is not a valid Permission")];
+                        permissionIds.push(lib_1.toObjectId(key));
                         _b.label = 5;
                     case 5:
                         _i++;
@@ -153,8 +155,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                     case 7:
                         resourcePermission = _b.sent();
                         if (!(resourcePermission !== null)) return [3 /*break*/, 9];
-                        permissionMerger = new StringMerger_1.StringListMerger(resourcePermission.permissions, item.permissions);
-                        resourcePermission.permissions = permissionMerger.mergeList();
+                        resourcePermission.permissions = permissionIds.slice();
                         return [4 /*yield*/, resourcePermission.save()];
                     case 8:
                         _b.sent();

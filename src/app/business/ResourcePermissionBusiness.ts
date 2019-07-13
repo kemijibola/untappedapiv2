@@ -6,6 +6,7 @@ import IResourcePermissionBusiness = require('./interfaces/ResourcePermissionBus
 import { IResourcePermission, IPermission } from '../models/interfaces';
 import { Result } from '../../utils/Result';
 import { StringListMerger } from '../../utils/lib/StringMerger';
+import { toObjectId } from '../../utils/lib';
 
 class ResourcePermissionBusiness implements IResourcePermissionBusiness {
   private _resourcePermissionRepository: ResourcePermissionRepository;
@@ -88,6 +89,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
           400,
           `Role id ${item.role} is not a valid role`
         );
+      let permissionIds = [];
       // check if the permissions sent are valid permissions
       for (let key of item.permissions) {
         const permission = await this._permissionRepository.findById(key);
@@ -96,6 +98,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
             400,
             `Permission id ${key} is not a valid Permission`
           );
+        permissionIds.push(toObjectId(key));
       }
 
       // Before saving resource permission, ensure resource and role is not duplicated
@@ -107,11 +110,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
       );
       // if query returns object, this means there's already configuration for resrouce
       if (resourcePermission !== null) {
-        const permissionMerger = new StringListMerger(
-          resourcePermission.permissions,
-          item.permissions
-        );
-        resourcePermission.permissions = permissionMerger.mergeList();
+        resourcePermission.permissions = [...permissionIds];
         await resourcePermission.save();
         return Result.ok<IResourcePermission>(200, resourcePermission);
       }

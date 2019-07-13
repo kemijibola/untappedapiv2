@@ -48,7 +48,6 @@ var StringListMerger = /** @class */ (function (_super) {
             return theMap;
         }, {});
         var merged = Object.assign(listMap1, listMap2);
-        console.log(merged);
         return Object.seal(Object.keys(merged));
     };
     return StringListMerger;

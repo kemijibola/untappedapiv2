@@ -1,10 +1,10 @@
 import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
-import { IRole, IPermission } from '../../app/models/interfaces';
+import { IPermission } from '../../app/models/interfaces';
 const config: AppConfig = require('../../config/keys');
 import ResourceRepository from '../../app/repository/ResourceRepository';
 import ResourcePermissionRepository = require('../../app/repository/ResourcePermissionRepository');
-import { Result } from '../Result';
 import { PlatformError } from '../error';
+import mongoose from 'mongoose';
 
 export interface IExchangeToken {
   destinationUrl: string;
@@ -55,4 +55,8 @@ function chunckPermission(permissions: IPermission[]): void {
       chunkedUserPermissons[item.name] = item.name;
     }
   }
+}
+
+export function toObjectId(_id: string): mongoose.Types.ObjectId {
+  return mongoose.Types.ObjectId.createFromHexString(_id);
 }
