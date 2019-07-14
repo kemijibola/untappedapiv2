@@ -15,10 +15,7 @@ class ApprovalBusiness implements IApprovalBusiness {
       const approvals = await this._approvalRepository.fetch();
       return Result.ok<IApproval>(200, approvals);
     } catch (err) {
-      return Result.fail<IApproval>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -30,10 +27,7 @@ class ApprovalBusiness implements IApprovalBusiness {
         return Result.fail<IApproval>(404, `Approval of Id ${id} not found`);
       else return Result.ok<IApproval>(200, approval);
     } catch (err) {
-      return Result.fail<IApproval>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -43,10 +37,7 @@ class ApprovalBusiness implements IApprovalBusiness {
       if (!approval) return Result.fail<IApproval>(404, `Approval not found`);
       else return Result.ok<IApproval>(200, approval);
     } catch (err) {
-      return Result.fail<IApproval>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -55,10 +46,7 @@ class ApprovalBusiness implements IApprovalBusiness {
       const newApproval = await this._approvalRepository.create(item);
       return Result.ok<IApproval>(201, newApproval);
     } catch (err) {
-      return Result.fail<IApproval>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -76,10 +64,7 @@ class ApprovalBusiness implements IApprovalBusiness {
       );
       return Result.ok<IApproval>(200, updateObj);
     } catch (err) {
-      return Result.fail<IApproval>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -88,7 +73,7 @@ class ApprovalBusiness implements IApprovalBusiness {
       const isDeleted = await this._approvalRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

@@ -15,10 +15,7 @@ class ContestBusiness implements IContestEntryBusiness {
       const contestEntries = await this._contestEntryRepository.fetch();
       return Result.ok<IContestEntry>(200, contestEntries);
     } catch (err) {
-      return Result.fail<IContestEntry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -32,10 +29,7 @@ class ContestBusiness implements IContestEntryBusiness {
         );
       else return Result.ok<IContestEntry>(200, contestEntry);
     } catch (err) {
-      return Result.fail<IContestEntry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -48,10 +42,7 @@ class ContestBusiness implements IContestEntryBusiness {
         return Result.fail<IContestEntry>(404, `Contest entry not found`);
       else return Result.ok<IContestEntry>(200, contestEntry);
     } catch (err) {
-      return Result.fail<IContestEntry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -60,10 +51,7 @@ class ContestBusiness implements IContestEntryBusiness {
       const newContestEntry = await this._contestEntryRepository.create(item);
       return Result.ok<IContestEntry>(201, newContestEntry);
     } catch (err) {
-      return Result.fail<IContestEntry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -84,10 +72,7 @@ class ContestBusiness implements IContestEntryBusiness {
       );
       return Result.ok<IContestEntry>(200, updateObj);
     } catch (err) {
-      return Result.fail<IContestEntry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -96,7 +81,7 @@ class ContestBusiness implements IContestEntryBusiness {
       const isDeleted = await this._contestEntryRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

@@ -15,10 +15,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
       const evaluations = await this._evaluationRepository.fetch();
       return Result.ok<IEvaluation>(200, evaluations);
     } catch (err) {
-      return Result.fail<IEvaluation>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -32,10 +29,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
         );
       else return Result.ok<IEvaluation>(200, evaluation);
     } catch (err) {
-      return Result.fail<IEvaluation>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -48,10 +42,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
         return Result.fail<IEvaluation>(404, `Evaluation not found`);
       else return Result.ok<IEvaluation>(200, evaluation);
     } catch (err) {
-      return Result.fail<IEvaluation>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -60,10 +51,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
       const newEvaluation = await this._evaluationRepository.create(item);
       return Result.ok<IEvaluation>(201, newEvaluation);
     } catch (err) {
-      return Result.fail<IEvaluation>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -81,10 +69,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
       );
       return Result.ok<IEvaluation>(200, updateObj);
     } catch (err) {
-      return Result.fail<IEvaluation>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -93,7 +78,7 @@ class EvaluationBusiness implements IEvaluationBusiness {
       const isDeleted = await this._evaluationRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

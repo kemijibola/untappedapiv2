@@ -15,10 +15,7 @@ class ContestBusiness implements IContestBusiness {
       const contests = await this._contestRepository.fetch();
       return Result.ok<IContest>(200, contests);
     } catch (err) {
-      return Result.fail<IContest>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -29,10 +26,7 @@ class ContestBusiness implements IContestBusiness {
         return Result.fail<IContest>(404, `Contest of Id ${id} not found`);
       else return Result.ok<IContest>(200, contest);
     } catch (err) {
-      return Result.fail<IContest>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -42,10 +36,7 @@ class ContestBusiness implements IContestBusiness {
       if (!contest) return Result.fail<IContest>(404, `Contest not found`);
       else return Result.ok<IContest>(200, contest);
     } catch (err) {
-      return Result.fail<IContest>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -54,10 +45,7 @@ class ContestBusiness implements IContestBusiness {
       const newContest = await this._contestRepository.create(item);
       return Result.ok<IContest>(201, newContest);
     } catch (err) {
-      return Result.fail<IContest>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -72,10 +60,7 @@ class ContestBusiness implements IContestBusiness {
       const updateObj = await this._contestRepository.update(contest._id, item);
       return Result.ok<IContest>(200, updateObj);
     } catch (err) {
-      return Result.fail<IContest>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -84,7 +69,7 @@ class ContestBusiness implements IContestBusiness {
       const isDeleted = await this._contestRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

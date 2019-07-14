@@ -15,10 +15,7 @@ class PermissionBusiness implements IPermissionBusiness {
       const permissions = await this._permissionRepository.fetch();
       return Result.ok<IPermission>(200, permissions);
     } catch (err) {
-      return Result.fail<IPermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -32,10 +29,7 @@ class PermissionBusiness implements IPermissionBusiness {
         );
       else return Result.ok<IPermission>(200, permission);
     } catch (err) {
-      return Result.fail<IPermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -48,10 +42,7 @@ class PermissionBusiness implements IPermissionBusiness {
         return Result.fail<IPermission>(404, `Permission not found`);
       else return Result.ok<IPermission>(200, permission);
     } catch (err) {
-      return Result.fail<IPermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -90,10 +81,7 @@ class PermissionBusiness implements IPermissionBusiness {
       );
       return Result.ok<IPermission>(200, updateObj);
     } catch (err) {
-      return Result.fail<IPermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -102,7 +90,7 @@ class PermissionBusiness implements IPermissionBusiness {
       const isDeleted = await this._permissionRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

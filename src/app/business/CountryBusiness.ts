@@ -15,10 +15,7 @@ class CountryBusiness implements ICountryBusiness {
       const countries = await this._countryRepository.fetch();
       return Result.ok<ICountry>(200, countries);
     } catch (err) {
-      return Result.fail<ICountry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -29,10 +26,7 @@ class CountryBusiness implements ICountryBusiness {
         return Result.fail<ICountry>(404, `Country of Id ${id} not found`);
       else return Result.ok<ICountry>(200, country);
     } catch (err) {
-      return Result.fail<ICountry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -42,10 +36,7 @@ class CountryBusiness implements ICountryBusiness {
       if (!country) return Result.fail<ICountry>(404, `Country not found`);
       else return Result.ok<ICountry>(200, country);
     } catch (err) {
-      return Result.fail<ICountry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -54,10 +45,7 @@ class CountryBusiness implements ICountryBusiness {
       const newCountry = await this._countryRepository.create(item);
       return Result.ok<ICountry>(200, newCountry);
     } catch (err) {
-      return Result.fail<ICountry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -72,10 +60,7 @@ class CountryBusiness implements ICountryBusiness {
       const updateObj = await this._countryRepository.update(country._id, item);
       return Result.ok<ICountry>(200, updateObj);
     } catch (err) {
-      return Result.fail<ICountry>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -84,7 +69,7 @@ class CountryBusiness implements ICountryBusiness {
       const isDeleted = await this._countryRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

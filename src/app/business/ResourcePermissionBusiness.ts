@@ -26,10 +26,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
       const resourcePermissions = await this._resourcePermissionRepository.fetch();
       return Result.ok<IResourcePermission>(200, resourcePermissions);
     } catch (err) {
-      return Result.fail<IResourcePermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -45,10 +42,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
         );
       else return Result.ok<IResourcePermission>(200, resourcePermission);
     } catch (err) {
-      return Result.fail<IResourcePermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -64,10 +58,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
         );
       else return Result.ok<IResourcePermission>(200, resourcePermission);
     } catch (err) {
-      return Result.fail<IResourcePermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -119,10 +110,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
       );
       return Result.ok<IResourcePermission>(201, newResourcePermission);
     } catch (err) {
-      return Result.fail<IResourcePermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -145,10 +133,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
       );
       return Result.ok<IResourcePermission>(200, updateObj);
     } catch (err) {
-      return Result.fail<IResourcePermission>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -157,7 +142,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
       const isDeleted = await this._resourcePermissionRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

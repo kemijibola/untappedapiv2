@@ -56,7 +56,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [2 /*return*/, Result_1.Result.ok(200, roles)];
                     case 2:
                         err_1 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_1)];
+                        throw new Error("InternalServer error occured." + err_1.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -79,7 +79,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         err_2 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_2)];
+                        throw new Error("InternalServer error occured." + err_2.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -102,7 +102,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         err_3 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_3)];
+                        throw new Error("InternalServer error occured." + err_3.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -128,7 +128,7 @@ var RoleBusiness = /** @class */ (function () {
                     case 3: return [2 /*return*/, Result_1.Result.fail(400, "Role with name " + role.name + " exists")];
                     case 4:
                         err_4 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_4)];
+                        throw new Error("InternalServer error occured." + err_4.message);
                     case 5: return [2 /*return*/];
                 }
             });
@@ -152,7 +152,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
                         err_5 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_5)];
+                        throw new Error("InternalServer error occured." + err_5.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -171,7 +171,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
                         err_6 = _a.sent();
-                        return [2 /*return*/, Result_1.Result.fail(500, "Internal server error occured. " + err_6)];
+                        throw new Error("InternalServer error occured." + err_6.message);
                     case 3: return [2 /*return*/];
                 }
             });

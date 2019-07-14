@@ -16,10 +16,7 @@ class CategoryBusiness implements ICategoryBusiness {
       const categories = await this._categoryRepository.fetch();
       return Result.ok<ICategory>(200, categories);
     } catch (err) {
-      return Result.fail<ICategory>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -30,10 +27,7 @@ class CategoryBusiness implements ICategoryBusiness {
         return Result.fail<ICategory>(404, `Category of Id ${id} not found`);
       else return Result.ok<ICategory>(200, category);
     } catch (err) {
-      return Result.fail<ICategory>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -43,10 +37,7 @@ class CategoryBusiness implements ICategoryBusiness {
       if (!category) return Result.fail<ICategory>(404, `Approval not found`);
       else return Result.ok<ICategory>(200, category);
     } catch (err) {
-      return Result.fail<ICategory>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -65,11 +56,6 @@ class CategoryBusiness implements ICategoryBusiness {
       );
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
-
-      // throw PlatformError.error({
-      //   code: 500,
-      //   message: `Internal server error occured. ${err}`
-      // });
     }
   }
 
@@ -87,10 +73,7 @@ class CategoryBusiness implements ICategoryBusiness {
       );
       return Result.ok<ICategory>(200, updateObj);
     } catch (err) {
-      return Result.fail<ICategory>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -99,7 +82,7 @@ class CategoryBusiness implements ICategoryBusiness {
       const isDeleted = await this._categoryRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

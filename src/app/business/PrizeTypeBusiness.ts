@@ -15,10 +15,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
       const prizeTypes = await this._prizeTypeRepository.fetch();
       return Result.ok<IPrizeType>(200, prizeTypes);
     } catch (err) {
-      return Result.fail<IPrizeType>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -29,10 +26,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
         return Result.fail<IPrizeType>(404, `Prize type of Id ${id} not found`);
       else return Result.ok<IPrizeType>(200, prizeType);
     } catch (err) {
-      return Result.fail<IPrizeType>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -45,10 +39,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
         return Result.fail<IPrizeType>(404, `Prize type not found`);
       else return Result.ok<IPrizeType>(200, prizeType);
     } catch (err) {
-      return Result.fail<IPrizeType>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -57,10 +48,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
       const newPrizeType = await this._prizeTypeRepository.create(item);
       return Result.ok<IPrizeType>(201, newPrizeType);
     } catch (err) {
-      return Result.fail<IPrizeType>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -78,10 +66,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
       );
       return Result.ok<IPrizeType>(200, updateObj);
     } catch (err) {
-      return Result.fail<IPrizeType>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -90,7 +75,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
       const isDeleted = await this._prizeTypeRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

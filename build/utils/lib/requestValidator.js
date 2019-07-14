@@ -1,19 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var error_1 = require("../error");
 function requestValidators(keys) {
     return function (req, res, next) {
         if (!req.body) {
-            res.send({ error: 'Change to error handler' });
-            return;
+            return next(error_1.PlatformError.error({ code: 400, message: 'Invalid request' }));
         }
-        for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
-            var key = keys_1[_i];
-            if (!req.body[key]) {
-                res.send({ error: 'Change to error handler' });
-                return;
+        var missingProps = '';
+        for (var i = 0; i < keys.length; i++) {
+            if (!req.body[keys[i]]) {
+                if (i === keys.length - 1) {
+                    missingProps += keys[i];
+                }
+                else {
+                    missingProps += keys[i] + ",";
+                }
             }
         }
-        next();
+        return next(error_1.PlatformError.error({
+            code: 400,
+            message: "Invalid request.Missing property '" + missingProps + "'"
+        }));
     };
 }
 exports.requestValidators = requestValidators;

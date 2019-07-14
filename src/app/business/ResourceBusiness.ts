@@ -15,10 +15,7 @@ class ResourceBusiness implements IResourceBusiness {
       const resources = await this._resourceRepository.fetch();
       return Result.ok<IResource>(200, resources);
     } catch (err) {
-      return Result.fail<IResource>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -29,10 +26,7 @@ class ResourceBusiness implements IResourceBusiness {
         return Result.fail<IResource>(404, `Resource of Id ${id} not found`);
       else return Result.ok<IResource>(200, resource);
     } catch (err) {
-      return Result.fail<IResource>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -42,10 +36,7 @@ class ResourceBusiness implements IResourceBusiness {
       if (!resource) return Result.fail<IResource>(404, `Resource not found`);
       else return Result.ok<IResource>(200, resource);
     } catch (err) {
-      return Result.fail<IResource>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -81,10 +72,7 @@ class ResourceBusiness implements IResourceBusiness {
       );
       return Result.ok<IResource>(200, updateObj);
     } catch (err) {
-      return Result.fail<IResource>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -93,7 +81,7 @@ class ResourceBusiness implements IResourceBusiness {
       const isDeleted = await this._resourceRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

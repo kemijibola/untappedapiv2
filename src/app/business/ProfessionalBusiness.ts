@@ -15,10 +15,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
       const professionals = await this._professionalRepository.fetch();
       return Result.ok<IProfessional>(200, professionals);
     } catch (err) {
-      return Result.fail<IProfessional>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -32,10 +29,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
         );
       else return Result.ok<IProfessional>(200, professional);
     } catch (err) {
-      return Result.fail<IProfessional>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -48,10 +42,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
         return Result.fail<IProfessional>(404, `Professional not found`);
       else return Result.ok<IProfessional>(200, professional);
     } catch (err) {
-      return Result.fail<IProfessional>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -60,10 +51,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
       const newProfessional = await this._professionalRepository.create(item);
       return Result.ok<IProfessional>(201, newProfessional);
     } catch (err) {
-      return Result.fail<IProfessional>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -84,10 +72,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
       );
       return Result.ok<IProfessional>(200, updateObj);
     } catch (err) {
-      return Result.fail<IProfessional>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -96,7 +81,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
       const isDeleted = await this._professionalRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

@@ -15,7 +15,7 @@ class GigBusiness implements IGigBusiness {
       const gigs = await this._gigRepository.fetch();
       return Result.ok<IGig>(200, gigs);
     } catch (err) {
-      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -25,7 +25,7 @@ class GigBusiness implements IGigBusiness {
       if (!gig) return Result.fail<IGig>(404, `Gig of Id ${id} not found`);
       else return Result.ok<IGig>(200, gig);
     } catch (err) {
-      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -35,7 +35,7 @@ class GigBusiness implements IGigBusiness {
       if (!gig) return Result.fail<IGig>(404, `Gig not found`);
       else return Result.ok<IGig>(200, gig);
     } catch (err) {
-      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -44,7 +44,7 @@ class GigBusiness implements IGigBusiness {
       const newGig = await this._gigRepository.create(item);
       return Result.ok<IGig>(201, newGig);
     } catch (err) {
-      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -59,7 +59,7 @@ class GigBusiness implements IGigBusiness {
       const updateObj = await this._gigRepository.update(gig._id, item);
       return Result.ok<IGig>(200, updateObj);
     } catch (err) {
-      return Result.fail<IGig>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -68,7 +68,7 @@ class GigBusiness implements IGigBusiness {
       const isDeleted = await this._gigRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 var AppRouter_1 = require("../AppRouter");
 var MetadataKeys_1 = require("../app/models/interfaces/custom/MetadataKeys");
+var requestValidator_1 = require("../utils/lib/requestValidator");
 function controller(routePrefix) {
     return function (target) {
         var router = AppRouter_1.AppRouter.getInstance;
@@ -12,16 +13,11 @@ function controller(routePrefix) {
             var method = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.method, target.prototype, key);
             var middlewares = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.middleware, target.prototype, key) ||
                 [];
-            // const requiredProps =
-            //   Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
-            //   [];
-            // const requestType =
-            //   Reflect.getMetadata(MetadataKeys.requesttype, target.prototype, key) ||
-            //   '';
-            //const validator = requestValidators(requiredProps);
+            var requiredProps = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.validator, target.prototype, key) ||
+                [];
+            var validator = requestValidator_1.requestValidators(requiredProps);
             if (path) {
-                router[method].apply(router, ["" + routePrefix + path].concat(middlewares, [
-                    // validator,
+                router[method].apply(router, ["" + routePrefix + path].concat(middlewares, [validator,
                     routeHandler]));
             }
         }

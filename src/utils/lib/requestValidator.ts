@@ -1,17 +1,28 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
+import { PlatformError } from '../error';
 
 export function requestValidators(keys: string[]): RequestHandler {
   return function(req: Request, res: Response, next: NextFunction) {
     if (!req.body) {
-      res.send({ error: 'Change to error handler' });
-      return;
+      return next(
+        PlatformError.error({ code: 400, message: 'Invalid request' })
+      );
     }
-    for (let key of keys) {
-      if (!req.body[key]) {
-        res.send({ error: 'Change to error handler' });
-        return;
+    let missingProps = '';
+    for (let i = 0; i < keys.length; i++) {
+      if (!req.body[keys[i]]) {
+        if (i === keys.length - 1) {
+          missingProps += keys[i];
+        } else {
+          missingProps += `${keys[i]},`;
+        }
       }
     }
-    next();
+    return next(
+      PlatformError.error({
+        code: 400,
+        message: `Invalid request.Missing property '${missingProps}'`
+      })
+    );
   };
 }

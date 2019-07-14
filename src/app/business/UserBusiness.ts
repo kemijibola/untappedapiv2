@@ -17,51 +17,56 @@ class UserBusiness implements IUserBusiness {
   }
 
   async login(params: ILogin): Promise<Result<IAuthData>> {
-    const userModel = await this._userRepository.findByCriteria({
-      email: params.email.toLowerCase()
-    });
-    if (!userModel) return Result.fail<IAuthData>(400, 'Invalid credentials');
-    const passwordMatched: boolean = await userModel.comparePassword(
-      params.password
-    );
-    if (!passwordMatched)
-      return Result.fail<IAuthData>(400, 'Invalid credentials');
-    const permissionParams: IExchangeToken = {
-      destinationUrl: params.destinationUrl.toLowerCase(),
-      roles: [...userModel.roles.map(x => x._id)]
-    };
-    const permissions: { [x: string]: string } = await tokenExchange(
-      permissionParams
-    );
-    const signInOptions: SignInOptions = {
-      issuer: config.ISSUER.toLowerCase(),
-      audience: params.audience,
-      expiresIn: config.AUTH_EXPIRESIN,
-      algorithm: config.RSA_ALG_TYPE,
-      keyid: config.RSA_KEYID,
-      subject: ''
-    };
-    const payload: { [x: string]: string } = {
-      tokenType: TokenType.AUTH
-    };
-    const privateKey: string = getPrivateKey(config.RSA_KEYID);
-    if (!privateKey)
-      return Result.fail<IAuthData>(400, 'The token key provided is invalid');
+    try {
+      const user = await this._userRepository.findByCriteria({
+        email: params.email.toLowerCase()
+      });
+      if (!user) return Result.fail<IAuthData>(404, 'User not found.');
+      const passwordMatched: boolean = await user.comparePassword(
+        params.password
+      );
+      if (!passwordMatched)
+        return Result.fail<IAuthData>(400, 'Invalid credentials');
 
-    const userToken: string = await userModel.generateToken(
-      privateKey,
-      signInOptions,
-      payload
-    );
+      const permissionParams: IExchangeToken = {
+        destinationUrl: params.destinationUrl.toLowerCase(),
+        roles: [...user.roles.map(x => x._id)]
+      };
+      const permissions: { [x: string]: string } = await tokenExchange(
+        permissionParams
+      );
+      const signInOptions: SignInOptions = {
+        issuer: config.ISSUER.toLowerCase(),
+        audience: params.audience,
+        expiresIn: config.AUTH_EXPIRESIN,
+        algorithm: config.RSA_ALG_TYPE,
+        keyid: config.RSA_KEYID,
+        subject: ''
+      };
+      const payload: { [x: string]: string } = {
+        tokenType: TokenType.AUTH
+      };
+      const privateKey: string = getPrivateKey(config.RSA_KEYID);
+      if (!privateKey)
+        return Result.fail<IAuthData>(400, 'The token key provided is invalid');
 
-    const authData: IAuthData = {
-      _id: userModel._id,
-      email: userModel.email,
-      roles: [...userModel.roles.map(role => role.name)],
-      permissions: permissions,
-      token: userToken
-    };
-    return Result.ok<IAuthData>(200, authData);
+      const userToken: string = await user.generateToken(
+        privateKey,
+        signInOptions,
+        payload
+      );
+
+      const authData: IAuthData = {
+        _id: user._id,
+        email: user.email,
+        roles: [...user.roles.map(role => role.name)],
+        permissions: permissions,
+        token: userToken
+      };
+      return Result.ok<IAuthData>(200, authData);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
   }
   // async register(params: IRegister): Promise<Result<IAuthData>> {
   //   return;
@@ -71,10 +76,7 @@ class UserBusiness implements IUserBusiness {
       const users = await this._userRepository.fetch();
       return Result.ok<IUserModel>(200, users);
     } catch (err) {
-      return Result.fail<IUserModel>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -85,10 +87,7 @@ class UserBusiness implements IUserBusiness {
         return Result.fail<IUserModel>(404, `User with Id ${id} not found`);
       else return Result.ok<IUserModel>(200, user);
     } catch (err) {
-      return Result.fail<IUserModel>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -98,10 +97,7 @@ class UserBusiness implements IUserBusiness {
       if (!user) return Result.fail<IUserModel>(404, `User not found`);
       else return Result.ok<IUserModel>(200, user);
     } catch (err) {
-      return Result.fail<IUserModel>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -110,10 +106,7 @@ class UserBusiness implements IUserBusiness {
       const newUser = await this._userRepository.create(item);
       return Result.ok<IUserModel>(201, newUser);
     } catch (err) {
-      return Result.fail<IUserModel>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -128,10 +121,7 @@ class UserBusiness implements IUserBusiness {
       const updateObj = await this._userRepository.update(user._id, item);
       return Result.ok<IUserModel>(200, updateObj);
     } catch (err) {
-      return Result.fail<IUserModel>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -140,7 +130,7 @@ class UserBusiness implements IUserBusiness {
       const isDeleted = await this._userRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

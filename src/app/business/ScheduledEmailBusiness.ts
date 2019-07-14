@@ -15,10 +15,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
       const scheduledEmails = await this._scheduledEmailRepository.fetch();
       return Result.ok<IScheduledEmail>(200, scheduledEmails);
     } catch (err) {
-      return Result.fail<IScheduledEmail>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -32,10 +29,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
         );
       else return Result.ok<IScheduledEmail>(200, scheduledEmail);
     } catch (err) {
-      return Result.fail<IScheduledEmail>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -48,10 +42,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
         return Result.fail<IScheduledEmail>(404, `Scheduled Email not found`);
       else return Result.ok<IScheduledEmail>(200, scheduledEmail);
     } catch (err) {
-      return Result.fail<IScheduledEmail>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -62,10 +53,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
       );
       return Result.ok<IScheduledEmail>(201, newScheduledEmail);
     } catch (err) {
-      return Result.fail<IScheduledEmail>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -86,10 +74,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
       );
       return Result.ok<IScheduledEmail>(200, updateObj);
     } catch (err) {
-      return Result.fail<IScheduledEmail>(
-        500,
-        `Internal server error occured. ${err}`
-      );
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -98,7 +83,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
       const isDeleted = await this._scheduledEmailRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

@@ -27,20 +27,17 @@ export function controller(routePrefix: string) {
         Reflect.getMetadata(MetadataKeys.middleware, target.prototype, key) ||
         [];
 
-      // const requiredProps =
-      //   Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
-      //   [];
+      const requiredProps =
+        Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
+        [];
 
-      // const requestType =
-      //   Reflect.getMetadata(MetadataKeys.requesttype, target.prototype, key) ||
-      //   '';
-      //const validator = requestValidators(requiredProps);
+      const validator = requestValidators(requiredProps);
 
       if (path) {
         router[method](
           `${routePrefix}${path}`,
           ...middlewares,
-          // validator,
+          validator,
           routeHandler
         );
       }

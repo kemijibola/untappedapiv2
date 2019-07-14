@@ -15,7 +15,7 @@ class RoleBusiness implements IRoleBusiness {
       const roles = await this._roleRepository.fetch();
       return Result.ok<IRole>(200, roles);
     } catch (err) {
-      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -25,7 +25,7 @@ class RoleBusiness implements IRoleBusiness {
       if (!role) return Result.fail<IRole>(404, `Role of Id ${id} not found`);
       else return Result.ok<IRole>(200, role);
     } catch (err) {
-      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -35,7 +35,7 @@ class RoleBusiness implements IRoleBusiness {
       if (!role) return Result.fail<IRole>(404, `Role not found`);
       else return Result.ok<IRole>(200, role);
     } catch (err) {
-      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -50,7 +50,7 @@ class RoleBusiness implements IRoleBusiness {
       }
       return Result.fail<IRole>(400, `Role with name ${role.name} exists`);
     } catch (err) {
-      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -65,7 +65,7 @@ class RoleBusiness implements IRoleBusiness {
       const updateObj = await this._roleRepository.update(role._id, item);
       return Result.ok<IRole>(200, updateObj);
     } catch (err) {
-      return Result.fail<IRole>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -74,7 +74,7 @@ class RoleBusiness implements IRoleBusiness {
       const isDeleted = await this._roleRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

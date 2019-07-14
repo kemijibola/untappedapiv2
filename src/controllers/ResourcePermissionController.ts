@@ -1,7 +1,6 @@
 import { PlatformError } from '../utils/error/ApplicationError';
 import { Request, Response, NextFunction } from 'express';
 import { controller, post, requestValidators } from '../decorators';
-import IBaseControler from './interfaces/base/BaseController';
 import { IResourcePermission } from '../app/models/interfaces';
 import ResourcePermissionBusiness = require('../app/business/ResourcePermissionBusiness');
 

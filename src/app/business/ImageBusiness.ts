@@ -15,7 +15,7 @@ class ImageBusiness implements IImageBusiness {
       const images = await this._imageRepository.fetch();
       return Result.ok<IImage>(200, images);
     } catch (err) {
-      return Result.fail<IImage>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -26,7 +26,7 @@ class ImageBusiness implements IImageBusiness {
         return Result.fail<IImage>(404, `Image of Id ${id} not found`);
       else return Result.ok<IImage>(200, image);
     } catch (err) {
-      return Result.fail<IImage>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -36,7 +36,7 @@ class ImageBusiness implements IImageBusiness {
       if (!image) return Result.fail<IImage>(404, `Image not found`);
       else return Result.ok<IImage>(200, image);
     } catch (err) {
-      return Result.fail<IImage>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -45,7 +45,7 @@ class ImageBusiness implements IImageBusiness {
       const newImage = await this._imageRepository.create(item);
       return Result.ok<IImage>(201, newImage);
     } catch (err) {
-      return Result.fail<IImage>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -60,7 +60,7 @@ class ImageBusiness implements IImageBusiness {
       const updateObj = await this._imageRepository.update(image._id, item);
       return Result.ok<IImage>(200, updateObj);
     } catch (err) {
-      return Result.fail<IImage>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -69,7 +69,7 @@ class ImageBusiness implements IImageBusiness {
       const isDeleted = await this._imageRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }

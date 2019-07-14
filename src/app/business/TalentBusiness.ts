@@ -15,7 +15,7 @@ class TalentBusiness implements ITalentBusiness {
       const talents = await this._talentRepository.fetch();
       return Result.ok<ITalent>(200, talents);
     } catch (err) {
-      return Result.fail<ITalent>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -26,7 +26,7 @@ class TalentBusiness implements ITalentBusiness {
         return Result.fail<ITalent>(404, `Talent of Id ${id} not found`);
       else return Result.ok<ITalent>(200, talent);
     } catch (err) {
-      return Result.fail<ITalent>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -36,7 +36,7 @@ class TalentBusiness implements ITalentBusiness {
       if (!talent) return Result.fail<ITalent>(404, `Talent not found`);
       else return Result.ok<ITalent>(200, talent);
     } catch (err) {
-      return Result.fail<ITalent>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -45,7 +45,7 @@ class TalentBusiness implements ITalentBusiness {
       const newTalent = await this._talentRepository.create(item);
       return Result.ok<ITalent>(201, newTalent);
     } catch (err) {
-      return Result.fail<ITalent>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -60,7 +60,7 @@ class TalentBusiness implements ITalentBusiness {
       const updateObj = await this._talentRepository.update(talent._id, item);
       return Result.ok<ITalent>(200, updateObj);
     } catch (err) {
-      return Result.fail<ITalent>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
@@ -69,7 +69,7 @@ class TalentBusiness implements ITalentBusiness {
       const isDeleted = await this._talentRepository.delete(id);
       return Result.ok<boolean>(200, isDeleted);
     } catch (err) {
-      return Result.fail<boolean>(500, `Internal server error occured. ${err}`);
+      throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 }
