@@ -15,10 +15,10 @@ var RepositoryBase = /** @class */ (function () {
             });
         });
     };
-    RepositoryBase.prototype.fetch = function () {
+    RepositoryBase.prototype.fetch = function (condition) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this._model.find({}, function (error, result) {
+            _this._model.find(condition, function (error, result) {
                 if (error)
                     reject(error);
                 else

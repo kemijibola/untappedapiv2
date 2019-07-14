@@ -11,9 +11,9 @@ class CategoryBusiness implements ICategoryBusiness {
     this._categoryRepository = new CategoryRepository();
   }
 
-  async fetch(): Promise<Result<ICategory>> {
+  async fetch(condition: any): Promise<Result<ICategory>> {
     try {
-      const categories = await this._categoryRepository.fetch();
+      const categories = await this._categoryRepository.fetch(condition);
       return Result.ok<ICategory>(200, categories);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

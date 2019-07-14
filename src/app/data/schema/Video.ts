@@ -12,7 +12,8 @@ const videoSchema = new Schema({
   title: { type: String, required: true },
   shortDescription: { type: String },
   user: { type: Schema.Types },
-  items: [videoItemSchema]
+  items: [videoItemSchema],
+  isApproved: { type: Boolean, default: false }
 });
 
 export const VideoSchema = mongooseConnection.model<IVideo>(

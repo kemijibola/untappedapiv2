@@ -10,9 +10,9 @@ class RoleBusiness implements IRoleBusiness {
     this._roleRepository = new RoleRepository();
   }
 
-  async fetch(): Promise<Result<IRole>> {
+  async fetch(condition: any): Promise<Result<IRole>> {
     try {
-      const roles = await this._roleRepository.fetch();
+      const roles = await this._roleRepository.fetch(condition);
       return Result.ok<IRole>(200, roles);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

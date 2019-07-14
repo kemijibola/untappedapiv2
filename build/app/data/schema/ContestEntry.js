@@ -14,7 +14,8 @@ var contestEntrySchema = new mongoose_1.Schema({
         ref: 'Contest',
         required: true
     },
-    submissionPath: { type: String, required: true }
+    submissionPath: { type: String, required: true },
+    isApproved: { type: Boolean, default: false }
 }, { timestamps: true });
 exports.ContestEntrySchema = mongooseConnection.model('ContestEntry', contestEntrySchema);
 //# sourceMappingURL=ContestEntry.js.map

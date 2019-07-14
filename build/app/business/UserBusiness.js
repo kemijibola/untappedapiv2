@@ -108,14 +108,14 @@ var UserBusiness = /** @class */ (function () {
     // async register(params: IRegister): Promise<Result<IAuthData>> {
     //   return;
     // }
-    UserBusiness.prototype.fetch = function () {
+    UserBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var users, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.fetch()];
+                        return [4 /*yield*/, this._userRepository.fetch(condition)];
                     case 1:
                         users = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, users)];

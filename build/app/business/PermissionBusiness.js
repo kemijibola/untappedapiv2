@@ -43,14 +43,14 @@ var PermissionBusiness = /** @class */ (function () {
     function PermissionBusiness() {
         this._permissionRepository = new PermissionRepository_1.default();
     }
-    PermissionBusiness.prototype.fetch = function () {
+    PermissionBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var permissions, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._permissionRepository.fetch()];
+                        return [4 /*yield*/, this._permissionRepository.fetch(condition)];
                     case 1:
                         permissions = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, permissions)];

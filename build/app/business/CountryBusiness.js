@@ -43,14 +43,14 @@ var CountryBusiness = /** @class */ (function () {
     function CountryBusiness() {
         this._countryRepository = new CountryRepository_1.default();
     }
-    CountryBusiness.prototype.fetch = function () {
+    CountryBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var countries, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._countryRepository.fetch()];
+                        return [4 /*yield*/, this._countryRepository.fetch(condition)];
                     case 1:
                         countries = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, countries)];

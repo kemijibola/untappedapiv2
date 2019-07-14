@@ -7,4 +7,5 @@ export interface IContestEntry extends ITimeStamp, mongoose.Document {
   user: IUser;
   contest: IContest;
   submissionPath: string;
+  isApproved: boolean;
 }

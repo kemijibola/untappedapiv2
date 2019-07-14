@@ -43,14 +43,14 @@ var ApprovalBusiness = /** @class */ (function () {
     function ApprovalBusiness() {
         this._approvalRepository = new ApprovalRepository_1.default();
     }
-    ApprovalBusiness.prototype.fetch = function () {
+    ApprovalBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var approvals, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._approvalRepository.fetch()];
+                        return [4 /*yield*/, this._approvalRepository.fetch(condition)];
                     case 1:
                         approvals = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, approvals)];

@@ -10,9 +10,9 @@ class VideoBusiness implements IVideoBusiness {
     this._videoRepository = new VideoRepository();
   }
 
-  async fetch(): Promise<Result<IVideo>> {
+  async fetch(condition: any): Promise<Result<IVideo>> {
     try {
-      const videos = await this._videoRepository.fetch();
+      const videos = await this._videoRepository.fetch(condition);
       return Result.ok<IVideo>(200, videos);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
@@ -43,6 +43,7 @@ class VideoBusiness implements IVideoBusiness {
   async create(item: IVideo): Promise<Result<IVideo>> {
     try {
       const newVideo = await this._videoRepository.create(item);
+      // TODO:: create approval request
       return Result.ok<IVideo>(201, newVideo);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

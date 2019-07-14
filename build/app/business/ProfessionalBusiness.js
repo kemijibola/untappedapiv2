@@ -43,14 +43,14 @@ var ProfessionalBusiness = /** @class */ (function () {
     function ProfessionalBusiness() {
         this._professionalRepository = new ProfessionalRepository_1.default();
     }
-    ProfessionalBusiness.prototype.fetch = function () {
+    ProfessionalBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var professionals, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._professionalRepository.fetch()];
+                        return [4 /*yield*/, this._professionalRepository.fetch(condition)];
                     case 1:
                         professionals = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, professionals)];

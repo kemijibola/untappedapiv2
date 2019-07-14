@@ -43,14 +43,14 @@ var TalentBusiness = /** @class */ (function () {
     function TalentBusiness() {
         this._talentRepository = new TalentRepository_1.default();
     }
-    TalentBusiness.prototype.fetch = function () {
+    TalentBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var talents, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._talentRepository.fetch()];
+                        return [4 /*yield*/, this._talentRepository.fetch(condition)];
                     case 1:
                         talents = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, talents)];

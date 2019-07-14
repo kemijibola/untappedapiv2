@@ -43,14 +43,14 @@ var CategoryBusiness = /** @class */ (function () {
     function CategoryBusiness() {
         this._categoryRepository = new CategoryRepository_1.default();
     }
-    CategoryBusiness.prototype.fetch = function () {
+    CategoryBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var categories, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._categoryRepository.fetch()];
+                        return [4 /*yield*/, this._categoryRepository.fetch(condition)];
                     case 1:
                         categories = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, categories)];

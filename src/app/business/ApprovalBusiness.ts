@@ -10,9 +10,9 @@ class ApprovalBusiness implements IApprovalBusiness {
     this._approvalRepository = new ApprovalRepository();
   }
 
-  async fetch(): Promise<Result<IApproval>> {
+  async fetch(condition: any): Promise<Result<IApproval>> {
     try {
-      const approvals = await this._approvalRepository.fetch();
+      const approvals = await this._approvalRepository.fetch(condition);
       return Result.ok<IApproval>(200, approvals);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

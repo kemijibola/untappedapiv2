@@ -12,7 +12,8 @@ const audioSchema = new Schema({
   title: { type: String, required: true },
   shortDescription: { type: String },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  items: [audioItemSchema]
+  items: [audioItemSchema],
+  isApproved: { type: Boolean, default: false }
 });
 
 export const AudioSchema = mongooseConnection.model<IAudio>(

@@ -71,9 +71,9 @@ class UserBusiness implements IUserBusiness {
   // async register(params: IRegister): Promise<Result<IAuthData>> {
   //   return;
   // }
-  async fetch(): Promise<Result<IUserModel>> {
+  async fetch(condition: any): Promise<Result<IUserModel>> {
     try {
-      const users = await this._userRepository.fetch();
+      const users = await this._userRepository.fetch(condition);
       return Result.ok<IUserModel>(200, users);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

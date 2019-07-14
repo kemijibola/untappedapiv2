@@ -43,14 +43,14 @@ var ImageBusiness = /** @class */ (function () {
     function ImageBusiness() {
         this._imageRepository = new ImageRepository_1.default();
     }
-    ImageBusiness.prototype.fetch = function () {
+    ImageBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var images, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._imageRepository.fetch()];
+                        return [4 /*yield*/, this._imageRepository.fetch(condition)];
                     case 1:
                         images = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, images)];
@@ -118,6 +118,7 @@ var ImageBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._imageRepository.create(item)];
                     case 1:
                         newImage = _a.sent();
+                        // TODO:: Create approval request
                         return [2 /*return*/, Result_1.Result.ok(201, newImage)];
                     case 2:
                         err_4 = _a.sent();

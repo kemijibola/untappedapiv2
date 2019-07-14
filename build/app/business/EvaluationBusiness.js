@@ -43,14 +43,14 @@ var EvaluationBusiness = /** @class */ (function () {
     function EvaluationBusiness() {
         this._evaluationRepository = new EvaluationRepository_1.default();
     }
-    EvaluationBusiness.prototype.fetch = function () {
+    EvaluationBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var evaluations, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._evaluationRepository.fetch()];
+                        return [4 /*yield*/, this._evaluationRepository.fetch(condition)];
                     case 1:
                         evaluations = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, evaluations)];

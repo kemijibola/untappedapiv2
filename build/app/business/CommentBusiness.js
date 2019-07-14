@@ -43,14 +43,14 @@ var CommentBusiness = /** @class */ (function () {
     function CommentBusiness() {
         this._commentRepository = new CommentRepository_1.default();
     }
-    CommentBusiness.prototype.fetch = function () {
+    CommentBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var comments, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._commentRepository.fetch()];
+                        return [4 /*yield*/, this._commentRepository.fetch(condition)];
                     case 1:
                         comments = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, comments)];

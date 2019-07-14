@@ -43,14 +43,14 @@ var ResourceBusiness = /** @class */ (function () {
     function ResourceBusiness() {
         this._resourceRepository = new ResourceRepository_1.default();
     }
-    ResourceBusiness.prototype.fetch = function () {
+    ResourceBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var resources, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._resourceRepository.fetch()];
+                        return [4 /*yield*/, this._resourceRepository.fetch(condition)];
                     case 1:
                         resources = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, resources)];

@@ -43,14 +43,14 @@ var GigBusiness = /** @class */ (function () {
     function GigBusiness() {
         this._gigRepository = new GigRepository_1.default();
     }
-    GigBusiness.prototype.fetch = function () {
+    GigBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var gigs, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._gigRepository.fetch()];
+                        return [4 /*yield*/, this._gigRepository.fetch(condition)];
                     case 1:
                         gigs = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, gigs)];

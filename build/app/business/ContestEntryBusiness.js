@@ -43,14 +43,14 @@ var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
     }
-    ContestBusiness.prototype.fetch = function () {
+    ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var contestEntries, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._contestEntryRepository.fetch()];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch(condition)];
                     case 1:
                         contestEntries = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, contestEntries)];
@@ -118,6 +118,7 @@ var ContestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._contestEntryRepository.create(item)];
                     case 1:
                         newContestEntry = _a.sent();
+                        // TODO:: create approval request here
                         return [2 /*return*/, Result_1.Result.ok(201, newContestEntry)];
                     case 2:
                         err_4 = _a.sent();

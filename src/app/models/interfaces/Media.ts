@@ -15,6 +15,7 @@ export interface IMedia extends ITimeStamp, mongoose.Document {
   shortDescription: string;
   user: IUser['_id'];
   items: [IMediaItem];
+  isApproved: boolean;
 }
 
 export interface IAudio extends IMedia {}

@@ -10,9 +10,9 @@ class GigBusiness implements IGigBusiness {
     this._gigRepository = new GigRepository();
   }
 
-  async fetch(): Promise<Result<IGig>> {
+  async fetch(condition: any): Promise<Result<IGig>> {
     try {
-      const gigs = await this._gigRepository.fetch();
+      const gigs = await this._gigRepository.fetch(condition);
       return Result.ok<IGig>(200, gigs);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

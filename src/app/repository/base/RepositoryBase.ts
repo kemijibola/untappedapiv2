@@ -19,9 +19,9 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  fetch(): Promise<any> {
+  fetch(condition: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._model.find({}, (error: any, result: any) => {
+      this._model.find(condition, (error: any, result: any) => {
         if (error) reject(error);
         else resolve(result);
       });

@@ -43,14 +43,14 @@ var AudioBusiness = /** @class */ (function () {
     function AudioBusiness() {
         this._audioRepository = new AudioRepository_1.default();
     }
-    AudioBusiness.prototype.fetch = function () {
+    AudioBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var audios, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._audioRepository.fetch()];
+                        return [4 /*yield*/, this._audioRepository.fetch(condition)];
                     case 1:
                         audios = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, audios)];
@@ -118,6 +118,7 @@ var AudioBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._audioRepository.create(item)];
                     case 1:
                         newAudio = _a.sent();
+                        // TODO:: create approval request
                         return [2 /*return*/, Result_1.Result.ok(201, newAudio)];
                     case 2:
                         err_4 = _a.sent();

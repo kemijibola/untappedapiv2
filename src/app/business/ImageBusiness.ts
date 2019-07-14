@@ -10,9 +10,9 @@ class ImageBusiness implements IImageBusiness {
     this._imageRepository = new ImageRepository();
   }
 
-  async fetch(): Promise<Result<IImage>> {
+  async fetch(condition: any): Promise<Result<IImage>> {
     try {
-      const images = await this._imageRepository.fetch();
+      const images = await this._imageRepository.fetch(condition);
       return Result.ok<IImage>(200, images);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
@@ -43,6 +43,7 @@ class ImageBusiness implements IImageBusiness {
   async create(item: IImage): Promise<Result<IImage>> {
     try {
       const newImage = await this._imageRepository.create(item);
+      // TODO:: Create approval request
       return Result.ok<IImage>(201, newImage);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

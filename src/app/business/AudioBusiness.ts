@@ -10,9 +10,9 @@ class AudioBusiness implements IAudioBusiness {
     this._audioRepository = new AudioRepository();
   }
 
-  async fetch(): Promise<Result<IAudio>> {
+  async fetch(condition: any): Promise<Result<IAudio>> {
     try {
-      const audios = await this._audioRepository.fetch();
+      const audios = await this._audioRepository.fetch(condition);
       return Result.ok<IAudio>(200, audios);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
@@ -43,6 +43,7 @@ class AudioBusiness implements IAudioBusiness {
   async create(item: IAudio): Promise<Result<IAudio>> {
     try {
       const newAudio = await this._audioRepository.create(item);
+      // TODO:: create approval request
       return Result.ok<IAudio>(201, newAudio);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

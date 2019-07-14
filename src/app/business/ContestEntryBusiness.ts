@@ -10,9 +10,11 @@ class ContestBusiness implements IContestEntryBusiness {
     this._contestEntryRepository = new ContestEntryRepository();
   }
 
-  async fetch(): Promise<Result<IContestEntry>> {
+  async fetch(condition: any): Promise<Result<IContestEntry>> {
     try {
-      const contestEntries = await this._contestEntryRepository.fetch();
+      const contestEntries = await this._contestEntryRepository.fetch(
+        condition
+      );
       return Result.ok<IContestEntry>(200, contestEntries);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
@@ -49,6 +51,7 @@ class ContestBusiness implements IContestEntryBusiness {
   async create(item: IContestEntry): Promise<Result<IContestEntry>> {
     try {
       const newContestEntry = await this._contestEntryRepository.create(item);
+      // TODO:: create approval request here
       return Result.ok<IContestEntry>(201, newContestEntry);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
