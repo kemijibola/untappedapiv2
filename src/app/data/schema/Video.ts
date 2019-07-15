@@ -11,7 +11,7 @@ const videoItemSchema = new Schema({
 const videoSchema = new Schema({
   title: { type: String, required: true },
   shortDescription: { type: String },
-  user: { type: Schema.Types },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   items: [videoItemSchema],
   isApproved: { type: Boolean, default: false }
 });

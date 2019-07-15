@@ -50,7 +50,7 @@ class RepositoryBase<T extends mongoose.Document>
 
   findById(_id: string): Promise<T> {
     return new Promise((resolve, reject) => {
-      const run = this._model.findById(_id, (error: any, result: T) => {
+      this._model.findById(_id, (error: any, result: T) => {
         if (error) reject(error);
         else resolve(result);
       });

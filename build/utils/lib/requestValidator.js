@@ -13,14 +13,17 @@ function requestValidators(keys) {
                     missingProps += keys[i];
                 }
                 else {
-                    missingProps += keys[i] + ",";
+                    missingProps += keys[i] + ", ";
                 }
             }
         }
-        return next(error_1.PlatformError.error({
-            code: 400,
-            message: "Invalid request.Missing property '" + missingProps + "'"
-        }));
+        if (missingProps) {
+            return next(error_1.PlatformError.error({
+                code: 400,
+                message: "Invalid request.Missing property '" + missingProps + "'"
+            }));
+        }
+        next();
     };
 }
 exports.requestValidators = requestValidators;

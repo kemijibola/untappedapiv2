@@ -10,10 +10,10 @@ class ProfessionalBusiness implements IProfessionalBusiness {
     this._professionalRepository = new ProfessionalRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IProfessional>> {
+  async fetch(condition: any): Promise<Result<IProfessional[]>> {
     try {
       const professionals = await this._professionalRepository.fetch(condition);
-      return Result.ok<IProfessional>(200, professionals);
+      return Result.ok<IProfessional[]>(200, professionals);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

@@ -30,7 +30,6 @@ export function controller(routePrefix: string) {
       const requiredProps =
         Reflect.getMetadata(MetadataKeys.validator, target.prototype, key) ||
         [];
-
       const validator = requestValidators(requiredProps);
 
       if (path) {

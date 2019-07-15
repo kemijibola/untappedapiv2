@@ -50,9 +50,41 @@ var RoleBusiness = require("../app/business/RoleBusiness");
 var RoleController = /** @class */ (function () {
     function RoleController() {
     }
+    RoleController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var roleBusiness, result, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        roleBusiness = new RoleBusiness();
+                        return [4 /*yield*/, roleBusiness.fetch({})];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     RoleController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, roleBusiness, result, err_1;
+            var item, roleBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -68,15 +100,15 @@ var RoleController = /** @class */ (function () {
                                     message: "Error occured. " + result.error
                                 }))];
                         }
-                        return [2 /*return*/, res.status(201).json({
+                        return [2 /*return*/, res.status(result.responseCode).json({
                                 message: 'Operation successful',
                                 data: result.data
                             })];
                     case 2:
-                        err_1 = _a.sent();
+                        err_2 = _a.sent();
                         return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: "Internal Server error occured." + err_2
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -85,11 +117,16 @@ var RoleController = /** @class */ (function () {
     };
     RoleController.prototype.update = function () { };
     RoleController.prototype.delete = function () { };
-    RoleController.prototype.fetch = function () { };
     RoleController.prototype.findById = function () { };
     __decorate([
+        decorators_1.get('/'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], RoleController.prototype, "fetch", null);
+    __decorate([
         decorators_1.post('/'),
-        decorators_1.requestValidators('name', 'global'),
+        decorators_1.requestValidators('name', 'global', 'description'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

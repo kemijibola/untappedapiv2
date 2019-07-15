@@ -21,12 +21,12 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
     this._permissionRepository = new PermissionRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IResourcePermission>> {
+  async fetch(condition: any): Promise<Result<IResourcePermission[]>> {
     try {
       const resourcePermissions = await this._resourcePermissionRepository.fetch(
         condition
       );
-      return Result.ok<IResourcePermission>(200, resourcePermissions);
+      return Result.ok<IResourcePermission[]>(200, resourcePermissions);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

@@ -10,10 +10,10 @@ class ContestBusiness implements IContestBusiness {
     this._contestRepository = new ContestRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IContest>> {
+  async fetch(condition: any): Promise<Result<IContest[]>> {
     try {
       const contests = await this._contestRepository.fetch(condition);
-      return Result.ok<IContest>(200, contests);
+      return Result.ok<IContest[]>(200, contests);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

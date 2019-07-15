@@ -10,10 +10,10 @@ class CommentBusiness implements ICommentBusiness {
     this._commentRepository = new CommentRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IComment>> {
+  async fetch(condition: any): Promise<Result<IComment[]>> {
     try {
       const comments = await this._commentRepository.fetch(condition);
-      return Result.ok<IComment>(200, comments);
+      return Result.ok<IComment[]>(200, comments);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

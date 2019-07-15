@@ -10,10 +10,10 @@ class ImageBusiness implements IImageBusiness {
     this._imageRepository = new ImageRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IImage>> {
+  async fetch(condition: any): Promise<Result<IImage[]>> {
     try {
       const images = await this._imageRepository.fetch(condition);
-      return Result.ok<IImage>(200, images);
+      return Result.ok<IImage[]>(200, images);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

@@ -1,13 +1,40 @@
 import { PlatformError } from '../utils/error/ApplicationError';
 import { Request, Response, NextFunction } from 'express';
-import { controller, post, requestValidators } from '../decorators';
+import { get, controller, requestValidators, post } from '../decorators';
 import { IRole } from '../app/models/interfaces';
 import RoleBusiness = require('../app/business/RoleBusiness');
 
 @controller('/roles')
 export class RoleController {
+  @get('/')
+  async fetch(req: Request, res: Response, next: NextFunction) {
+    try {
+      const roleBusiness = new RoleBusiness();
+      const result = await roleBusiness.fetch({});
+      if (result.error) {
+        return next(
+          PlatformError.error({
+            code: result.responseCode,
+            message: `Error occured. ${result.error}`
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: 'Operation successful',
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        PlatformError.error({
+          code: 500,
+          message: `Internal Server error occured.${err}`
+        })
+      );
+    }
+  }
+
   @post('/')
-  @requestValidators('name', 'global')
+  @requestValidators('name', 'global', 'description')
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const item: IRole = req.body;
@@ -21,7 +48,7 @@ export class RoleController {
           })
         );
       }
-      return res.status(201).json({
+      return res.status(result.responseCode).json({
         message: 'Operation successful',
         data: result.data
       });
@@ -36,6 +63,5 @@ export class RoleController {
   }
   update(): void {}
   delete(): void {}
-  fetch(): void {}
   findById(): void {}
 }

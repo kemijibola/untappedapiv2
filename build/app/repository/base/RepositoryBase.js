@@ -53,7 +53,7 @@ var RepositoryBase = /** @class */ (function () {
     RepositoryBase.prototype.findById = function (_id) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var run = _this._model.findById(_id, function (error, result) {
+            _this._model.findById(_id, function (error, result) {
                 if (error)
                     reject(error);
                 else

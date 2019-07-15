@@ -10,10 +10,10 @@ class CountryBusiness implements ICountryBusiness {
     this._countryRepository = new CountryRepository();
   }
 
-  async fetch(condition: any): Promise<Result<ICountry>> {
+  async fetch(condition: any): Promise<Result<ICountry[]>> {
     try {
       const countries = await this._countryRepository.fetch(condition);
-      return Result.ok<ICountry>(200, countries);
+      return Result.ok<ICountry[]>(200, countries);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

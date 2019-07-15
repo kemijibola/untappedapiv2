@@ -10,10 +10,10 @@ class ApplicationBusiness implements IApplicationBusiness {
     this._applicationRepository = new ApplicationRepository();
   }
 
-  async fetch(condidtion: any): Promise<Result<IApplication>> {
+  async fetch(condidtion: any): Promise<Result<IApplication[]>> {
     try {
       const applications = await this._applicationRepository.fetch(condidtion);
-      return Result.ok<IApplication>(200, applications);
+      return Result.ok<IApplication[]>(200, applications);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

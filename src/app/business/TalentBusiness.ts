@@ -10,10 +10,10 @@ class TalentBusiness implements ITalentBusiness {
     this._talentRepository = new TalentRepository();
   }
 
-  async fetch(condition: any): Promise<Result<ITalent>> {
+  async fetch(condition: any): Promise<Result<ITalent[]>> {
     try {
       const talents = await this._talentRepository.fetch(condition);
-      return Result.ok<ITalent>(200, talents);
+      return Result.ok<ITalent[]>(200, talents);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

@@ -10,10 +10,10 @@ class AudioBusiness implements IAudioBusiness {
     this._audioRepository = new AudioRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IAudio>> {
+  async fetch(condition: any): Promise<Result<IAudio[]>> {
     try {
       const audios = await this._audioRepository.fetch(condition);
-      return Result.ok<IAudio>(200, audios);
+      return Result.ok<IAudio[]>(200, audios);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

@@ -45,15 +45,29 @@ var RoleBusiness = /** @class */ (function () {
     }
     RoleBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var roles, err_1;
+            var refinedRoles, roles, _i, roles_1, role, roleViewModel, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        condition.global = true;
+                        refinedRoles = [];
                         return [4 /*yield*/, this._roleRepository.fetch(condition)];
                     case 1:
                         roles = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, roles)];
+                        for (_i = 0, roles_1 = roles; _i < roles_1.length; _i++) {
+                            role = roles_1[_i];
+                            roleViewModel = {
+                                _id: role._id,
+                                name: role.name,
+                                global: role.global,
+                                description: role.description,
+                                createdAt: role.createdAt,
+                                updatedAt: role.updateAt || new Date()
+                            };
+                            refinedRoles = refinedRoles.concat([roleViewModel]);
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, refinedRoles)];
                     case 2:
                         err_1 = _a.sent();
                         throw new Error("InternalServer error occured." + err_1.message);
@@ -124,6 +138,7 @@ var RoleBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._roleRepository.create(item)];
                     case 2:
                         newRole = _a.sent();
+                        // TODO:: create approval request here
                         return [2 /*return*/, Result_1.Result.ok(201, newRole)];
                     case 3: return [2 /*return*/, Result_1.Result.fail(400, "Role with name " + role.name + " exists")];
                     case 4:

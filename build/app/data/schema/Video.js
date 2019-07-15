@@ -10,7 +10,7 @@ var videoItemSchema = new mongoose_1.Schema({
 var videoSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     shortDescription: { type: String },
-    user: { type: mongoose_1.Schema.Types },
+    user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     items: [videoItemSchema],
     isApproved: { type: Boolean, default: false }
 });

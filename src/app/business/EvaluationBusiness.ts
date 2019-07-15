@@ -10,10 +10,10 @@ class EvaluationBusiness implements IEvaluationBusiness {
     this._evaluationRepository = new EvaluationRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IEvaluation>> {
+  async fetch(condition: any): Promise<Result<IEvaluation[]>> {
     try {
       const evaluations = await this._evaluationRepository.fetch(condition);
-      return Result.ok<IEvaluation>(200, evaluations);
+      return Result.ok<IEvaluation[]>(200, evaluations);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

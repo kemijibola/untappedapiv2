@@ -10,10 +10,10 @@ class ResourceBusiness implements IResourceBusiness {
     this._resourceRepository = new ResourceRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IResource>> {
+  async fetch(condition: any): Promise<Result<IResource[]>> {
     try {
       const resources = await this._resourceRepository.fetch(condition);
-      return Result.ok<IResource>(200, resources);
+      return Result.ok<IResource[]>(200, resources);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

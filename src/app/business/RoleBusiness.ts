@@ -2,6 +2,7 @@ import RoleRepository from '../repository/RoleRepository';
 import IRoleBusiness = require('./interfaces/RoleBusiness');
 import { IRole } from '../models/interfaces';
 import { Result } from '../../utils/Result';
+import { RoleViewModel } from '../models/viewmodels';
 
 class RoleBusiness implements IRoleBusiness {
   private _roleRepository: RoleRepository;
@@ -10,10 +11,23 @@ class RoleBusiness implements IRoleBusiness {
     this._roleRepository = new RoleRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IRole>> {
+  async fetch(condition: any): Promise<Result<any[]>> {
     try {
+      condition.global = true;
+      let refinedRoles: RoleViewModel[] = [];
       const roles = await this._roleRepository.fetch(condition);
-      return Result.ok<IRole>(200, roles);
+      for (let role of roles) {
+        const roleViewModel: RoleViewModel = {
+          _id: role._id,
+          name: role.name,
+          global: role.global,
+          description: role.description,
+          createdAt: role.createdAt,
+          updatedAt: role.updateAt || new Date()
+        };
+        refinedRoles = [...refinedRoles, roleViewModel];
+      }
+      return Result.ok<RoleViewModel[]>(200, refinedRoles);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
@@ -46,6 +60,7 @@ class RoleBusiness implements IRoleBusiness {
       });
       if (role === null) {
         const newRole = await this._roleRepository.create(item);
+        // TODO:: create approval request here
         return Result.ok<IRole>(201, newRole);
       }
       return Result.fail<IRole>(400, `Role with name ${role.name} exists`);

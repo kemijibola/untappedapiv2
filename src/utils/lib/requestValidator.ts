@@ -14,15 +14,18 @@ export function requestValidators(keys: string[]): RequestHandler {
         if (i === keys.length - 1) {
           missingProps += keys[i];
         } else {
-          missingProps += `${keys[i]},`;
+          missingProps += `${keys[i]}, `;
         }
       }
     }
-    return next(
-      PlatformError.error({
-        code: 400,
-        message: `Invalid request.Missing property '${missingProps}'`
-      })
-    );
+    if (missingProps) {
+      return next(
+        PlatformError.error({
+          code: 400,
+          message: `Invalid request.Missing property '${missingProps}'`
+        })
+      );
+    }
+    next();
   };
 }

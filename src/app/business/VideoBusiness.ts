@@ -10,10 +10,10 @@ class VideoBusiness implements IVideoBusiness {
     this._videoRepository = new VideoRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IVideo>> {
+  async fetch(condition: any): Promise<Result<IVideo[]>> {
     try {
       const videos = await this._videoRepository.fetch(condition);
-      return Result.ok<IVideo>(200, videos);
+      return Result.ok<IVideo[]>(200, videos);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

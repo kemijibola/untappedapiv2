@@ -20,7 +20,7 @@ const roleSchema: Schema = new Schema(
     },
     isActive: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   { timestamps: true }

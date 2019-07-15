@@ -10,10 +10,10 @@ class PermissionBusiness implements IPermissionBusiness {
     this._permissionRepository = new PermissionRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IPermission>> {
+  async fetch(condition: any): Promise<Result<IPermission[]>> {
     try {
       const permissions = await this._permissionRepository.fetch(condition);
-      return Result.ok<IPermission>(200, permissions);
+      return Result.ok<IPermission[]>(200, permissions);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

@@ -10,12 +10,12 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
     this._scheduledEmailRepository = new ScheduledEmailRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IScheduledEmail>> {
+  async fetch(condition: any): Promise<Result<IScheduledEmail[]>> {
     try {
       const scheduledEmails = await this._scheduledEmailRepository.fetch(
         condition
       );
-      return Result.ok<IScheduledEmail>(200, scheduledEmails);
+      return Result.ok<IScheduledEmail[]>(200, scheduledEmails);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

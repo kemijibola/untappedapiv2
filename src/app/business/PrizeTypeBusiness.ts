@@ -10,10 +10,10 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
     this._prizeTypeRepository = new PrizeTypeRepository();
   }
 
-  async fetch(condition: any): Promise<Result<IPrizeType>> {
+  async fetch(condition: any): Promise<Result<IPrizeType[]>> {
     try {
       const prizeTypes = await this._prizeTypeRepository.fetch(condition);
-      return Result.ok<IPrizeType>(200, prizeTypes);
+      return Result.ok<IPrizeType[]>(200, prizeTypes);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
