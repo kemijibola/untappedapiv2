@@ -1,10 +1,17 @@
 import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
-import { IPermission } from '../../app/models/interfaces';
+import {
+  IPermission,
+  IApplication,
+  IResource,
+  IResourcePermission
+} from '../../app/models/interfaces';
 const config: AppConfig = require('../../config/keys');
-import ResourceRepository from '../../app/repository/ResourceRepository';
-import ResourcePermissionRepository = require('../../app/repository/ResourcePermissionRepository');
+import ResourceBusiness from '../../app/business/ResourceBusiness';
+import ResourcePermissionBusiness from '../../app/business/ResourcePermissionBusiness';
+import ApplicationBusiness from '../../app/business/ApplicationBusiness';
 import { PlatformError } from '../error';
 import mongoose from 'mongoose';
+import { Result } from '../Result';
 
 export interface IExchangeToken {
   destinationUrl: string;
@@ -22,29 +29,37 @@ export const getPrivateKey: (keyId: string) => string = (
 export async function tokenExchange(
   exchangeParams: IExchangeToken
 ): Promise<{ [x: string]: string }> {
-  const resourceRepository = new ResourceRepository();
-  const resourcePermissionRepository = new ResourcePermissionRepository();
-  const resourceModel = await resourceRepository.findByCriteria({
+  const resourceBusiness = new ResourceBusiness();
+  const resourcePermissionBusiness = new ResourcePermissionBusiness();
+  const resourceResult = await resourceBusiness.findByCriteria({
     name: exchangeParams.destinationUrl
   });
-  if (!resourceModel._id)
+  if (!resourceResult.data) {
     throw PlatformError.error({
-      code: 404,
+      code: resourceResult.responseCode,
       message: `${exchangeParams.destinationUrl} is not a valid route`
     });
+  }
+  const resource: IResource = resourceResult.data;
+
   for (let role of exchangeParams.roles) {
-    const resourcePermissionModel = await resourcePermissionRepository.findPermissionsByRole(
-      role,
-      resourceModel._id
+    const resourcePermissionResult = await resourcePermissionBusiness.findByCriteria(
+      {
+        role: role,
+        resource: resource._id
+      }
     );
-    if (resourcePermissionModel.permissions.length < 1)
+    if (!resourcePermissionResult.data) {
       throw PlatformError.error({
-        code: 404,
+        code: resourceResult.responseCode,
         message: `There are no permissions configured for route ${
-          resourceModel.name
+          resource.name
         }`
       });
-    chunckPermission(resourcePermissionModel.permissions);
+    }
+    const resourcePermission: IResourcePermission =
+      resourcePermissionResult.data;
+    chunckPermission(resourcePermission.permissions);
   }
   return chunkedUserPermissons;
 }
@@ -59,4 +74,20 @@ function chunckPermission(permissions: IPermission[]): void {
 
 export function toObjectId(_id: string): mongoose.Types.ObjectId {
   return mongoose.Types.ObjectId.createFromHexString(_id);
+}
+
+export async function isValidIdentity(
+  audience: string
+): Promise<Result<boolean>> {
+  try {
+    const applicationBusiness = new ApplicationBusiness();
+    const app = await applicationBusiness.findByCriteria({
+      identity: audience
+    });
+    if (!app)
+      return Result.fail<boolean>(404, `Audience '${audience}' not found`);
+    return Result.ok<boolean>(200, true);
+  } catch (err) {
+    throw new Error(`InternalServer error occured.${err.message}`);
+  }
 }

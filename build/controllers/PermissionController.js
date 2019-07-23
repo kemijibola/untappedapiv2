@@ -95,7 +95,7 @@ var PermissionController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], PermissionController.prototype, "create", null);
     PermissionController = __decorate([
-        decorators_1.controller('/permissions')
+        decorators_1.controller('/v1/permissions')
     ], PermissionController);
     return PermissionController;
 }());

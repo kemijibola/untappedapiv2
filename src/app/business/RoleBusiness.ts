@@ -14,6 +14,7 @@ class RoleBusiness implements IRoleBusiness {
   async fetch(condition: any): Promise<Result<any[]>> {
     try {
       condition.global = true;
+      condition.isActive = true;
       let refinedRoles: RoleViewModel[] = [];
       const roles = await this._roleRepository.fetch(condition);
       for (let role of roles) {

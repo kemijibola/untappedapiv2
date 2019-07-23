@@ -79,7 +79,7 @@ var AuthController = /** @class */ (function () {
                                     code: result.responseCode,
                                     message: result.error
                                 }))];
-                        return [2 /*return*/, res.status(200).json({
+                        return [2 /*return*/, res.status(result.responseCode).json({
                                 message: 'Operation successful',
                                 data: result.data
                             })];
@@ -88,6 +88,44 @@ var AuthController = /** @class */ (function () {
                         return [2 /*return*/, next(error_1.PlatformError.error({
                                 code: 500,
                                 message: "Internal Server error occured." + err_1
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.postSignup = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signUpParams, userBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        signUpParams = {
+                            name: req.body.name,
+                            email: req.body.email,
+                            password: req.body.password,
+                            roles: req.body.roles,
+                            audience: req.body.audience
+                        };
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.register(signUpParams)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_2
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -106,9 +144,17 @@ var AuthController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postLogin", null);
+    __decorate([
+        decorators_1.post('/signup'),
+        decorators_1.requestValidators('email', 'password', 'audience', 'name', 'roles'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postSignup", null);
     AuthController = __decorate([
-        decorators_1.controller('/account')
+        decorators_1.controller('/v1/account')
     ], AuthController);
     return AuthController;
 }());
+exports.AuthController = AuthController;
 //# sourceMappingURL=AccountController.js.map

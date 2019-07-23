@@ -19,3 +19,11 @@ export interface AppConfig {
   AUTH_EXPIRESIN: string;
   MAIL_EXPIRESIN: string;
 }
+
+export interface SqsConfig {
+  version: string;
+  region: string;
+  accountId: number;
+  url: string;
+  queueName: string;
+}

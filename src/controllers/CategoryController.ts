@@ -6,7 +6,7 @@ import CategoryBusiness from '../app/business/CategoryBusiness';
 import { Result } from '../utils/Result';
 import { PlatformError } from '../utils/error';
 
-@controller('/categories')
+@controller('/v1/categories')
 export class CategoryController {
   @post('/')
   @requestValidators('name')

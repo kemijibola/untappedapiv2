@@ -6,7 +6,7 @@ import { ContestType } from '../app/data/schema/Contest';
 import { addDays, isAfter } from 'date-fns';
 import ContestRepository = require('../app/repository/ContestRepository');
 
-@controller('/contests')
+@controller('/v1/contests')
 class ContestController {
   @post('/')
   @requestValidators(

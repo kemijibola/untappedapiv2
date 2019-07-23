@@ -6,7 +6,7 @@ import ApprovalBusiness from '../app/business/ApprovalBusiness';
 import BaseController from './interfaces/base/BaseController';
 import { PlatformError } from '../utils/error';
 
-@controller('./approvals')
+@controller('/v1/approvals')
 class ApprovalController {
   @post('/')
   @requestValidators('entity', 'operation', 'approved')

@@ -7,13 +7,15 @@ var interfaces_1 = require("../../models/interfaces");
 var scheduledEmailSchema = new mongoose_1.Schema({
     mailType: { type: interfaces_1.MailType, required: true },
     subject: { type: String },
+    senderEmail: { type: String, required: true },
+    senderName: { type: String, required: true },
     body: { type: String, required: true },
-    receiverEmail: [{ type: String, required: true }],
+    receiverEmail: { type: String, required: true },
     ccCopyEmail: [{ type: String }],
     scheduleDate: { type: Date },
-    readyToSend: { type: Boolean, required: true, default: false },
-    isPickedForSending: { type: Boolean, required: true, default: false },
-    isSent: { type: Boolean, required: true, default: false },
+    readyToSend: { type: Boolean, default: false },
+    isPickedForSending: { type: Boolean, default: false },
+    isSent: { type: Boolean, default: false },
     sentDate: { type: Date },
     errorMessage: { type: String }
 }, { timestamps: true });

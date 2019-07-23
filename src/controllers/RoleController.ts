@@ -4,7 +4,7 @@ import { get, controller, requestValidators, post } from '../decorators';
 import { IRole } from '../app/models/interfaces';
 import RoleBusiness = require('../app/business/RoleBusiness');
 
-@controller('/roles')
+@controller('/v1/roles')
 export class RoleController {
   @get('/')
   async fetch(req: Request, res: Response, next: NextFunction) {

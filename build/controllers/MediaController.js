@@ -45,6 +45,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+// TODO:: http://localhost:9000?user=1234&medias?type=all&upload=single
+// TODO:: http://localhost:9000?user=1234&medias?type=all&upload=all
+// TODO:: http://localhost:9000?medias?type=videos&upload=single
+// TODO:: http://localhost:9000?medias?type=images&upload=all
+// TODO:: http://localhost:9000?medias?type=audios&upload=multiple
 var MediaController = /** @class */ (function () {
     function MediaController() {
     }
@@ -118,7 +123,7 @@ var MediaController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "create", null);
     MediaController = __decorate([
-        decorators_1.controller('./medias')
+        decorators_1.controller('/v1/medias')
     ], MediaController);
     return MediaController;
 }());

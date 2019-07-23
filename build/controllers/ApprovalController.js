@@ -95,7 +95,7 @@ var ApprovalController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ApprovalController.prototype, "create", null);
     ApprovalController = __decorate([
-        decorators_1.controller('./approvals')
+        decorators_1.controller('/v1/approvals')
     ], ApprovalController);
     return ApprovalController;
 }());

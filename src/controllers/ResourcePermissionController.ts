@@ -4,7 +4,7 @@ import { controller, post, requestValidators } from '../decorators';
 import { IResourcePermission } from '../app/models/interfaces';
 import ResourcePermissionBusiness = require('../app/business/ResourcePermissionBusiness');
 
-@controller('/resource-permissions')
+@controller('/v1/resource-permissions')
 export class ResourcePermissionController {
   @post('/')
   @requestValidators('resource', 'role', 'permissions')

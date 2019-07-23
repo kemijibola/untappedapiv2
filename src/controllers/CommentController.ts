@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import { IComment } from '../app/models/interfaces';
 import CommentRepository = require('../app/repository/CommentRepository');
 
-@controller('/comments')
+@controller('/v1/comments')
 class CommentController {
   @post('/')
   @requestValidators('entityId')

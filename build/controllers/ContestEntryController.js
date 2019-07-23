@@ -46,13 +46,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var ContestEntryEpository = require("../app/repository/ContestEntryRepository");
-var SqsScheduler_1 = require("../utils/schedule/SqsScheduler");
 var ContestEntryController = /** @class */ (function () {
     function ContestEntryController() {
     }
     ContestEntryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, contestEntry, data, sqsParams, sendMessageParams, scheduler, err_1;
+            var item, contestEntry, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -61,27 +60,31 @@ var ContestEntryController = /** @class */ (function () {
                         return [4 /*yield*/, new ContestEntryEpository().create(item)];
                     case 1:
                         contestEntry = _a.sent();
-                        data = {
-                            entityId: contestEntry._id
-                        };
-                        sqsParams = {
-                            region: '',
-                            version: '',
-                            accountId: ''
-                        };
-                        sendMessageParams = {
-                            MessageBody: JSON.stringify(data),
-                            QueueUrl: 'https://sqs.us-east-1.amazonaws.com'
-                        };
-                        scheduler = SqsScheduler_1.SqsScheduler.setup(sqsParams);
-                        scheduler.create('comment-entity', sendMessageParams);
+                        // create a job to create entry with contest Entry Id in Comment collection
+                        // we will use contest entry id to do a lookup on the comment later in the collection
+                        // const data: { entityId: string } = {
+                        //   entityId: contestEntry._id
+                        // };
+                        // const sqsParams: SqsParams = {
+                        //   region: '',
+                        //   version: '',
+                        //   accountId: 0,
+                        //   accessKeyId: '',
+                        //   secretAccessKey: ''
+                        // };
+                        // const sendMessageParams: SqsSendMessage = {
+                        //   MessageBody: JSON.stringify(data),
+                        //   QueueUrl: 'https://sqs.us-east-1.amazonaws.com'
+                        // };
+                        // const scheduler = SqsScheduler.setup(sqsParams);
+                        // scheduler.create<SqsSendMessage>('comment-entity', sendMessageParams);
                         return [2 /*return*/, res.status(201).json({
                                 message: 'Operation successful',
                                 data: contestEntry
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        return [3 /*break*/, 3];
+                        return [2 /*return*/, next('hello')];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -99,8 +102,9 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
     ContestEntryController = __decorate([
-        decorators_1.controller('/contest-entries')
+        decorators_1.controller('/v1/contest-entries')
     ], ContestEntryController);
     return ContestEntryController;
 }());
+exports.ContestEntryController = ContestEntryController;
 //# sourceMappingURL=ContestEntryController.js.map

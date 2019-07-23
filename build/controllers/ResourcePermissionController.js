@@ -95,7 +95,7 @@ var ResourcePermissionController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ResourcePermissionController.prototype, "create", null);
     ResourcePermissionController = __decorate([
-        decorators_1.controller('/resource-permissions')
+        decorators_1.controller('/v1/resource-permissions')
     ], ResourcePermissionController);
     return ResourcePermissionController;
 }());

@@ -17,6 +17,7 @@ export interface ILogin extends IDestinationUrl {
 
 export interface IRegister {
   name: string;
+  email: string;
   password: string;
   roles: IRole['name'];
   audience: string;

@@ -45,15 +45,27 @@ var ApplicationBusiness = /** @class */ (function () {
     }
     ApplicationBusiness.prototype.fetch = function (condidtion) {
         return __awaiter(this, void 0, void 0, function () {
-            var applications, err_1;
+            var refinedApplications, applications, _i, applications_1, application, applicationViewModel, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        refinedApplications = [];
                         return [4 /*yield*/, this._applicationRepository.fetch(condidtion)];
                     case 1:
                         applications = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, applications)];
+                        for (_i = 0, applications_1 = applications; _i < applications_1.length; _i++) {
+                            application = applications_1[_i];
+                            applicationViewModel = {
+                                _id: application._id,
+                                name: application.name,
+                                dbUri: application.dbUri,
+                                country: application.country,
+                                identity: application.identity
+                            };
+                            refinedApplications = refinedApplications.concat([applicationViewModel]);
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, refinedApplications)];
                     case 2:
                         err_1 = _a.sent();
                         throw new Error("InternalServer error occured." + err_1.message);
@@ -64,7 +76,7 @@ var ApplicationBusiness = /** @class */ (function () {
     };
     ApplicationBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, err_2;
+            var application, refinedApplication, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -74,10 +86,19 @@ var ApplicationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._applicationRepository.findById(id)];
                     case 1:
                         application = _a.sent();
-                        if (!application)
+                        if (!application) {
                             return [2 /*return*/, Result_1.Result.fail(404, "Application of Id " + id + " not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, application)];
+                        }
+                        else {
+                            refinedApplication = {
+                                _id: application._id,
+                                name: application.name,
+                                dbUri: application.dbUri,
+                                country: application.country,
+                                identity: application.identity
+                            };
+                            return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
+                        }
                         return [3 /*break*/, 3];
                     case 2:
                         err_2 = _a.sent();
@@ -89,18 +110,28 @@ var ApplicationBusiness = /** @class */ (function () {
     };
     ApplicationBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, err_3;
+            var application, refinedApplication, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        criteria.isActive = true;
                         return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
                     case 1:
                         application = _a.sent();
-                        if (!application)
+                        if (!application) {
                             return [2 /*return*/, Result_1.Result.fail(404, "Application not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, application)];
+                        }
+                        else {
+                            refinedApplication = {
+                                _id: application._id,
+                                name: application.name,
+                                dbUri: application.dbUri,
+                                country: application.country,
+                                identity: application.identity
+                            };
+                            return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
+                        }
                         return [3 /*break*/, 3];
                     case 2:
                         err_3 = _a.sent();
@@ -112,7 +143,7 @@ var ApplicationBusiness = /** @class */ (function () {
     };
     ApplicationBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newApplication, err_4;
+            var newApplication, refinedApplication, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -120,8 +151,14 @@ var ApplicationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._applicationRepository.create(item)];
                     case 1:
                         newApplication = _a.sent();
-                        // TODO:: create approval request here
-                        return [2 /*return*/, Result_1.Result.ok(201, newApplication)];
+                        refinedApplication = {
+                            _id: newApplication._id,
+                            name: newApplication.name,
+                            dbUri: newApplication.dbUri,
+                            country: newApplication.country,
+                            identity: newApplication.identity
+                        };
+                        return [2 /*return*/, Result_1.Result.ok(201, refinedApplication)];
                     case 2:
                         err_4 = _a.sent();
                         throw new Error("InternalServer error occured." + err_4.message);

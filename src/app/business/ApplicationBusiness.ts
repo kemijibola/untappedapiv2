@@ -2,6 +2,7 @@ import ApplicationRepository from '../repository/ApplicationRepository';
 import IApplicationBusiness = require('./interfaces/ApplicationBusiness');
 import { IApproval, IApplication } from '../models/interfaces';
 import { Result } from '../../utils/Result';
+import { ApplicationViewModel } from '../models/viewmodels';
 
 class ApplicationBusiness implements IApplicationBusiness {
   private _applicationRepository: ApplicationRepository;
@@ -10,48 +11,86 @@ class ApplicationBusiness implements IApplicationBusiness {
     this._applicationRepository = new ApplicationRepository();
   }
 
-  async fetch(condidtion: any): Promise<Result<IApplication[]>> {
+  async fetch(condidtion: any): Promise<Result<any[]>> {
     try {
+      let refinedApplications: ApplicationViewModel[] = [];
       const applications = await this._applicationRepository.fetch(condidtion);
-      return Result.ok<IApplication[]>(200, applications);
+      for (let application of applications) {
+        const applicationViewModel: ApplicationViewModel = {
+          _id: application._id,
+          name: application.name,
+          dbUri: application.dbUri,
+          country: application.country,
+          identity: application.identity
+        };
+        refinedApplications = [...refinedApplications, applicationViewModel];
+      }
+      return Result.ok<ApplicationViewModel[]>(200, refinedApplications);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
-  async findById(id: string): Promise<Result<IApplication>> {
+  async findById(id: string): Promise<Result<any>> {
     try {
       if (!id) return Result.fail<IApplication>(400, 'Invalid id');
       const application = await this._applicationRepository.findById(id);
-      if (!application)
+      if (!application) {
         return Result.fail<IApplication>(
           404,
           `Application of Id ${id} not found`
         );
-      else return Result.ok<IApplication>(200, application);
+      } else {
+        let refinedApplication: ApplicationViewModel = {
+          _id: application._id,
+          name: application.name,
+          dbUri: application.dbUri,
+          country: application.country,
+          identity: application.identity
+        };
+        return Result.ok<ApplicationViewModel>(200, refinedApplication);
+      }
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
-  async findByCriteria(criteria: any): Promise<Result<IApplication>> {
+  async findByCriteria(criteria: any): Promise<Result<any>> {
     try {
+      criteria.isActive = true;
       const application = await this._applicationRepository.findByCriteria(
         criteria
       );
-      if (!application)
-        return Result.fail<IApplication>(404, `Application not found`);
-      else return Result.ok<IApplication>(200, application);
+      if (!application) {
+        return Result.fail<ApplicationViewModel>(404, `Application not found`);
+      } else {
+        let refinedApplication: ApplicationViewModel = {
+          _id: application._id,
+          name: application.name,
+          dbUri: application.dbUri,
+          country: application.country,
+          identity: application.identity
+        };
+        return Result.ok<ApplicationViewModel>(200, refinedApplication);
+      }
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
-  async create(item: IApplication): Promise<Result<IApplication>> {
+  async create(item: IApplication): Promise<Result<any>> {
     try {
+      // TODO:: confirm validity of country id before saving
       const newApplication = await this._applicationRepository.create(item);
       // TODO:: create approval request here
-      return Result.ok<IApplication>(201, newApplication);
+      let refinedApplication: ApplicationViewModel = {
+        _id: newApplication._id,
+        name: newApplication.name,
+        dbUri: newApplication.dbUri,
+        country: newApplication.country,
+        identity: newApplication.identity
+      };
+      return Result.ok<ApplicationViewModel>(201, refinedApplication);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

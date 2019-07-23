@@ -40,11 +40,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess_1 = __importDefault(require("../MongodataAccess"));
 var mongoose_1 = require("mongoose");
+var interfaces_1 = require("../../models/interfaces");
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var mongooseConnection = MongodataAccess_1.default.mongooseConnection;
 var userAccountStatusSchema = new mongoose_1.Schema({
-    status: { type: String },
+    status: { type: interfaces_1.AccountStatus },
     updatedAt: { type: Date }
 });
 var userSchema = new mongoose_1.Schema({
@@ -55,10 +56,11 @@ var userSchema = new mongoose_1.Schema({
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
     generalNotification: { type: Boolean, default: true },
+    tapNotification: { type: Boolean, default: true },
     emailNotification: { type: Boolean, default: true },
     profileVisibility: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: userAccountStatusSchema,
+    status: [userAccountStatusSchema],
     roles: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
@@ -66,6 +68,7 @@ var userSchema = new mongoose_1.Schema({
             required: true
         }
     ],
+    profileImage: { type: String },
     lastLogin: { type: Date }
 }, { timestamps: true });
 userSchema.methods.comparePassword = function (candidatePassword) {
@@ -93,6 +96,24 @@ userSchema.methods.generateToken = function (privateKey, signOptions, payload) {
         });
     });
 };
+userSchema.pre('save', function (next) {
+    var user = this;
+    if (!user.isModified('password')) {
+        return next();
+    }
+    bcrypt_1.default.genSalt(10, function (err, salt) {
+        if (err) {
+            return next(err);
+        }
+        bcrypt_1.default.hash(user.password, salt, function (err, hash) {
+            if (err) {
+                return next(err);
+            }
+            user.password = hash;
+            next();
+        });
+    });
+});
 userSchema.pre('save', function (next) {
     var now = new Date();
     if (!this.createdAt) {

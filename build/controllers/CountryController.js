@@ -69,7 +69,7 @@ var CountryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CountryController.prototype, "create", null);
     CountryController = __decorate([
-        decorators_1.controller('/countries')
+        decorators_1.controller('/v1/countries')
     ], CountryController);
     return CountryController;
 }());

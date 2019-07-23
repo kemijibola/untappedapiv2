@@ -45,32 +45,57 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var UsersController = /** @class */ (function () {
-    function UsersController() {
+var error_1 = require("../utils/error");
+var UserBusiness = require("../app/business/UserBusiness");
+var UserController = /** @class */ (function () {
+    function UserController() {
     }
-    UsersController.prototype.create = function (req, res, next) {
+    UserController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userId;
+            var condition, userBusiness, result, err_1;
             return __generator(this, function (_a) {
-                userId = req.user;
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        condition = {};
+                        if (req.query) {
+                            condition.email = req.query.email || '';
+                        }
+                        userBusiness = new UserBusiness();
+                        return [4 /*yield*/, userBusiness.fetch(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
             });
         });
     };
-    UsersController.prototype.update = function () { };
-    UsersController.prototype.delete = function () { };
-    UsersController.prototype.fetch = function () { };
-    UsersController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('phoneNumbers', 'location', 'categories'),
+        decorators_1.get('/'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], UsersController.prototype, "create", null);
-    UsersController = __decorate([
-        decorators_1.controller('/users')
-    ], UsersController);
-    return UsersController;
+    ], UserController.prototype, "fetch", null);
+    UserController = __decorate([
+        decorators_1.controller('/v1/users')
+    ], UserController);
+    return UserController;
 }());
+exports.UserController = UserController;
 //# sourceMappingURL=UserController.js.map

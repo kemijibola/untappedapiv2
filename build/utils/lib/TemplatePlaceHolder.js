@@ -1,20 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var PlaceHolders = {
-    _____Twitter_____: 'htmtps://twitter.com/untappedpool',
-    _____Facebook_____: 'https://facebook.com/untappedpool'
+exports.SocialMediaHandles = {
+    Twitter: 'https://www.twitter.com/untappedpool',
+    Facebook: 'https://www.facebook.com/untappedpool',
+    Instagram: 'https://www.instagram.com/official_untappedpool'
 };
-var PlaceHolderKeys;
-(function (PlaceHolderKeys) {
-    PlaceHolderKeys["_____Twitter_____"] = "_____Twitter_____";
-    PlaceHolderKeys["_____Facebook_____"] = "_____Facebook_____";
-})(PlaceHolderKeys = exports.PlaceHolderKeys || (exports.PlaceHolderKeys = {}));
+var PlaceHolderKey;
+(function (PlaceHolderKey) {
+    PlaceHolderKey["Twitter"] = "[Twitter]";
+    PlaceHolderKey["Facebook"] = "[Facebook]";
+    PlaceHolderKey["Instagram"] = "[Instagram]";
+    PlaceHolderKey["Name"] = "[Name]";
+    PlaceHolderKey["PlatformUrl"] = "[PlatformUrl]";
+    PlaceHolderKey["VerificationUrl"] = "[VerificationUrl]";
+})(PlaceHolderKey = exports.PlaceHolderKey || (exports.PlaceHolderKey = {}));
 function replaceTemplateString(param) {
+    var template = param.template;
     for (var _i = 0, _a = param.placeholders; _i < _a.length; _i++) {
-        var key = _a[_i];
-        param.template.replace(key, PlaceHolders[key]);
+        var item = _a[_i];
+        template = template.replace(item.key, item.value);
     }
-    return param.template;
+    return template;
 }
 exports.replaceTemplateString = replaceTemplateString;
 //# sourceMappingURL=TemplatePlaceHolder.js.map

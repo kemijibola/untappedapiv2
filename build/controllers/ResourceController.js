@@ -95,7 +95,7 @@ var ResourceController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ResourceController.prototype, "create", null);
     ResourceController = __decorate([
-        decorators_1.controller('/resources')
+        decorators_1.controller('/v1/resources')
     ], ResourceController);
     return ResourceController;
 }());

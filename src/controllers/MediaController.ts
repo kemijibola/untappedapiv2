@@ -11,7 +11,12 @@ import {
   imageExtensions
 } from '../utils/lib';
 
-@controller('./medias')
+// TODO:: http://localhost:9000?user=1234&medias?type=all&upload=single
+// TODO:: http://localhost:9000?user=1234&medias?type=all&upload=all
+// TODO:: http://localhost:9000?medias?type=videos&upload=single
+// TODO:: http://localhost:9000?medias?type=images&upload=all
+// TODO:: http://localhost:9000?medias?type=audios&upload=multiple
+@controller('/v1/medias')
 class MediaController {
   @post('/')
   @requestValidators('title', 'items')

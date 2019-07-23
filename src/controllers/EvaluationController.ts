@@ -3,7 +3,7 @@ import { controller, post, requestValidators } from '../decorators';
 import IBaseController from './interfaces/base/BaseController';
 import { IEvaluation } from '../app/models/interfaces';
 
-@controller('/evaluation')
+@controller('/v1/evaluation')
 class EvaluationController {
   @post('/')
   @requestValidators('name')

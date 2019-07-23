@@ -24,6 +24,17 @@ var UserRepository = /** @class */ (function (_super) {
         _this.userModel = User_1.UserSchema;
         return _this;
     }
+    UserRepository.prototype.register = function (user) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.userModel.create(user, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     UserRepository.prototype.userTypeByUser = function (user) {
         var _this = this;
         return new Promise(function (resolve, reject) {

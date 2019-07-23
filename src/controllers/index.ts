@@ -4,3 +4,5 @@ export * from './RoleController';
 export * from './ResourceController';
 export * from './PermissionController';
 export * from './ResourcePermissionController';
+export * from './ApplicationController';
+export * from './UserController';

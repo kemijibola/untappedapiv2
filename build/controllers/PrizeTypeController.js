@@ -69,7 +69,7 @@ var PrizeTypeController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], PrizeTypeController.prototype, "create", null);
     PrizeTypeController = __decorate([
-        decorators_1.controller('./prize-types')
+        decorators_1.controller('/v1/prize-types')
     ], PrizeTypeController);
     return PrizeTypeController;
 }());

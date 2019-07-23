@@ -11,7 +11,7 @@ var AWS = __importStar(require("aws-sdk"));
 var SqsScheduler = /** @class */ (function () {
     function SqsScheduler(config) {
         this.config = config;
-        this.accountId = '';
+        this.accountId = 0;
         this.sendMessageParams = {
             MessageBody: '',
             QueueUrl: ''
@@ -25,6 +25,8 @@ var SqsScheduler = /** @class */ (function () {
         this.deleteParams = { QueueUrl: '', ReceiptHandle: '' };
         this.dataToProcess = {};
         AWS.config.update({
+            accessKeyId: config.accessKeyId,
+            secretAccessKey: config.secretAccessKey,
             region: config.region
         });
         this.sqs = new AWS.SQS({
@@ -35,11 +37,11 @@ var SqsScheduler = /** @class */ (function () {
     SqsScheduler.setup = function (config) {
         return new SqsScheduler(config);
     };
-    SqsScheduler.prototype.create = function (name, createParams) {
+    SqsScheduler.prototype.create = function (queueName, createParams) {
         this.sendMessageParams = Object.assign(this.sendMessageParams, createParams);
         this.sendMessageParams = {
             MessageBody: this.sendMessageParams.MessageBody,
-            QueueUrl: this.sendMessageParams.QueueUrl + "/" + this.accountId + "/" + name
+            QueueUrl: this.sendMessageParams.QueueUrl
         };
         this.sqs.sendMessage(this.sendMessageParams, function (err, data) {
             if (err) {
@@ -65,8 +67,8 @@ var SqsScheduler = /** @class */ (function () {
             }
             else {
                 if (!data.Message) {
-                    console.log('Nothing to process');
-                    return Object();
+                    // console.log('Nothing to process');
+                    // return Object();
                 }
                 _this.dataToProcess = JSON.parse(data.Messages[0].Body);
             }

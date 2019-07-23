@@ -6,13 +6,11 @@ import { IApplication } from '../../models/interfaces';
 const applicationSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
-    dbHost: { type: String, required: true },
-    dbName: { type: String, required: true },
-    dbUser: { type: String, required: true },
-    dbPassword: { type: String, required: true },
+    dbUri: { type: String, required: true },
     country: { type: Schema.Types.ObjectId, ref: 'Country' },
     identity: { type: String, required: true },
-    isActive: { type: String, default: false }
+    secret: { type: String, required: true },
+    isActive: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

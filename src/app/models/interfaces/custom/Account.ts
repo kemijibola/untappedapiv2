@@ -2,7 +2,7 @@ import { IUser, IRole } from '../';
 
 export interface ICreateUser {
   email: IUser['email'];
-  name: IUser['name'];
+  name: IUser['username'];
   password: IUser['password'];
   roles: IRole['_id'][];
 }

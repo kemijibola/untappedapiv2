@@ -5,7 +5,7 @@ import IBaseControler from './interfaces/base/BaseController';
 import { IResource } from '../app/models/interfaces';
 import ResourceBusiness = require('../app/business/ResourceBusiness');
 
-@controller('/resources')
+@controller('/v1/resources')
 export class ResourceController {
   @post('/')
   @requestValidators('name')

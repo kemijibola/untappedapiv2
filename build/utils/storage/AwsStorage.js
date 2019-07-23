@@ -19,8 +19,8 @@ var AwsStorage = /** @class */ (function () {
             region: bucket.region
         });
         this.s3 = new AWS.S3({
-            accessKeyId: bucket.accessKeyId,
-            secretAccessKey: bucket.secretAccessKey
+            accessKeyId: this.bucket.accessKeyId,
+            secretAccessKey: this.bucket.secretAccessKey
         });
     }
     AwsStorage.setup = function (config) {

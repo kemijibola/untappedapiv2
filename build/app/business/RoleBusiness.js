@@ -51,6 +51,7 @@ var RoleBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         condition.global = true;
+                        condition.isActive = true;
                         refinedRoles = [];
                         return [4 /*yield*/, this._roleRepository.fetch(condition)];
                     case 1:

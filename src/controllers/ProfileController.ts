@@ -10,7 +10,7 @@ import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler'
 import { IProfile } from '../app/models/interfaces/custom/Profile';
 import { UserTypes } from '../app/models/interfaces/custom/GlobalEnum';
 
-@controller('./profile')
+@controller('/v1/profile')
 class ProfileController {
   @post('/')
   @requestValidators('phoneNumbers', 'location', 'categories')

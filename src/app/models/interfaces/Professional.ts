@@ -5,13 +5,13 @@ import { ITimeStamp } from './Timestamp';
 import { IUserSocialMedia } from './Talent';
 
 export interface IProfessional extends ITimeStamp, mongoose.Document {
-  businessName: string;
+  fullName: string;
   officialAddress: string;
   rcNumber: string;
   phoneNumbers: number[];
-  user: IUser;
+  user: IUser['_id'];
   shortBio: string;
-  categories: ICategory[];
+  categories: ICategory['_id'][];
   socialMedias: IUserSocialMedia[];
   profileImagePath?: string;
   bannerImagePath?: string;

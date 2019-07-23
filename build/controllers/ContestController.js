@@ -111,7 +111,7 @@ var ContestController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "create", null);
     ContestController = __decorate([
-        decorators_1.controller('/contests')
+        decorators_1.controller('/v1/contests')
     ], ContestController);
     return ContestController;
 }());

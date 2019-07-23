@@ -1,21 +1,39 @@
-const PlaceHolders: { [x: string]: string } = {
-  _____Twitter_____: 'htmtps://twitter.com/untappedpool',
-  _____Facebook_____: 'https://facebook.com/untappedpool'
+export const SocialMediaHandles = {
+  Twitter: 'https://www.twitter.com/untappedpool',
+  Facebook: 'https://www.facebook.com/untappedpool',
+  Instagram: 'https://www.instagram.com/official_untappedpool'
 };
-
-export enum PlaceHolderKeys {
-  _____Twitter_____ = '_____Twitter_____',
-  _____Facebook_____ = '_____Facebook_____'
+export enum PlaceHolderKey {
+  Twitter = '[Twitter]',
+  Facebook = '[Facebook]',
+  Instagram = '[Instagram]',
+  Name = '[Name]',
+  PlatformUrl = '[PlatformUrl]',
+  VerificationUrl = '[VerificationUrl]'
 }
+// export enum PlaceHolderKey {
+//     Twitter = '[Twitter]'
+//   _____Twitter_____ = '_____Twitter_____',
+//   _____Facebook_____ = '_____Facebook_____',
+//   _____Instagram_____ = '_____Instagram_____',
+//   _____Name_____ = '_____Name_____',
+//   _____PlatformUrl_____ = '_____PlatformUrl_____',
+//   _____VerificationUrl_____ = '_____VerificationUrl_____'
+// }
 
+export interface TemplateKeyValue {
+  key: PlaceHolderKey;
+  value: string;
+}
 export interface TemplatePlaceHolder {
   template: string;
-  placeholders: PlaceHolderKeys[];
+  placeholders: TemplateKeyValue[];
 }
 
 export function replaceTemplateString(param: TemplatePlaceHolder): string {
-  for (const key of param.placeholders) {
-    param.template.replace(key, PlaceHolders[key]);
+  let template = param.template;
+  for (const item of param.placeholders) {
+    template = template.replace(item.key, item.value);
   }
-  return param.template;
+  return template;
 }

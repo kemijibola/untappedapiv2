@@ -8,20 +8,21 @@ const config: AppConfig = module.require('./config/keys');
 // module.require('./utils/Cache');
 import { errorHandler } from './middlewares/ErrorMiddleware';
 import { IError } from './utils/error/GlobalError';
+import cors from 'cors';
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(function(req: Request, res: Response, next: NextFunction) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  next();
-});
+app.use(cors());
+// app.use(function(req: Request, res: Response, next: NextFunction) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept'
+//   );
+//   next();
+// });
 
 app.use(AppRouter.getInstance);
 

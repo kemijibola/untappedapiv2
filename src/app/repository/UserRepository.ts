@@ -1,5 +1,5 @@
 import mongoose = require('mongoose');
-import { IUserModel } from '../models/interfaces';
+import { IUserModel, IRegister } from '../models/interfaces';
 import { UserSchema } from '../data/schema/User';
 import RepositoryBase from './base/RepositoryBase';
 
@@ -8,6 +8,15 @@ class UserRepository extends RepositoryBase<IUserModel> {
   constructor() {
     super(UserSchema);
     this.userModel = UserSchema;
+  }
+
+  register(user: IRegister): Promise<IUserModel> {
+    return new Promise((resolve, reject) => {
+      this.userModel.create(user, (error: any, result: any) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+    });
   }
 
   userTypeByUser(user: string): Promise<IUserModel> {

@@ -98,7 +98,7 @@ var CategoryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CategoryController.prototype, "create", null);
     CategoryController = __decorate([
-        decorators_1.controller('/categories')
+        decorators_1.controller('/v1/categories')
     ], CategoryController);
     return CategoryController;
 }());

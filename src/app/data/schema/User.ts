@@ -1,13 +1,13 @@
 import MongodataAccess from '../MongodataAccess';
 import { Schema } from 'mongoose';
-import { IUserModel } from '../../models/interfaces';
+import { IUserModel, AccountStatus } from '../../models/interfaces';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SignInOptions } from '../../models/interfaces/custom/Global';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 
 const userAccountStatusSchema: Schema = new Schema({
-  status: { type: String },
+  status: { type: AccountStatus },
   updatedAt: { type: Date }
 });
 
@@ -20,10 +20,11 @@ const userSchema: Schema = new Schema(
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
     generalNotification: { type: Boolean, default: true },
+    tapNotification: { type: Boolean, default: true },
     emailNotification: { type: Boolean, default: true },
     profileVisibility: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: userAccountStatusSchema,
+    status: [userAccountStatusSchema],
     roles: [
       {
         type: Schema.Types.ObjectId,
@@ -31,6 +32,7 @@ const userSchema: Schema = new Schema(
         required: true
       }
     ],
+    profileImage: { type: String },
     lastLogin: { type: Date }
   },
   { timestamps: true }
@@ -53,6 +55,25 @@ userSchema.methods.generateToken = async function(
   signOptions.subject = this._id.toString();
   return await jwt.sign(payload, privateKey, signOptions);
 };
+
+userSchema.pre<IUserModel>('save', function(next) {
+  const user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return next(err);
+    }
+    bcrypt.hash(user.password, salt, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+      user.password = hash;
+      next();
+    });
+  });
+});
 
 userSchema.pre<IUserModel>('save', function(next) {
   let now = new Date();

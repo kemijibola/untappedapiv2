@@ -4,7 +4,7 @@ import IBaseController from './interfaces/base/BaseController';
 import CountryRepository = require('../app/repository/CountryRepository');
 import { ICountry } from '../app/models/interfaces';
 
-@controller('/countries')
+@controller('/v1/countries')
 class CountryController {
   @post('/')
   @requestValidators('name')

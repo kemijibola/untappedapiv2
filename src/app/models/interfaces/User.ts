@@ -3,7 +3,7 @@ import { ITimeStamp } from './Timestamp';
 import { IRole } from './Role';
 import { SignInOptions } from './custom/Global';
 
-enum AccountStatus {
+export enum AccountStatus {
   ACTIVATED = 'ACTIVATED',
   SUSPENDED = 'SUSPENDED',
   DELETED = 'DELETED'
@@ -15,17 +15,19 @@ export interface IUserAccountStatus {
 
 export interface IUser extends ITimeStamp, mongoose.Document {
   email: string;
-  name: string;
+  username: string;
   password: string;
   isEmailConfirmed: boolean;
   isPhoneConfirmed: boolean;
   isProfileCompleted: boolean;
+  tapNotification: boolean;
   generalNotification: boolean;
   emailNotification: boolean;
   profileVisibility: boolean;
   loginCount: number;
   status: IUserAccountStatus;
   roles: IRole['_id'][];
+  profileImage: string;
   lastLogin: Date;
 }
 

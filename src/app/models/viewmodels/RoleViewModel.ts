@@ -3,6 +3,6 @@ export interface RoleViewModel {
   name: string;
   global: boolean;
   description: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

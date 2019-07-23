@@ -20,8 +20,21 @@ var RepositoryBase_1 = __importDefault(require("./base/RepositoryBase"));
 var ScheduledEmailRepository = /** @class */ (function (_super) {
     __extends(ScheduledEmailRepository, _super);
     function ScheduledEmailRepository() {
-        return _super.call(this, ScheduledEmail_1.ScheduledEmailSchema) || this;
+        var _this = _super.call(this, ScheduledEmail_1.ScheduledEmailSchema) || this;
+        _this._scheduledEmail = ScheduledEmail_1.ScheduledEmailSchema;
+        return _this;
     }
+    ScheduledEmailRepository.prototype.createSignUpEmail = function (item) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._scheduledEmail.create(item, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     return ScheduledEmailRepository;
 }(RepositoryBase_1.default));
 Object.seal(ScheduledEmailRepository);

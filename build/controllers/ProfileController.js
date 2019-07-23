@@ -97,7 +97,7 @@ var ProfileController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "create", null);
     ProfileController = __decorate([
-        decorators_1.controller('./profile')
+        decorators_1.controller('/v1/profile')
     ], ProfileController);
     return ProfileController;
 }());

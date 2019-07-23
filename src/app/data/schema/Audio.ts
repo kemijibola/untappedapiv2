@@ -1,7 +1,7 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IAudio } from '../../models/interfaces/Media';
+import { IAudio, MediaUploadType } from '../../models/interfaces/Media';
 
 const audioItemSchema = new Schema({
   type: { path: String, required: true },
@@ -13,6 +13,7 @@ const audioSchema = new Schema({
   shortDescription: { type: String },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   items: [audioItemSchema],
+  uploadType: { type: MediaUploadType, required: true },
   isApproved: { type: Boolean, default: false }
 });
 

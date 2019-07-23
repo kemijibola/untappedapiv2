@@ -4,7 +4,7 @@ import IBaseController from './interfaces/base/BaseController';
 import PrizeTypeRepository = require('../app/repository/PrizeTypeRepository');
 import { IPrizeType } from '../app/models/interfaces';
 
-@controller('./prize-types')
+@controller('/v1/prize-types')
 class PrizeTypeController {
   @post('/')
   @requestValidators('name')

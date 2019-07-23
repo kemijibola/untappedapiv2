@@ -132,7 +132,7 @@ var RoleController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], RoleController.prototype, "create", null);
     RoleController = __decorate([
-        decorators_1.controller('/roles')
+        decorators_1.controller('/v1/roles')
     ], RoleController);
     return RoleController;
 }());

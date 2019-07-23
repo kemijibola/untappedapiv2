@@ -1,19 +1,50 @@
 import UserRepository from '../repository/UserRepository';
+import RoleRepository from '../repository/RoleRepository';
+import ScheduledEmailRepository from '../repository/ScheduledEmailRepository';
 import IUserBusiness = require('./interfaces/UserBusiness');
-import { IUserModel, IAuthData, ILogin, IRegister } from '../models/interfaces';
+import {
+  IUserModel,
+  IAuthData,
+  ILogin,
+  IRegister,
+  IScheduledEmail,
+  MailType
+} from '../models/interfaces';
 import { Result } from '../../utils/Result';
-import { IExchangeToken, tokenExchange, getPrivateKey } from '../../utils/lib';
+import {
+  IExchangeToken,
+  tokenExchange,
+  getPrivateKey,
+  toObjectId
+} from '../../utils/lib';
 import { SignInOptions } from '../models/interfaces/custom/Global';
 import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
 import { TokenType } from '../models/interfaces/custom/GlobalEnum';
-import { privateEncrypt } from 'crypto';
-const config: AppConfig = require('../../config/keys');
+import { UserViewModel, SignUpEmailViewModel } from '../models/viewmodels';
+import { bool } from 'aws-sdk/clients/signer';
+import { WelcomeEmail } from '../../utils/emailtemplates';
+import {
+  TemplatePlaceHolder,
+  TemplateKeyValue,
+  PlaceHolderKey,
+  SocialMediaHandles,
+  replaceTemplateString
+} from '../../utils/lib/TemplatePlaceHolder';
 
+const config: AppConfig = require('../../config/keys');
+import * as cloudConfig from '../../config/cloudConfig.json';
+
+import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
+import { IEmail } from '../../utils/emailservice/EmailService';
 class UserBusiness implements IUserBusiness {
   private _userRepository: UserRepository;
+  private _roleRepository: RoleRepository;
+  private _scheduledEmailRepository: ScheduledEmailRepository;
 
   constructor() {
     this._userRepository = new UserRepository();
+    this._roleRepository = new RoleRepository();
+    this._scheduledEmailRepository = new ScheduledEmailRepository();
   }
 
   async login(params: ILogin): Promise<Result<IAuthData>> {
@@ -68,43 +99,193 @@ class UserBusiness implements IUserBusiness {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
-  // async register(params: IRegister): Promise<Result<IAuthData>> {
-  //   return;
-  // }
-  async fetch(condition: any): Promise<Result<IUserModel[]>> {
+  async fetch(condition: any): Promise<Result<any[]>> {
     try {
-      const users = await this._userRepository.fetch(condition);
-      return Result.ok<IUserModel[]>(200, users);
+      let refinedUsers: UserViewModel[] = [];
+      const users: IUserModel[] = await this._userRepository.fetch(condition);
+      for (let user of users) {
+        const userViewModel: UserViewModel = {
+          _id: user._id,
+          email: user.email,
+          name: user.username,
+          isEmailConfirmed: user.isEmailConfirmed,
+          isPhoneConfirmed: user.isPhoneConfirmed,
+          isProfileCompleted: user.isProfileCompleted,
+          generalNotification: user.generalNotification,
+          emailNotification: user.emailNotification,
+          profileVisibility: user.profileVisibility,
+          loginCount: user.loginCount,
+          status: [user.status],
+          roles: user.roles,
+          lastLogin: user.lastLogin,
+          createdAt: user.createdAt
+        };
+        refinedUsers = [...refinedUsers, userViewModel];
+      }
+      return Result.ok<UserViewModel[]>(200, refinedUsers);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
-  async findById(id: string): Promise<Result<IUserModel>> {
+  async findById(id: string): Promise<Result<any>> {
     try {
       const user = await this._userRepository.findById(id);
-      if (!user)
+      if (!user) {
         return Result.fail<IUserModel>(404, `User with Id ${id} not found`);
-      else return Result.ok<IUserModel>(200, user);
+      } else {
+        let refinedUser: UserViewModel = {
+          _id: user._id,
+          email: user.email,
+          name: user.username,
+          isEmailConfirmed: user.isEmailConfirmed,
+          isPhoneConfirmed: user.isPhoneConfirmed,
+          isProfileCompleted: user.isProfileCompleted,
+          generalNotification: user.generalNotification,
+          emailNotification: user.emailNotification,
+          profileVisibility: user.profileVisibility,
+          loginCount: user.loginCount,
+          status: [user.status],
+          roles: user.roles,
+          lastLogin: user.lastLogin,
+          createdAt: user.createdAt
+        };
+        return Result.ok<UserViewModel>(200, refinedUser);
+      }
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
-  async findByCriteria(criteria: any): Promise<Result<IUserModel>> {
+  async findByCriteria(criteria: any): Promise<Result<any>> {
     try {
       const user = await this._userRepository.findByCriteria(criteria);
-      if (!user) return Result.fail<IUserModel>(404, `User not found`);
-      else return Result.ok<IUserModel>(200, user);
+      if (!user) {
+        return Result.fail<IUserModel>(404, `User not found`);
+      } else {
+        let refinedUser: UserViewModel = {
+          _id: user._id,
+          email: user.email,
+          name: user.username,
+          isEmailConfirmed: user.isEmailConfirmed,
+          isPhoneConfirmed: user.isPhoneConfirmed,
+          isProfileCompleted: user.isProfileCompleted,
+          generalNotification: user.generalNotification,
+          emailNotification: user.emailNotification,
+          profileVisibility: user.profileVisibility,
+          loginCount: user.loginCount,
+          status: [user.status],
+          roles: user.roles,
+          lastLogin: user.lastLogin,
+          createdAt: user.createdAt
+        };
+        return Result.ok<UserViewModel>(200, refinedUser);
+      }
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
 
-  async create(item: IUserModel): Promise<Result<IUserModel>> {
+  async register(item: IRegister): Promise<Result<boolean>> {
+    try {
+      // check if user exists in db
+      const user: IUserModel = await this._userRepository.findByCriteria({
+        email: item.email
+      });
+      if (user) {
+        return Result.fail<boolean>(
+          400,
+          `There is a user registered with this email: ${item.email}`
+        );
+      }
+      // confirm role/roles are valid and still active
+      let roleIds = [];
+      for (let key of item.roles) {
+        const role = await this._roleRepository.findByCriteria({
+          _id: toObjectId(key),
+          isActive: true
+        });
+        if (!role)
+          return Result.fail<boolean>(
+            400,
+            `Role id ${key} is not a valid role`
+          );
+        roleIds.push(toObjectId(key));
+      }
+
+      const newUser: IUserModel = await this._userRepository.register(item);
+
+      const tokenOptions: SignInOptions = {
+        issuer: config.ISSUER.toLowerCase(),
+        audience: item.audience,
+        expiresIn: config.AUTH_EXPIRESIN,
+        algorithm: config.RSA_ALG_TYPE,
+        keyid: config.RSA_KEYID,
+        subject: ''
+      };
+      const payload: { [x: string]: string } = {
+        tokenType: TokenType.MAIL
+      };
+      const privateKey: string = getPrivateKey(config.RSA_KEYID);
+      if (!privateKey)
+        return Result.fail<boolean>(400, 'The token key provided is invalid');
+      const verificationToken: string = await newUser.generateToken(
+        privateKey,
+        tokenOptions,
+        payload
+      );
+
+      const welcomeEmailKeyValues: TemplateKeyValue[] = this.welcomeEmailKeyValue(
+        newUser.username,
+        item.audience,
+        verificationToken
+      );
+      const welcomeTemplateString: string = WelcomeEmail.template;
+
+      const welcomeEmailPlaceHolder: TemplatePlaceHolder = {
+        template: welcomeTemplateString,
+        placeholders: welcomeEmailKeyValues
+      };
+
+      const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
+
+      const mailParams: IEmail = {
+        receivers: [newUser.email],
+        subject: 'Signup Welcome Email',
+        body: emailBody,
+        senderEmail: 'talents@untappedpool.com',
+        senderName: 'Untapped Pool'
+      };
+      const dueDate = newUser.createdAt;
+
+      const schedule = await scheduleEmail(dueDate, mailParams);
+      console.log(schedule);
+      return Result.ok<bool>(201, true);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err}`);
+    }
+  }
+
+  async create(item: IUserModel): Promise<Result<any>> {
     try {
       const newUser = await this._userRepository.create(item);
-      return Result.ok<IUserModel>(201, newUser);
+      let refinedUser: UserViewModel = {
+        _id: newUser._id,
+        email: newUser.email,
+        name: newUser.username,
+        isEmailConfirmed: newUser.isEmailConfirmed,
+        isPhoneConfirmed: newUser.isPhoneConfirmed,
+        isProfileCompleted: newUser.isProfileCompleted,
+        generalNotification: newUser.generalNotification,
+        emailNotification: newUser.emailNotification,
+        profileVisibility: newUser.profileVisibility,
+        loginCount: newUser.loginCount,
+        status: [newUser.status],
+        roles: newUser.roles,
+        lastLogin: newUser.lastLogin,
+        createdAt: newUser.createdAt
+      };
+      return Result.ok<UserViewModel>(201, refinedUser);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
@@ -132,6 +313,39 @@ class UserBusiness implements IUserBusiness {
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
+  }
+
+  private welcomeEmailKeyValue(
+    userName: string,
+    audience: string,
+    verificationUrl: string
+  ): TemplateKeyValue[] {
+    return [
+      {
+        key: PlaceHolderKey.Facebook,
+        value: SocialMediaHandles.Facebook
+      },
+      {
+        key: PlaceHolderKey.Instagram,
+        value: SocialMediaHandles.Instagram
+      },
+      {
+        key: PlaceHolderKey.Twitter,
+        value: SocialMediaHandles.Twitter
+      },
+      {
+        key: PlaceHolderKey.Name,
+        value: userName
+      },
+      {
+        key: PlaceHolderKey.VerificationUrl,
+        value: verificationUrl
+      },
+      {
+        key: PlaceHolderKey.PlatformUrl,
+        value: audience
+      }
+    ];
   }
 }
 

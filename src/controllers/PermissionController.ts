@@ -4,7 +4,7 @@ import { IPermission } from '../app/models/interfaces';
 import { PlatformError } from '../utils/error';
 import PermissionBusiness = require('../app/business/PermissionBusiness');
 
-@controller('/permissions')
+@controller('/v1/permissions')
 export class PermissionController {
   @post('/')
   @requestValidators('name', 'type')

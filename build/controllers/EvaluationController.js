@@ -74,7 +74,7 @@ var EvaluationController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], EvaluationController.prototype, "create", null);
     EvaluationController = __decorate([
-        decorators_1.controller('/evaluation')
+        decorators_1.controller('/v1/evaluation')
     ], EvaluationController);
     return EvaluationController;
 }());

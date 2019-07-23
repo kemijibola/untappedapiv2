@@ -39,46 +39,55 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var config = require('../../config/keys');
-var ResourceRepository_1 = __importDefault(require("../../app/repository/ResourceRepository"));
-var ResourcePermissionRepository = require("../../app/repository/ResourcePermissionRepository");
+var ResourceBusiness_1 = __importDefault(require("../../app/business/ResourceBusiness"));
+var ResourcePermissionBusiness_1 = __importDefault(require("../../app/business/ResourcePermissionBusiness"));
+var ApplicationBusiness_1 = __importDefault(require("../../app/business/ApplicationBusiness"));
 var error_1 = require("../error");
 var mongoose_1 = __importDefault(require("mongoose"));
+var Result_1 = require("../Result");
 var chunkedUserPermissons = {};
 exports.getPrivateKey = function (keyId) {
     return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
 };
 function tokenExchange(exchangeParams) {
     return __awaiter(this, void 0, void 0, function () {
-        var resourceRepository, resourcePermissionRepository, resourceModel, _i, _a, role, resourcePermissionModel;
+        var resourceBusiness, resourcePermissionBusiness, resourceResult, resource, _i, _a, role, resourcePermissionResult, resourcePermission;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    resourceRepository = new ResourceRepository_1.default();
-                    resourcePermissionRepository = new ResourcePermissionRepository();
-                    return [4 /*yield*/, resourceRepository.findByCriteria({
+                    resourceBusiness = new ResourceBusiness_1.default();
+                    resourcePermissionBusiness = new ResourcePermissionBusiness_1.default();
+                    return [4 /*yield*/, resourceBusiness.findByCriteria({
                             name: exchangeParams.destinationUrl
                         })];
                 case 1:
-                    resourceModel = _b.sent();
-                    if (!resourceModel._id)
+                    resourceResult = _b.sent();
+                    if (!resourceResult.data) {
                         throw error_1.PlatformError.error({
-                            code: 404,
+                            code: resourceResult.responseCode,
                             message: exchangeParams.destinationUrl + " is not a valid route"
                         });
+                    }
+                    resource = resourceResult.data;
                     _i = 0, _a = exchangeParams.roles;
                     _b.label = 2;
                 case 2:
                     if (!(_i < _a.length)) return [3 /*break*/, 5];
                     role = _a[_i];
-                    return [4 /*yield*/, resourcePermissionRepository.findPermissionsByRole(role, resourceModel._id)];
+                    return [4 /*yield*/, resourcePermissionBusiness.findByCriteria({
+                            role: role,
+                            resource: resource._id
+                        })];
                 case 3:
-                    resourcePermissionModel = _b.sent();
-                    if (resourcePermissionModel.permissions.length < 1)
+                    resourcePermissionResult = _b.sent();
+                    if (!resourcePermissionResult.data) {
                         throw error_1.PlatformError.error({
-                            code: 404,
-                            message: "There are no permissions configured for route " + resourceModel.name
+                            code: resourceResult.responseCode,
+                            message: "There are no permissions configured for route " + resource.name
                         });
-                    chunckPermission(resourcePermissionModel.permissions);
+                    }
+                    resourcePermission = resourcePermissionResult.data;
+                    chunckPermission(resourcePermission.permissions);
                     _b.label = 4;
                 case 4:
                     _i++;
@@ -101,4 +110,29 @@ function toObjectId(_id) {
     return mongoose_1.default.Types.ObjectId.createFromHexString(_id);
 }
 exports.toObjectId = toObjectId;
+function isValidIdentity(audience) {
+    return __awaiter(this, void 0, void 0, function () {
+        var applicationBusiness, app, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    applicationBusiness = new ApplicationBusiness_1.default();
+                    return [4 /*yield*/, applicationBusiness.findByCriteria({
+                            identity: audience
+                        })];
+                case 1:
+                    app = _a.sent();
+                    if (!app)
+                        return [2 /*return*/, Result_1.Result.fail(404, "Audience '" + audience + "' not found")];
+                    return [2 /*return*/, Result_1.Result.ok(200, true)];
+                case 2:
+                    err_1 = _a.sent();
+                    throw new Error("InternalServer error occured." + err_1.message);
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.isValidIdentity = isValidIdentity;
 //# sourceMappingURL=Helper.js.map
