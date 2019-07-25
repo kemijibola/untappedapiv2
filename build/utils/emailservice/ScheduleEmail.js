@@ -46,7 +46,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AWS = __importStar(require("aws-sdk"));
 AWS.config.update({ region: 'us-east-1' });
 var stepfunctions = new AWS.StepFunctions();
-exports.scheduleEmail = function (dueDate, mail) { return __awaiter(_this, void 0, void 0, function () {
+exports.scheduleEmail = function (dueDate, email) { return __awaiter(_this, void 0, void 0, function () {
     var stateMachineArn, result, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -58,16 +58,12 @@ exports.scheduleEmail = function (dueDate, mail) { return __awaiter(_this, void 
                         stateMachineArn: stateMachineArn,
                         input: JSON.stringify({
                             dueDate: dueDate,
-                            mail: mail
+                            email: email
                         })
                     })
                         .promise()];
             case 1:
                 result = _a.sent();
-                // console.log(
-                //   `State machine ${stateMachineArn} executed successfully`,
-                //   result
-                // );
                 return [2 /*return*/, result];
             case 2:
                 err_1 = _a.sent();

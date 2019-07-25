@@ -102,7 +102,7 @@ var AuthController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         signUpParams = {
-                            name: req.body.name,
+                            username: req.body.username,
                             email: req.body.email,
                             password: req.body.password,
                             roles: req.body.roles,
@@ -146,7 +146,7 @@ var AuthController = /** @class */ (function () {
     ], AuthController.prototype, "postLogin", null);
     __decorate([
         decorators_1.post('/signup'),
-        decorators_1.requestValidators('email', 'password', 'audience', 'name', 'roles'),
+        decorators_1.requestValidators('email', 'password', 'audience', 'username', 'roles'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

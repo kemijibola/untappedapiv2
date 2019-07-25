@@ -32,7 +32,8 @@ var talentSchema = new mongoose_1.Schema({
     ],
     socialMedias: [socialMediaSchema],
     profileImagePath: { type: String },
-    physicalStats: physicalStatisticsSchema
+    physicalStats: physicalStatisticsSchema,
+    tapCount: { type: Number, default: 0 }
 }, { timestamps: true });
 exports.TalentSchema = mongooseConnection.model('Talent', talentSchema);
 //# sourceMappingURL=Talent.js.map

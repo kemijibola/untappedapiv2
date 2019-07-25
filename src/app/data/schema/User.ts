@@ -14,7 +14,7 @@ const userAccountStatusSchema: Schema = new Schema({
 const userSchema: Schema = new Schema(
   {
     email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
@@ -23,6 +23,7 @@ const userSchema: Schema = new Schema(
     tapNotification: { type: Boolean, default: true },
     emailNotification: { type: Boolean, default: true },
     profileVisibility: { type: Boolean, default: false },
+    isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
     status: [userAccountStatusSchema],
     roles: [

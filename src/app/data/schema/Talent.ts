@@ -34,7 +34,8 @@ const talentSchema: Schema = new Schema(
     ],
     socialMedias: [socialMediaSchema],
     profileImagePath: { type: String },
-    physicalStats: physicalStatisticsSchema
+    physicalStats: physicalStatisticsSchema,
+    tapCount: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

@@ -46,33 +46,90 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var EmailService_1 = require("./EmailService");
 var Sender_1 = require("./aws/Sender");
 var AWS = __importStar(require("aws-sdk"));
+var lib_1 = require("../lib");
 AWS.config.update({ region: 'us-east-1' });
-var awsSes = new AWS.SES({ region: 'us-east-1' });
+var awsSes = new AWS.SES();
 var mailParams = {
     receivers: [],
     subject: '',
-    body: '',
+    mail: '',
     senderEmail: '',
     senderName: ''
 };
-exports.mailHandler = function (event) { return __awaiter(_this, void 0, void 0, function () {
-    var mailer, result, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                mailer = EmailService_1.EmailService.mailer(event.mail);
-                return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
-            case 1:
-                result = _a.sent();
-                console.log('Sent email successfully', result);
-                return [2 /*return*/, mailParams];
-            case 2:
-                err_1 = _a.sent();
-                console.log(err_1);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+exports.mailHandler = function (event, context, cb) {
+    if (event === void 0) { event = {}; }
+    return __awaiter(_this, void 0, void 0, function () {
+        var headers, escapeReceivers, escapesubject, escapebody, escapesenderEmail, escapeCcAddresses, escapebbccAddresses, escapeSenderName, body, _i, _a, email, _b, _c, email, _d, _e, email, mailer, result, err_1;
+        return __generator(this, function (_f) {
+            switch (_f.label) {
+                case 0:
+                    headers = { 'Access-Control-Allow-Origin': '*' };
+                    _f.label = 1;
+                case 1:
+                    _f.trys.push([1, 3, , 4]);
+                    escapeReceivers = [];
+                    escapesubject = void 0;
+                    escapebody = void 0;
+                    escapesenderEmail = void 0;
+                    escapeCcAddresses = [];
+                    escapebbccAddresses = [];
+                    escapeSenderName = '';
+                    body = event.email;
+                    escapesubject = JSON.parse(lib_1.escapeJSON(body.subject));
+                    escapebody = JSON.parse(lib_1.escapeJSON(body.mail));
+                    escapesenderEmail = JSON.parse(lib_1.escapeJSON(body.senderEmail));
+                    body.receivers = lib_1.escapeJSON(body.receivers).split(',');
+                    for (_i = 0, _a = body.receivers; _i < _a.length; _i++) {
+                        email = _a[_i];
+                        escapeReceivers = escapeReceivers.concat([JSON.parse(email)]);
+                    }
+                    if (body.ccAddresses) {
+                        body.ccAddresses = lib_1.escapeJSON(body.ccAddresses).split(',');
+                        for (_b = 0, _c = body.ccAddresses; _b < _c.length; _b++) {
+                            email = _c[_b];
+                            escapeCcAddresses = escapeCcAddresses.concat([JSON.parse(email)]);
+                        }
+                    }
+                    if (body.bccAddresses) {
+                        body.bccAddresses = lib_1.escapeJSON(body.bccAddresses).split(',');
+                        for (_d = 0, _e = body.ccAddresses; _d < _e.length; _d++) {
+                            email = _e[_d];
+                            escapebbccAddresses = escapebbccAddresses.concat([JSON.parse(email)]);
+                        }
+                    }
+                    if (body.senderName) {
+                        escapeSenderName = JSON.parse(lib_1.escapeJSON(body.senderName));
+                    }
+                    mailParams = {
+                        receivers: escapeReceivers,
+                        subject: escapesubject,
+                        mail: escapebody,
+                        senderEmail: escapesenderEmail,
+                        ccAddresses: escapeCcAddresses,
+                        bccAddresses: escapebbccAddresses,
+                        senderName: escapeSenderName
+                    };
+                    mailer = EmailService_1.EmailService.mailer(mailParams);
+                    return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
+                case 2:
+                    result = _f.sent();
+                    cb(null, {
+                        statusCode: 200,
+                        headers: headers,
+                        body: JSON.stringify({ message: result })
+                    });
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _f.sent();
+                    cb(null, {
+                        statusCode: 500,
+                        headers: headers,
+                        body: JSON.stringify({ error: err_1 })
+                    });
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 //# sourceMappingURL=Handler.js.map

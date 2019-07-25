@@ -15,7 +15,8 @@ import {
   IExchangeToken,
   tokenExchange,
   getPrivateKey,
-  toObjectId
+  toObjectId,
+  IStringDate
 } from '../../utils/lib';
 import { SignInOptions } from '../models/interfaces/custom/Global';
 import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
@@ -33,9 +34,10 @@ import {
 
 const config: AppConfig = require('../../config/keys');
 import * as cloudConfig from '../../config/cloudConfig.json';
-
 import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
 import { IEmail } from '../../utils/emailservice/EmailService';
+import { addSeconds } from 'date-fns';
+
 class UserBusiness implements IUserBusiness {
   private _userRepository: UserRepository;
   private _roleRepository: RoleRepository;
@@ -248,17 +250,17 @@ class UserBusiness implements IUserBusiness {
       };
 
       const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
-
       const mailParams: IEmail = {
         receivers: [newUser.email],
         subject: 'Signup Welcome Email',
-        body: emailBody,
+        mail: emailBody,
         senderEmail: 'talents@untappedpool.com',
         senderName: 'Untapped Pool'
       };
-      const dueDate = newUser.createdAt;
 
-      const schedule = await scheduleEmail(dueDate, mailParams);
+      // const dueDate = addSeconds(newUser.createdAt, 10);
+
+      const schedule = await scheduleEmail(newUser.createdAt, mailParams);
       console.log(schedule);
       return Result.ok<bool>(201, true);
     } catch (err) {

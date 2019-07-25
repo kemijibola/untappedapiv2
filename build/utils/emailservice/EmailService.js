@@ -45,13 +45,12 @@ var EmailService = /** @class */ (function () {
         this.bccAddresses = [];
         this.receivers = params.receivers;
         this.subject = params.subject;
-        this.body = params.body;
+        this.body = params.mail;
         this.senderEmail = params.senderEmail;
         this.ccAddresses = params.ccAddresses;
         this.bccAddresses = params.bccAddresses;
     }
     EmailService.mailer = function (params) {
-        console.log('this is params');
         return new EmailService(params);
     };
     EmailService.prototype.sendMail = function (send) {

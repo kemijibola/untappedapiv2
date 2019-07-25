@@ -44,9 +44,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var AWS = __importStar(require("aws-sdk"));
-var awsSes = new AWS.SES();
+AWS.config.update({ region: 'us-east-1' });
+var awsSes = new AWS.SES({ region: 'us-east-1' });
 exports.ses = function (receivers, subject, body, senderEmail, ccAddresses, bccAddresses) { return __awaiter(_this, void 0, void 0, function () {
-    var charset, params, result;
+    var charset, params;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -73,11 +74,8 @@ exports.ses = function (receivers, subject, body, senderEmail, ccAddresses, bccA
                     ReplyToAddresses: [],
                     Source: senderEmail
                 };
-                return [4 /*yield*/, awsSes.sendEmail(params)];
-            case 1:
-                result = _a.sent();
-                console.log('sent successfully');
-                return [2 /*return*/, JSON.stringify(result)];
+                return [4 /*yield*/, awsSes.sendEmail(params).promise()];
+            case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };

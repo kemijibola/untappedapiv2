@@ -16,10 +16,10 @@ export interface ILogin extends IDestinationUrl {
 }
 
 export interface IRegister {
-  name: string;
+  username: string;
   email: string;
   password: string;
-  roles: IRole['name'];
+  roles: IRole['_id'][];
   audience: string;
 }
 

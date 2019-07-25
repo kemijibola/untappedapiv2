@@ -46,11 +46,11 @@ export class AuthController {
   }
 
   @post('/signup')
-  @requestValidators('email', 'password', 'audience', 'name', 'roles')
+  @requestValidators('email', 'password', 'audience', 'username', 'roles')
   async postSignup(req: Request, res: Response, next: NextFunction) {
     try {
       const signUpParams: IRegister = {
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password,
         roles: req.body.roles,

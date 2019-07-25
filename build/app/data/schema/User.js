@@ -50,7 +50,7 @@ var userAccountStatusSchema = new mongoose_1.Schema({
 });
 var userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
@@ -59,6 +59,7 @@ var userSchema = new mongoose_1.Schema({
     tapNotification: { type: Boolean, default: true },
     emailNotification: { type: Boolean, default: true },
     profileVisibility: { type: Boolean, default: false },
+    isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
     status: [userAccountStatusSchema],
     roles: [

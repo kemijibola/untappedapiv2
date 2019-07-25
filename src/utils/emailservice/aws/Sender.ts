@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
-
+AWS.config.update({ region: 'us-east-1' });
+const awsSes = new AWS.SES({ region: 'us-east-1' });
 import { Sender } from '../EmailService';
-const awsSes = new AWS.SES();
 
 export const ses: Sender = async (
   receivers: string[],
@@ -34,7 +34,6 @@ export const ses: Sender = async (
     ReplyToAddresses: [],
     Source: senderEmail
   };
-  const result = await awsSes.sendEmail(params);
-  console.log('sent successfully');
-  return JSON.stringify(result);
+
+  return await awsSes.sendEmail(params).promise();
 };

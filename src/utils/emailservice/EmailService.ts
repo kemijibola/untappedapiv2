@@ -1,7 +1,7 @@
 export interface IEmail {
   receivers: string[];
   subject: string;
-  body: string;
+  mail: string;
   senderEmail: string;
   senderName: string;
   ccAddresses?: string[];
@@ -29,14 +29,13 @@ export class EmailService {
   constructor(params: IEmail) {
     this.receivers = params.receivers;
     this.subject = params.subject;
-    this.body = params.body;
+    this.body = params.mail;
     this.senderEmail = params.senderEmail;
     this.ccAddresses = params.ccAddresses;
     this.bccAddresses = params.bccAddresses;
   }
 
   static mailer(params: IEmail): EmailService {
-    console.log('this is params');
     return new EmailService(params);
   }
   async sendMail(send: Sender): Promise<any> {

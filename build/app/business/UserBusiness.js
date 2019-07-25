@@ -236,7 +236,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, dueDate, schedule, err_5;
+            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, schedule, err_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -298,12 +298,11 @@ var UserBusiness = /** @class */ (function () {
                         mailParams = {
                             receivers: [newUser.email],
                             subject: 'Signup Welcome Email',
-                            body: emailBody,
+                            mail: emailBody,
                             senderEmail: 'talents@untappedpool.com',
                             senderName: 'Untapped Pool'
                         };
-                        dueDate = newUser.createdAt;
-                        return [4 /*yield*/, ScheduleEmail_1.scheduleEmail(dueDate, mailParams)];
+                        return [4 /*yield*/, ScheduleEmail_1.scheduleEmail(newUser.createdAt, mailParams)];
                     case 8:
                         schedule = _b.sent();
                         console.log(schedule);

@@ -24,6 +24,7 @@ export interface IUser extends ITimeStamp, mongoose.Document {
   generalNotification: boolean;
   emailNotification: boolean;
   profileVisibility: boolean;
+  isBounced: boolean;
   loginCount: number;
   status: IUserAccountStatus;
   roles: IRole['_id'][];
