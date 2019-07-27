@@ -7,7 +7,7 @@ var MostTapAnalysis = /** @class */ (function () {
     MostTapAnalysis.prototype.run = function (talents) {
         var sortedCategory = {
             result: [],
-            categoryType: interfaces_1.FilterCategory.MostTaps
+            categoryType: interfaces_1.ReportType.MostTaps
         };
         talents = talents.sort(function (a, b) {
             return b.tapCount - a.tapCount;

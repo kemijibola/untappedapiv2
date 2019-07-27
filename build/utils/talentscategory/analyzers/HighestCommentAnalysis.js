@@ -48,7 +48,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
         var _this = this;
         var sortedCategory = {
             result: [],
-            categoryType: interfaces_1.FilterCategory.HighestComments
+            categoryType: interfaces_1.ReportType.HighestComments
         };
         var talentsMedia = talents.reduce(function (acc, theItem) {
             _this.fetchTalentMedia(theItem._id).then(function (data) {
@@ -96,20 +96,21 @@ var HighestCommentAnalysis = /** @class */ (function () {
     };
     HighestCommentAnalysis.prototype.fetchTalentMedia = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var medias, audios, videos, images;
+            var medias, talentPortfolio, audios, videos, images;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         medias = [];
-                        return [4 /*yield*/, TalentPortfolio_1.fetchTalentAudios(userId)];
+                        talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp(userId);
+                        return [4 /*yield*/, talentPortfolio.fetchTalentAudios()];
                     case 1:
                         audios = _a.sent();
                         medias = medias.concat(audios);
-                        return [4 /*yield*/, TalentPortfolio_1.fetchTalentVideos(userId)];
+                        return [4 /*yield*/, talentPortfolio.fetchTalentVideos()];
                     case 2:
                         videos = _a.sent();
                         medias = medias.concat(videos);
-                        return [4 /*yield*/, TalentPortfolio_1.fetchTalentImages(userId)];
+                        return [4 /*yield*/, talentPortfolio.fetchTalentImages()];
                     case 3:
                         images = _a.sent();
                         medias = medias.concat(images);

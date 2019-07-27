@@ -12,7 +12,7 @@ var filterCategorySchema = new mongoose_1.Schema({
 });
 var talentFilterCategorySchema = new mongoose_1.Schema({
     result: [filterCategorySchema],
-    categoryType: { type: TalentFilterCategory_1.FilterCategory, required: true }
+    categoryType: { type: TalentFilterCategory_1.ReportType, required: true }
 });
 exports.TalentFilterCategorySchema = mongooseConnection.model('TalentFilterCategory', talentFilterCategorySchema);
 //# sourceMappingURL=TalentFilterCategory.js.map

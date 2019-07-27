@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var FilterCategory;
-(function (FilterCategory) {
-    FilterCategory["MostTaps"] = "MostTaps";
-    FilterCategory["HighestComments"] = "HighestComments";
-    FilterCategory["MostWatchedVideos"] = "MostWatchedVideos";
-    FilterCategory["MostPlayedSongs"] = "MostPlayedSongs";
-    FilterCategory["MostLikedPhotos"] = "MostLikedPhotos";
-})(FilterCategory = exports.FilterCategory || (exports.FilterCategory = {}));
+var ReportType;
+(function (ReportType) {
+    ReportType["MostTaps"] = "MostTaps";
+    ReportType["HighestComments"] = "HighestComments";
+    ReportType["MostWatchedVideos"] = "MostWatchedVideos";
+    ReportType["MostPlayedSongs"] = "MostPlayedSongs";
+    ReportType["MostLikedPhotos"] = "MostLikedPhotos";
+})(ReportType = exports.ReportType || (exports.ReportType = {}));
 //# sourceMappingURL=TalentFilterCategory.js.map

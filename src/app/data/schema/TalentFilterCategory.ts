@@ -2,7 +2,8 @@ import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 import {
   FilterCategory,
-  ITalentFilterCategory
+  ITalentFilterCategory,
+  ReportType
 } from '../../models/interfaces/TalentFilterCategory';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 
@@ -15,7 +16,7 @@ const filterCategorySchema = new Schema({
 
 const talentFilterCategorySchema = new Schema({
   result: [filterCategorySchema],
-  categoryType: { type: FilterCategory, required: true }
+  categoryType: { type: ReportType, required: true }
 });
 
 export const TalentFilterCategorySchema = mongooseConnection.model<

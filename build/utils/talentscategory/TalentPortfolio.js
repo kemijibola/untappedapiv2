@@ -41,61 +41,86 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var VideoBusiness_1 = __importDefault(require("../../app/business/VideoBusiness"));
 var AudioBusiness_1 = __importDefault(require("../../app/business/AudioBusiness"));
 var ImageBusiness_1 = __importDefault(require("../../app/business/ImageBusiness"));
-function fetchTalentVideos(userId) {
-    return __awaiter(this, void 0, void 0, function () {
-        var videos, videoBusiness, talentVideos;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    videos = [];
-                    videoBusiness = new VideoBusiness_1.default();
-                    return [4 /*yield*/, videoBusiness.fetch({ user: userId })];
-                case 1:
-                    talentVideos = _a.sent();
-                    if (talentVideos.data)
-                        videos = videos.concat(talentVideos.data);
-                    return [2 /*return*/, videos];
-            }
+var TalentBusiness_1 = __importDefault(require("../../app/business/TalentBusiness"));
+var TalentPortfolio = /** @class */ (function () {
+    function TalentPortfolio(userId) {
+        this.userId = userId;
+    }
+    TalentPortfolio.setUp = function (userId) {
+        return new TalentPortfolio(userId);
+    };
+    TalentPortfolio.prototype.fetchTalentVideos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var videos, videoBusiness, talentVideos;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        videos = [];
+                        videoBusiness = new VideoBusiness_1.default();
+                        return [4 /*yield*/, videoBusiness.fetch({ user: this.userId })];
+                    case 1:
+                        talentVideos = _a.sent();
+                        if (talentVideos.data)
+                            videos = videos.concat(talentVideos.data);
+                        return [2 /*return*/, videos];
+                }
+            });
         });
-    });
-}
-exports.fetchTalentVideos = fetchTalentVideos;
-function fetchTalentAudios(userId) {
-    return __awaiter(this, void 0, void 0, function () {
-        var audios, audioBusiness, talentAudios;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    audios = [];
-                    audioBusiness = new AudioBusiness_1.default();
-                    return [4 /*yield*/, audioBusiness.fetch({ user: userId })];
-                case 1:
-                    talentAudios = _a.sent();
-                    if (talentAudios.data)
-                        audios = audios.concat(talentAudios.data);
-                    return [2 /*return*/, audios];
-            }
+    };
+    TalentPortfolio.prototype.fetchTalentAudios = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var audios, audioBusiness, talentAudios;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        audios = [];
+                        audioBusiness = new AudioBusiness_1.default();
+                        return [4 /*yield*/, audioBusiness.fetch({ user: this.userId })];
+                    case 1:
+                        talentAudios = _a.sent();
+                        if (talentAudios.data)
+                            audios = audios.concat(talentAudios.data);
+                        return [2 /*return*/, audios];
+                }
+            });
         });
-    });
-}
-exports.fetchTalentAudios = fetchTalentAudios;
-function fetchTalentImages(userId) {
-    return __awaiter(this, void 0, void 0, function () {
-        var images, imageBusiness, talentImages;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    images = [];
-                    imageBusiness = new ImageBusiness_1.default();
-                    return [4 /*yield*/, imageBusiness.fetch({ user: userId })];
-                case 1:
-                    talentImages = _a.sent();
-                    if (talentImages.data)
-                        images = images.concat(talentImages.data);
-                    return [2 /*return*/, images];
-            }
+    };
+    TalentPortfolio.prototype.fetchTalentImages = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var images, imageBusiness, talentImages;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        images = [];
+                        imageBusiness = new ImageBusiness_1.default();
+                        return [4 /*yield*/, imageBusiness.fetch({ user: this.userId })];
+                    case 1:
+                        talentImages = _a.sent();
+                        if (talentImages.data)
+                            images = images.concat(talentImages.data);
+                        return [2 /*return*/, images];
+                }
+            });
         });
-    });
-}
-exports.fetchTalentImages = fetchTalentImages;
+    };
+    TalentPortfolio.prototype.fetchTalents = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var talents, talentBusiness, talentsModel;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        talents = [];
+                        talentBusiness = new TalentBusiness_1.default();
+                        return [4 /*yield*/, talentBusiness.fetch(condition)];
+                    case 1:
+                        talentsModel = _a.sent();
+                        talents = talentsModel.data || [];
+                        return [2 /*return*/, talents];
+                }
+            });
+        });
+    };
+    return TalentPortfolio;
+}());
+exports.TalentPortfolio = TalentPortfolio;
 //# sourceMappingURL=TalentPortfolio.js.map

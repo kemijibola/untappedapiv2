@@ -34,30 +34,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
-Object.defineProperty(exports, "__esModule", { value: true });
-var TalentPortfolio_1 = require("./TalentPortfolio");
-var MatchData_1 = require("./Helper/MatchData");
-exports.fetchTalentsByCategory = function (event, context, cb) {
-    if (event === void 0) { event = {}; }
-    return __awaiter(_this, void 0, void 0, function () {
-        var talentPortfolio, talents;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp('');
-                    return [4 /*yield*/, talentPortfolio.fetchTalents({})];
-                case 1:
-                    talents = _a.sent();
-                    MatchData_1.generateTalentReport(talents);
-                    try {
-                    }
-                    catch (err) {
-                        console.log(err);
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    });
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-//# sourceMappingURL=Handler.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
+var TalentFilterCategoryBusiness_1 = __importDefault(require("../../../app/business/TalentFilterCategoryBusiness"));
+var DatabaseReport = /** @class */ (function () {
+    function DatabaseReport() {
+    }
+    DatabaseReport.prototype.process = function (report) {
+        return __awaiter(this, void 0, void 0, function () {
+            var item, talentFilterCategoryBusiness;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        item = Object.assign({});
+                        talentFilterCategoryBusiness = new TalentFilterCategoryBusiness_1.default();
+                        item = Object.assign(item, report);
+                        return [4 /*yield*/, talentFilterCategoryBusiness.create(item)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return DatabaseReport;
+}());
+exports.DatabaseReport = DatabaseReport;
+//# sourceMappingURL=DatabaseReport.js.map

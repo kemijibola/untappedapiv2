@@ -118,7 +118,6 @@ var TalentFilterCategoryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._talentFilterCategoryRepository.create(item)];
                     case 1:
                         newTalentFilterCategory = _a.sent();
-                        // TODO:: create approval request
                         return [2 /*return*/, Result_1.Result.ok(201, newTalentFilterCategory)];
                     case 2:
                         err_4 = _a.sent();

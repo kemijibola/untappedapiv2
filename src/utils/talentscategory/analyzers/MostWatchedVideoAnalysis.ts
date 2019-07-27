@@ -1,26 +1,27 @@
 import { Analyzer } from '../Helper/Summary';
 import { MatchData } from '../Helper/MatchData';
 import {
-  TalentFilterCategory,
   FilterCategory,
   IVideo,
-  IFilterCategory
+  IFilterCategory,
+  ReportType
 } from '../../../app/models/interfaces';
 import {
-  fetchTalentVideos,
-  TalentPortfolio,
-  TalentMediaComment
+  ITalentPortfolio,
+  TalentMediaComment,
+  TalentPortfolio
 } from '../TalentPortfolio';
 
 export class MostWatchedVideoAnalysis implements Analyzer {
-  run(talents: MatchData[]): TalentFilterCategory {
-    let sortedCategory: TalentFilterCategory = {
+  run(talents: MatchData[]): FilterCategory {
+    let sortedCategory: FilterCategory = {
       result: [],
-      categoryType: FilterCategory.MostTaps
+      categoryType: ReportType.MostWatchedVideos
     };
 
-    const talentsVideo = talents.reduce((acc: TalentPortfolio[], theItem) => {
-      fetchTalentVideos(theItem._id).then((data: IVideo[]) => {
+    const talentsVideo = talents.reduce((acc: ITalentPortfolio[], theItem) => {
+      const talentPortfolio = TalentPortfolio.setUp(theItem._id);
+      talentPortfolio.fetchTalentVideos().then((data: IVideo[]) => {
         acc.push({
           medias: data,
           talent: theItem

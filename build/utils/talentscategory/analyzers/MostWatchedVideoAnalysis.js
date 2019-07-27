@@ -8,10 +8,11 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
     MostWatchedVideoAnalysis.prototype.run = function (talents) {
         var sortedCategory = {
             result: [],
-            categoryType: interfaces_1.FilterCategory.MostTaps
+            categoryType: interfaces_1.ReportType.MostWatchedVideos
         };
         var talentsVideo = talents.reduce(function (acc, theItem) {
-            TalentPortfolio_1.fetchTalentVideos(theItem._id).then(function (data) {
+            var talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp(theItem._id);
+            talentPortfolio.fetchTalentVideos().then(function (data) {
                 acc.push({
                     medias: data,
                     talent: theItem

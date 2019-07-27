@@ -60,7 +60,6 @@ class TalentFilterCategoryBusiness implements ITalentFilterCategoryBusiness {
       const newTalentFilterCategory = await this._talentFilterCategoryRepository.create(
         item
       );
-      // TODO:: create approval request
       return Result.ok<ITalentFilterCategory>(201, newTalentFilterCategory);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

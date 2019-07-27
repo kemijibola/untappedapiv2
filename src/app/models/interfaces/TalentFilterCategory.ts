@@ -3,7 +3,7 @@ import { ITimeStamp } from './Timestamp';
 import { IUser } from './User';
 import { ITalent } from './Talent';
 
-export enum FilterCategory {
+export enum ReportType {
   MostTaps = 'MostTaps',
   HighestComments = 'HighestComments',
   MostWatchedVideos = 'MostWatchedVideos',
@@ -23,7 +23,7 @@ export interface IFilterCategory {
   shortBio: string;
 }
 
-export interface TalentFilterCategory {
+export interface FilterCategory {
   result: IFilterCategory[];
-  categoryType: FilterCategory;
+  categoryType: ReportType;
 }

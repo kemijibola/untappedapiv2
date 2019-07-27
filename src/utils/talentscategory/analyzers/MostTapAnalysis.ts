@@ -2,15 +2,15 @@ import { Analyzer } from '../Helper/Summary';
 import {
   IFilterCategory,
   FilterCategory,
-  TalentFilterCategory
+  ReportType
 } from '../../../app/models/interfaces';
 import { MatchData } from '../Helper/MatchData';
 
 export class MostTapAnalysis implements Analyzer {
-  run(talents: MatchData[]): TalentFilterCategory {
-    let sortedCategory: TalentFilterCategory = {
+  run(talents: MatchData[]): FilterCategory {
+    let sortedCategory: FilterCategory = {
       result: [],
-      categoryType: FilterCategory.MostTaps
+      categoryType: ReportType.MostTaps
     };
 
     talents = talents.sort((a, b) => {

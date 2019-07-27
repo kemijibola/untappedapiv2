@@ -1,30 +1,23 @@
 import { Analyzer } from '../Helper/Summary';
 import { MatchData } from '../Helper/MatchData';
 import {
-  TalentFilterCategory,
   FilterCategory,
   IMedia,
   IComment,
-  IFilterCategory
+  IFilterCategory,
+  ReportType
 } from '../../../app/models/interfaces';
-
 import CommentBusiness from '../../../app/business/CommentBusiness';
-import {
-  fetchTalentAudios,
-  fetchTalentVideos,
-  fetchTalentImages,
-  TalentMediaComment,
-  TalentPortfolio
-} from '../TalentPortfolio';
+import { TalentMediaComment, ITalentPortfolio } from '../TalentPortfolio';
+import { TalentPortfolio } from '../TalentPortfolio';
 
 export class HighestCommentAnalysis implements Analyzer {
-  run(talents: MatchData[]): TalentFilterCategory {
-    let sortedCategory: TalentFilterCategory = {
+  run(talents: MatchData[]): FilterCategory {
+    let sortedCategory: FilterCategory = {
       result: [],
-      categoryType: FilterCategory.HighestComments
+      categoryType: ReportType.HighestComments
     };
-
-    const talentsMedia = talents.reduce((acc: TalentPortfolio[], theItem) => {
+    const talentsMedia = talents.reduce((acc: ITalentPortfolio[], theItem) => {
       this.fetchTalentMedia(theItem._id).then((data: IMedia[]) => {
         acc.push({
           medias: data,
@@ -67,11 +60,13 @@ export class HighestCommentAnalysis implements Analyzer {
 
   async fetchTalentMedia(userId: string): Promise<IMedia[]> {
     let medias: IMedia[] = [];
-    const audios = await fetchTalentAudios(userId);
+    const talentPortfolio = TalentPortfolio.setUp(userId);
+
+    const audios = await talentPortfolio.fetchTalentAudios();
     medias = [...medias, ...audios];
-    const videos = await fetchTalentVideos(userId);
+    const videos = await talentPortfolio.fetchTalentVideos();
     medias = [...medias, ...videos];
-    const images = await fetchTalentImages(userId);
+    const images = await talentPortfolio.fetchTalentImages();
     medias = [...medias, ...images];
     return medias;
   }
