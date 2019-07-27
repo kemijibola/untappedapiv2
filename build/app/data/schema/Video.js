@@ -14,7 +14,8 @@ var videoSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     items: [videoItemSchema],
     uploadType: { type: Media_1.MediaUploadType, required: true },
-    isApproved: { type: Boolean, default: false }
-});
+    isApproved: { type: Boolean, default: false },
+    videoPlayCount: { type: Number, default: 0 }
+}, { timestamps: true });
 exports.VideoSchema = mongooseConnection.model('Video', videoSchema);
 //# sourceMappingURL=Video.js.map

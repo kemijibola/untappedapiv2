@@ -45,23 +45,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+var CommentBusiness = require("../app/business/CommentBusiness");
+var error_1 = require("../utils/error");
 var CommentController = /** @class */ (function () {
     function CommentController() {
     }
     CommentController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item;
+            var item, commentBusiness, result, err_1;
             return __generator(this, function (_a) {
-                item = req.body;
-                try {
-                    // TODO:: For any entity that uses comment. create comment with only entityId
-                    // TODO:: Perform update when there is an actual comment to be posted on the entity
-                    // TODO:: using entityId has lookup
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        item = req.body;
+                        item.user = req.user;
+                        commentBusiness = new CommentBusiness();
+                        return [4 /*yield*/, commentBusiness.create(item)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(201).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
+                    case 3: return [2 /*return*/];
                 }
-                catch (err) {
-                    //new InternalServerError('Internal Server error occured', 500);
-                }
-                return [2 /*return*/];
             });
         });
     };
@@ -71,7 +90,7 @@ var CommentController = /** @class */ (function () {
     CommentController.prototype.findById = function () { };
     __decorate([
         decorators_1.post('/'),
-        decorators_1.requestValidators('entityId'),
+        decorators_1.requestValidators('entityId, comment'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

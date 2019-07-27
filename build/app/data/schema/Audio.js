@@ -14,7 +14,8 @@ var audioSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     items: [audioItemSchema],
     uploadType: { type: Media_1.MediaUploadType, required: true },
-    isApproved: { type: Boolean, default: false }
+    isApproved: { type: Boolean, default: false },
+    playedCount: { type: Number, default: 0 }
 });
 exports.AudioSchema = mongooseConnection.model('Audio', audioSchema);
 //# sourceMappingURL=Audio.js.map

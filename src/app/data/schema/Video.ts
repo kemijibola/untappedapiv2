@@ -8,14 +8,18 @@ const videoItemSchema = new Schema({
   likes: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 });
 
-const videoSchema = new Schema({
-  title: { type: String, required: true },
-  shortDescription: { type: String },
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  items: [videoItemSchema],
-  uploadType: { type: MediaUploadType, required: true },
-  isApproved: { type: Boolean, default: false }
-});
+const videoSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    shortDescription: { type: String },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    items: [videoItemSchema],
+    uploadType: { type: MediaUploadType, required: true },
+    isApproved: { type: Boolean, default: false },
+    videoPlayCount: { type: Number, default: 0 }
+  },
+  { timestamps: true }
+);
 
 export const VideoSchema = mongooseConnection.model<IVideo>(
   'Video',

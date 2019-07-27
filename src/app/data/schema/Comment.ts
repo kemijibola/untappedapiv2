@@ -3,12 +3,17 @@ import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IComment } from '../../models/interfaces';
 
+const replySchema: Schema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  reply: { type: String, required: true }
+});
+
 const commentSchema: Schema = new Schema(
   {
     entityId: { type: String, required: true },
     comment: { type: String, required: true },
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    replies: [{ type: Schema.Types.ObjectId, ref: 'Reply' }]
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    replies: [replySchema]
   },
   { timestamps: true }
 );

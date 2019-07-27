@@ -17,8 +17,14 @@ export interface IMedia extends ITimeStamp, mongoose.Document {
   items: IMediaItem[];
   uploadType: MediaUploadType;
   isApproved: boolean;
+  playedCount: number;
+  videoPlayCount: number;
 }
 
-export interface IAudio extends IMedia {}
-export interface IVideo extends IMedia {}
+export interface IAudio extends IMedia {
+  playedCount: number;
+}
+export interface IVideo extends IMedia {
+  videoPlayCount: number;
+}
 export interface IImage extends IMedia {}

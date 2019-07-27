@@ -22,10 +22,11 @@ export interface IUserSocialMedia {
 }
 
 export interface ITalent extends ITimeStamp, mongoose.Document {
-  fullName: string;
+  stageName: string;
   location: string;
   phoneNumber: string;
   user: IUser['_id'];
+  tapCount: number;
   shortBio: string;
   categories: ICategory['_id'][];
   socialMedias?: IUserSocialMedia[];

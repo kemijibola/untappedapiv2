@@ -1,21 +1,40 @@
 import { controller, post, requestValidators } from '../decorators';
-import IBaseController from './interfaces/base/BaseController';
 import { Request, Response, NextFunction } from 'express';
 import { IComment } from '../app/models/interfaces';
-import CommentRepository = require('../app/repository/CommentRepository');
+import CommentBusiness = require('../app/business/CommentBusiness');
+import { PlatformError } from '../utils/error';
+import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
 
 @controller('/v1/comments')
 class CommentController {
   @post('/')
-  @requestValidators('entityId')
-  async create(req: Request, res: Response, next: NextFunction) {
-    const item: IComment = req.body;
+  @requestValidators('entityId, comment')
+  async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      // TODO:: For any entity that uses comment. create comment with only entityId
-      // TODO:: Perform update when there is an actual comment to be posted on the entity
-      // TODO:: using entityId has lookup
+      // TODO:: get current user id
+      const item: IComment = req.body;
+      item.user = req.user;
+      const commentBusiness = new CommentBusiness();
+      const result = await commentBusiness.create(item);
+      if (result.error) {
+        return next(
+          PlatformError.error({
+            code: result.responseCode,
+            message: `Error occured. ${result.error}`
+          })
+        );
+      }
+      return res.status(201).json({
+        message: 'Operation successful',
+        data: result.data
+      });
     } catch (err) {
-      //new InternalServerError('Internal Server error occured', 500);
+      return next(
+        PlatformError.error({
+          code: 500,
+          message: `Internal Server error occured.${err}`
+        })
+      );
     }
   }
   update(): void {}

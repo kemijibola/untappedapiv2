@@ -10,4 +10,5 @@ __export(require("./Permission"));
 __export(require("./Portfolio"));
 __export(require("./Approval"));
 __export(require("./Media"));
+__export(require("./TalentFilterCategory"));
 //# sourceMappingURL=index.js.map
