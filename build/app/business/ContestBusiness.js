@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
 var Result_1 = require("../../utils/Result");
+var Contest_1 = require("../data/schema/Contest");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestRepository = new ContestRepository_1.default();
@@ -115,12 +116,17 @@ var ContestBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (item.contestType === Contest_1.ContestType.OnlineOffline) {
+                            if (!item.maxContestant || item.maxContestant < 1) {
+                            }
+                        }
                         return [4 /*yield*/, this._contestRepository.create(item)];
                     case 1:
                         newContest = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newContest)];
                     case 2:
                         err_4 = _a.sent();
+                        // TODO:: create schedule email to remind user of completing contest creation
                         throw new Error("InternalServer error occured." + err_4.message);
                     case 3: return [2 /*return*/];
                 }

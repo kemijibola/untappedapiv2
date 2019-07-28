@@ -18,7 +18,12 @@ const gigSchema: Schema = new Schema(
     note: { type: String },
     items: [{ type: String }],
     deletedBySender: { type: Boolean, default: false },
-    deletedByReciver: { type: Boolean, default: false }
+    deletedByReciver: { type: Boolean, default: false },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

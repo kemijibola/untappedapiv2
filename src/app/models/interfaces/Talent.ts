@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { IUser } from './User';
 import { ICategory } from './Category';
 import { ITimeStamp } from './Timestamp';
+import { IAppSpec } from './AppSpec';
 
 export interface IPhysicalStatistics {
   height: string;
@@ -21,7 +22,7 @@ export interface IUserSocialMedia {
   handles: string[];
 }
 
-export interface ITalent extends ITimeStamp, mongoose.Document {
+export interface ITalent extends ITimeStamp, IAppSpec, mongoose.Document {
   stageName: string;
   location: string;
   phoneNumber: string;

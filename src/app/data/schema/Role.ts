@@ -21,6 +21,11 @@ const roleSchema: Schema = new Schema(
     isActive: {
       type: Boolean,
       default: false
+    },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
     }
   },
   { timestamps: true }

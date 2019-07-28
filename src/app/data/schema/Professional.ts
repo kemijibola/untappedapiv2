@@ -10,7 +10,7 @@ const socialMediaSchema: Schema = new Schema({
 
 const professionalSchema: Schema = new Schema(
   {
-    businessName: { type: String, required: true },
+    businessName: { type: String, required: true, trim: true },
     officialAddress: { type: String, required: true },
     rcNumber: { type: String },
     phoneNumbers: [{ type: Number, required: true }],
@@ -27,9 +27,14 @@ const professionalSchema: Schema = new Schema(
         required: true
       }
     ],
-    socialMedias: [socialMediaSchema],
+    socialMedias: [{ type: socialMediaSchema }],
     profileImagePath: { type: String },
-    bannerImagePath: { type: String }
+    bannerImagePath: { type: String },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

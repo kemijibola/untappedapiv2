@@ -12,10 +12,15 @@ const audioSchema = new Schema({
   title: { type: String, required: true },
   shortDescription: { type: String },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  items: [audioItemSchema],
+  items: [{ type: audioItemSchema, required: true }],
   uploadType: { type: MediaUploadType, required: true },
   isApproved: { type: Boolean, default: false },
-  playedCount: { type: Number, default: 0 }
+  playedCount: { type: Number, default: 0 },
+  application: {
+    type: Schema.Types.ObjectId,
+    ref: 'Application',
+    required: true
+  }
 });
 
 export const AudioSchema = mongooseConnection.model<IAudio>(

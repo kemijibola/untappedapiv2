@@ -6,7 +6,12 @@ import { IPermission, PermissionType } from '../../models/interfaces';
 const permissionSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
-    type: { type: PermissionType, required: true }
+    type: { type: PermissionType, required: true },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

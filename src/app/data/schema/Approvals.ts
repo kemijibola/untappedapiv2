@@ -11,7 +11,12 @@ const approvalSchema: Schema = new Schema(
     rejectionReasons: { type: String },
     approvedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     rejectionDate: { type: Date },
-    approvedDate: { type: Date }
+    approvedDate: { type: Date },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

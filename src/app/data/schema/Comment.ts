@@ -13,7 +13,12 @@ const commentSchema: Schema = new Schema(
     entityId: { type: String, required: true },
     comment: { type: String, required: true },
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    replies: [replySchema]
+    replies: [{ type: replySchema }],
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

@@ -25,7 +25,7 @@ const userSchema: Schema = new Schema(
     profileVisibility: { type: Boolean, default: false },
     isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: [userAccountStatusSchema],
+    status: [{ type: userAccountStatusSchema }],
     roles: [
       {
         type: Schema.Types.ObjectId,
@@ -34,7 +34,12 @@ const userSchema: Schema = new Schema(
       }
     ],
     profileImage: { type: String },
-    lastLogin: { type: Date }
+    lastLogin: { type: Date },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

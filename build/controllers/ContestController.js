@@ -45,57 +45,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+var ContestBusiness = require("../app/business/ContestBusiness");
+var error_1 = require("../utils/error");
 var ContestController = /** @class */ (function () {
     function ContestController() {
     }
     ContestController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
+            var item, contestBusiness, result, err_1;
             return __generator(this, function (_a) {
-                try {
-                    // const item: IContest = req.body;
-                    // const endDate: Date = addDays(item.startDate, item.duration);
-                    // if (item.contestType === ContestType.Offline) {
-                    //   if (item.maxContestant === undefined || item.maxContestant < 1)
-                    //     // do a check to ensure grandfinal date is greater than end date
-                    //     // TODO: get date parts
-                    //     const isGrandFinaleDateAfter: boolean = isAfter(
-                    //       new Date(1989, 6, 10),
-                    //       endDate
-                    //     );
-                    //   if (!isGrandFinaleDateAfter) {
-                    //     return next(
-                    //       new InvalidContent(
-                    //         'Grand finale date must be after end of contest',
-                    //         400
-                    //       )
-                    //     );
-                    //   }
-                    //   if (!item.grandFinaleDate)
-                    //     return next(
-                    //       new InvalidContent(
-                    //         'Please provide Grand finale event location.',
-                    //         400
-                    //       )
-                    //     );
-                    //   if (!item.evaluations)
-                    //     return next(
-                    //       new InvalidContent(
-                    //         'Please provide Grand finale event location.',
-                    //         400
-                    //       )
-                    //     );
-                    // }
-                    // const contest = await new ContestRepository().create(item);
-                    // return res.status(201).json({
-                    //   message: 'Operation successful',
-                    //   data: contest
-                    // });
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        item = req.body;
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.create(item)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(201).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
+                    case 3: return [2 /*return*/];
                 }
-                catch (err) {
-                    // TODO:: When this happens, create a schedule email to remind user of transaction
-                    //new InternalServerError('Internal Server error occured', 500);
-                }
-                return [2 /*return*/];
             });
         });
     };

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { ITimeStamp } from './Timestamp';
 import { IUser } from './User';
+import { IAppSpec } from './AppSpec';
 
 export enum MediaUploadType {
   SINGLE = 'SINGLE',
@@ -10,7 +11,7 @@ export interface IMediaItem {
   path: string;
   likes: IUser['username'][];
 }
-export interface IMedia extends ITimeStamp, mongoose.Document {
+export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   title: string;
   shortDescription: string;
   user: IUser['_id'];

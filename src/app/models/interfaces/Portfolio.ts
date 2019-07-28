@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { IUser } from './User';
 import { ITimeStamp } from './Timestamp';
+import { IAppSpec } from './AppSpec';
 
 export enum MediaType {
   AUDIO = 'AUDIO',
@@ -18,7 +19,7 @@ export interface ICollection {
   likes: number;
 }
 
-export interface IPortfolio extends ITimeStamp, mongoose.Document {
+export interface IPortfolio extends ITimeStamp, IAppSpec, mongoose.Document {
   title: string;
   description: string;
   user: IUser;

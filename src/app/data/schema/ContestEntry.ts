@@ -16,7 +16,12 @@ const contestEntrySchema: Schema = new Schema(
       required: true
     },
     submissionPath: { type: String, required: true },
-    isApproved: { type: Boolean, default: false}
+    isApproved: { type: Boolean, default: false },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

@@ -23,3 +23,7 @@ export * from './Media';
 export * from './Account';
 export * from './Application';
 export * from './TalentFilterCategory';
+export * from './Domain';
+export * from './Order';
+export * from './Payment';
+export * from './Service';

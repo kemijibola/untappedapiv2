@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { ITimeStamp } from './Timestamp';
+import { IAppSpec } from './AppSpec';
 
 export enum ApprovalOperations {
   ImageUpload = 'ImageUpload',
@@ -9,7 +10,7 @@ export enum ApprovalOperations {
   ContestEntrySubmitted = 'ContestEntrySubmitted'
 }
 
-export interface IApproval extends ITimeStamp, mongoose.Document {
+export interface IApproval extends ITimeStamp, IAppSpec, mongoose.Document {
   entity: string;
   operation: ApprovalOperations;
   approved: boolean;

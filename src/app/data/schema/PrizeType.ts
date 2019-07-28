@@ -5,7 +5,12 @@ import { IPrizeType } from '../../models/interfaces';
 
 const prizeTypeSchema: Schema = new Schema(
   {
-    name: { type: String, required: true }
+    name: { type: String, required: true },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

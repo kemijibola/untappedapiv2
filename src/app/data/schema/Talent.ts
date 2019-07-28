@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import { ITalent, SocialMedia } from '../../models/interfaces';
 
-const socialMediaSchema: Schema = new Schema({
+export const socialMediaSchema: Schema = new Schema({
   type: { type: SocialMedia },
   handles: [{ type: String }]
 });
@@ -24,7 +24,7 @@ const talentSchema: Schema = new Schema(
       ref: 'User',
       required: true
     },
-    shortBio: { type: String, required: true, maxlength: 300 },
+    shortBio: { type: String, required: true, minlength: 20, maxlength: 300 },
     categories: [
       {
         type: Schema.Types.ObjectId,
@@ -32,10 +32,15 @@ const talentSchema: Schema = new Schema(
         required: true
       }
     ],
-    socialMedias: [socialMediaSchema],
+    socialMedias: [{ type: socialMediaSchema }],
     profileImagePath: { type: String },
-    physicalStats: physicalStatisticsSchema,
-    tapCount: { type: Number, default: 0 }
+    physicalStats: { type: physicalStatisticsSchema },
+    tapCount: { type: Number, default: 0 },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

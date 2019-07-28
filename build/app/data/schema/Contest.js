@@ -6,7 +6,7 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 var ContestType;
 (function (ContestType) {
     ContestType["Online"] = "Online";
-    ContestType["Offline"] = "Offline";
+    ContestType["OnlineOffline"] = "OnlineOffline";
 })(ContestType = exports.ContestType || (exports.ContestType = {}));
 var evaluationSchema = new mongoose_1.Schema({
     name: { type: String }

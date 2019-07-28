@@ -15,8 +15,13 @@ const filterCategorySchema = new Schema({
 });
 
 const talentFilterCategorySchema = new Schema({
-  result: [filterCategorySchema],
-  categoryType: { type: ReportType, required: true }
+  result: [{ type: filterCategorySchema, required: true }],
+  categoryType: { type: ReportType, required: true },
+  application: {
+    type: Schema.Types.ObjectId,
+    ref: 'Application',
+    required: true
+  }
 });
 
 export const TalentFilterCategorySchema = mongooseConnection.model<

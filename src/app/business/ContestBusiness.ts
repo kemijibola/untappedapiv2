@@ -2,6 +2,9 @@ import ContestRepository from '../repository/ContestRepository';
 import IContestBusiness = require('./interfaces/ContestBusiness');
 import { IContest } from '../models/interfaces';
 import { Result } from '../../utils/Result';
+import { ContestType } from '../data/schema/Contest';
+import { isAfter, addDays } from 'date-fns';
+import { dateStringToDate } from '../../utils/lib';
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
@@ -42,9 +45,42 @@ class ContestBusiness implements IContestBusiness {
 
   async create(item: IContest): Promise<Result<IContest>> {
     try {
+      if (item.contestType === ContestType.OnlineOffline) {
+        if (!item.maxContestant || item.maxContestant < 3) {
+          const endDate: Date = addDays(item.startDate, item.duration);
+          if (item.grandFinaleDate) {
+            const isGrandFinaleDateAfter: boolean = isAfter(
+              item.grandFinaleDate,
+              endDate
+            );
+            if (!isGrandFinaleDateAfter)
+              return Result.fail<IContest>(
+                400,
+                'Grand finale date must be after end of contest.'
+              );
+          } else {
+            return Result.fail<IContest>(
+              400,
+              'Please provide Grand finale date.'
+            );
+          }
+          if (!item.evaluations) {
+            return Result.fail<IContest>(
+              400,
+              'Please provide criteria for evaluating contestants.'
+            );
+          }
+        } else {
+          return Result.fail<IContest>(
+            400,
+            'Maximum number of contestants to be selected must be more than two'
+          );
+        }
+      }
       const newContest = await this._contestRepository.create(item);
       return Result.ok<IContest>(201, newContest);
     } catch (err) {
+      // TODO:: create schedule email to remind user at the point of making payment
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
@@ -57,8 +93,8 @@ class ContestBusiness implements IContestBusiness {
           404,
           `Could not update approval.Approval of Id ${id} not found`
         );
-      const updateObj = await this._contestRepository.update(contest._id, item);
-      return Result.ok<IContest>(200, updateObj);
+
+      return Result.ok<IContest>(200, contest);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

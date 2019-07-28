@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { ITimeStamp } from './Timestamp';
 import { IUser } from './User';
-import { ITalent } from './Talent';
+import { IAppSpec } from './AppSpec';
 
 export enum ReportType {
   MostTaps = 'MostTaps',
@@ -11,7 +11,10 @@ export enum ReportType {
   MostLikedPhotos = 'MostLikedPhotos'
 }
 
-export interface ITalentFilterCategory extends ITimeStamp, mongoose.Document {
+export interface ITalentFilterCategory
+  extends ITimeStamp,
+    IAppSpec,
+    mongoose.Document {
   result: IFilterCategory[];
   categoryType: FilterCategory;
 }

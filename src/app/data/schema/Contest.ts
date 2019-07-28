@@ -1,11 +1,12 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IContest } from '../../models/interfaces';
+import { IContest, PaymentStatus } from '../../models/interfaces';
+import { socialMediaSchema } from './Talent';
 
 export enum ContestType {
   Online = 'Online',
-  Offline = 'Offline'
+  OnlineOffline = 'OnlineOffline'
 }
 const evaluationSchema: Schema = new Schema({
   name: { type: String }
@@ -20,9 +21,20 @@ const redeemableSchema: Schema = new Schema({
   winners: [{ type: Number, required: true }]
 });
 
+const judgeSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String },
+  profile: { type: String, required: true },
+  socialMedias: [socialMediaSchema],
+  profession: [{ type: String, required: true }],
+  judgeProfileImage: { type: String },
+  yearsOfExperience: { type: Number, default: 0 }
+});
+
 const contestSchema: Schema = new Schema(
   {
-    title: { type: String, required: true },
+    // TODO:: add trim to properties that might have extra spaces
+    title: { type: String, required: true, trim: true },
     information: { type: String, required: true },
     bannerImage: { type: String },
     eligibleCategories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
@@ -30,14 +42,21 @@ const contestSchema: Schema = new Schema(
     submissionRules: { type: String },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },
-    redeemable: redeemableSchema,
+    redeemable: [{ type: redeemableSchema, required: true }],
     endDate: { type: Date, required: true },
     contestType: { type: ContestType },
     maxContestant: { type: Number },
     grandFinaleDate: { type: Date },
     grandFinaleLocation: { type: String },
     evaluations: [{ type: String }],
-    createdBy: { type: Schema.Types.ObjectId, required: true }
+    judges: [{ type: judgeSchema }],
+    paymentStatus: { type: PaymentStatus, default: PaymentStatus.UnPaid },
+    createdBy: { type: Schema.Types.ObjectId, required: true },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

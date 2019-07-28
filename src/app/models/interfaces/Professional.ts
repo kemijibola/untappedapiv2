@@ -3,8 +3,9 @@ import { IUser } from './User';
 import { ICategory } from './Category';
 import { ITimeStamp } from './Timestamp';
 import { IUserSocialMedia } from './Talent';
+import { IAppSpec } from './AppSpec';
 
-export interface IProfessional extends ITimeStamp, mongoose.Document {
+export interface IProfessional extends ITimeStamp, IAppSpec, mongoose.Document {
   fullName: string;
   officialAddress: string;
   rcNumber: string;

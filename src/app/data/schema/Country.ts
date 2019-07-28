@@ -5,7 +5,12 @@ import { ICountry } from '../../models/interfaces';
 
 const countrySchema: Schema = new Schema(
   {
-    name: { type: String, required: true }
+    name: { type: String, required: true },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+      required: true
+    }
   },
   { timestamps: true }
 );

@@ -20,8 +20,9 @@ class ApplicationBusiness implements IApplicationBusiness {
           _id: application._id,
           name: application.name,
           dbUri: application.dbUri,
-          country: application.country,
-          identity: application.identity
+          identity: application.identity,
+          secret: application.secret,
+          domain: application.domain
         };
         refinedApplications = [...refinedApplications, applicationViewModel];
       }
@@ -45,8 +46,9 @@ class ApplicationBusiness implements IApplicationBusiness {
           _id: application._id,
           name: application.name,
           dbUri: application.dbUri,
-          country: application.country,
-          identity: application.identity
+          identity: application.identity,
+          secret: application.secret,
+          domain: application.domain
         };
         return Result.ok<ApplicationViewModel>(200, refinedApplication);
       }
@@ -68,8 +70,9 @@ class ApplicationBusiness implements IApplicationBusiness {
           _id: application._id,
           name: application.name,
           dbUri: application.dbUri,
-          country: application.country,
-          identity: application.identity
+          identity: application.identity,
+          secret: application.secret,
+          domain: application.domain
         };
         return Result.ok<ApplicationViewModel>(200, refinedApplication);
       }
@@ -87,8 +90,9 @@ class ApplicationBusiness implements IApplicationBusiness {
         _id: newApplication._id,
         name: newApplication.name,
         dbUri: newApplication.dbUri,
-        country: newApplication.country,
-        identity: newApplication.identity
+        identity: newApplication.identity,
+        secret: newApplication.secret,
+        domain: newApplication.domain
       };
       return Result.ok<ApplicationViewModel>(201, refinedApplication);
     } catch (err) {
