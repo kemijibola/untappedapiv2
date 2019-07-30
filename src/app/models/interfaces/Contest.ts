@@ -8,10 +8,11 @@ import { ContestType } from '../../data/schema/Contest';
 import { IUserSocialMedia } from './Talent';
 import { PaymentStatus } from './Payment';
 import { IAppSpec } from './AppSpec';
+import { IIssueCategory } from './IssueCategory';
 
 export interface IRedeemable {
-  prizeType: IPrizeType;
-  winners: number[];
+  prizeType: IPrizeType['_id'];
+  prizes: any[];
 }
 
 export interface IJudge {
@@ -47,6 +48,12 @@ export interface IContest
   redeemable: IRedeemable;
   endDate: Date;
   contestType: ContestType;
-  createdBy: IUser;
+  createdBy: IUser['_id'];
   paymentStatus: PaymentStatus;
+  issues?: IContestIssues[];
+}
+
+interface IContestIssues {
+  complaintCategory: IIssueCategory['_id'];
+  complaint: string;
 }

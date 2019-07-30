@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
 var Result_1 = require("../../utils/Result");
 var Contest_1 = require("../data/schema/Contest");
+var date_fns_1 = require("date-fns");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestRepository = new ContestRepository_1.default();
@@ -111,13 +112,28 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newContest, err_4;
+            var endDate, isGrandFinaleDateAfter, newContest, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (item.contestType === Contest_1.ContestType.OnlineOffline) {
-                            if (!item.maxContestant || item.maxContestant < 1) {
+                            if (!item.maxContestant || item.maxContestant < 3) {
+                                endDate = date_fns_1.addDays(item.startDate, item.duration);
+                                if (item.grandFinaleDate) {
+                                    isGrandFinaleDateAfter = date_fns_1.isAfter(item.grandFinaleDate, endDate);
+                                    if (!isGrandFinaleDateAfter)
+                                        return [2 /*return*/, Result_1.Result.fail(400, 'Grand finale date must be after end of contest.')];
+                                }
+                                else {
+                                    return [2 /*return*/, Result_1.Result.fail(400, 'Please provide Grand finale date.')];
+                                }
+                                if (!item.evaluations) {
+                                    return [2 /*return*/, Result_1.Result.fail(400, 'Please provide criteria for evaluating contestants.')];
+                                }
+                            }
+                            else {
+                                return [2 /*return*/, Result_1.Result.fail(400, 'Maximum number of contestants to be selected must be more than two')];
                             }
                         }
                         return [4 /*yield*/, this._contestRepository.create(item)];
@@ -126,7 +142,7 @@ var ContestBusiness = /** @class */ (function () {
                         return [2 /*return*/, Result_1.Result.ok(201, newContest)];
                     case 2:
                         err_4 = _a.sent();
-                        // TODO:: create schedule email to remind user of completing contest creation
+                        // TODO:: create schedule email to remind user at the point of making payment
                         throw new Error("InternalServer error occured." + err_4.message);
                     case 3: return [2 /*return*/];
                 }
@@ -135,24 +151,21 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, updateObj, err_5;
+            var contest, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this._contestRepository.findById(id)];
                     case 1:
                         contest = _a.sent();
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
-                        return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
+                        return [2 /*return*/, Result_1.Result.ok(200, contest)];
                     case 2:
-                        updateObj = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

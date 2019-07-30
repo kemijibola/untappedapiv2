@@ -11,7 +11,12 @@ var approvalSchema = new mongoose_1.Schema({
     rejectionReasons: { type: String },
     approvedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     rejectionDate: { type: Date },
-    approvedDate: { type: Date }
+    approvedDate: { type: Date },
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 exports.ApprovalSchema = mongooseConnection.model('ApprovalSchema', approvalSchema);
 //# sourceMappingURL=Approvals.js.map

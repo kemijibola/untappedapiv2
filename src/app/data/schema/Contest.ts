@@ -18,7 +18,7 @@ const redeemableSchema: Schema = new Schema({
     ref: 'PrizeType',
     required: true
   },
-  winners: [{ type: Number, required: true }]
+  prizes: [{ type: Schema.Types.Mixed, required: true }]
 });
 
 const judgeSchema: Schema = new Schema({

@@ -61,7 +61,7 @@ var userSchema = new mongoose_1.Schema({
     profileVisibility: { type: Boolean, default: false },
     isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: [userAccountStatusSchema],
+    status: [{ type: userAccountStatusSchema }],
     roles: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
@@ -70,7 +70,12 @@ var userSchema = new mongoose_1.Schema({
         }
     ],
     profileImage: { type: String },
-    lastLogin: { type: Date }
+    lastLogin: { type: Date },
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 userSchema.methods.comparePassword = function (candidatePassword) {
     return __awaiter(this, void 0, void 0, function () {

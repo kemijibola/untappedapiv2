@@ -8,7 +8,7 @@ var socialMediaSchema = new mongoose_1.Schema({
     handles: [{ type: String }]
 });
 var professionalSchema = new mongoose_1.Schema({
-    businessName: { type: String, required: true },
+    businessName: { type: String, required: true, trim: true },
     officialAddress: { type: String, required: true },
     rcNumber: { type: String },
     phoneNumbers: [{ type: Number, required: true }],
@@ -25,9 +25,14 @@ var professionalSchema = new mongoose_1.Schema({
             required: true
         }
     ],
-    socialMedias: [socialMediaSchema],
+    socialMedias: [{ type: socialMediaSchema }],
     profileImagePath: { type: String },
-    bannerImagePath: { type: String }
+    bannerImagePath: { type: String },
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 exports.ProfessionalSchema = mongooseConnection.model('Professional', professionalSchema);
 //# sourceMappingURL=Professional.js.map

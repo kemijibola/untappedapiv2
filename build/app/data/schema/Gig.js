@@ -17,7 +17,12 @@ var gigSchema = new mongoose_1.Schema({
     note: { type: String },
     items: [{ type: String }],
     deletedBySender: { type: Boolean, default: false },
-    deletedByReciver: { type: Boolean, default: false }
+    deletedByReciver: { type: Boolean, default: false },
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 exports.GigSchema = mongooseConnection.model('Gig', gigSchema);
 //# sourceMappingURL=Gig.js.map

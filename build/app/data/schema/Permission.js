@@ -6,7 +6,12 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 var interfaces_1 = require("../../models/interfaces");
 var permissionSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
-    type: { type: interfaces_1.PermissionType, required: true }
+    type: { type: interfaces_1.PermissionType, required: true },
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 exports.PermissionSchema = mongooseConnection.model('Permission', permissionSchema);
 //# sourceMappingURL=Permission.js.map

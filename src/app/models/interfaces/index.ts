@@ -27,3 +27,4 @@ export * from './Domain';
 export * from './Order';
 export * from './Payment';
 export * from './Service';
+export * from './IssueCategory';

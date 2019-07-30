@@ -20,7 +20,12 @@ var resourcePermissionSchema = new mongoose_1.Schema({
             ref: 'Permission',
             required: true
         }
-    ]
+    ],
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 exports.ResourcePermissionSchema = mongooseConnection.model('ResourcePermission', resourcePermissionSchema);
 //# sourceMappingURL=ResourcePermission.js.map

@@ -7,7 +7,15 @@ export enum ApprovalOperations {
   AudioUpload = 'AudioUpload',
   VideoUpload = 'VideoUpload',
   ContestCreated = 'ContestCreated',
-  ContestEntrySubmitted = 'ContestEntrySubmitted'
+  ContestEntrySubmitted = 'ContestEntrySubmitted',
+  CreateRole = 'CreateRole',
+  CreateCategoryIssue = 'CreateCategoryIssue',
+  CreateDomain = 'CreateDomain',
+  CreateApplication = 'CreateApplication',
+  CreateResource = 'CreateResource',
+  CreateResourcePermission = 'CreateResourcePermission',
+  CreateService = 'CreateService',
+  CreateUserType = 'CreateUserType'
 }
 
 export interface IApproval extends ITimeStamp, IAppSpec, mongoose.Document {

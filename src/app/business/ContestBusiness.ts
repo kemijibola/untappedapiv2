@@ -4,7 +4,6 @@ import { IContest } from '../models/interfaces';
 import { Result } from '../../utils/Result';
 import { ContestType } from '../data/schema/Contest';
 import { isAfter, addDays } from 'date-fns';
-import { dateStringToDate } from '../../utils/lib';
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;

@@ -11,8 +11,13 @@ var filterCategorySchema = new mongoose_1.Schema({
     shortBio: { type: String, required: true }
 });
 var talentFilterCategorySchema = new mongoose_1.Schema({
-    result: [filterCategorySchema],
-    categoryType: { type: TalentFilterCategory_1.ReportType, required: true }
+    result: [{ type: filterCategorySchema, required: true }],
+    categoryType: { type: TalentFilterCategory_1.ReportType, required: true },
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 });
 exports.TalentFilterCategorySchema = mongooseConnection.model('TalentFilterCategory', talentFilterCategorySchema);
 //# sourceMappingURL=TalentFilterCategory.js.map

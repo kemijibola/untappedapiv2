@@ -11,7 +11,12 @@ var commentSchema = new mongoose_1.Schema({
     entityId: { type: String, required: true },
     comment: { type: String, required: true },
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
-    replies: [replySchema]
+    replies: [{ type: replySchema }],
+    application: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    }
 }, { timestamps: true });
 exports.CommentSchema = mongooseConnection.model('Comment', commentSchema);
 //# sourceMappingURL=Comment.js.map
