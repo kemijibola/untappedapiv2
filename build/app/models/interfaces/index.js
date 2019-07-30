@@ -12,4 +12,5 @@ __export(require("./Approval"));
 __export(require("./Media"));
 __export(require("./TalentFilterCategory"));
 __export(require("./Payment"));
+__export(require("./IssueCategory"));
 //# sourceMappingURL=index.js.map

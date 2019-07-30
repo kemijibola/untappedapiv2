@@ -1,7 +1,11 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IContest, PaymentStatus } from '../../models/interfaces';
+import {
+  IContest,
+  PaymentStatus,
+  ComplaintStatus
+} from '../../models/interfaces';
 import { socialMediaSchema } from './Talent';
 
 export enum ContestType {
@@ -31,6 +35,17 @@ const judgeSchema: Schema = new Schema({
   yearsOfExperience: { type: Number, default: 0 }
 });
 
+const contestIssueSchema: Schema = new Schema({
+  complaintCategory: {
+    type: Schema.Types.ObjectId,
+    ref: 'IssueCategory',
+    required: true
+  },
+  complaint: { type: String, required: true, trim: true },
+  dateCreated: { type: Date },
+  complaintStatus: { type: ComplaintStatus, default: ComplaintStatus.Opened }
+});
+
 const contestSchema: Schema = new Schema(
   {
     // TODO:: add trim to properties that might have extra spaces
@@ -52,6 +67,7 @@ const contestSchema: Schema = new Schema(
     judges: [{ type: judgeSchema }],
     paymentStatus: { type: PaymentStatus, default: PaymentStatus.UnPaid },
     createdBy: { type: Schema.Types.ObjectId, required: true },
+    issues: [{ type: contestIssueSchema }],
     application: {
       type: Schema.Types.ObjectId,
       ref: 'Application',

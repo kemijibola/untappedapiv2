@@ -8,7 +8,7 @@ import { ContestType } from '../../data/schema/Contest';
 import { IUserSocialMedia } from './Talent';
 import { PaymentStatus } from './Payment';
 import { IAppSpec } from './AppSpec';
-import { IIssueCategory } from './IssueCategory';
+import { IIssueCategory, ComplaintStatus } from './IssueCategory';
 
 export interface IRedeemable {
   prizeType: IPrizeType['_id'];
@@ -56,4 +56,6 @@ export interface IContest
 interface IContestIssues {
   complaintCategory: IIssueCategory['_id'];
   complaint: string;
+  dateCreated: Date;
+  complaintStatus: ComplaintStatus;
 }

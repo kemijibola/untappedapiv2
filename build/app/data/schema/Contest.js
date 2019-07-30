@@ -30,6 +30,16 @@ var judgeSchema = new mongoose_1.Schema({
     judgeProfileImage: { type: String },
     yearsOfExperience: { type: Number, default: 0 }
 });
+var contestIssueSchema = new mongoose_1.Schema({
+    complaintCategory: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'IssueCategory',
+        required: true
+    },
+    complaint: { type: String, required: true, trim: true },
+    dateCreated: { type: Date },
+    complaintStatus: { type: interfaces_1.ComplaintStatus, default: interfaces_1.ComplaintStatus.Opened }
+});
 var contestSchema = new mongoose_1.Schema({
     // TODO:: add trim to properties that might have extra spaces
     title: { type: String, required: true, trim: true },
@@ -50,6 +60,7 @@ var contestSchema = new mongoose_1.Schema({
     judges: [{ type: judgeSchema }],
     paymentStatus: { type: interfaces_1.PaymentStatus, default: interfaces_1.PaymentStatus.UnPaid },
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+    issues: [{ type: contestIssueSchema }],
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Application',
