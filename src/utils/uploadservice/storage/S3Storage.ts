@@ -17,10 +17,15 @@ export class S3Storage implements Storage {
   private s3: AWS.S3;
 
   private configParams: S3Params = {
-    region: cloudConfig['app-bucket'].region,
-    accessKeyId: cloudConfig['app-bucket'].access_key_id,
-    secretAccessKey: cloudConfig['app-bucket'].secret_access_key,
-    Bucket: cloudConfig['app-bucket'].bucket
+    region: '',
+    accessKeyId: '',
+    secretAccessKey: '',
+    Bucket: ''
+
+    // region: cloudConfig['app-bucket'].region,
+    // accessKeyId: cloudConfig['app-bucket'].access_key_id,
+    // secretAccessKey: cloudConfig['app-bucket'].secret_access_key,
+    // Bucket: cloudConfig['app-bucket'].bucket
   };
 
   constructor() {

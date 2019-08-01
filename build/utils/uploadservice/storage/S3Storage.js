@@ -47,14 +47,17 @@ var Upload_1 = require("../Helper/Upload");
 var lib_1 = require("../../lib");
 var uuid = require("uuid");
 var Result_1 = require("../../Result");
-var cloudConfig = __importStar(require("../../../config/cloudConfig.json"));
 var S3Storage = /** @class */ (function () {
     function S3Storage() {
         this.configParams = {
-            region: cloudConfig['app-bucket'].region,
-            accessKeyId: cloudConfig['app-bucket'].access_key_id,
-            secretAccessKey: cloudConfig['app-bucket'].secret_access_key,
-            Bucket: cloudConfig['app-bucket'].bucket
+            region: '',
+            accessKeyId: '',
+            secretAccessKey: '',
+            Bucket: ''
+            // region: cloudConfig['app-bucket'].region,
+            // accessKeyId: cloudConfig['app-bucket'].access_key_id,
+            // secretAccessKey: cloudConfig['app-bucket'].secret_access_key,
+            // Bucket: cloudConfig['app-bucket'].bucket
         };
         AWS.config.update({
             region: this.configParams.region
