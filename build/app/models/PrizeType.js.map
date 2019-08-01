@@ -1,1 +1,0 @@
-{"version":3,"file":"PrizeType.js","sourceRoot":"","sources":["../../../src/app/models/PrizeType.ts"],"names":[],"mappings":";;AAEA;IAEE,wBAAY,cAA0B;QACpC,IAAI,CAAC,eAAe,GAAG,cAAc,CAAC;IACxC,CAAC;IACD,sBAAI,gCAAI;aAAR;YACE,OAAO,IAAI,CAAC,eAAe,CAAC,IAAI,CAAC;QACnC,CAAC;;;OAAA;IACH,qBAAC;AAAD,CAAC,AARD,IAQC;AAED,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC;AAC5B,OAAO,GAAG,cAAc,CAAC"}
