@@ -55,7 +55,7 @@ class DomainBusiness implements IDomainBusiness {
       if (!domain)
         return Result.fail<IDomain>(
           404,
-          `Could not update domain.Domain of Id ${id} not found`
+          `Could not update domain.Domain with Id ${id} not found`
         );
       const updateObj = await this._domainRepository.update(domain._id, item);
       return Result.ok<IDomain>(200, updateObj);

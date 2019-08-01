@@ -56,7 +56,7 @@ class ServiceBusiness implements IServiceBusiness {
       if (!service)
         return Result.fail<IService>(
           404,
-          `Could not update service.Service of Id ${id} not found`
+          `Could not update service.Service with Id ${id} not found`
         );
       const updateObj = await this._serviceRepository.update(service._id, item);
       return Result.ok<IService>(200, updateObj);

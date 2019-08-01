@@ -18,6 +18,7 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   email: string;
   username: string;
   password: string;
+  profileImagePath?: string;
   isEmailConfirmed: boolean;
   isPhoneConfirmed: boolean;
   isProfileCompleted: boolean;
@@ -29,7 +30,6 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   loginCount: number;
   status: IUserAccountStatus;
   roles: IRole['_id'][];
-  profileImage: string;
   lastLogin: Date;
 }
 

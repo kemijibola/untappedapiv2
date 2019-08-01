@@ -106,7 +106,7 @@ class ApplicationBusiness implements IApplicationBusiness {
       if (!application)
         return Result.fail<IApplication>(
           404,
-          `Could not update Application.Application of Id ${id} not found`
+          `Could not update Application.Application with Id ${id} not found`
         );
       const updateObj = await this._applicationRepository.update(
         application._id,

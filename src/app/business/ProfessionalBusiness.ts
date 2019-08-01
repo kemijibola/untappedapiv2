@@ -64,7 +64,7 @@ class ProfessionalBusiness implements IProfessionalBusiness {
       if (!professional)
         return Result.fail<IProfessional>(
           404,
-          `Could not update professional.Professional of Id ${id} not found`
+          `Could not update professional.Professional with Id ${id} not found`
         );
       const updateObj = await this._professionalRepository.update(
         professional._id,

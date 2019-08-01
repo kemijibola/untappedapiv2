@@ -26,7 +26,6 @@ var professionalSchema = new mongoose_1.Schema({
         }
     ],
     socialMedias: [{ type: socialMediaSchema }],
-    profileImagePath: { type: String },
     bannerImagePath: { type: String },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,

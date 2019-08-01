@@ -139,7 +139,7 @@ var AudioBusiness = /** @class */ (function () {
                     case 1:
                         audio = _a.sent();
                         if (!audio)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update audio.Audio of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update audio.Audio with Id " + id + " not found")];
                         return [4 /*yield*/, this._audioRepository.update(audio._id, item)];
                     case 2:
                         updateObj = _a.sent();

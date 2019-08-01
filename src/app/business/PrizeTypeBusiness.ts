@@ -58,7 +58,7 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
       if (!prizeType)
         return Result.fail<IPrizeType>(
           404,
-          `Could not update prize type.Prize type of Id ${id} not found`
+          `Could not update prize type.Prize type with Id ${id} not found`
         );
       const updateObj = await this._prizeTypeRepository.update(
         prizeType._id,

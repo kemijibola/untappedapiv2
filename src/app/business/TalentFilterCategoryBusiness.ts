@@ -77,7 +77,7 @@ class TalentFilterCategoryBusiness implements ITalentFilterCategoryBusiness {
       if (!talentFilterCategory)
         return Result.fail<ITalentFilterCategory>(
           404,
-          `Could not update talent filter category.Talent filter category of Id ${id} not found`
+          `Could not update talent filter category.Talent filter category with Id ${id} not found`
         );
       const updateObj = await this._talentFilterCategoryRepository.update(
         talentFilterCategory._id,

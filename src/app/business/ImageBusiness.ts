@@ -56,7 +56,7 @@ class ImageBusiness implements IImageBusiness {
       if (!image)
         return Result.fail<IImage>(
           404,
-          `Could not update image.Image of Id ${id} not found`
+          `Could not update image.Image with Id ${id} not found`
         );
       const updateObj = await this._imageRepository.update(image._id, item);
       return Result.ok<IImage>(200, updateObj);

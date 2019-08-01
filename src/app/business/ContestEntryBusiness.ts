@@ -67,7 +67,7 @@ class ContestBusiness implements IContestEntryBusiness {
       if (!contestEntry)
         return Result.fail<IContestEntry>(
           404,
-          `Could not update approval.Approval of Id ${id} not found`
+          `Could not update contest entry.Contest entry with Id ${id} not found`
         );
       const updateObj = await this._contestEntryRepository.update(
         contestEntry._id,

@@ -374,9 +374,50 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
+    UserBusiness.prototype.patch = function (id, item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, updateObj, refinedUser, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update user.User with Id " + id + " not found")];
+                        return [4 /*yield*/, this._userRepository.update(user._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        refinedUser = {
+                            _id: updateObj._id,
+                            email: updateObj.email,
+                            name: updateObj.username,
+                            profileImagePath: updateObj.profileImagePath,
+                            isEmailConfirmed: updateObj.isEmailConfirmed,
+                            isPhoneConfirmed: updateObj.isPhoneConfirmed,
+                            isProfileCompleted: updateObj.isProfileCompleted,
+                            generalNotification: updateObj.generalNotification,
+                            emailNotification: updateObj.emailNotification,
+                            profileVisibility: updateObj.profileVisibility,
+                            loginCount: updateObj.loginCount,
+                            status: [updateObj.status],
+                            roles: updateObj.roles,
+                            lastLogin: updateObj.lastLogin,
+                            createdAt: updateObj.createdAt
+                        };
+                        return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
+                    case 3:
+                        err_8 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_8.message);
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_8;
+            var isDeleted, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -386,8 +427,8 @@ var UserBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_8 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_8.message);
+                        err_9 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_9.message);
                     case 3: return [2 /*return*/];
                 }
             });

@@ -1,4 +1,4 @@
-import { Bucket } from './../../app/models/interfaces/custom/Bucket';
+import { S3Params } from './../../app/models/interfaces/custom/Bucket';
 import * as AWS from 'aws-sdk';
 import { IStorage } from './base/Storage';
 import { GetObjectRequest } from 'aws-sdk/clients/s3';
@@ -8,13 +8,13 @@ export interface FetchParams {
   Key: string;
 }
 
-class AwsStorage implements IStorage {
+class AwsStorage {
   private s3: AWS.S3;
   private objParams: GetObjectRequest = {
     Bucket: '',
     Key: ''
   };
-  constructor(private bucket: Bucket) {
+  constructor(private bucket: S3Params) {
     AWS.config.update({
       region: bucket.region
     });
@@ -24,18 +24,18 @@ class AwsStorage implements IStorage {
     });
   }
 
-  static setup(config: Bucket): AwsStorage {
+  static setup(config: S3Params): AwsStorage {
     return new AwsStorage(config);
   }
 
   // change this to substitute real types
-  fetch<Bucket>(params: Bucket): Promise<string> {
+  fetch<Bucket>(params: S3Params): Promise<string> {
     this.objParams = Object.assign(this.objParams, params);
     return new Promise((resolve, reject) => {
-      this.s3.getObject(this.objParams, function(err: any, data: any) {
-        if (err) reject(err);
-        resolve(data.Body);
-      });
+      // this.s3.getObject(this.objParams, function(err: any, data: any) {
+      //   if (err) reject(err);
+      //   resolve(data.Body);
+      // });
     });
   }
 

@@ -145,7 +145,7 @@ var ResourceBusiness = /** @class */ (function () {
                     case 1:
                         resource = _a.sent();
                         if (!resource)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update resource.Resource of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update resource.Resource with Id " + id + " not found")];
                         return [4 /*yield*/, this._resourceRepository.update(resource._id, item)];
                     case 2:
                         updateObj = _a.sent();

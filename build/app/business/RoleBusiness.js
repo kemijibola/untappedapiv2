@@ -161,7 +161,7 @@ var RoleBusiness = /** @class */ (function () {
                     case 1:
                         role = _a.sent();
                         if (!role)
-                            return [2 /*return*/, Result_1.Result.fail(500, "Could not update approval.Approval of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(500, "Could not update role.Role with Id " + id + " not found")];
                         return [4 /*yield*/, this._roleRepository.update(role._id, item)];
                     case 2:
                         updateObj = _a.sent();

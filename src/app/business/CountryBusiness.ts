@@ -55,7 +55,7 @@ class CountryBusiness implements ICountryBusiness {
       if (!country)
         return Result.fail<ICountry>(
           404,
-          `Could not update country.Country of Id ${id} not found`
+          `Could not update country.Country with Id ${id} not found`
         );
       const updateObj = await this._countryRepository.update(country._id, item);
       return Result.ok<ICountry>(200, updateObj);

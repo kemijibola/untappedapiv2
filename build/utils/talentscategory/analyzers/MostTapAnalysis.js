@@ -17,7 +17,8 @@ var MostTapAnalysis = /** @class */ (function () {
             var filtered = {
                 userId: talent.user,
                 stageName: talent.stageName,
-                profileImage: talent.profileImagePath || '',
+                // profileImage: talent.profileImagePath || '',
+                profileImage: '',
                 shortBio: talent.shortBio
             };
             sortedCategory.result = sortedCategory.result.concat([filtered]);

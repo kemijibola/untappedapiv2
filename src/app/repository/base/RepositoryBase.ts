@@ -29,8 +29,23 @@ class RepositoryBase<T extends mongoose.Document>
   }
 
   update(_id: mongoose.Types.ObjectId, item: T): Promise<T> {
+    const options = { new: true };
     return new Promise((resolve, reject) => {
-      this._model.update({ _id: _id }, item, (error: any, result: any) => {
+      this._model.findByIdAndUpdate(
+        { _id: _id },
+        item,
+        options,
+        (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+    });
+  }
+
+  updateMany(_ids: mongoose.Types.ObjectId[], item: T): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this._model.updateMany({ _id: _ids }, item, (error: any, result: any) => {
         if (error) reject(error);
         else resolve(result);
       });

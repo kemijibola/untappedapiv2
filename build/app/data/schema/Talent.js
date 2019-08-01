@@ -31,7 +31,6 @@ var talentSchema = new mongoose_1.Schema({
         }
     ],
     socialMedias: [{ type: exports.socialMediaSchema }],
-    profileImagePath: { type: String },
     physicalStats: { type: physicalStatisticsSchema },
     tapCount: { type: Number, default: 0 },
     application: {

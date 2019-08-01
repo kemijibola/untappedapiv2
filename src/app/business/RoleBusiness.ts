@@ -76,7 +76,7 @@ class RoleBusiness implements IRoleBusiness {
       if (!role)
         return Result.fail<IRole>(
           500,
-          `Could not update approval.Approval of Id ${id} not found`
+          `Could not update role.Role with Id ${id} not found`
         );
       const updateObj = await this._roleRepository.update(role._id, item);
       return Result.ok<IRole>(200, updateObj);

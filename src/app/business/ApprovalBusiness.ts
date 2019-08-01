@@ -56,7 +56,7 @@ class ApprovalBusiness implements IApprovalBusiness {
       if (!approval)
         return Result.fail<IApproval>(
           404,
-          `Could not update approval.Approval of Id ${id} not found`
+          `Could not update approval.Approval with Id ${id} not found`
         );
       const updateObj = await this._approvalRepository.update(
         approval._id,

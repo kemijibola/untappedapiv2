@@ -66,7 +66,7 @@ class IssueCategoryBusiness implements IIssueCategoryBusiness {
       if (!gig)
         return Result.fail<IIssueCategory>(
           404,
-          `Could not update issue category.Issue category of Id ${id} not found`
+          `Could not update issue category.Issue category with Id ${id} not found`
         );
       const updateObj = await this._issueCategoryRepository.update(
         gig._id,

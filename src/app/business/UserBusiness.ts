@@ -308,6 +308,39 @@ class UserBusiness implements IUserBusiness {
     }
   }
 
+  async patch(id: string, item: any): Promise<Result<UserViewModel>> {
+    try {
+      const user = await this._userRepository.findById(id);
+      if (!user)
+        return Result.fail<UserViewModel>(
+          404,
+          `Could not update user.User with Id ${id} not found`
+        );
+      const updateObj = await this._userRepository.update(user._id, item);
+      // console.log(updateObj.);
+      let refinedUser: UserViewModel = {
+        _id: updateObj._id,
+        email: updateObj.email,
+        name: updateObj.username,
+        profileImagePath: updateObj.profileImagePath,
+        isEmailConfirmed: updateObj.isEmailConfirmed,
+        isPhoneConfirmed: updateObj.isPhoneConfirmed,
+        isProfileCompleted: updateObj.isProfileCompleted,
+        generalNotification: updateObj.generalNotification,
+        emailNotification: updateObj.emailNotification,
+        profileVisibility: updateObj.profileVisibility,
+        loginCount: updateObj.loginCount,
+        status: [updateObj.status],
+        roles: updateObj.roles,
+        lastLogin: updateObj.lastLogin,
+        createdAt: updateObj.createdAt
+      };
+      return Result.ok<UserViewModel>(200, refinedUser);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
   async delete(id: string): Promise<Result<boolean>> {
     try {
       const isDeleted = await this._userRepository.delete(id);

@@ -140,7 +140,7 @@ var ApprovalBusiness = /** @class */ (function () {
                     case 1:
                         approval = _a.sent();
                         if (!approval)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval with Id " + id + " not found")];
                         return [4 /*yield*/, this._approvalRepository.update(approval._id, item)];
                     case 2:
                         updateObj = _a.sent();

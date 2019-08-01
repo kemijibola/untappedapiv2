@@ -1,3 +1,5 @@
+import { ObjectKeyString } from './Helper';
+
 export const audioExtentions: string[] = [
   'mp3',
   '3gp',
@@ -42,3 +44,17 @@ export const imageExtensions: string[] = [
   'heif',
   'bpg'
 ];
+
+export const AcceptedMedias: ObjectKeyString = {
+  png: 'image',
+  jpeg: 'image',
+  gif: 'image',
+  svg: 'image',
+  mp4: 'audio',
+  mpeg: 'video',
+  avi: 'video',
+  flv: 'video',
+  mp3: 'audio',
+  wma: 'audio',
+  '3gp': 'video'
+};

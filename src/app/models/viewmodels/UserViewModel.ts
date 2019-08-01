@@ -1,9 +1,10 @@
 import { IUserAccountStatus } from '../interfaces';
 
 export interface UserViewModel {
-  _id: string;
+  _id?: string;
   email: string;
   name: string;
+  profileImagePath?: string;
   isEmailConfirmed: boolean;
   isPhoneConfirmed: boolean;
   isProfileCompleted: boolean;

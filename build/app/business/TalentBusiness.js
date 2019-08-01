@@ -138,7 +138,7 @@ var TalentBusiness = /** @class */ (function () {
                     case 1:
                         talent = _a.sent();
                         if (!talent)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update talent.Talent of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update talent.Talent with Id " + id + " not found")];
                         return [4 /*yield*/, this._talentRepository.update(talent._id, item)];
                     case 2:
                         updateObj = _a.sent();

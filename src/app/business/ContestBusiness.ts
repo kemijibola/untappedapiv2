@@ -90,7 +90,7 @@ class ContestBusiness implements IContestBusiness {
       if (!contest)
         return Result.fail<IContest>(
           404,
-          `Could not update approval.Approval of Id ${id} not found`
+          `Could not update contest.Contest with Id ${id} not found`
         );
 
       return Result.ok<IContest>(200, contest);

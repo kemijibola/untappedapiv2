@@ -145,7 +145,7 @@ var CategoryBusiness = /** @class */ (function () {
                     case 1:
                         category = _a.sent();
                         if (!category)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update category.Category with Id " + id + " not found")];
                         return [4 /*yield*/, this._categoryRepository.update(category._id, item)];
                     case 2:
                         updateObj = _a.sent();

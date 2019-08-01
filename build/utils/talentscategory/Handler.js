@@ -41,21 +41,22 @@ var MatchData_1 = require("./Helper/MatchData");
 exports.fetchTalentsByCategory = function (event, context, cb) {
     if (event === void 0) { event = {}; }
     return __awaiter(_this, void 0, void 0, function () {
-        var talentPortfolio, talents;
+        var talentPortfolio, talents, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    _a.trys.push([0, 2, , 3]);
                     talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp('');
                     return [4 /*yield*/, talentPortfolio.fetchTalents({})];
                 case 1:
                     talents = _a.sent();
                     MatchData_1.generateTalentReport(talents);
-                    try {
-                    }
-                    catch (err) {
-                        console.log(err);
-                    }
-                    return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    console.log(err_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     });

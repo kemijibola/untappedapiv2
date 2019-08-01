@@ -138,7 +138,7 @@ var CountryBusiness = /** @class */ (function () {
                     case 1:
                         country = _a.sent();
                         if (!country)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update country.Country of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update country.Country with Id " + id + " not found")];
                         return [4 /*yield*/, this._countryRepository.update(country._id, item)];
                     case 2:
                         updateObj = _a.sent();

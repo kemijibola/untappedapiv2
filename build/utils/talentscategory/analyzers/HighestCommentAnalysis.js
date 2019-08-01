@@ -87,7 +87,8 @@ var HighestCommentAnalysis = /** @class */ (function () {
             var filtered = {
                 userId: talentMediaComment.talent._id,
                 stageName: talentMediaComment.talent.stageName,
-                profileImage: talentMediaComment.talent.profileImagePath || '',
+                // profileImage: talentMediaComment.talent.profileImagePath || '',
+                profileImage: '',
                 shortBio: talentMediaComment.talent.shortBio
             };
             sortedCategory.result = sortedCategory.result.concat([filtered]);

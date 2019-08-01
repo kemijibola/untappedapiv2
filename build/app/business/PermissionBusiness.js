@@ -146,7 +146,7 @@ var PermissionBusiness = /** @class */ (function () {
                     case 1:
                         permission = _a.sent();
                         if (!permission)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update permission.Permission of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update permission.Permission with Id " + id + " not found")];
                         return [4 /*yield*/, this._permissionRepository.update(permission._id, item)];
                     case 2:
                         updateObj = _a.sent();

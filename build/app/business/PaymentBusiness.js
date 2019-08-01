@@ -139,7 +139,7 @@ var PaymentBusiness = /** @class */ (function () {
                     case 1:
                         payment = _a.sent();
                         if (!payment)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update payment.Payment of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update payment.Payment with Id " + id + " not found")];
                         return [4 /*yield*/, this._paymentRepository.update(payment._id, item)];
                     case 2:
                         updateObj = _a.sent();

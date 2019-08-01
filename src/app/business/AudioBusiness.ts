@@ -56,7 +56,7 @@ class AudioBusiness implements IAudioBusiness {
       if (!audio)
         return Result.fail<IAudio>(
           404,
-          `Could not update audio.Audio of Id ${id} not found`
+          `Could not update audio.Audio with Id ${id} not found`
         );
       const updateObj = await this._audioRepository.update(audio._id, item);
       return Result.ok<IAudio>(200, updateObj);

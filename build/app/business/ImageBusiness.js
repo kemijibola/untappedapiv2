@@ -139,7 +139,7 @@ var ImageBusiness = /** @class */ (function () {
                     case 1:
                         image = _a.sent();
                         if (!image)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update image.Image of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update image.Image with Id " + id + " not found")];
                         return [4 /*yield*/, this._imageRepository.update(image._id, item)];
                     case 2:
                         updateObj = _a.sent();

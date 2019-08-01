@@ -48,7 +48,6 @@ var Sender_1 = require("./aws/Sender");
 var AWS = __importStar(require("aws-sdk"));
 var lib_1 = require("../lib");
 AWS.config.update({ region: 'us-east-1' });
-var awsSes = new AWS.SES();
 var mailParams = {
     receivers: [],
     subject: '',

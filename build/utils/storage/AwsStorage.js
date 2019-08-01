@@ -28,14 +28,12 @@ var AwsStorage = /** @class */ (function () {
     };
     // change this to substitute real types
     AwsStorage.prototype.fetch = function (params) {
-        var _this = this;
         this.objParams = Object.assign(this.objParams, params);
         return new Promise(function (resolve, reject) {
-            _this.s3.getObject(_this.objParams, function (err, data) {
-                if (err)
-                    reject(err);
-                resolve(data.Body);
-            });
+            // this.s3.getObject(this.objParams, function(err: any, data: any) {
+            //   if (err) reject(err);
+            //   resolve(data.Body);
+            // });
         });
     };
     AwsStorage.prototype.put = function () { };

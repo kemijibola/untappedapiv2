@@ -31,6 +31,5 @@ export interface ITalent extends ITimeStamp, IAppSpec, mongoose.Document {
   shortBio: string;
   categories: ICategory['_id'][];
   socialMedias?: IUserSocialMedia[];
-  profileImagePath?: string;
   physicalStats: IPhysicalStatistics;
 }

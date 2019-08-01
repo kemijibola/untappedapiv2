@@ -138,7 +138,7 @@ var DomainBusiness = /** @class */ (function () {
                     case 1:
                         domain = _a.sent();
                         if (!domain)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update domain.Domain of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update domain.Domain with Id " + id + " not found")];
                         return [4 /*yield*/, this._domainRepository.update(domain._id, item)];
                     case 2:
                         updateObj = _a.sent();

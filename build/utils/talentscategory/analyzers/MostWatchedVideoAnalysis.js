@@ -40,7 +40,8 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
             var filtered = {
                 userId: talentVideoComment.talent._id,
                 stageName: talentVideoComment.talent.stageName,
-                profileImage: talentVideoComment.talent.profileImagePath || '',
+                // profileImage: talentVideoComment.talent.profileImagePath || '',
+                profileImage: '',
                 shortBio: talentVideoComment.talent.shortBio
             };
             sortedCategory.result = sortedCategory.result.concat([filtered]);

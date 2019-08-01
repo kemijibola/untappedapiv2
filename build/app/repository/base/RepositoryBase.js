@@ -28,8 +28,20 @@ var RepositoryBase = /** @class */ (function () {
     };
     RepositoryBase.prototype.update = function (_id, item) {
         var _this = this;
+        var options = { new: true };
         return new Promise(function (resolve, reject) {
-            _this._model.update({ _id: _id }, item, function (error, result) {
+            _this._model.findByIdAndUpdate({ _id: _id }, item, options, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
+    RepositoryBase.prototype.updateMany = function (_ids, item) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.updateMany({ _id: _ids }, item, function (error, result) {
                 if (error)
                     reject(error);
                 else

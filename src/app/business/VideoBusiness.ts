@@ -56,7 +56,7 @@ class VideoBusiness implements IVideoBusiness {
       if (!video)
         return Result.fail<IVideo>(
           404,
-          `Could not update video.Video of Id ${id} not found`
+          `Could not update video.Video with Id ${id} not found`
         );
       const updateObj = await this._videoRepository.update(video._id, item);
       return Result.ok<IVideo>(200, updateObj);

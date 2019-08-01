@@ -160,7 +160,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update approval.Approval of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contest)];
                     case 2:
                         err_5 = _a.sent();

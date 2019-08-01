@@ -6,7 +6,6 @@ import * as AWS from 'aws-sdk';
 import { escapeJSON } from '../lib';
 AWS.config.update({ region: 'us-east-1' });
 
-const awsSes = new AWS.SES();
 
 let mailParams: IEmail = {
   receivers: [],

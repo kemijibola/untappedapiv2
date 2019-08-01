@@ -55,7 +55,7 @@ class TalentBusiness implements ITalentBusiness {
       if (!talent)
         return Result.fail<ITalent>(
           404,
-          `Could not update talent.Talent of Id ${id} not found`
+          `Could not update talent.Talent with Id ${id} not found`
         );
       const updateObj = await this._talentRepository.update(talent._id, item);
       return Result.ok<ITalent>(200, updateObj);

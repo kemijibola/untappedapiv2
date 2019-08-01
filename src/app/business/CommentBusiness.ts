@@ -55,7 +55,7 @@ class CommentBusiness implements ICommentBusiness {
       if (!comment)
         return Result.fail<IComment>(
           404,
-          `Could not update comment.Comment of Id ${id} not found`
+          `Could not update comment.Comment with Id ${id} not found`
         );
       const updateObj = await this._commentRepository.update(comment._id, item);
       return Result.ok<IComment>(200, updateObj);

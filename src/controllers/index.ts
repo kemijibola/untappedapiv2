@@ -6,3 +6,4 @@ export * from './PermissionController';
 export * from './ResourcePermissionController';
 export * from './ApplicationController';
 export * from './UserController';
+export * from './UploadController';

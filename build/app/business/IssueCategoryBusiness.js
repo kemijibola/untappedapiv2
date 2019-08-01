@@ -138,7 +138,7 @@ var IssueCategoryBusiness = /** @class */ (function () {
                     case 1:
                         gig = _a.sent();
                         if (!gig)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update issue category.Issue category of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update issue category.Issue category with Id " + id + " not found")];
                         return [4 /*yield*/, this._issueCategoryRepository.update(gig._id, item)];
                     case 2:
                         updateObj = _a.sent();

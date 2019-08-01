@@ -138,7 +138,7 @@ var ProfessionalBusiness = /** @class */ (function () {
                     case 1:
                         professional = _a.sent();
                         if (!professional)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update professional.Professional of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update professional.Professional with Id " + id + " not found")];
                         return [4 /*yield*/, this._professionalRepository.update(professional._id, item)];
                     case 2:
                         updateObj = _a.sent();

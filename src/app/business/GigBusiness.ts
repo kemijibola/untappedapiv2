@@ -54,7 +54,7 @@ class GigBusiness implements IGigBusiness {
       if (!gig)
         return Result.fail<IGig>(
           404,
-          `Could not update gig.Gig of Id ${id} not found`
+          `Could not update gig.Gig with Id ${id} not found`
         );
       const updateObj = await this._gigRepository.update(gig._id, item);
       return Result.ok<IGig>(200, updateObj);

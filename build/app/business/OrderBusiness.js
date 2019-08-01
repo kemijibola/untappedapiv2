@@ -139,7 +139,7 @@ var OrderBusiness = /** @class */ (function () {
                     case 1:
                         order = _a.sent();
                         if (!order)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update order.Order of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update order.Order with Id " + id + " not found")];
                         return [4 /*yield*/, this._orderRepository.update(order._id, item)];
                     case 2:
                         updateObj = _a.sent();

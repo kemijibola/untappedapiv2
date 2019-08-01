@@ -86,12 +86,52 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.patch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, user, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness();
+                        user = '5d39c97b432a2e5fd0484375';
+                        console.log('got here');
+                        return [4 /*yield*/, userBusiness.patch(user, req.body)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_2
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get('/'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.patch('/:id'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "patch", null);
     UserController = __decorate([
         decorators_1.controller('/v1/users')
     ], UserController);

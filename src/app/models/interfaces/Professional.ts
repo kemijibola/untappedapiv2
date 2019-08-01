@@ -14,6 +14,5 @@ export interface IProfessional extends ITimeStamp, IAppSpec, mongoose.Document {
   shortBio: string;
   categories: ICategory['_id'][];
   socialMedias: IUserSocialMedia[];
-  profileImagePath?: string;
   bannerImagePath?: string;
 }

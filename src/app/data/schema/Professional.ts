@@ -28,7 +28,6 @@ const professionalSchema: Schema = new Schema(
       }
     ],
     socialMedias: [{ type: socialMediaSchema }],
-    profileImagePath: { type: String },
     bannerImagePath: { type: String },
     application: {
       type: Schema.Types.ObjectId,

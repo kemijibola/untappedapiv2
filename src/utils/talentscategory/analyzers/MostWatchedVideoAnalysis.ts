@@ -49,7 +49,8 @@ export class MostWatchedVideoAnalysis implements Analyzer {
       const filtered: IFilterCategory = {
         userId: talentVideoComment.talent._id,
         stageName: talentVideoComment.talent.stageName,
-        profileImage: talentVideoComment.talent.profileImagePath || '',
+        // profileImage: talentVideoComment.talent.profileImagePath || '',
+        profileImage: '',
         shortBio: talentVideoComment.talent.shortBio
       };
       sortedCategory.result = [...sortedCategory.result, filtered];

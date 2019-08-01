@@ -16,6 +16,7 @@ const userSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
@@ -33,7 +34,6 @@ const userSchema: Schema = new Schema(
         required: true
       }
     ],
-    profileImage: { type: String },
     lastLogin: { type: Date },
     application: {
       type: Schema.Types.ObjectId,

@@ -139,7 +139,7 @@ var VideoBusiness = /** @class */ (function () {
                     case 1:
                         video = _a.sent();
                         if (!video)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update video.Video of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update video.Video with Id " + id + " not found")];
                         return [4 /*yield*/, this._videoRepository.update(video._id, item)];
                     case 2:
                         updateObj = _a.sent();

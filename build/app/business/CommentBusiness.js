@@ -138,7 +138,7 @@ var CommentBusiness = /** @class */ (function () {
                     case 1:
                         comment = _a.sent();
                         if (!comment)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update comment.Comment of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update comment.Comment with Id " + id + " not found")];
                         return [4 /*yield*/, this._commentRepository.update(comment._id, item)];
                     case 2:
                         updateObj = _a.sent();

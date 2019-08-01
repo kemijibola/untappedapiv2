@@ -56,7 +56,7 @@ class PaymentBusiness implements IPaymentBusiness {
       if (!payment)
         return Result.fail<IPayment>(
           404,
-          `Could not update payment.Payment of Id ${id} not found`
+          `Could not update payment.Payment with Id ${id} not found`
         );
       const updateObj = await this._paymentRepository.update(payment._id, item);
       return Result.ok<IPayment>(200, updateObj);

@@ -127,7 +127,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
       if (!resourcePermission._id)
         return Result.fail<IResourcePermission>(
           404,
-          `Could not update resource permission.Resource permission of Id ${id} not found`
+          `Could not update resource permission.Resource permission with Id ${id} not found`
         );
       const updateObj = await this._resourcePermissionRepository.update(
         resourcePermission._id,

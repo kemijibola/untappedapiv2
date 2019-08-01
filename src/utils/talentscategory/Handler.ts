@@ -11,11 +11,11 @@ export const fetchTalentsByCategory: Handler = async (
   context: Context,
   cb: Callback
 ): Promise<any> => {
-  // fetch talents for processing
-  const talentPortfolio = TalentPortfolio.setUp('');
-  const talents = await talentPortfolio.fetchTalents({});
-  generateTalentReport(talents);
   try {
+    // fetch talents for processing
+    const talentPortfolio = TalentPortfolio.setUp('');
+    const talents = await talentPortfolio.fetchTalents({});
+    generateTalentReport(talents);
   } catch (err) {
     console.log(err);
   }

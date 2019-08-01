@@ -52,6 +52,7 @@ var userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
@@ -69,7 +70,6 @@ var userSchema = new mongoose_1.Schema({
             required: true
         }
     ],
-    profileImage: { type: String },
     lastLogin: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,

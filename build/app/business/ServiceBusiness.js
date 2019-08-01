@@ -139,7 +139,7 @@ var ServiceBusiness = /** @class */ (function () {
                     case 1:
                         service = _a.sent();
                         if (!service)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update service.Service of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update service.Service with Id " + id + " not found")];
                         return [4 /*yield*/, this._serviceRepository.update(service._id, item)];
                     case 2:
                         updateObj = _a.sent();

@@ -73,7 +73,7 @@ class PermissionBusiness implements IPermissionBusiness {
       if (!permission)
         return Result.fail<IPermission>(
           404,
-          `Could not update permission.Permission of Id ${id} not found`
+          `Could not update permission.Permission with Id ${id} not found`
         );
       const updateObj = await this._permissionRepository.update(
         permission._id,

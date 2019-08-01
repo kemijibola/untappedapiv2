@@ -56,7 +56,7 @@ class OrderBusiness implements IOrderBusiness {
       if (!order)
         return Result.fail<IOrder>(
           404,
-          `Could not update order.Order of Id ${id} not found`
+          `Could not update order.Order with Id ${id} not found`
         );
       const updateObj = await this._orderRepository.update(order._id, item);
       return Result.ok<IOrder>(200, updateObj);

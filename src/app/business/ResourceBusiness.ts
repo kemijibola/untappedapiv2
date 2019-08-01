@@ -64,7 +64,7 @@ class ResourceBusiness implements IResourceBusiness {
       if (!resource)
         return Result.fail<IResource>(
           404,
-          `Could not update resource.Resource of Id ${id} not found`
+          `Could not update resource.Resource with Id ${id} not found`
         );
       const updateObj = await this._resourceRepository.update(
         resource._id,

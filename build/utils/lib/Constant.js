@@ -44,4 +44,17 @@ exports.imageExtensions = [
     'heif',
     'bpg'
 ];
+exports.AcceptedMedias = {
+    png: 'image',
+    jpeg: 'image',
+    gif: 'image',
+    svg: 'image',
+    mp4: 'audio',
+    mpeg: 'video',
+    avi: 'video',
+    flv: 'video',
+    mp3: 'audio',
+    wma: 'audio',
+    '3gp': 'video'
+};
 //# sourceMappingURL=Constant.js.map

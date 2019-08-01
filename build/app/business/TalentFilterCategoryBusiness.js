@@ -138,7 +138,7 @@ var TalentFilterCategoryBusiness = /** @class */ (function () {
                     case 1:
                         talentFilterCategory = _a.sent();
                         if (!talentFilterCategory)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update talent filter category.Talent filter category of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update talent filter category.Talent filter category with Id " + id + " not found")];
                         return [4 /*yield*/, this._talentFilterCategoryRepository.update(talentFilterCategory._id, item)];
                     case 2:
                         updateObj = _a.sent();

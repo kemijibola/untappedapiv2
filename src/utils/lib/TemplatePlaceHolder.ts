@@ -11,15 +11,6 @@ export enum PlaceHolderKey {
   PlatformUrl = '[PlatformUrl]',
   VerificationUrl = '[VerificationUrl]'
 }
-// export enum PlaceHolderKey {
-//     Twitter = '[Twitter]'
-//   _____Twitter_____ = '_____Twitter_____',
-//   _____Facebook_____ = '_____Facebook_____',
-//   _____Instagram_____ = '_____Instagram_____',
-//   _____Name_____ = '_____Name_____',
-//   _____PlatformUrl_____ = '_____PlatformUrl_____',
-//   _____VerificationUrl_____ = '_____VerificationUrl_____'
-// }
 
 export interface TemplateKeyValue {
   key: PlaceHolderKey;

@@ -14,12 +14,14 @@ import mongoose from 'mongoose';
 import { Result } from '../Result';
 import { WelcomeEmail } from '../emailtemplates';
 
+export type ObjectKeyString = { [x: string]: string };
+
 export interface IExchangeToken {
   destinationUrl: string;
   roles: string[];
 }
 
-let chunkedUserPermissons: { [x: string]: string } = {};
+let chunkedUserPermissons: ObjectKeyString = {};
 
 export const getPrivateKey: (keyId: string) => string = (
   keyId: string

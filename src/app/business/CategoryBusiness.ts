@@ -2,7 +2,6 @@ import CategoryRepository from '../repository/CategoryRepository';
 import ICategoryBusiness = require('./interfaces/CategoryBusiness');
 import { ICategory } from '../models/interfaces';
 import { Result } from '../../utils/Result';
-import { PlatformError } from '../../utils/error';
 
 class CategoryBusiness implements ICategoryBusiness {
   private _categoryRepository: CategoryRepository;
@@ -65,7 +64,7 @@ class CategoryBusiness implements ICategoryBusiness {
       if (!category)
         return Result.fail<ICategory>(
           404,
-          `Could not update approval.Approval of Id ${id} not found`
+          `Could not update category.Category with Id ${id} not found`
         );
       const updateObj = await this._categoryRepository.update(
         category._id,
