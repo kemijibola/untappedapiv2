@@ -47,24 +47,16 @@ var Upload_1 = require("../Helper/Upload");
 var lib_1 = require("../../lib");
 var uuid = require("uuid");
 var Result_1 = require("../../Result");
+var config = module.require('../../../config/keys');
+// import * as cloudConfig from '../../../config/cloudConfig.json';
 var S3Storage = /** @class */ (function () {
     function S3Storage() {
-        this.configParams = {
-            region: '',
-            accessKeyId: '',
-            secretAccessKey: '',
-            Bucket: ''
-            // region: cloudConfig['app-bucket'].region,
-            // accessKeyId: cloudConfig['app-bucket'].access_key_id,
-            // secretAccessKey: cloudConfig['app-bucket'].secret_access_key,
-            // Bucket: cloudConfig['app-bucket'].bucket
-        };
         AWS.config.update({
-            region: this.configParams.region
+            region: config.APP_BUCKET.region
         });
         this.s3 = new AWS.S3({
-            accessKeyId: this.configParams.accessKeyId,
-            secretAccessKey: this.configParams.secretAccessKey,
+            accessKeyId: config.APP_BUCKET.access_key_id,
+            secretAccessKey: config.APP_BUCKET.secret_access_key,
             useAccelerateEndpoint: true
         });
     }
@@ -108,7 +100,7 @@ var S3Storage = /** @class */ (function () {
                         if (!(_i < _a.length)) return [3 /*break*/, 5];
                         item = _a[_i];
                         return [4 /*yield*/, this.s3.getSignedUrl('putObject', {
-                                Bucket: this.configParams.Bucket,
+                                Bucket: config.APP_BUCKET.bucket,
                                 Key: filesMap[item],
                                 Expires: signedUrlExpireSeconds,
                                 ACL: 'bucket-owner-full-control',

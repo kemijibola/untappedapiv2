@@ -18,8 +18,32 @@ export interface AppConfig {
   ISSUER: string;
   AUTH_EXPIRESIN: string;
   MAIL_EXPIRESIN: string;
+  APP_BUCKET: AppBucket;
+  SCHEDULED_EMAIL_SQS: ScheduledEmailSQS;
+  SERVERLESS: Serverless;
 }
 
+export interface AppBucket {
+  bucket: string;
+  access_key_id: string;
+  secret_access_key: string;
+  region: string;
+  bucketUrl: string;
+}
+export interface ScheduledEmailSQS {
+  accessKey: string;
+  access_key_id: string;
+  secret_access_key: string;
+  version: string;
+  accountId: number;
+  url: string;
+  queueName: string;
+}
+
+export interface Serverless {
+  access_key_id: string;
+  secret_access_key: string;
+}
 export interface SqsConfig {
   version: string;
   region: string;

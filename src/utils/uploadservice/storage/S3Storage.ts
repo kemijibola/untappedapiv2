@@ -11,30 +11,20 @@ import { S3Params } from '../../../app/models/interfaces/custom/Bucket';
 import { AcceptedMedias, ObjectKeyString } from '../../lib';
 import uuid = require('uuid');
 import { Result } from '../../Result';
-import * as cloudConfig from '../../../config/cloudConfig.json';
+import { AppConfig } from '../../../app/models/interfaces/custom/AppConfig';
+const config: AppConfig = module.require('../../../config/keys');
+// import * as cloudConfig from '../../../config/cloudConfig.json';
 
 export class S3Storage implements Storage {
   private s3: AWS.S3;
 
-  private configParams: S3Params = {
-    region: '',
-    accessKeyId: '',
-    secretAccessKey: '',
-    Bucket: ''
-
-    // region: cloudConfig['app-bucket'].region,
-    // accessKeyId: cloudConfig['app-bucket'].access_key_id,
-    // secretAccessKey: cloudConfig['app-bucket'].secret_access_key,
-    // Bucket: cloudConfig['app-bucket'].bucket
-  };
-
   constructor() {
     AWS.config.update({
-      region: this.configParams.region
+      region: config.APP_BUCKET.region
     });
     this.s3 = new AWS.S3({
-      accessKeyId: this.configParams.accessKeyId,
-      secretAccessKey: this.configParams.secretAccessKey,
+      accessKeyId: config.APP_BUCKET.access_key_id,
+      secretAccessKey: config.APP_BUCKET.secret_access_key,
       useAccelerateEndpoint: true
     });
   }
@@ -74,7 +64,7 @@ export class S3Storage implements Storage {
       try {
         for (let item in filesMap) {
           const url = await this.s3.getSignedUrl('putObject', {
-            Bucket: this.configParams.Bucket,
+            Bucket: config.APP_BUCKET.bucket,
             Key: filesMap[item],
             Expires: signedUrlExpireSeconds,
             ACL: 'bucket-owner-full-control',
