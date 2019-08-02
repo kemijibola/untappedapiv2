@@ -33,7 +33,6 @@ import {
 } from '../../utils/lib/TemplatePlaceHolder';
 
 const config: AppConfig = require('../../config/keys');
-import * as cloudConfig from '../../config/cloudConfig.json';
 import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
 import { IEmail } from '../../utils/emailservice/EmailService';
 import { addSeconds } from 'date-fns';

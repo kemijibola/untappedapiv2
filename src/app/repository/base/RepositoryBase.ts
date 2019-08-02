@@ -29,7 +29,7 @@ class RepositoryBase<T extends mongoose.Document>
   }
 
   update(_id: mongoose.Types.ObjectId, item: T): Promise<T> {
-    const options = { new: true };
+    const options = { new: true, useFindAndModify: false };
     return new Promise((resolve, reject) => {
       this._model.findByIdAndUpdate(
         { _id: _id },

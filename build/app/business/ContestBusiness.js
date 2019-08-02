@@ -117,6 +117,7 @@ var ContestBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        // TODO:: confirm categories sent by client
                         if (item.contestType === Contest_1.ContestType.OnlineOffline) {
                             if (!item.maxContestant || item.maxContestant < 3) {
                                 endDate = date_fns_1.addDays(item.startDate, item.duration);
@@ -170,9 +171,36 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.patch = function (id, item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contest, updateObj, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._contestRepository.findById(id)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
+                        // User will not be able to update Payment Status
+                        item.paymentStatus = contest.paymentStatus;
+                        return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        // console.log(updateObj.);
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 3:
+                        err_6 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_6.message);
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_6;
+            var isDeleted, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -182,8 +210,8 @@ var ContestBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
+                        err_7 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_7.message);
                     case 3: return [2 /*return*/];
                 }
             });

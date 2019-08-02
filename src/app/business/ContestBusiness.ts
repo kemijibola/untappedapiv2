@@ -44,6 +44,7 @@ class ContestBusiness implements IContestBusiness {
 
   async create(item: IContest): Promise<Result<IContest>> {
     try {
+      // TODO:: confirm categories sent by client
       if (item.contestType === ContestType.OnlineOffline) {
         if (!item.maxContestant || item.maxContestant < 3) {
           const endDate: Date = addDays(item.startDate, item.duration);
@@ -94,6 +95,24 @@ class ContestBusiness implements IContestBusiness {
         );
 
       return Result.ok<IContest>(200, contest);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async patch(id: string, item: any): Promise<Result<IContest>> {
+    try {
+      const contest = await this._contestRepository.findById(id);
+      if (!contest)
+        return Result.fail<IContest>(
+          404,
+          `Could not update contest.Contest with Id ${id} not found`
+        );
+      // User will not be able to update Payment Status
+      item.paymentStatus = contest.paymentStatus;
+      const updateObj = await this._contestRepository.update(contest._id, item);
+      // console.log(updateObj.);
+      return Result.ok<IContest>(200, updateObj);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

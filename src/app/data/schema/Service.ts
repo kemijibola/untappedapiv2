@@ -8,6 +8,10 @@ const serviceSchema: Schema = new Schema(
     name: { type: String, required: true, trim: true },
     price: { type: Number, required: true },
     description: { type: String },
+    isActivated: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
+    approvedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    approvedDate: { type: Date },
     application: {
       type: Schema.Types.ObjectId,
       ref: 'Application',

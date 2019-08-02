@@ -11,13 +11,14 @@ export interface OrderDetails {
   discountAmountApplied: number;
   totalAmount: number;
   quantity: number;
+  // purchased by user
   user: IUser['_id'];
   // the id of the item about to purchase. e.g contestId, talentId
   items: string[];
 }
 
 export interface IOrder extends ITimeStamp, IAppSpec, mongoose.Document {
-  serviceType: ServiceType;
+  // serviceType: ServiceType;
   service: IService['_id'];
   order: OrderDetails;
 }

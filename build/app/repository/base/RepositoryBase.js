@@ -28,7 +28,7 @@ var RepositoryBase = /** @class */ (function () {
     };
     RepositoryBase.prototype.update = function (_id, item) {
         var _this = this;
-        var options = { new: true };
+        var options = { new: true, useFindAndModify: false };
         return new Promise(function (resolve, reject) {
             _this._model.findByIdAndUpdate({ _id: _id }, item, options, function (error, result) {
                 if (error)

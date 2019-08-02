@@ -15,7 +15,6 @@ const orderDetailsSchema: Schema = new Schema({
 
 const orderSchema: Schema = new Schema(
   {
-    serviceType: { type: ServiceType, required: true },
     service: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
     orderNumber: { type: String },
     order: { type: orderDetailsSchema, required: true },
