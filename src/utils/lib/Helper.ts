@@ -7,12 +7,12 @@ import {
 } from '../../app/models/interfaces';
 const config: AppConfig = require('../../config/keys');
 import ResourceBusiness from '../../app/business/ResourceBusiness';
+import PermissionBusiness from '../../app/business/PermissionBusiness';
 import ResourcePermissionBusiness from '../../app/business/ResourcePermissionBusiness';
 import ApplicationBusiness from '../../app/business/ApplicationBusiness';
 import { PlatformError } from '../error';
 import mongoose from 'mongoose';
 import { Result } from '../Result';
-import { WelcomeEmail } from '../emailtemplates';
 
 export type ObjectKeyString = { [x: string]: string };
 
@@ -23,55 +23,76 @@ export interface IExchangeToken {
 
 let chunkedUserPermissons: ObjectKeyString = {};
 
-export const getPrivateKey: (keyId: string) => string = (
+export const getSecretByKey: (keyId: string) => string = (
   keyId: string
 ): string => {
-  return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
+  const secret = config.RSA_PRIVATE.filter(x => x.key === keyId)[0];
+  if (!secret) {
+    return '';
+  }
+  return secret.Secret.replace(/\\n/g, '\n');
+};
+
+export const getPublicKey: (keyId: string) => string = (
+  keyId: string
+): string => {
+  const secret = config.RSA_PUBLIC.filter(x => x.key === keyId)[0];
+  if (!secret) {
+    return '';
+  }
+  return secret.Secret.replace(/\\n/g, '\n');
 };
 
 export async function tokenExchange(
   exchangeParams: IExchangeToken
-): Promise<{ [x: string]: string }> {
+): Promise<ObjectKeyString> {
   const resourceBusiness = new ResourceBusiness();
   const resourcePermissionBusiness = new ResourcePermissionBusiness();
-  const resourceResult = await resourceBusiness.findByCriteria({
+  const result = await resourceBusiness.findByCriteria({
     name: exchangeParams.destinationUrl
   });
-  if (!resourceResult.data) {
+  if (result.error) {
     throw PlatformError.error({
-      code: resourceResult.responseCode,
-      message: `${exchangeParams.destinationUrl} is not a valid route`
+      code: result.responseCode,
+      message: result.error
     });
   }
-  const resource: IResource = resourceResult.data;
+  if (result.data) {
+    const destinationResource: IResource = result.data;
 
-  for (let role of exchangeParams.roles) {
-    const resourcePermissionResult = await resourcePermissionBusiness.findByCriteria(
-      {
+    for (let role of exchangeParams.roles) {
+      const result = await resourcePermissionBusiness.findByCriteria({
         role: role,
-        resource: resource._id
-      }
-    );
-    if (!resourcePermissionResult.data) {
-      throw PlatformError.error({
-        code: resourceResult.responseCode,
-        message: `There are no permissions configured for route ${
-          resource.name
-        }`
+        resource: destinationResource._id
       });
+      if (result.error) {
+        throw PlatformError.error({
+          code: result.responseCode,
+          message: `There are no permissions configured for route ${
+            destinationResource.name
+          }`
+        });
+      }
+      if (result.data) {
+        const resourcePermission: IResourcePermission = result.data;
+        if (resourcePermission.permissions) {
+          await chunckPermission(resourcePermission.permissions);
+        }
+      }
     }
-    const resourcePermission: IResourcePermission =
-      resourcePermissionResult.data;
-    chunckPermission(resourcePermission.permissions);
   }
+  Object.seal(chunkedUserPermissons);
   return chunkedUserPermissons;
 }
 
-function chunckPermission(permissions: IPermission[]): void {
+async function chunckPermission(permissions: string[]) {
+  const permissionBusiness = new PermissionBusiness();
   for (let item of permissions) {
-    if (!chunkedUserPermissons[item.name]) {
-      chunkedUserPermissons[item.name] = item.name;
-    }
+    const result = await permissionBusiness.findByCriteria(item);
+    if (result.data)
+      if (!chunkedUserPermissons[result.data.name]) {
+        chunkedUserPermissons[result.data.name] = result.data.name;
+      }
   }
 }
 

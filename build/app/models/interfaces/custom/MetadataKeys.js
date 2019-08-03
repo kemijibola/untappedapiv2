@@ -6,6 +6,6 @@ var MetadataKeys;
     MetadataKeys["path"] = "path";
     MetadataKeys["middleware"] = "middleware";
     MetadataKeys["validator"] = "validator";
-    MetadataKeys["requesttype"] = "requesttype";
+    MetadataKeys["authorization"] = "authorization";
 })(MetadataKeys = exports.MetadataKeys || (exports.MetadataKeys = {}));
 //# sourceMappingURL=MetadataKeys.js.map

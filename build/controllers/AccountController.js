@@ -50,24 +50,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var UserBusiness_1 = __importDefault(require("../app/business/UserBusiness"));
 var error_1 = require("../utils/error");
-function logger(req, res, next) {
-    console.log('Request was made');
-    next();
-}
+var lib_1 = require("../utils/lib");
+// export const kemi = ['email', 'password'];
+// function logger(req: Request, res: Response, next: NextFunction) {
+//   console.log('Request was made');
+//   next();
+// }
 var AuthController = /** @class */ (function () {
     function AuthController() {
     }
     AuthController.prototype.postLogin = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginParams, userBusiness, result, err_1;
+            var destinationIssuer, loginParams, userBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        destinationIssuer = "" + lib_1.issuer + req.originalUrl;
                         loginParams = {
                             email: req.body.email,
                             password: req.body.password,
                             audience: req.body.audience,
+                            issuer: destinationIssuer,
                             destinationUrl: req.url.toLowerCase()
                         };
                         userBusiness = new UserBusiness_1.default();
@@ -96,17 +100,19 @@ var AuthController = /** @class */ (function () {
     };
     AuthController.prototype.postSignup = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var signUpParams, userBusiness, result, err_2;
+            var destinationIssuer, signUpParams, userBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        destinationIssuer = "" + lib_1.issuer + req.originalUrl;
                         signUpParams = {
                             username: req.body.username,
                             email: req.body.email,
                             password: req.body.password,
                             roles: req.body.roles,
-                            audience: req.body.audience
+                            audience: req.body.audience,
+                            issuer: destinationIssuer
                         };
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.register(signUpParams)];

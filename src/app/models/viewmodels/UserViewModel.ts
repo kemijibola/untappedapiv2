@@ -3,7 +3,7 @@ import { IUserAccountStatus } from '../interfaces';
 export interface UserViewModel {
   _id?: string;
   email: string;
-  name: string;
+  fullName: string;
   profileImagePath?: string;
   isEmailConfirmed: boolean;
   isPhoneConfirmed: boolean;

@@ -9,7 +9,7 @@ export enum MediaUploadType {
 }
 export interface IMediaItem {
   path: string;
-  likes: IUser['username'][];
+  likes: IUser['fullName'][];
 }
 export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   title: string;

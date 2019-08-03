@@ -50,7 +50,7 @@ var userAccountStatusSchema = new mongoose_1.Schema({
 });
 var userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
-    username: { type: String, required: true, unique: true },
+    fullName: { type: String, required: true },
     password: { type: String, required: true },
     profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },

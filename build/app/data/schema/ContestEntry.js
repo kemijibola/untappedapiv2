@@ -15,6 +15,7 @@ var contestEntrySchema = new mongoose_1.Schema({
         required: true
     },
     submissionPath: { type: String, required: true },
+    voteCount: { type: Number, default: 0 },
     isApproved: { type: Boolean, default: false },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,

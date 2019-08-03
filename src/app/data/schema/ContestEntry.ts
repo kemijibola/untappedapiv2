@@ -16,6 +16,7 @@ const contestEntrySchema: Schema = new Schema(
       required: true
     },
     submissionPath: { type: String, required: true },
+    voteCount: { type: Number, default: 0 },
     isApproved: { type: Boolean, default: false },
     application: {
       type: Schema.Types.ObjectId,

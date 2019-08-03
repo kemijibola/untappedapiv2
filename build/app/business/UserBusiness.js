@@ -49,9 +49,15 @@ var config = require('../../config/keys');
 var ScheduleEmail_1 = require("../../utils/emailservice/ScheduleEmail");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
+        this._currentKey = '';
+        this._currentRsaAlgType = '';
+        this._authExpiration = '';
         this._userRepository = new UserRepository_1.default();
         this._roleRepository = new RoleRepository_1.default();
         this._scheduledEmailRepository = new ScheduledEmailRepository_1.default();
+        this._currentKey = lib_1.currentKey;
+        this._currentRsaAlgType = lib_1.rsaAlgType;
+        this._authExpiration = lib_1.authExpiration;
     }
     UserBusiness.prototype.login = function (params) {
         return __awaiter(this, void 0, void 0, function () {
@@ -74,39 +80,41 @@ var UserBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(400, 'Invalid credentials')];
                         permissionParams = {
                             destinationUrl: params.destinationUrl.toLowerCase(),
-                            roles: user.roles.map(function (x) { return x._id; }).slice()
+                            roles: user.roles.slice()
                         };
                         return [4 /*yield*/, lib_1.tokenExchange(permissionParams)];
                     case 3:
                         permissions = _a.sent();
                         signInOptions = {
-                            issuer: config.ISSUER.toLowerCase(),
+                            issuer: params.issuer,
                             audience: params.audience,
-                            expiresIn: config.AUTH_EXPIRESIN,
-                            algorithm: config.RSA_ALG_TYPE,
-                            keyid: config.RSA_KEYID,
+                            expiresIn: this._authExpiration,
+                            algorithm: this._currentRsaAlgType,
+                            keyid: this._currentKey,
                             subject: ''
                         };
                         payload = {
-                            tokenType: GlobalEnum_1.TokenType.AUTH
+                            usage: GlobalEnum_1.TokenType.AUTH,
+                            permissions: Object.keys(permissions)
                         };
-                        privateKey = lib_1.getPrivateKey(config.RSA_KEYID);
-                        if (!privateKey)
+                        privateKey = lib_1.getSecretByKey(this._currentKey);
+                        if (privateKey === '') {
                             return [2 /*return*/, Result_1.Result.fail(400, 'The token key provided is invalid')];
+                        }
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
                     case 4:
                         userToken = _a.sent();
                         authData = {
                             _id: user._id,
                             email: user.email,
-                            roles: user.roles.map(function (role) { return role.name; }).slice(),
-                            permissions: permissions,
+                            fullName: user.fullName,
+                            roles: user.roles.slice(),
                             token: userToken
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, authData)];
                     case 5:
                         err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
+                        throw new Error(err_1.message);
                     case 6: return [2 /*return*/];
                 }
             });
@@ -128,7 +136,7 @@ var UserBusiness = /** @class */ (function () {
                             userViewModel = {
                                 _id: user._id,
                                 email: user.email,
-                                name: user.username,
+                                fullName: user.fullName,
                                 isEmailConfirmed: user.isEmailConfirmed,
                                 isPhoneConfirmed: user.isPhoneConfirmed,
                                 isProfileCompleted: user.isProfileCompleted,
@@ -152,9 +160,34 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
+    UserBusiness.prototype.findUserForExchange = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user) {
+                            return [2 /*return*/, Result_1.Result.fail(404, "User with Id " + id + " not found")];
+                        }
+                        else {
+                            return [2 /*return*/, Result_1.Result.ok(200, user)];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_3.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser, err_3;
+            var user, refinedUser, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -169,48 +202,7 @@ var UserBusiness = /** @class */ (function () {
                             refinedUser = {
                                 _id: user._id,
                                 email: user.email,
-                                name: user.username,
-                                isEmailConfirmed: user.isEmailConfirmed,
-                                isPhoneConfirmed: user.isPhoneConfirmed,
-                                isProfileCompleted: user.isProfileCompleted,
-                                generalNotification: user.generalNotification,
-                                emailNotification: user.emailNotification,
-                                profileVisibility: user.profileVisibility,
-                                loginCount: user.loginCount,
-                                status: [user.status],
-                                roles: user.roles,
-                                lastLogin: user.lastLogin,
-                                createdAt: user.createdAt
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
-                        }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UserBusiness.prototype.findByCriteria = function (criteria) {
-        return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser, err_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
-                    case 1:
-                        user = _a.sent();
-                        if (!user) {
-                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
-                        }
-                        else {
-                            refinedUser = {
-                                _id: user._id,
-                                email: user.email,
-                                name: user.username,
+                                fullName: user.fullName,
                                 isEmailConfirmed: user.isEmailConfirmed,
                                 isPhoneConfirmed: user.isPhoneConfirmed,
                                 isProfileCompleted: user.isProfileCompleted,
@@ -234,9 +226,50 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
+    UserBusiness.prototype.findByCriteria = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, refinedUser, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user) {
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
+                        }
+                        else {
+                            refinedUser = {
+                                _id: user._id,
+                                email: user.email,
+                                fullName: user.fullName,
+                                isEmailConfirmed: user.isEmailConfirmed,
+                                isPhoneConfirmed: user.isPhoneConfirmed,
+                                isProfileCompleted: user.isProfileCompleted,
+                                generalNotification: user.generalNotification,
+                                emailNotification: user.emailNotification,
+                                profileVisibility: user.profileVisibility,
+                                loginCount: user.loginCount,
+                                status: [user.status],
+                                roles: user.roles,
+                                lastLogin: user.lastLogin,
+                                createdAt: user.createdAt
+                            };
+                            return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_5 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_5.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, schedule, err_5;
+            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, schedule, err_6;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -272,23 +305,23 @@ var UserBusiness = /** @class */ (function () {
                     case 6:
                         newUser = _b.sent();
                         tokenOptions = {
-                            issuer: config.ISSUER.toLowerCase(),
+                            issuer: item.issuer,
                             audience: item.audience,
-                            expiresIn: config.AUTH_EXPIRESIN,
-                            algorithm: config.RSA_ALG_TYPE,
-                            keyid: config.RSA_KEYID,
+                            expiresIn: this._authExpiration,
+                            algorithm: this._currentRsaAlgType,
+                            keyid: this._currentKey,
                             subject: ''
                         };
                         payload = {
                             tokenType: GlobalEnum_1.TokenType.MAIL
                         };
-                        privateKey = lib_1.getPrivateKey(config.RSA_KEYID);
+                        privateKey = lib_1.getSecretByKey(this._currentKey);
                         if (!privateKey)
                             return [2 /*return*/, Result_1.Result.fail(400, 'The token key provided is invalid')];
                         return [4 /*yield*/, newUser.generateToken(privateKey, tokenOptions, payload)];
                     case 7:
                         verificationToken = _b.sent();
-                        welcomeEmailKeyValues = this.welcomeEmailKeyValue(newUser.username, item.audience, verificationToken);
+                        welcomeEmailKeyValues = this.welcomeEmailKeyValue(newUser.fullName, item.audience, verificationToken);
                         welcomeTemplateString = emailtemplates_1.WelcomeEmail.template;
                         welcomeEmailPlaceHolder = {
                             template: welcomeTemplateString,
@@ -308,8 +341,8 @@ var UserBusiness = /** @class */ (function () {
                         console.log(schedule);
                         return [2 /*return*/, Result_1.Result.ok(201, true)];
                     case 9:
-                        err_5 = _b.sent();
-                        throw new Error("InternalServer error occured." + err_5);
+                        err_6 = _b.sent();
+                        throw new Error("InternalServer error occured." + err_6);
                     case 10: return [2 /*return*/];
                 }
             });
@@ -317,7 +350,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser, refinedUser, err_6;
+            var newUser, refinedUser, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -328,7 +361,7 @@ var UserBusiness = /** @class */ (function () {
                         refinedUser = {
                             _id: newUser._id,
                             email: newUser.email,
-                            name: newUser.username,
+                            fullName: newUser.fullName,
                             isEmailConfirmed: newUser.isEmailConfirmed,
                             isPhoneConfirmed: newUser.isPhoneConfirmed,
                             isProfileCompleted: newUser.isProfileCompleted,
@@ -343,8 +376,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         return [2 /*return*/, Result_1.Result.ok(201, refinedUser)];
                     case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
+                        err_7 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_7.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -352,7 +385,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, err_7;
+            var user, updateObj, err_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -367,8 +400,8 @@ var UserBusiness = /** @class */ (function () {
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
+                        err_8 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_8.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -376,7 +409,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.patch = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, refinedUser, err_8;
+            var user, updateObj, refinedUser, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -392,7 +425,7 @@ var UserBusiness = /** @class */ (function () {
                         refinedUser = {
                             _id: updateObj._id,
                             email: updateObj.email,
-                            name: updateObj.username,
+                            fullName: updateObj.fullName,
                             profileImagePath: updateObj.profileImagePath,
                             isEmailConfirmed: updateObj.isEmailConfirmed,
                             isPhoneConfirmed: updateObj.isPhoneConfirmed,
@@ -408,8 +441,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
                     case 3:
-                        err_8 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_8.message);
+                        err_9 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_9.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -417,7 +450,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_9;
+            var isDeleted, err_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -427,8 +460,8 @@ var UserBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_9 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_9.message);
+                        err_10 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_10.message);
                     case 3: return [2 /*return*/];
                 }
             });

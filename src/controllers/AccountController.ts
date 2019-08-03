@@ -3,11 +3,13 @@ import { controller, get, post, requestValidators, use } from '../decorators';
 import UserBusiness from '../app/business/UserBusiness';
 import { PlatformError } from '../utils/error';
 import { ILogin, IRegister } from '../app/models/interfaces';
+import { issuer } from '../utils/lib';
 
-function logger(req: Request, res: Response, next: NextFunction) {
-  console.log('Request was made');
-  next();
-}
+// export const kemi = ['email', 'password'];
+// function logger(req: Request, res: Response, next: NextFunction) {
+//   console.log('Request was made');
+//   next();
+// }
 
 @controller('/v1/account')
 export class AuthController {
@@ -15,10 +17,12 @@ export class AuthController {
   @requestValidators('email', 'password', 'audience')
   async postLogin(req: Request, res: Response, next: NextFunction) {
     try {
+      const destinationIssuer = `${issuer}${req.originalUrl}`;
       const loginParams: ILogin = {
         email: req.body.email,
         password: req.body.password,
         audience: req.body.audience,
+        issuer: destinationIssuer,
         destinationUrl: req.url.toLowerCase()
       };
 
@@ -49,12 +53,14 @@ export class AuthController {
   @requestValidators('email', 'password', 'audience', 'username', 'roles')
   async postSignup(req: Request, res: Response, next: NextFunction) {
     try {
+      const destinationIssuer = `${issuer}${req.originalUrl}`;
       const signUpParams: IRegister = {
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
         roles: req.body.roles,
-        audience: req.body.audience
+        audience: req.body.audience,
+        issuer: destinationIssuer
       };
       const userBusiness = new UserBusiness();
       const result = await userBusiness.register(signUpParams);

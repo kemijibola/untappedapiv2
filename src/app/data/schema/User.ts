@@ -14,7 +14,7 @@ const userAccountStatusSchema: Schema = new Schema({
 const userSchema: Schema = new Schema(
   {
     email: { type: String, required: true, unique: true },
-    username: { type: String, required: true, unique: true },
+    fullName: { type: String, required: true },
     password: { type: String, required: true },
     profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },

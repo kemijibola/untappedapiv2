@@ -16,7 +16,7 @@ export interface IUserAccountStatus {
 
 export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   email: string;
-  username: string;
+  fullName: string;
   password: string;
   profileImagePath?: string;
   isEmailConfirmed: boolean;

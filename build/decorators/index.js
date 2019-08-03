@@ -7,4 +7,5 @@ __export(require("./routes"));
 __export(require("./controller"));
 __export(require("./use"));
 __export(require("./requestValidators"));
+__export(require("./authorizePermissions"));
 //# sourceMappingURL=index.js.map

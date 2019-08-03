@@ -21,12 +21,12 @@ const resourcePermissionSchema: Schema = new Schema(
         ref: 'Permission',
         required: true
       }
-    ],
-    application: {
-      type: Schema.Types.ObjectId,
-      ref: 'Application',
-      required: true
-    }
+    ]
+    // application: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'Application',
+    //   required: true
+    // }
   },
   { timestamps: true }
 );

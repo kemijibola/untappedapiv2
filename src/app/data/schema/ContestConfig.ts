@@ -1,9 +1,9 @@
 import MongodataAccess = require('../MongodataAccess');
 import { Schema } from 'mongoose';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IService } from '../../models/interfaces';
+import { IContestConfig } from '../../models/interfaces';
 
-const serviceSchema: Schema = new Schema(
+const contestConfigSchema: Schema = new Schema(
   {
     name: { type: String, required: true, trim: true },
     price: { type: Number, required: true },
@@ -11,6 +11,8 @@ const serviceSchema: Schema = new Schema(
     isActivated: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
     approvedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    dayFromRange: { type: Number, default: 0 },
+    dayToRange: { type: Number, default: 0 },
     approvedDate: { type: Date },
     application: {
       type: Schema.Types.ObjectId,
@@ -21,7 +23,7 @@ const serviceSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-export const ServiceSchema = mongooseConnection.model<IService>(
-  'Service',
-  serviceSchema
+export const ContestConfigSchema = mongooseConnection.model<IContestConfig>(
+  'ContestConfig',
+  contestConfigSchema
 );

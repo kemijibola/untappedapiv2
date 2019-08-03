@@ -8,15 +8,21 @@ import {
   ILogin,
   IRegister,
   IScheduledEmail,
-  MailType
+  MailType,
+  AuthPayload
 } from '../models/interfaces';
 import { Result } from '../../utils/Result';
 import {
   IExchangeToken,
   tokenExchange,
-  getPrivateKey,
+  getSecretByKey,
   toObjectId,
-  IStringDate
+  IStringDate,
+  ObjectKeyString,
+  currentKey,
+  rsaAlgType,
+  issuer,
+  authExpiration
 } from '../../utils/lib';
 import { SignInOptions } from '../models/interfaces/custom/Global';
 import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
@@ -31,13 +37,14 @@ import {
   SocialMediaHandles,
   replaceTemplateString
 } from '../../utils/lib/TemplatePlaceHolder';
-
 const config: AppConfig = require('../../config/keys');
 import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
 import { IEmail } from '../../utils/emailservice/EmailService';
-import { addSeconds } from 'date-fns';
 
 class UserBusiness implements IUserBusiness {
+  private _currentKey = '';
+  private _currentRsaAlgType = '';
+  private _authExpiration = '';
   private _userRepository: UserRepository;
   private _roleRepository: RoleRepository;
   private _scheduledEmailRepository: ScheduledEmailRepository;
@@ -46,6 +53,9 @@ class UserBusiness implements IUserBusiness {
     this._userRepository = new UserRepository();
     this._roleRepository = new RoleRepository();
     this._scheduledEmailRepository = new ScheduledEmailRepository();
+    this._currentKey = currentKey;
+    this._currentRsaAlgType = rsaAlgType;
+    this._authExpiration = authExpiration;
   }
 
   async login(params: ILogin): Promise<Result<IAuthData>> {
@@ -62,26 +72,28 @@ class UserBusiness implements IUserBusiness {
 
       const permissionParams: IExchangeToken = {
         destinationUrl: params.destinationUrl.toLowerCase(),
-        roles: [...user.roles.map(x => x._id)]
+        roles: [...user.roles]
       };
-      const permissions: { [x: string]: string } = await tokenExchange(
+      const permissions: ObjectKeyString = await tokenExchange(
         permissionParams
       );
+
       const signInOptions: SignInOptions = {
-        issuer: config.ISSUER.toLowerCase(),
+        issuer: params.issuer,
         audience: params.audience,
-        expiresIn: config.AUTH_EXPIRESIN,
-        algorithm: config.RSA_ALG_TYPE,
-        keyid: config.RSA_KEYID,
+        expiresIn: this._authExpiration,
+        algorithm: this._currentRsaAlgType,
+        keyid: this._currentKey,
         subject: ''
       };
-      const payload: { [x: string]: string } = {
-        tokenType: TokenType.AUTH
+      const payload: AuthPayload = {
+        usage: TokenType.AUTH,
+        permissions: Object.keys(permissions)
       };
-      const privateKey: string = getPrivateKey(config.RSA_KEYID);
-      if (!privateKey)
+      const privateKey: string = getSecretByKey(this._currentKey);
+      if (privateKey === '') {
         return Result.fail<IAuthData>(400, 'The token key provided is invalid');
-
+      }
       const userToken: string = await user.generateToken(
         privateKey,
         signInOptions,
@@ -91,13 +103,13 @@ class UserBusiness implements IUserBusiness {
       const authData: IAuthData = {
         _id: user._id,
         email: user.email,
-        roles: [...user.roles.map(role => role.name)],
-        permissions: permissions,
+        fullName: user.fullName,
+        roles: [...user.roles],
         token: userToken
       };
       return Result.ok<IAuthData>(200, authData);
     } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
+      throw new Error(err.message);
     }
   }
   async fetch(condition: any): Promise<Result<any[]>> {
@@ -108,7 +120,7 @@ class UserBusiness implements IUserBusiness {
         const userViewModel: UserViewModel = {
           _id: user._id,
           email: user.email,
-          name: user.username,
+          fullName: user.fullName,
           isEmailConfirmed: user.isEmailConfirmed,
           isPhoneConfirmed: user.isPhoneConfirmed,
           isProfileCompleted: user.isProfileCompleted,
@@ -129,6 +141,18 @@ class UserBusiness implements IUserBusiness {
     }
   }
 
+  async findUserForExchange(id: string): Promise<Result<IUserModel>> {
+    try {
+      const user = await this._userRepository.findById(id);
+      if (!user) {
+        return Result.fail<IUserModel>(404, `User with Id ${id} not found`);
+      } else {
+        return Result.ok<IUserModel>(200, user);
+      }
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
   async findById(id: string): Promise<Result<any>> {
     try {
       const user = await this._userRepository.findById(id);
@@ -138,7 +162,7 @@ class UserBusiness implements IUserBusiness {
         let refinedUser: UserViewModel = {
           _id: user._id,
           email: user.email,
-          name: user.username,
+          fullName: user.fullName,
           isEmailConfirmed: user.isEmailConfirmed,
           isPhoneConfirmed: user.isPhoneConfirmed,
           isProfileCompleted: user.isProfileCompleted,
@@ -167,7 +191,7 @@ class UserBusiness implements IUserBusiness {
         let refinedUser: UserViewModel = {
           _id: user._id,
           email: user.email,
-          name: user.username,
+          fullName: user.fullName,
           isEmailConfirmed: user.isEmailConfirmed,
           isPhoneConfirmed: user.isPhoneConfirmed,
           isProfileCompleted: user.isProfileCompleted,
@@ -217,17 +241,17 @@ class UserBusiness implements IUserBusiness {
       const newUser: IUserModel = await this._userRepository.register(item);
 
       const tokenOptions: SignInOptions = {
-        issuer: config.ISSUER.toLowerCase(),
+        issuer: item.issuer,
         audience: item.audience,
-        expiresIn: config.AUTH_EXPIRESIN,
-        algorithm: config.RSA_ALG_TYPE,
-        keyid: config.RSA_KEYID,
+        expiresIn: this._authExpiration,
+        algorithm: this._currentRsaAlgType,
+        keyid: this._currentKey,
         subject: ''
       };
-      const payload: { [x: string]: string } = {
+      const payload: ObjectKeyString = {
         tokenType: TokenType.MAIL
       };
-      const privateKey: string = getPrivateKey(config.RSA_KEYID);
+      const privateKey: string = getSecretByKey(this._currentKey);
       if (!privateKey)
         return Result.fail<boolean>(400, 'The token key provided is invalid');
       const verificationToken: string = await newUser.generateToken(
@@ -237,7 +261,7 @@ class UserBusiness implements IUserBusiness {
       );
 
       const welcomeEmailKeyValues: TemplateKeyValue[] = this.welcomeEmailKeyValue(
-        newUser.username,
+        newUser.fullName,
         item.audience,
         verificationToken
       );
@@ -273,7 +297,7 @@ class UserBusiness implements IUserBusiness {
       let refinedUser: UserViewModel = {
         _id: newUser._id,
         email: newUser.email,
-        name: newUser.username,
+        fullName: newUser.fullName,
         isEmailConfirmed: newUser.isEmailConfirmed,
         isPhoneConfirmed: newUser.isPhoneConfirmed,
         isProfileCompleted: newUser.isProfileCompleted,
@@ -320,7 +344,7 @@ class UserBusiness implements IUserBusiness {
       let refinedUser: UserViewModel = {
         _id: updateObj._id,
         email: updateObj.email,
-        name: updateObj.username,
+        fullName: updateObj.fullName,
         profileImagePath: updateObj.profileImagePath,
         isEmailConfirmed: updateObj.isEmailConfirmed,
         isPhoneConfirmed: updateObj.isPhoneConfirmed,

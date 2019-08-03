@@ -3,5 +3,5 @@ export enum MetadataKeys {
   path = 'path',
   middleware = 'middleware',
   validator = 'validator',
-  requesttype = 'requesttype'
+  authorization = 'authorization'
 }

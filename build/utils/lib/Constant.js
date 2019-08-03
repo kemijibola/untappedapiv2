@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var config = require('../../config/keys');
 exports.audioExtentions = [
     'mp3',
     '3gp',
@@ -57,4 +58,34 @@ exports.AcceptedMedias = {
     wma: 'audio',
     '3gp': 'video'
 };
+function getCurrentKey() {
+    var key = '';
+    var keySearch = config.RSA_PRIVATE.filter(function (x) { return x.key === '42'; })[0];
+    if (keySearch) {
+        key = keySearch.key;
+    }
+    return key;
+}
+function getCurrentRsa() {
+    var rsa = '';
+    var rsaSearch = config.RSA_PRIVATE.filter(function (x) { return x.rsaAlgType === 'RS256'; })[0];
+    if (rsaSearch) {
+        rsa = rsaSearch.rsaAlgType;
+    }
+    return rsa;
+}
+function getIssuer() {
+    return config.ISSUER.toLowerCase() || '';
+}
+function getAuthExpiration() {
+    return config.AUTH_EXPIRESIN || '';
+}
+function getMailExpiration() {
+    return config.MAIL_EXPIRESIN || '';
+}
+exports.currentKey = getCurrentKey();
+exports.rsaAlgType = getCurrentRsa();
+exports.issuer = getIssuer();
+exports.authExpiration = getAuthExpiration();
+exports.mailExpiration = getMailExpiration();
 //# sourceMappingURL=Constant.js.map

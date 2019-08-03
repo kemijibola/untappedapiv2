@@ -7,10 +7,8 @@ export interface AppConfig {
   PORT: number;
   REDIS_HOST: string;
   REDIS_PORT: number;
-  RSA_PUBLIC_KEYS: { [x: string]: string };
-  RSA_PRIVATE_KEYS: { [x: string]: string };
-  RSA_KEYID: string;
-  RSA_ALG_TYPE: string;
+  RSA_PUBLIC: RsaSecret[];
+  RSA_PRIVATE: RsaSecret[];
   DATABASE_HOST: string;
   DATABASE_NAME: string;
   DATABASE_USER: string;
@@ -23,6 +21,12 @@ export interface AppConfig {
   SERVERLESS: Serverless;
 }
 
+export interface RsaSecret {
+  Secret: string;
+  key: string;
+  rsaAlgType: string;
+}
+
 export interface AppBucket {
   bucket: string;
   access_key_id: string;
@@ -31,10 +35,10 @@ export interface AppBucket {
   bucketUrl: string;
 }
 export interface ScheduledEmailSQS {
-  accessKey: string;
   access_key_id: string;
   secret_access_key: string;
   version: string;
+  region: string;
   accountId: number;
   url: string;
   queueName: string;

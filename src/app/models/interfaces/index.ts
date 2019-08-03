@@ -28,3 +28,5 @@ export * from './Order';
 export * from './Payment';
 export * from './Service';
 export * from './IssueCategory';
+export * from './ContestConfig';
+export * from './ApprovalOperation';

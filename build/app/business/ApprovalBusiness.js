@@ -38,10 +38,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ApprovalRepository_1 = __importDefault(require("../repository/ApprovalRepository"));
+var ApprovalOperationRepository_1 = __importDefault(require("../repository/ApprovalOperationRepository"));
 var Result_1 = require("../../utils/Result");
 var ApprovalBusiness = /** @class */ (function () {
     function ApprovalBusiness() {
         this._approvalRepository = new ApprovalRepository_1.default();
+        this._approvalOperationRepository = new ApprovalOperationRepository_1.default();
     }
     ApprovalBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -112,19 +114,25 @@ var ApprovalBusiness = /** @class */ (function () {
     };
     ApprovalBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newApproval, err_4;
+            var approvalOperation, newApproval, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._approvalRepository.create(item)];
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this._approvalOperationRepository.findById(item.approvalOperation)];
                     case 1:
+                        approvalOperation = _a.sent();
+                        if (approvalOperation === null) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Approval operation " + item.approvalOperation + " is invalid.")];
+                        }
+                        return [4 /*yield*/, this._approvalRepository.create(item)];
+                    case 2:
                         newApproval = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newApproval)];
-                    case 2:
+                    case 3:
                         err_4 = _a.sent();
                         throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -153,6 +161,38 @@ var ApprovalBusiness = /** @class */ (function () {
             });
         });
     };
+    // async patch(id: string, item: any): Promise<Result<UserViewModel>> {
+    //   try {
+    //     const user = await this._approvalRepository.findById(id);
+    //     if (!user)
+    //       return Result.fail<UserViewModel>(
+    //         404,
+    //         `Could not update user.User with Id ${id} not found`
+    //       );
+    //     const updateObj = await this._userRepository.update(user._id, item);
+    //     // console.log(updateObj.);
+    //     let refinedUser: UserViewModel = {
+    //       _id: updateObj._id,
+    //       email: updateObj.email,
+    //       name: updateObj.username,
+    //       profileImagePath: updateObj.profileImagePath,
+    //       isEmailConfirmed: updateObj.isEmailConfirmed,
+    //       isPhoneConfirmed: updateObj.isPhoneConfirmed,
+    //       isProfileCompleted: updateObj.isProfileCompleted,
+    //       generalNotification: updateObj.generalNotification,
+    //       emailNotification: updateObj.emailNotification,
+    //       profileVisibility: updateObj.profileVisibility,
+    //       loginCount: updateObj.loginCount,
+    //       status: [updateObj.status],
+    //       roles: updateObj.roles,
+    //       lastLogin: updateObj.lastLogin,
+    //       createdAt: updateObj.createdAt
+    //     };
+    //     return Result.ok<UserViewModel>(200, refinedUser);
+    //   } catch (err) {
+    //     throw new Error(`InternalServer error occured.${err.message}`);
+    //   }
+    // }
     ApprovalBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var isDeleted, err_6;

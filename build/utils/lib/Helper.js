@@ -40,18 +40,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var config = require('../../config/keys');
 var ResourceBusiness_1 = __importDefault(require("../../app/business/ResourceBusiness"));
+var PermissionBusiness_1 = __importDefault(require("../../app/business/PermissionBusiness"));
 var ResourcePermissionBusiness_1 = __importDefault(require("../../app/business/ResourcePermissionBusiness"));
 var ApplicationBusiness_1 = __importDefault(require("../../app/business/ApplicationBusiness"));
 var error_1 = require("../error");
 var mongoose_1 = __importDefault(require("mongoose"));
 var Result_1 = require("../Result");
 var chunkedUserPermissons = {};
-exports.getPrivateKey = function (keyId) {
-    return config.RSA_PRIVATE_KEYS[keyId].replace(/\\n/g, '\n');
+exports.getSecretByKey = function (keyId) {
+    var secret = config.RSA_PRIVATE.filter(function (x) { return x.key === keyId; })[0];
+    if (!secret) {
+        return '';
+    }
+    return secret.Secret.replace(/\\n/g, '\n');
+};
+exports.getPublicKey = function (keyId) {
+    var secret = config.RSA_PUBLIC.filter(function (x) { return x.key === keyId; })[0];
+    if (!secret) {
+        return '';
+    }
+    return secret.Secret.replace(/\\n/g, '\n');
 };
 function tokenExchange(exchangeParams) {
     return __awaiter(this, void 0, void 0, function () {
-        var resourceBusiness, resourcePermissionBusiness, resourceResult, resource, _i, _a, role, resourcePermissionResult, resourcePermission;
+        var resourceBusiness, resourcePermissionBusiness, result, destinationResource, _i, _a, role, result_1, resourcePermission;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -61,50 +73,77 @@ function tokenExchange(exchangeParams) {
                             name: exchangeParams.destinationUrl
                         })];
                 case 1:
-                    resourceResult = _b.sent();
-                    if (!resourceResult.data) {
+                    result = _b.sent();
+                    if (result.error) {
                         throw error_1.PlatformError.error({
-                            code: resourceResult.responseCode,
-                            message: exchangeParams.destinationUrl + " is not a valid route"
+                            code: result.responseCode,
+                            message: result.error
                         });
                     }
-                    resource = resourceResult.data;
+                    if (!result.data) return [3 /*break*/, 6];
+                    destinationResource = result.data;
                     _i = 0, _a = exchangeParams.roles;
                     _b.label = 2;
                 case 2:
-                    if (!(_i < _a.length)) return [3 /*break*/, 5];
+                    if (!(_i < _a.length)) return [3 /*break*/, 6];
                     role = _a[_i];
                     return [4 /*yield*/, resourcePermissionBusiness.findByCriteria({
                             role: role,
-                            resource: resource._id
+                            resource: destinationResource._id
                         })];
                 case 3:
-                    resourcePermissionResult = _b.sent();
-                    if (!resourcePermissionResult.data) {
+                    result_1 = _b.sent();
+                    if (result_1.error) {
                         throw error_1.PlatformError.error({
-                            code: resourceResult.responseCode,
-                            message: "There are no permissions configured for route " + resource.name
+                            code: result_1.responseCode,
+                            message: "There are no permissions configured for route " + destinationResource.name
                         });
                     }
-                    resourcePermission = resourcePermissionResult.data;
-                    chunckPermission(resourcePermission.permissions);
-                    _b.label = 4;
+                    if (!result_1.data) return [3 /*break*/, 5];
+                    resourcePermission = result_1.data;
+                    if (!resourcePermission.permissions) return [3 /*break*/, 5];
+                    return [4 /*yield*/, chunckPermission(resourcePermission.permissions)];
                 case 4:
+                    _b.sent();
+                    _b.label = 5;
+                case 5:
                     _i++;
                     return [3 /*break*/, 2];
-                case 5: return [2 /*return*/, chunkedUserPermissons];
+                case 6:
+                    Object.seal(chunkedUserPermissons);
+                    return [2 /*return*/, chunkedUserPermissons];
             }
         });
     });
 }
 exports.tokenExchange = tokenExchange;
 function chunckPermission(permissions) {
-    for (var _i = 0, permissions_1 = permissions; _i < permissions_1.length; _i++) {
-        var item = permissions_1[_i];
-        if (!chunkedUserPermissons[item.name]) {
-            chunkedUserPermissons[item.name] = item.name;
-        }
-    }
+    return __awaiter(this, void 0, void 0, function () {
+        var permissionBusiness, _i, permissions_1, item, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    permissionBusiness = new PermissionBusiness_1.default();
+                    _i = 0, permissions_1 = permissions;
+                    _a.label = 1;
+                case 1:
+                    if (!(_i < permissions_1.length)) return [3 /*break*/, 4];
+                    item = permissions_1[_i];
+                    return [4 /*yield*/, permissionBusiness.findByCriteria(item)];
+                case 2:
+                    result = _a.sent();
+                    if (result.data)
+                        if (!chunkedUserPermissons[result.data.name]) {
+                            chunkedUserPermissons[result.data.name] = result.data.name;
+                        }
+                    _a.label = 3;
+                case 3:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
 }
 function toObjectId(_id) {
     return mongoose_1.default.Types.ObjectId.createFromHexString(_id);

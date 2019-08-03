@@ -1,13 +1,16 @@
 import ApprovalRepository from '../repository/ApprovalRepository';
+import ApprovalOperationRepository from '../repository/ApprovalOperationRepository';
 import IApprovalBusiness = require('./interfaces/ApprovalBusiness');
 import { IApproval } from '../models/interfaces';
 import { Result } from '../../utils/Result';
 
 class ApprovalBusiness implements IApprovalBusiness {
   private _approvalRepository: ApprovalRepository;
+  private _approvalOperationRepository: ApprovalOperationRepository;
 
   constructor() {
     this._approvalRepository = new ApprovalRepository();
+    this._approvalOperationRepository = new ApprovalOperationRepository();
   }
 
   async fetch(condition: any): Promise<Result<IApproval[]>> {
@@ -43,6 +46,15 @@ class ApprovalBusiness implements IApprovalBusiness {
 
   async create(item: IApproval): Promise<Result<IApproval>> {
     try {
+      const approvalOperation = await this._approvalOperationRepository.findById(
+        item.approvalOperation
+      );
+      if (approvalOperation === null) {
+        return Result.fail<IApproval>(
+          400,
+          `Approval operation ${item.approvalOperation} is invalid.`
+        );
+      }
       const newApproval = await this._approvalRepository.create(item);
       return Result.ok<IApproval>(201, newApproval);
     } catch (err) {
@@ -67,6 +79,39 @@ class ApprovalBusiness implements IApprovalBusiness {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
   }
+
+  // async patch(id: string, item: any): Promise<Result<UserViewModel>> {
+  //   try {
+  //     const user = await this._approvalRepository.findById(id);
+  //     if (!user)
+  //       return Result.fail<UserViewModel>(
+  //         404,
+  //         `Could not update user.User with Id ${id} not found`
+  //       );
+  //     const updateObj = await this._userRepository.update(user._id, item);
+  //     // console.log(updateObj.);
+  //     let refinedUser: UserViewModel = {
+  //       _id: updateObj._id,
+  //       email: updateObj.email,
+  //       name: updateObj.username,
+  //       profileImagePath: updateObj.profileImagePath,
+  //       isEmailConfirmed: updateObj.isEmailConfirmed,
+  //       isPhoneConfirmed: updateObj.isPhoneConfirmed,
+  //       isProfileCompleted: updateObj.isProfileCompleted,
+  //       generalNotification: updateObj.generalNotification,
+  //       emailNotification: updateObj.emailNotification,
+  //       profileVisibility: updateObj.profileVisibility,
+  //       loginCount: updateObj.loginCount,
+  //       status: [updateObj.status],
+  //       roles: updateObj.roles,
+  //       lastLogin: updateObj.lastLogin,
+  //       createdAt: updateObj.createdAt
+  //     };
+  //     return Result.ok<UserViewModel>(200, refinedUser);
+  //   } catch (err) {
+  //     throw new Error(`InternalServer error occured.${err.message}`);
+  //   }
+  // }
 
   async delete(id: string): Promise<Result<boolean>> {
     try {

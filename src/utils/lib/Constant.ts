@@ -1,4 +1,6 @@
 import { ObjectKeyString } from './Helper';
+import { AppConfig } from '../../app/models/interfaces/custom/AppConfig';
+const config: AppConfig = require('../../config/keys');
 
 export const audioExtentions: string[] = [
   'mp3',
@@ -58,3 +60,39 @@ export const AcceptedMedias: ObjectKeyString = {
   wma: 'audio',
   '3gp': 'video'
 };
+
+function getCurrentKey(): string {
+  let key = '';
+  const keySearch = config.RSA_PRIVATE.filter(x => x.key === '42')[0];
+  if (keySearch) {
+    key = keySearch.key;
+  }
+  return key;
+}
+
+function getCurrentRsa(): string {
+  let rsa = '';
+  const rsaSearch = config.RSA_PRIVATE.filter(x => x.rsaAlgType === 'RS256')[0];
+  if (rsaSearch) {
+    rsa = rsaSearch.rsaAlgType;
+  }
+  return rsa;
+}
+
+function getIssuer(): string {
+  return config.ISSUER.toLowerCase() || '';
+}
+
+function getAuthExpiration(): string {
+  return config.AUTH_EXPIRESIN || '';
+}
+
+function getMailExpiration(): string {
+  return config.MAIL_EXPIRESIN || '';
+}
+
+export const currentKey: string = getCurrentKey();
+export const rsaAlgType: string = getCurrentRsa();
+export const issuer: string = getIssuer();
+export const authExpiration: string = getAuthExpiration();
+export const mailExpiration: string = getMailExpiration();

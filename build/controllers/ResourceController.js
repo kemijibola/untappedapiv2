@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var ResourceBusiness = require("../app/business/ResourceBusiness");
+var auth_1 = require("../middlewares/auth");
 var ResourceController = /** @class */ (function () {
     function ResourceController() {
     }
@@ -85,7 +86,39 @@ var ResourceController = /** @class */ (function () {
     };
     ResourceController.prototype.update = function () { };
     ResourceController.prototype.delete = function () { };
-    ResourceController.prototype.fetch = function () { };
+    ResourceController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var resourceBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        console.log(req.user.permissions);
+                        resourceBusiness = new ResourceBusiness();
+                        return [4 /*yield*/, resourceBusiness.fetch({})];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                                    code: result.responseCode,
+                                    message: "Error occured. " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_2
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ResourceController.prototype.findById = function () { };
     __decorate([
         decorators_1.post('/'),
@@ -94,6 +127,14 @@ var ResourceController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ResourceController.prototype, "create", null);
+    __decorate([
+        decorators_1.get('/'),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize('canViewProfessionals'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ResourceController.prototype, "fetch", null);
     ResourceController = __decorate([
         decorators_1.controller('/v1/resources')
     ], ResourceController);

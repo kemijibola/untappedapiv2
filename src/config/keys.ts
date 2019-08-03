@@ -8,19 +8,49 @@ import { AppConfig } from '../app/models/interfaces/custom/AppConfig';
 let environment: string = process.env.NODE_ENV || '';
 let envs: AppConfig = {
   PORT: 0,
-  RSA_PUBLIC_KEYS: {},
   DATABASE_HOST: '',
   DATABASE_NAME: '',
   DATABASE_PASSWORD: '',
   DATABASE_USER: '',
   REDIS_HOST: '',
   REDIS_PORT: 0,
-  RSA_PRIVATE_KEYS: {},
-  RSA_KEYID: '',
-  RSA_ALG_TYPE: '',
+  RSA_PUBLIC: [
+    {
+      Secret: '',
+      key: '',
+      rsaAlgType: ''
+    }
+  ],
+  RSA_PRIVATE: [
+    {
+      Secret: '',
+      key: '',
+      rsaAlgType: ''
+    }
+  ],
   ISSUER: '',
   AUTH_EXPIRESIN: '',
-  MAIL_EXPIRESIN: ''
+  MAIL_EXPIRESIN: '',
+  APP_BUCKET: {
+    bucket: '',
+    access_key_id: '',
+    secret_access_key: '',
+    region: '',
+    bucketUrl: ''
+  },
+  SCHEDULED_EMAIL_SQS: {
+    access_key_id: '',
+    secret_access_key: '',
+    version: '',
+    region: '',
+    accountId: 0,
+    url: '',
+    queueName: ''
+  },
+  SERVERLESS: {
+    access_key_id: '',
+    secret_access_key: ''
+  }
 };
 
 switch (environment) {
