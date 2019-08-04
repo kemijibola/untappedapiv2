@@ -8,6 +8,7 @@ export enum MediaUploadType {
   MULTIPLE = 'MULTIPLE'
 }
 export interface IMediaItem {
+  index: number;
   path: string;
   likes: IUser['fullName'][];
 }

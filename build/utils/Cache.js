@@ -39,19 +39,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importDefault(require("mongoose"));
-var config = module.require('./config/keys');
-var bluebird_1 = __importDefault(require("bluebird"));
-var redis = bluebird_1.default.Promise.promisifyAll(require('redis'));
-var cacheAddress = config.REDIS_HOST || '127.0.0.1';
-var cachePort = config.REDIS_PORT || 6379;
-var client = redis.createClient(cachePort, cacheAddress);
-var Callback = '';
+var redis_1 = __importDefault(require("redis"));
+var util_1 = __importDefault(require("util"));
+var config = module.require('../config/keys');
+// const cacheAddress = config.REDIS_HOST || '127.0.0.1';
+var cacheAddress = config.REDIS_HOST;
+var client = redis_1.default.createClient(cacheAddress);
+client.hget = util_1.default.promisify(client.hget);
 var exec = mongoose_1.default.Query.prototype.exec;
 mongoose_1.default.Query.prototype.cache = function (options) {
     if (options === void 0) { options = {}; }
     this.useCache = true;
     this.hashKey = JSON.stringify(options.key || '');
     this.collectionName = options.collectionName;
+    return this;
+};
+mongoose_1.default.Query.prototype.cacheDocQuery = function (options) {
+    if (options === void 0) { options = {}; }
+    this.useCache = true;
+    this.hashKey = JSON.stringify(options.key || '');
+    this.collectionName = options.collectionName;
+    return this;
+};
+mongoose_1.default.Query.prototype.cacheDocQueries = function (options) {
+    if (options === void 0) { options = {}; }
+    var collectionName = options.collectionName;
+    this.useCache = true;
+    this.hashKey = JSON.stringify(options.key || '');
+    this.collectionName = collectionName;
     return this;
 };
 mongoose_1.default.Query.prototype.exec = function () {
@@ -75,50 +90,22 @@ mongoose_1.default.Query.prototype.exec = function () {
                     cacheValue = _a.sent();
                     // If we do, return that
                     if (cacheValue) {
-                        //const doc = JSON.parse(cacheValue);
-                        // return Array.isArray(doc)
-                        //   ? doc.map(d => new this.model(d))
-                        //   : new this.model(doc);
+                        console.log('from cache...');
+                        return [2 /*return*/, JSON.parse(cacheValue)];
                     }
                     return [4 /*yield*/, exec.apply(this, args)];
                 case 2:
                     result = _a.sent();
                     client.hset(this.hashKey, key, JSON.stringify(result));
+                    console.log('from db', result);
                     return [2 /*return*/, result];
             }
         });
     });
 };
-module.exports = {
-    clearHash: function (hashKey) {
-        client.del(JSON.stringify(hashKey));
-    }
-};
-// const cacheAddress = config.REDIS_HOST || "127.0.0.1";
-// const cachePort = config.REDIS_PORT || 6379;
-// const client = redis.createClient(cachePort, cacheAddress);
-// client.get = util.promisify(client.get);
-// const exec: any = mongoose.Query.prototype.exec;
-// mongoose.Query.prototype.cache = function cache(
-//   this: Query<any>,
-//   options: CacheOptions
-// ) {
-//   this.useCache = true;
-//   this.collectionName = options.collectionName;
-//   return this;
-// };
-// mongoose.Query.prototype.exec = function() {
-//   if (!this.useCache) {
-//     return exec.apply(this, arguments);
+// module.exports = {
+//   clearHash(hashKey: string) {
+//     client.del(JSON.stringify(hashKey));
 //   }
-//   const key = JSON.stringify(
-//     Object.assign({}, this.getQuery(), {
-//       collection: this.collectionName
-//     })
-//   );
-//   return exec.apply(this, arguments).then((result: any) => {
-//     client.set(key, JSON.stringify(result));
-//     return result;
-//   });
 // };
 //# sourceMappingURL=Cache.js.map

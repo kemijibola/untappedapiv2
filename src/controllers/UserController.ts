@@ -44,7 +44,6 @@ export class UserController {
       const userBusiness = new UserBusiness();
       // const user = req.user;
       const user = '5d39c97b432a2e5fd0484375';
-      console.log('got here');
       const result = await userBusiness.patch(user, req.body);
       if (result.error) {
         return next(

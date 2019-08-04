@@ -9,7 +9,7 @@ var AppRouter_1 = require("./AppRouter");
 // import './controllers/CategoryController';
 require("./controllers");
 var config = module.require('./config/keys');
-// module.require('./utils/Cache');
+module.require('./utils/Cache');
 var ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 var cors_1 = __importDefault(require("cors"));
 var app = express_1.default();

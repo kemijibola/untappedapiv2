@@ -44,7 +44,7 @@ class ContestBusiness implements IContestBusiness {
 
   async create(item: IContest): Promise<Result<IContest>> {
     try {
-      // TODO:: end date 
+      // TODO:: end date
       // TODO:: confirm categories sent by client
       if (item.contestType === ContestType.OnlineOffline) {
         if (!item.maxContestant || item.maxContestant < 3) {

@@ -1,4 +1,4 @@
-import mongoose = require('mongoose');
+import mongoose, { Query } from 'mongoose';
 import IRead from '../interface/base/Read';
 import IWrite from '../interface/base/Write';
 
@@ -21,10 +21,13 @@ class RepositoryBase<T extends mongoose.Document>
 
   fetch(condition: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._model.find(condition, (error: any, result: any) => {
-        if (error) reject(error);
-        else resolve(result);
-      });
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
     });
   }
 
@@ -54,12 +57,11 @@ class RepositoryBase<T extends mongoose.Document>
 
   delete(_id: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this._model
-        .remove({ _id: this.toObjectId(_id) }, err => {
-          if (err) reject(err);
-          else resolve(true);
-        })
-        .cache({ collectionName: this._model.collection.name });
+      this._model.remove({ _id: this.toObjectId(_id) }, err => {
+        if (err) reject(err);
+        else resolve(true);
+      });
+      // .cache({ collectionName: this._model.collection.name });
     });
   }
 
@@ -69,6 +71,7 @@ class RepositoryBase<T extends mongoose.Document>
         if (error) reject(error);
         else resolve(result);
       });
+      // .cacheDocQuery({ collectionName: this._model.collection.name });
     });
   }
 
@@ -80,7 +83,7 @@ class RepositoryBase<T extends mongoose.Document>
       });
     });
   }
-  
+
   private toObjectId(_id: string): mongoose.Types.ObjectId {
     return mongoose.Types.ObjectId.createFromHexString(_id);
   }

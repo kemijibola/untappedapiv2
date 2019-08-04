@@ -1,6 +1,7 @@
 export enum TokenType {
   MAIL = 'MAIL',
-  AUTH = 'AUTH'
+  AUTH = 'AUTH',
+  JUDGEEVALUATION = 'JUDGEEVALUATION'
 }
 
 export enum UserTypes {

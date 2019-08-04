@@ -15,6 +15,7 @@ const gigSchema: Schema = new Schema(
       ref: 'User',
       required: true
     },
+    talentCategories: [{ type: Schema.Types.ObjectId }],
     note: { type: String },
     items: [{ type: String }],
     deletedBySender: { type: Boolean, default: false },

@@ -5,7 +5,8 @@ var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
 var Media_1 = require("../../models/interfaces/Media");
 var imageItemSchema = new mongoose_1.Schema({
-    type: { path: String, required: true },
+    index: { type: Number, required: true },
+    path: { type: String, required: true },
     likes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }]
 });
 var imageSchema = new mongoose_1.Schema({

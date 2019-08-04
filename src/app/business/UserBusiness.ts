@@ -40,6 +40,7 @@ import {
 const config: AppConfig = require('../../config/keys');
 import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
 import { IEmail } from '../../utils/emailservice/EmailService';
+import { UserSchema } from '../data/schema/User';
 
 class UserBusiness implements IUserBusiness {
   private _currentKey = '';

@@ -14,6 +14,7 @@ import ResourceBusiness = require('../app/business/ResourceBusiness');
 import { requireAuth } from '../middlewares/auth';
 import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
 
+export const roles = ['canViewProfessionals', 'canViewTalents'];
 @controller('/v1/resources')
 export class ResourceController {
   @post('/')
@@ -48,10 +49,9 @@ export class ResourceController {
   delete(): void {}
   @get('/')
   @use(requireAuth)
-  @authorize('canViewProfessionals')
+  @authorize(...roles)
   async fetch(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      console.log(req.user.permissions);
       const resourceBusiness = new ResourceBusiness();
       const result = await resourceBusiness.fetch({});
       if (result.error) {

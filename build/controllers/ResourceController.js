@@ -48,6 +48,7 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var ResourceBusiness = require("../app/business/ResourceBusiness");
 var auth_1 = require("../middlewares/auth");
+exports.roles = ['canViewProfessionals', 'canViewTalents'];
 var ResourceController = /** @class */ (function () {
     function ResourceController() {
     }
@@ -93,7 +94,6 @@ var ResourceController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        console.log(req.user.permissions);
                         resourceBusiness = new ResourceBusiness();
                         return [4 /*yield*/, resourceBusiness.fetch({})];
                     case 1:
@@ -130,7 +130,7 @@ var ResourceController = /** @class */ (function () {
     __decorate([
         decorators_1.get('/'),
         decorators_1.use(auth_1.requireAuth),
-        decorators_1.authorize('canViewProfessionals'),
+        decorators_1.authorize.apply(void 0, exports.roles),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

@@ -14,6 +14,7 @@ var gigSchema = new mongoose_1.Schema({
         ref: 'User',
         required: true
     },
+    talentCategories: [{ type: mongoose_1.Schema.Types.ObjectId }],
     note: { type: String },
     items: [{ type: String }],
     deletedBySender: { type: Boolean, default: false },

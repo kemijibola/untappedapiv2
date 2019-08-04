@@ -1,5 +1,8 @@
 "use strict";
-var mongoose = require("mongoose");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var mongoose_1 = __importDefault(require("mongoose"));
 var RepositoryBase = /** @class */ (function () {
     function RepositoryBase(schemaModel) {
         this._model = schemaModel;
@@ -18,12 +21,15 @@ var RepositoryBase = /** @class */ (function () {
     RepositoryBase.prototype.fetch = function (condition) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this._model.find(condition, function (error, result) {
+            _this._model
+                .find(condition, function (error, result) {
                 if (error)
                     reject(error);
                 else
                     resolve(result);
-            });
+            })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
+                .exec();
         });
     };
     RepositoryBase.prototype.update = function (_id, item) {
@@ -52,14 +58,13 @@ var RepositoryBase = /** @class */ (function () {
     RepositoryBase.prototype.delete = function (_id) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this._model
-                .remove({ _id: _this.toObjectId(_id) }, function (err) {
+            _this._model.remove({ _id: _this.toObjectId(_id) }, function (err) {
                 if (err)
                     reject(err);
                 else
                     resolve(true);
-            })
-                .cache({ collectionName: _this._model.collection.name });
+            });
+            // .cache({ collectionName: this._model.collection.name });
         });
     };
     RepositoryBase.prototype.findById = function (_id) {
@@ -71,6 +76,7 @@ var RepositoryBase = /** @class */ (function () {
                 else
                     resolve(result);
             });
+            // .cacheDocQuery({ collectionName: this._model.collection.name });
         });
     };
     RepositoryBase.prototype.findByCriteria = function (criteria) {
@@ -85,7 +91,7 @@ var RepositoryBase = /** @class */ (function () {
         });
     };
     RepositoryBase.prototype.toObjectId = function (_id) {
-        return mongoose.Types.ObjectId.createFromHexString(_id);
+        return mongoose_1.default.Types.ObjectId.createFromHexString(_id);
     };
     return RepositoryBase;
 }());

@@ -79,6 +79,25 @@ class ContestBusiness implements IContestEntryBusiness {
     }
   }
 
+  async patch(id: string, item: any): Promise<Result<IContestEntry>> {
+    try {
+      const contestEntry = await this._contestEntryRepository.findById(id);
+      if (!contestEntry)
+        return Result.fail<IContestEntry>(
+          404,
+          `Could not update contest entry.Contest entry with Id ${id} not found`
+        );
+      const updateObj = await this._contestEntryRepository.update(
+        contestEntry._id,
+        item
+      );
+
+      return Result.ok<IContestEntry>(200, updateObj);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
   async delete(id: string): Promise<Result<boolean>> {
     try {
       const isDeleted = await this._contestEntryRepository.delete(id);

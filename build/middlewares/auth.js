@@ -55,8 +55,8 @@ function requireAuth(req, res, next) {
                     subject = '';
                     if (authorization === '' || typeof authorization === 'undefined') {
                         return [2 /*return*/, next(error_1.PlatformError.error({
-                                code: 400,
-                                message: 'Header is not set.'
+                                code: 401,
+                                message: 'You must be logged in to perform thus operation.'
                             }))];
                     }
                     encodedJWT = authorization.substr('JWT '.length);
@@ -103,7 +103,10 @@ function requireAuth(req, res, next) {
                     }
                     destinationResourceUrl = "" + lib_1.issuer + req.originalUrl;
                     if (destinationResourceUrl === payload.iss) {
-                        req.user = decoded;
+                        req.user = {
+                            id: payload.sub,
+                            permissions: payload.permissions
+                        };
                         return [2 /*return*/, next()];
                     }
                     userBusiness = new UserBusiness_1.default();
@@ -142,11 +145,8 @@ function requireAuth(req, res, next) {
                     userToken = _a.sent();
                     res.setHeader('authorization', userToken);
                     req.user = {
-                        _id: user.data._id,
-                        email: user.data.email,
-                        fullName: user.data.fullName,
-                        roles: user.data.roles.slice(),
-                        token: userToken
+                        id: user.data._id,
+                        permissions: permissions
                     };
                     return [2 /*return*/, next()];
                 case 5: return [3 /*break*/, 7];

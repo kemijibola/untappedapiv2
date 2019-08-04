@@ -4,6 +4,7 @@ var TokenType;
 (function (TokenType) {
     TokenType["MAIL"] = "MAIL";
     TokenType["AUTH"] = "AUTH";
+    TokenType["JUDGEEVALUATION"] = "JUDGEEVALUATION";
 })(TokenType = exports.TokenType || (exports.TokenType = {}));
 var UserTypes;
 (function (UserTypes) {

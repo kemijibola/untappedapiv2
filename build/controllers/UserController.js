@@ -95,7 +95,6 @@ var UserController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness();
                         user = '5d39c97b432a2e5fd0484375';
-                        console.log('got here');
                         return [4 /*yield*/, userBusiness.patch(user, req.body)];
                     case 1:
                         result = _a.sent();

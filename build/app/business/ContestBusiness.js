@@ -117,7 +117,7 @@ var ContestBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        // TODO:: end date 
+                        // TODO:: end date
                         // TODO:: confirm categories sent by client
                         if (item.contestType === Contest_1.ContestType.OnlineOffline) {
                             if (!item.maxContestant || item.maxContestant < 3) {

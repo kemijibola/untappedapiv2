@@ -4,7 +4,8 @@ const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IAudio, MediaUploadType } from '../../models/interfaces/Media';
 
 const audioItemSchema = new Schema({
-  type: { path: String, required: true },
+  index: { type: Number, required: true },
+  path: { type: String, required: true },
   likes: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 });
 

@@ -5,7 +5,7 @@ import { AppRouter } from './AppRouter';
 import './controllers';
 import { AppConfig } from './app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('./config/keys');
-// module.require('./utils/Cache');
+module.require('./utils/Cache');
 import { errorHandler } from './middlewares/ErrorMiddleware';
 import { IError } from './utils/error/GlobalError';
 import cors from 'cors';

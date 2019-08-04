@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { decode } from 'jsonwebtoken';
 import { PlatformError } from '../utils/error';
 import {
   currentKey,
@@ -36,8 +36,8 @@ export async function requireAuth(
     if (authorization === '' || typeof authorization === 'undefined') {
       return next(
         PlatformError.error({
-          code: 400,
-          message: 'Header is not set.'
+          code: 401,
+          message: 'You must be logged in to perform thus operation.'
         })
       );
     }
@@ -57,6 +57,7 @@ export async function requireAuth(
 
     audience = payload.aud;
     subject = payload.sub;
+
     if (header.kid !== currentKey) {
       return next(
         PlatformError.error({
@@ -93,13 +94,15 @@ export async function requireAuth(
     }
     const destinationResourceUrl = `${issuer}${req.originalUrl}`;
     if (destinationResourceUrl === payload.iss) {
-      req.user = decoded;
+      req.user = {
+        id: payload.sub,
+        permissions: payload.permissions
+      };
       return next();
     }
 
     const userBusiness = new UserBusiness();
     const user = await userBusiness.findUserForExchange(payload.sub);
-
     if (user.data) {
       const permissionParams: IExchangeToken = {
         destinationUrl: req.originalUrl.toLowerCase(),
@@ -136,11 +139,8 @@ export async function requireAuth(
       );
       res.setHeader('authorization', userToken);
       req.user = {
-        _id: user.data._id,
-        email: user.data.email,
-        fullName: user.data.fullName,
-        roles: [...user.data.roles],
-        token: userToken
+        id: user.data._id,
+        permissions: permissions
       };
       return next();
     }
