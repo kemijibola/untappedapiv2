@@ -4,12 +4,6 @@ import util from 'util';
 import { AppConfig } from '../app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('../config/keys');
 
-declare module 'redis' {
-  interface RedisClient extends NodeJS.EventEmitter {
-    hget(arg1: string, arg2: string): Promise<string>;
-  }
-}
-
 declare module 'mongoose' {
   interface Query<T> {
     cache(options: any): Query<T>;
