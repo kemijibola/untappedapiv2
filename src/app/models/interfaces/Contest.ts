@@ -9,6 +9,7 @@ import { IUserSocialMedia } from './Talent';
 import { PaymentStatus } from './Payment';
 import { IAppSpec } from './AppSpec';
 import { IIssueCategory, ComplaintStatus } from './IssueCategory';
+import { MediaType } from './Portfolio';
 
 export interface IRedeemable {
   prizeType: IPrizeType['_id'];
@@ -38,13 +39,17 @@ export interface IContest
     ITimeStamp,
     mongoose.Document {
   title: string;
+  // Contest code is generated after successful payment
+  code: number;
   information: string;
   bannerImage: string;
   eligibleCategories: ICategory[];
   eligibilityInfo: string;
+  entryMediaType: MediaType;
   submissionRules: string;
   startDate: Date;
   duration: number;
+  views: number;
   redeemable: IRedeemable;
   endDate: Date;
   contestType: ContestType;

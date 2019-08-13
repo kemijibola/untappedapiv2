@@ -103,8 +103,6 @@ class UserBusiness implements IUserBusiness {
 
       const authData: IAuthData = {
         _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
         roles: [...user.roles],
         token: userToken
       };

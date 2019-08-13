@@ -1,4 +1,4 @@
-import mongoose, { Query } from 'mongoose';
+import mongoose from 'mongoose';
 import IRead from '../interface/base/Read';
 import IWrite from '../interface/base/Write';
 

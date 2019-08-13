@@ -100,4 +100,5 @@ var CommentController = /** @class */ (function () {
     ], CommentController);
     return CommentController;
 }());
+exports.CommentController = CommentController;
 //# sourceMappingURL=CommentController.js.map

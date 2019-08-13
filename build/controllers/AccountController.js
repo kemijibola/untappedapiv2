@@ -144,21 +144,21 @@ var AuthController = /** @class */ (function () {
     AuthController.prototype.fetch = function () { };
     AuthController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/login'),
+        decorators_1.post('/authentication'),
         decorators_1.requestValidators('email', 'password', 'audience'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postLogin", null);
     __decorate([
-        decorators_1.post('/signup'),
+        decorators_1.post('/account/signup'),
         decorators_1.requestValidators('email', 'password', 'audience', 'username', 'roles'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postSignup", null);
     AuthController = __decorate([
-        decorators_1.controller('/v1/account')
+        decorators_1.controller('/v1')
     ], AuthController);
     return AuthController;
 }());

@@ -11,9 +11,9 @@ import { issuer } from '../utils/lib';
 //   next();
 // }
 
-@controller('/v1/account')
+@controller('/v1')
 export class AuthController {
-  @post('/login')
+  @post('/authentication')
   @requestValidators('email', 'password', 'audience')
   async postLogin(req: Request, res: Response, next: NextFunction) {
     try {
@@ -49,7 +49,7 @@ export class AuthController {
     }
   }
 
-  @post('/signup')
+  @post('/account/signup')
   @requestValidators('email', 'password', 'audience', 'username', 'roles')
   async postSignup(req: Request, res: Response, next: NextFunction) {
     try {

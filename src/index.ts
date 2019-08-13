@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { AppRouter } from './AppRouter';
-// import './controllers/CategoryController';
 import './controllers';
 import { AppConfig } from './app/models/interfaces/custom/AppConfig';
 const config: AppConfig = module.require('./config/keys');
@@ -9,6 +8,8 @@ module.require('./utils/Cache');
 import { errorHandler } from './middlewares/ErrorMiddleware';
 import { IError } from './utils/error/GlobalError';
 import cors from 'cors';
+// import SocketIo = require('./socket/SocketIo');
+import { SocketIo } from './socket/SocketIo';
 
 const app = express();
 
@@ -40,4 +41,5 @@ app.set('port', port);
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);
+  SocketIo.setUpApp(app);
 });

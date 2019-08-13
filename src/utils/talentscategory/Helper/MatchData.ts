@@ -1,5 +1,4 @@
 import { ITalent } from '../../../app/models/interfaces';
-import { TalentPortfolio } from '../TalentPortfolio';
 import { Summary } from './Summary';
 
 export type MatchData = ITalent;

@@ -10,14 +10,9 @@ export function errorHandler(
 ) {
   const status = err.code;
   const message = err.message;
-  res.json({
+  return res.json({
     status: status,
-    message,
+    error: message,
     data: null
   });
-  // return res.status(status).json({
-  //   status,
-  //   message,
-  //   data: null
-  // });
 }

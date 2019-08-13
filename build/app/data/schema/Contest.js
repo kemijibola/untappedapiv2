@@ -43,11 +43,14 @@ var contestIssueSchema = new mongoose_1.Schema({
 var contestSchema = new mongoose_1.Schema({
     // TODO:: add trim to properties that might have extra spaces
     title: { type: String, required: true, trim: true },
+    code: { type: Number, default: 0 },
     information: { type: String, required: true },
     bannerImage: { type: String },
     eligibleCategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Category' }],
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
+    views: { type: Number, default: 0 },
+    entryMediaType: { type: interfaces_1.MediaType, required: true },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },
     redeemable: [{ type: redeemableSchema, required: true }],

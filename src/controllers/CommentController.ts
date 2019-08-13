@@ -6,7 +6,7 @@ import { PlatformError } from '../utils/error';
 import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
 
 @controller('/v1/comments')
-class CommentController {
+export class CommentController {
   @post('/')
   @requestValidators('entityId, comment')
   async create(req: RequestWithUser, res: Response, next: NextFunction) {

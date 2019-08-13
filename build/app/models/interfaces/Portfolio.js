@@ -4,7 +4,7 @@ var MediaType;
 (function (MediaType) {
     MediaType["AUDIO"] = "AUDIO";
     MediaType["VIDEO"] = "VIDEO";
-    MediaType["IMAGE"] = "VIDEO";
+    MediaType["IMAGE"] = "IMAGE";
 })(MediaType = exports.MediaType || (exports.MediaType = {}));
 var UploadType;
 (function (UploadType) {

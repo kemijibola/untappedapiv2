@@ -5,7 +5,7 @@ import ContestBusiness = require('../app/business/ContestBusiness');
 import { PlatformError } from '../utils/error';
 
 @controller('/v1/contests')
-class ContestController {
+export class ContestController {
   @post('/')
   @requestValidators(
     'title',

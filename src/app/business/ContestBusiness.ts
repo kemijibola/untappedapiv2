@@ -4,6 +4,9 @@ import { IContest } from '../models/interfaces';
 import { Result } from '../../utils/Result';
 import { ContestType } from '../data/schema/Contest';
 import { isAfter, addDays } from 'date-fns';
+import { IContestList } from '../models/interfaces/custom/ContestList';
+import { ContestSummary } from '../../utils/contests/ContestSummary';
+import { ContestListAnalysis } from '../../utils/contests/analyzers/ContestListAnalysis';
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
@@ -16,6 +19,21 @@ class ContestBusiness implements IContestBusiness {
     try {
       const contests = await this._contestRepository.fetch(condition);
       return Result.ok<IContest[]>(200, contests);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async fetchContestList(condition: any): Promise<Result<IContestList[]>> {
+    try {
+      const contest = await this._contestRepository.fetch(condition);
+      const contestSummary = new ContestSummary<IContestList[]>(
+        new ContestListAnalysis()
+      );
+      const contestList = await contestSummary.generateContestListReport(
+        contest
+      );
+      return Result.ok<IContestList[]>(200, contestList);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

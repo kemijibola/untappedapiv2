@@ -6,7 +6,7 @@ import { IAppSpec } from './AppSpec';
 export enum MediaType {
   AUDIO = 'AUDIO',
   VIDEO = 'VIDEO',
-  IMAGE = 'VIDEO'
+  IMAGE = 'IMAGE'
 }
 
 export enum UploadType {

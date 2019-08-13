@@ -99,4 +99,5 @@ var ApprovalController = /** @class */ (function () {
     ], ApprovalController);
     return ApprovalController;
 }());
+exports.ApprovalController = ApprovalController;
 //# sourceMappingURL=ApprovalController.js.map

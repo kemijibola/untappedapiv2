@@ -106,8 +106,6 @@ var UserBusiness = /** @class */ (function () {
                         userToken = _a.sent();
                         authData = {
                             _id: user._id,
-                            email: user.email,
-                            fullName: user.fullName,
                             roles: user.roles.slice(),
                             token: userToken
                         };

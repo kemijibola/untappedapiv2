@@ -7,7 +7,7 @@ import BaseController from './interfaces/base/BaseController';
 import { PlatformError } from '../utils/error';
 
 @controller('/v1/approvals')
-class ApprovalController {
+export class ApprovalController {
   @post('/')
   @requestValidators('entity', 'operation', 'approved')
   async create(req: Request, res: Response, next: NextFunction) {

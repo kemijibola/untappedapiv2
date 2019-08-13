@@ -99,4 +99,5 @@ var ContestController = /** @class */ (function () {
     ], ContestController);
     return ContestController;
 }());
+exports.ContestController = ContestController;
 //# sourceMappingURL=ContestController.js.map

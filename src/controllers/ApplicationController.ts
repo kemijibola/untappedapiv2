@@ -3,13 +3,14 @@ import { Request, Response, NextFunction } from 'express';
 import { get, controller, requestValidators, post } from '../decorators';
 import { IApplication } from '../app/models/interfaces';
 import ApplicationBusiness = require('../app/business/ApplicationBusiness');
+import { ObjectKeyString } from '../utils/lib';
 
 @controller('/applications')
 export class ApplicationController {
   @get('/')
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
-      let condition: { [x: string]: string } = {};
+      let condition: ObjectKeyString = {};
       if (req.query) {
         condition.identity = req.query.audience;
       }

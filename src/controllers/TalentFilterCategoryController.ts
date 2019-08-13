@@ -4,7 +4,7 @@ import { get, controller, requestValidators, post } from '../decorators';
 import { IRole, ITalentFilterCategory } from '../app/models/interfaces';
 import TalentFilterCategoryBusiness = require('../app/business/TalentFilterCategoryBusiness');
 
-@controller('/v1/talent_category')
+@controller('/v1/talent-categories')
 export class TalentFilterCategoryController {
   @get('/')
   async fetch(req: Request, res: Response, next: NextFunction) {

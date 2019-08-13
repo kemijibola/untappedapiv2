@@ -120,7 +120,7 @@ var TalentFilterCategoryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], TalentFilterCategoryController.prototype, "fetch", null);
     TalentFilterCategoryController = __decorate([
-        decorators_1.controller('/v1/talent_category')
+        decorators_1.controller('/v1/talent-categories')
     ], TalentFilterCategoryController);
     return TalentFilterCategoryController;
 }());

@@ -4,7 +4,8 @@ const mongooseConnection = MongodataAccess.mongooseConnection;
 import {
   IContest,
   PaymentStatus,
-  ComplaintStatus
+  ComplaintStatus,
+  MediaType
 } from '../../models/interfaces';
 import { socialMediaSchema } from './Talent';
 
@@ -50,11 +51,14 @@ const contestSchema: Schema = new Schema(
   {
     // TODO:: add trim to properties that might have extra spaces
     title: { type: String, required: true, trim: true },
+    code: { type: Number, default: 0 },
     information: { type: String, required: true },
     bannerImage: { type: String },
     eligibleCategories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
+    views: { type: Number, default: 0 },
+    entryMediaType: { type: MediaType, required: true },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },
     redeemable: [{ type: redeemableSchema, required: true }],
