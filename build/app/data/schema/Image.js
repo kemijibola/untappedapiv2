@@ -14,6 +14,8 @@ var imageSchema = new mongoose_1.Schema({
     shortDescription: { type: String },
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     items: [{ type: imageItemSchema, required: true }],
+    albumCover: { type: String },
+    viewCount: { type: Number, default: 0 },
     uploadType: { type: Media_1.MediaUploadType, required: true },
     isApproved: { type: Boolean, default: false },
     application: {

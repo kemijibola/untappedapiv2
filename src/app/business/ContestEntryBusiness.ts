@@ -23,12 +23,27 @@ class ContestBusiness implements IContestEntryBusiness {
 
   async findById(id: string): Promise<Result<IContestEntry>> {
     try {
+      if (!id) return Result.fail<IContestEntry>(400, 'Bad request.');
       const contestEntry = await this._contestEntryRepository.findById(id);
       if (!contestEntry)
         return Result.fail<IContestEntry>(
           404,
           `Contest entry of Id ${id} not found`
         );
+      else return Result.ok<IContestEntry>(200, contestEntry);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IContestEntry>> {
+    try {
+      if (!condition) return Result.fail<IContestEntry>(400, 'Bad request.');
+      const contestEntry = await this._contestEntryRepository.findByOne(
+        condition
+      );
+      if (!contestEntry)
+        return Result.fail<IContestEntry>(404, `Contest entry not found`);
       else return Result.ok<IContestEntry>(200, contestEntry);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

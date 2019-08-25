@@ -21,9 +21,21 @@ class VideoBusiness implements IVideoBusiness {
 
   async findById(id: string): Promise<Result<IVideo>> {
     try {
+      if (!id) return Result.fail<IVideo>(400, 'Bad request');
       const video = await this._videoRepository.findById(id);
       if (!video)
         return Result.fail<IVideo>(404, `Video of Id ${id} not found`);
+      else return Result.ok<IVideo>(200, video);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IVideo>> {
+    try {
+      if (!condition) return Result.fail<IVideo>(400, 'Bad request');
+      const video = await this._videoRepository.findByOne(condition);
+      if (!video) return Result.fail<IVideo>(404, `Video not found`);
       else return Result.ok<IVideo>(200, video);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

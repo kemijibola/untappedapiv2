@@ -21,9 +21,21 @@ class OrderBusiness implements IOrderBusiness {
 
   async findById(id: string): Promise<Result<IOrder>> {
     try {
+      if (!id) return Result.fail<IOrder>(400, 'Bad request');
       const order = await this._orderRepository.findById(id);
       if (!order)
         return Result.fail<IOrder>(404, `Order of Id ${id} not found`);
+      else return Result.ok<IOrder>(200, order);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IOrder>> {
+    try {
+      if (!condition) return Result.fail<IOrder>(400, 'Bad request');
+      const order = await this._orderRepository.findByOne(condition);
+      if (!order) return Result.fail<IOrder>(404, `Order not found`);
       else return Result.ok<IOrder>(200, order);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

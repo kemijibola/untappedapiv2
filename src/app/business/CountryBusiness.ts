@@ -21,9 +21,21 @@ class CountryBusiness implements ICountryBusiness {
 
   async findById(id: string): Promise<Result<ICountry>> {
     try {
+      if (!id) return Result.fail<ICountry>(400, 'Bad request.');
       const country = await this._countryRepository.findById(id);
       if (!country)
         return Result.fail<ICountry>(404, `Country of Id ${id} not found`);
+      else return Result.ok<ICountry>(200, country);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<ICountry>> {
+    try {
+      if (!condition) return Result.fail<ICountry>(400, 'Bad request.');
+      const country = await this._countryRepository.findByOne(condition);
+      if (!country) return Result.fail<ICountry>(404, `Country not found`);
       else return Result.ok<ICountry>(200, country);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

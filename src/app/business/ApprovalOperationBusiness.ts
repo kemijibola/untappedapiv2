@@ -23,6 +23,7 @@ class ApprovalOperationBusiness implements IApprovalOperationBusiness {
 
   async findById(id: string): Promise<Result<IApprovalOperation>> {
     try {
+      if (!id) return Result.fail<IApprovalOperation>(400, 'Bad request.');
       const approvalOperation = await this._approvalOperationRepository.findById(
         id
       );
@@ -30,6 +31,24 @@ class ApprovalOperationBusiness implements IApprovalOperationBusiness {
         return Result.fail<IApprovalOperation>(
           404,
           `Approval operation of Id ${id} not found`
+        );
+      else return Result.ok<IApprovalOperation>(200, approvalOperation);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IApprovalOperation>> {
+    try {
+      if (!condition)
+        return Result.fail<IApprovalOperation>(400, 'Bad request.');
+      const approvalOperation = await this._approvalOperationRepository.findByOne(
+        condition
+      );
+      if (!approvalOperation)
+        return Result.fail<IApprovalOperation>(
+          404,
+          `Approval operation not found`
         );
       else return Result.ok<IApprovalOperation>(200, approvalOperation);
     } catch (err) {

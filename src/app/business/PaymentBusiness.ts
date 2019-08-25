@@ -21,9 +21,21 @@ class PaymentBusiness implements IPaymentBusiness {
 
   async findById(id: string): Promise<Result<IPayment>> {
     try {
+      if (!id) return Result.fail<IPayment>(400, 'Bad request');
       const payment = await this._paymentRepository.findById(id);
       if (!payment)
         return Result.fail<IPayment>(404, `Payment of Id ${id} not found`);
+      else return Result.ok<IPayment>(200, payment);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IPayment>> {
+    try {
+      if (!condition) return Result.fail<IPayment>(400, 'Bad request');
+      const payment = await this._paymentRepository.findByOne(condition);
+      if (!payment) return Result.fail<IPayment>(404, `Payment not found`);
       else return Result.ok<IPayment>(200, payment);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

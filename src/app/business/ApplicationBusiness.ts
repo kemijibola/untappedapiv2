@@ -34,12 +34,37 @@ class ApplicationBusiness implements IApplicationBusiness {
 
   async findById(id: string): Promise<Result<any>> {
     try {
-      if (!id) return Result.fail<IApplication>(400, 'Invalid id');
+      if (!id) return Result.fail<IApplication>(400, 'Bad request.');
       const application = await this._applicationRepository.findById(id);
       if (!application) {
         return Result.fail<IApplication>(
           404,
           `Application of Id ${id} not found`
+        );
+      } else {
+        let refinedApplication: ApplicationViewModel = {
+          _id: application._id,
+          name: application.name,
+          dbUri: application.dbUri,
+          identity: application.identity,
+          secret: application.secret,
+          domain: application.domain
+        };
+        return Result.ok<ApplicationViewModel>(200, refinedApplication);
+      }
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<any>> {
+    try {
+      if (!condition) return Result.fail<IApplication>(400, 'Bad request');
+      const application = await this._applicationRepository.findByOne(condition);
+      if (!application) {
+        return Result.fail<IApplication>(
+          404,
+          `Application not found`
         );
       } else {
         let refinedApplication: ApplicationViewModel = {

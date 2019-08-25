@@ -12,6 +12,7 @@ class AudioBusiness implements IAudioBusiness {
 
   async fetch(condition: any): Promise<Result<IAudio[]>> {
     try {
+      condition.isApproved = true;
       const audios = await this._audioRepository.fetch(condition);
       return Result.ok<IAudio[]>(200, audios);
     } catch (err) {
@@ -21,9 +22,21 @@ class AudioBusiness implements IAudioBusiness {
 
   async findById(id: string): Promise<Result<IAudio>> {
     try {
+      if (!id) return Result.fail<IAudio>(400, 'Bad request.');
       const audio = await this._audioRepository.findById(id);
       if (!audio)
         return Result.fail<IAudio>(404, `Audio of Id ${id} not found`);
+      else return Result.ok<IAudio>(200, audio);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IAudio>> {
+    try {
+      if (!condition) return Result.fail<IAudio>(400, 'Bad request.');
+      const audio = await this._audioRepository.findById(condition);
+      if (!audio) return Result.fail<IAudio>(404, `Audio not found`);
       else return Result.ok<IAudio>(200, audio);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

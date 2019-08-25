@@ -21,9 +21,21 @@ class TalentBusiness implements ITalentBusiness {
 
   async findById(id: string): Promise<Result<ITalent>> {
     try {
+      if (!id) return Result.fail<ITalent>(400, 'Bad request');
       const talent = await this._talentRepository.findById(id);
       if (!talent)
         return Result.fail<ITalent>(404, `Talent of Id ${id} not found`);
+      else return Result.ok<ITalent>(200, talent);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<ITalent>> {
+    try {
+      if (!condition) return Result.fail<ITalent>(400, 'Bad request');
+      const talent = await this._talentRepository.findByOne(condition);
+      if (!talent) return Result.fail<ITalent>(404, `Talent not found`);
       else return Result.ok<ITalent>(200, talent);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

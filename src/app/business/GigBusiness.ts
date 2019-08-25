@@ -21,8 +21,20 @@ class GigBusiness implements IGigBusiness {
 
   async findById(id: string): Promise<Result<IGig>> {
     try {
+      if (!id) return Result.fail<IGig>(400, 'Bad request.');
       const gig = await this._gigRepository.findById(id);
       if (!gig) return Result.fail<IGig>(404, `Gig of Id ${id} not found`);
+      else return Result.ok<IGig>(200, gig);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IGig>> {
+    try {
+      if (!condition) return Result.fail<IGig>(400, 'Bad request.');
+      const gig = await this._gigRepository.findByOne(condition);
+      if (!gig) return Result.fail<IGig>(404, `Gig not found`);
       else return Result.ok<IGig>(200, gig);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

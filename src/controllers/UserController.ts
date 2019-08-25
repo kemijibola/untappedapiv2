@@ -4,13 +4,14 @@ import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler'
 import { IUserModel } from '../app/models/interfaces';
 import { PlatformError } from '../utils/error';
 import UserBusiness = require('../app/business/UserBusiness');
+import { ObjectKeyString } from '../utils/lib';
 
 @controller('/v1/users')
 export class UserController {
   @get('/')
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
-      let condition: { [x: string]: string } = {};
+      let condition: ObjectKeyString = {};
       if (req.query) {
         condition.email = req.query.email || '';
       }

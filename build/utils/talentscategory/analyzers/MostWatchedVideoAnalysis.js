@@ -27,7 +27,7 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
             for (var _a = 0, _b = talentVideo.medias; _a < _b.length; _a++) {
                 var video = _b[_a];
                 talentsVideoComment.push({
-                    count: video.videoPlayCount,
+                    count: video.watchCount,
                     talent: talentVideo.talent
                 });
             }

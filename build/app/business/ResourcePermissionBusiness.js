@@ -76,6 +76,8 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!id)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
                         return [4 /*yield*/, this._resourcePermissionRepository.findById(id)];
                     case 1:
                         resourcePermission = _a.sent();
@@ -92,14 +94,16 @@ var ResourcePermissionBusiness = /** @class */ (function () {
             });
         });
     };
-    ResourcePermissionBusiness.prototype.findByCriteria = function (criteria) {
+    ResourcePermissionBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var resourcePermission, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._resourcePermissionRepository.findByCriteria(criteria)];
+                        if (!condition)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                        return [4 /*yield*/, this._resourcePermissionRepository.findByOne(condition)];
                     case 1:
                         resourcePermission = _a.sent();
                         if (!resourcePermission)
@@ -115,9 +119,32 @@ var ResourcePermissionBusiness = /** @class */ (function () {
             });
         });
     };
+    ResourcePermissionBusiness.prototype.findByCriteria = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var resourcePermission, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._resourcePermissionRepository.findByCriteria(criteria)];
+                    case 1:
+                        resourcePermission = _a.sent();
+                        if (!resourcePermission)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Resource permission not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, resourcePermission)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_4 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_4.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ResourcePermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var resource, role, permissionIds, _i, _a, key, permission, resourcePermission, newResourcePermission, err_4;
+            var resource, role, permissionIds, _i, _a, key, permission, resourcePermission, newResourcePermission, err_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -165,8 +192,8 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         newResourcePermission = _b.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newResourcePermission)];
                     case 11:
-                        err_4 = _b.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
+                        err_5 = _b.sent();
+                        throw new Error("InternalServer error occured." + err_5.message);
                     case 12: return [2 /*return*/];
                 }
             });
@@ -174,7 +201,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
     };
     ResourcePermissionBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var resourcePermission, updateObj, err_5;
+            var resourcePermission, updateObj, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -189,8 +216,8 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
+                        err_6 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_6.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -198,7 +225,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
     };
     ResourcePermissionBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_6;
+            var isDeleted, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -208,8 +235,8 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
+                        err_7 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_7.message);
                     case 3: return [2 /*return*/];
                 }
             });

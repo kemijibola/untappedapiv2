@@ -23,6 +23,7 @@ class TalentFilterCategoryBusiness implements ITalentFilterCategoryBusiness {
 
   async findById(id: string): Promise<Result<ITalentFilterCategory>> {
     try {
+      if (!id) return Result.fail<ITalentFilterCategory>(400, 'Bad request');
       const talentFilterCategory = await this._talentFilterCategoryRepository.findById(
         id
       );
@@ -30,6 +31,24 @@ class TalentFilterCategoryBusiness implements ITalentFilterCategoryBusiness {
         return Result.fail<ITalentFilterCategory>(
           404,
           `Talent filter category of Id ${id} not found`
+        );
+      else return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<ITalentFilterCategory>> {
+    try {
+      if (!condition)
+        return Result.fail<ITalentFilterCategory>(400, 'Bad request');
+      const talentFilterCategory = await this._talentFilterCategoryRepository.findByOne(
+        condition
+      );
+      if (!talentFilterCategory)
+        return Result.fail<ITalentFilterCategory>(
+          404,
+          `Talent filter category not found`
         );
       else return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
     } catch (err) {

@@ -34,6 +34,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
 
   async findById(id: string): Promise<Result<IResourcePermission>> {
     try {
+      if (!id) return Result.fail<IResourcePermission>(400, 'Bad request');
       const resourcePermission = await this._resourcePermissionRepository.findById(
         id
       );
@@ -41,6 +42,24 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
         return Result.fail<IResourcePermission>(
           404,
           `Resource permission of Id ${id} not found`
+        );
+      else return Result.ok<IResourcePermission>(200, resourcePermission);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IResourcePermission>> {
+    try {
+      if (!condition)
+        return Result.fail<IResourcePermission>(400, 'Bad request');
+      const resourcePermission = await this._resourcePermissionRepository.findByOne(
+        condition
+      );
+      if (!resourcePermission)
+        return Result.fail<IResourcePermission>(
+          404,
+          `Resource permission not found`
         );
       else return Result.ok<IResourcePermission>(200, resourcePermission);
     } catch (err) {

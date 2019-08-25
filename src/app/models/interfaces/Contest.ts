@@ -9,7 +9,7 @@ import { IUserSocialMedia } from './Talent';
 import { PaymentStatus } from './Payment';
 import { IAppSpec } from './AppSpec';
 import { IIssueCategory, ComplaintStatus } from './IssueCategory';
-import { MediaType } from './Portfolio';
+import { MediaType } from './Media';
 
 export interface IRedeemable {
   prizeType: IPrizeType['_id'];

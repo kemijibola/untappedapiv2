@@ -23,12 +23,27 @@ class IssueCategoryBusiness implements IIssueCategoryBusiness {
 
   async findById(id: string): Promise<Result<IIssueCategory>> {
     try {
+      if (!id) return Result.fail<IIssueCategory>(400, 'Bad request.');
       const issueCategory = await this._issueCategoryRepository.findById(id);
       if (!issueCategory)
         return Result.fail<IIssueCategory>(
           404,
           `Issue category of Id ${id} not found`
         );
+      else return Result.ok<IIssueCategory>(200, issueCategory);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IIssueCategory>> {
+    try {
+      if (!condition) return Result.fail<IIssueCategory>(400, 'Bad request.');
+      const issueCategory = await this._issueCategoryRepository.findByOne(
+        condition
+      );
+      if (!issueCategory)
+        return Result.fail<IIssueCategory>(404, `Issue category not found`);
       else return Result.ok<IIssueCategory>(200, issueCategory);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

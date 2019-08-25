@@ -24,10 +24,21 @@ class ApprovalBusiness implements IApprovalBusiness {
 
   async findById(id: string): Promise<Result<IApproval>> {
     try {
-      if (!id) return Result.fail<IApproval>(400, 'Invalid id');
+      if (!id) return Result.fail<IApproval>(400, 'Bad request.');
       const approval = await this._approvalRepository.findById(id);
       if (!approval)
         return Result.fail<IApproval>(404, `Approval of Id ${id} not found`);
+      else return Result.ok<IApproval>(200, approval);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IApproval>> {
+    try {
+      if (!condition) return Result.fail<IApproval>(400, 'Bad request.');
+      const approval = await this._approvalRepository.findByOne(condition);
+      if (!approval) return Result.fail<IApproval>(404, `Approval not found`);
       else return Result.ok<IApproval>(200, approval);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

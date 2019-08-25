@@ -1,8 +1,8 @@
-import { IVideo } from '../models/interfaces';
+import { IImage } from '../models/interfaces';
 import { ImageSchema } from '../data/schema/Image';
 import RepositoryBase from './base/RepositoryBase';
 
-class ImageRepository extends RepositoryBase<IVideo> {
+class ImageRepository extends RepositoryBase<IImage> {
   constructor() {
     super(ImageSchema);
   }

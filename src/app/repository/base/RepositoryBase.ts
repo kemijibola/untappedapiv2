@@ -19,7 +19,7 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  fetch(condition: any): Promise<any> {
+  fetch(condition = {}): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model
         .find(condition, (error: any, result: any) => {
@@ -65,6 +65,16 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  findByOne(condition = {}): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this._model.findOne(condition, (error: any, result: T) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+      // .cacheDocQuery({ collectionName: this._model.collection.name });
+    });
+  }
+
   findById(_id: string): Promise<T> {
     return new Promise((resolve, reject) => {
       this._model.findById(_id, (error: any, result: T) => {
@@ -75,7 +85,7 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  findByCriteria(criteria: any): Promise<T> {
+  findByCriteria(criteria = {}): Promise<T> {
     return new Promise((resolve, reject) => {
       this._model.findOne(criteria, (error: any, result: T) => {
         if (error) reject(error);

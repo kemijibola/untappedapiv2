@@ -35,7 +35,7 @@ export class MostWatchedVideoAnalysis implements Analyzer {
     for (let talentVideo of talentsVideo) {
       for (let video of talentVideo.medias) {
         talentsVideoComment.push({
-          count: video.videoPlayCount,
+          count: video.watchCount,
           talent: talentVideo.talent
         });
       }

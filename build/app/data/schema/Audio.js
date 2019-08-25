@@ -14,9 +14,10 @@ var audioSchema = new mongoose_1.Schema({
     shortDescription: { type: String },
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     items: [{ type: audioItemSchema, required: true }],
+    albumCover: { type: String },
     uploadType: { type: Media_1.MediaUploadType, required: true },
     isApproved: { type: Boolean, default: false },
-    playedCount: { type: Number, default: 0 },
+    playCount: { type: Number, default: 0 },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Application',

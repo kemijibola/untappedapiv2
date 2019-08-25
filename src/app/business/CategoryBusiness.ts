@@ -21,9 +21,21 @@ class CategoryBusiness implements ICategoryBusiness {
 
   async findById(id: string): Promise<Result<ICategory>> {
     try {
+      if (!id) return Result.fail<ICategory>(400, 'Bad request.');
       const category = await this._categoryRepository.findById(id);
       if (!category)
         return Result.fail<ICategory>(404, `Category of Id ${id} not found`);
+      else return Result.ok<ICategory>(200, category);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<ICategory>> {
+    try {
+      if (!condition) return Result.fail<ICategory>(400, 'Bad request.');
+      const category = await this._categoryRepository.findByOne(condition);
+      if (!category) return Result.fail<ICategory>(404, `Category not found`);
       else return Result.ok<ICategory>(200, category);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

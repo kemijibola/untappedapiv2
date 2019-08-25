@@ -21,9 +21,21 @@ class ImageBusiness implements IImageBusiness {
 
   async findById(id: string): Promise<Result<IImage>> {
     try {
+      if (!id) return Result.fail<IImage>(400, 'Bad request.');
       const image = await this._imageRepository.findById(id);
       if (!image)
         return Result.fail<IImage>(404, `Image of Id ${id} not found`);
+      else return Result.ok<IImage>(200, image);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IImage>> {
+    try {
+      if (!condition) return Result.fail<IImage>(400, 'Bad request.');
+      const image = await this._imageRepository.findByOne(condition);
+      if (!image) return Result.fail<IImage>(404, `Image not found`);
       else return Result.ok<IImage>(200, image);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

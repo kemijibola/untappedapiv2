@@ -21,12 +21,25 @@ class EvaluationBusiness implements IEvaluationBusiness {
 
   async findById(id: string): Promise<Result<IEvaluation>> {
     try {
+      if (!id) return Result.fail<IEvaluation>(400, 'Bad request.');
       const evaluation = await this._evaluationRepository.findById(id);
       if (!evaluation)
         return Result.fail<IEvaluation>(
           404,
           `Evaluation of Id ${id} not found`
         );
+      else return Result.ok<IEvaluation>(200, evaluation);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IEvaluation>> {
+    try {
+      if (!condition) return Result.fail<IEvaluation>(400, 'Bad request.');
+      const evaluation = await this._evaluationRepository.findByOne(condition);
+      if (!evaluation)
+        return Result.fail<IEvaluation>(404, `Evaluation not found`);
       else return Result.ok<IEvaluation>(200, evaluation);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

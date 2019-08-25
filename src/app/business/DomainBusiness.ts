@@ -21,9 +21,21 @@ class DomainBusiness implements IDomainBusiness {
 
   async findById(id: string): Promise<Result<IDomain>> {
     try {
+      if (!id) return Result.fail<IDomain>(400, 'Bad request.');
       const domain = await this._domainRepository.findById(id);
       if (!domain)
         return Result.fail<IDomain>(404, `Domain of Id ${id} not found`);
+      else return Result.ok<IDomain>(200, domain);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IDomain>> {
+    try {
+      if (!condition) return Result.fail<IDomain>(400, 'Bad request.');
+      const domain = await this._domainRepository.findByOne(condition);
+      if (!domain) return Result.fail<IDomain>(404, `Domain not found`);
       else return Result.ok<IDomain>(200, domain);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

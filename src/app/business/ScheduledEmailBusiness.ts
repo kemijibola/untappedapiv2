@@ -23,12 +23,27 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
 
   async findById(id: string): Promise<Result<IScheduledEmail>> {
     try {
+      if (!id) return Result.fail<IScheduledEmail>(400, 'Bad request');
       const scheduledEmail = await this._scheduledEmailRepository.findById(id);
       if (!scheduledEmail)
         return Result.fail<IScheduledEmail>(
           404,
           `Scheduled Email of Id ${id} not found`
         );
+      else return Result.ok<IScheduledEmail>(200, scheduledEmail);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IScheduledEmail>> {
+    try {
+      if (!condition) return Result.fail<IScheduledEmail>(400, 'Bad request');
+      const scheduledEmail = await this._scheduledEmailRepository.findById(
+        condition
+      );
+      if (!scheduledEmail)
+        return Result.fail<IScheduledEmail>(404, `Scheduled Email not found`);
       else return Result.ok<IScheduledEmail>(200, scheduledEmail);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

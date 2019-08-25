@@ -4,6 +4,8 @@ import { TokenType } from './custom/GlobalEnum';
 
 export interface IAuthData {
   _id: string;
+  email: string;
+  fullName: string;
   token?: string;
   roles: IRole['_id'][];
 }

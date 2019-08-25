@@ -36,8 +36,20 @@ class RoleBusiness implements IRoleBusiness {
 
   async findById(id: string): Promise<Result<IRole>> {
     try {
+      if (!id) return Result.fail<IRole>(400, 'Bad request');
       const role = await this._roleRepository.findById(id);
       if (!role) return Result.fail<IRole>(404, `Role of Id ${id} not found`);
+      else return Result.ok<IRole>(200, role);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IRole>> {
+    try {
+      if (!condition) return Result.fail<IRole>(400, 'Bad request');
+      const role = await this._roleRepository.findByOne(condition);
+      if (!role) return Result.fail<IRole>(404, `Role not found`);
       else return Result.ok<IRole>(200, role);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

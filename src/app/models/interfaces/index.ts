@@ -12,7 +12,6 @@ export * from './Country';
 export * from './Evaluation';
 export * from './Contest';
 export * from './ContestEntry';
-export * from './Portfolio';
 export * from './Comment';
 export * from './Gig';
 export * from './Resource';

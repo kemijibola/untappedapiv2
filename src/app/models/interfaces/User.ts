@@ -14,6 +14,7 @@ export interface IUserAccountStatus {
   updatedAt: Date;
 }
 
+//
 export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   email: string;
   fullName: string;

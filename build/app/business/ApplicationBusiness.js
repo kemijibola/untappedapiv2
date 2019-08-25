@@ -83,7 +83,7 @@ var ApplicationBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Invalid id')];
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
                         return [4 /*yield*/, this._applicationRepository.findById(id)];
                     case 1:
                         application = _a.sent();
@@ -110,15 +110,16 @@ var ApplicationBusiness = /** @class */ (function () {
             });
         });
     };
-    ApplicationBusiness.prototype.findByCriteria = function (criteria) {
+    ApplicationBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var application, refinedApplication, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        criteria.isActive = true;
-                        return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
+                        if (!condition)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                        return [4 /*yield*/, this._applicationRepository.findByOne(condition)];
                     case 1:
                         application = _a.sent();
                         if (!application) {
@@ -144,9 +145,43 @@ var ApplicationBusiness = /** @class */ (function () {
             });
         });
     };
+    ApplicationBusiness.prototype.findByCriteria = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var application, refinedApplication, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        criteria.isActive = true;
+                        return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
+                    case 1:
+                        application = _a.sent();
+                        if (!application) {
+                            return [2 /*return*/, Result_1.Result.fail(404, "Application not found")];
+                        }
+                        else {
+                            refinedApplication = {
+                                _id: application._id,
+                                name: application.name,
+                                dbUri: application.dbUri,
+                                identity: application.identity,
+                                secret: application.secret,
+                                domain: application.domain
+                            };
+                            return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_4 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_4.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ApplicationBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newApplication, refinedApplication, err_4;
+            var newApplication, refinedApplication, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -164,8 +199,8 @@ var ApplicationBusiness = /** @class */ (function () {
                         };
                         return [2 /*return*/, Result_1.Result.ok(201, refinedApplication)];
                     case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
+                        err_5 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_5.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -173,7 +208,7 @@ var ApplicationBusiness = /** @class */ (function () {
     };
     ApplicationBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, updateObj, err_5;
+            var application, updateObj, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -188,8 +223,8 @@ var ApplicationBusiness = /** @class */ (function () {
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
+                        err_6 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_6.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -197,7 +232,7 @@ var ApplicationBusiness = /** @class */ (function () {
     };
     ApplicationBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_6;
+            var isDeleted, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -207,8 +242,8 @@ var ApplicationBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
+                        err_7 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_7.message);
                     case 3: return [2 /*return*/];
                 }
             });

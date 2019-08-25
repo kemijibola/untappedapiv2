@@ -45,6 +45,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+var AudioBusiness = require("../app/business/AudioBusiness");
+var VideoBusiness = require("../app/business/VideoBusiness");
+var ImageBusiness = require("../app/business/ImageBusiness");
+var interfaces_1 = require("../app/models/interfaces");
+var error_1 = require("../utils/error");
 // TODO:: http://localhost:9000?user=1234&medias?type=all&upload=single
 // TODO:: http://localhost:9000?user=1234&medias?type=all&upload=all
 // TODO:: http://localhost:9000?medias?type=videos&upload=single
@@ -57,52 +62,6 @@ var MediaController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 try {
-                    // let criteria: { $and: any; $or: any } = {
-                    //   $and: null,
-                    //   $or: null
-                    // };
-                    // const item: IMedia = req.body;
-                    // const [_, fileExtension] = item.items[0].path.split('.');
-                    // if (audioExtentions.includes(fileExtension)) {
-                    //   const audioModel = await new AudioRepository().findByCriteria({
-                    //     title: item.title.toLowerCase()
-                    //   });
-                    //   if (audioModel.title)
-                    //     return next(
-                    //       new RecordExists(`Audio title: ${item.title} exists`, 400)
-                    //     );
-                    //   const audio = await new AudioRepository().create(item);
-                    //   return res.status(201).json({
-                    //     message: 'Operation successful',
-                    //     data: audio
-                    //   });
-                    // } else if (videoExtensions.includes(fileExtension)) {
-                    //   const videoModel = await new VideoRepository().findByCriteria({
-                    //     title: item.title.toLowerCase()
-                    //   });
-                    //   if (videoModel.title)
-                    //     next(new RecordExists(`Video title: ${item.title} exists`, 400));
-                    //   const video = await new VideoRepository().create(item);
-                    //   return res.status(201).json({
-                    //     message: 'Operational successful',
-                    //     data: video
-                    //   });
-                    // } else if (imageExtensions.includes(fileExtension)) {
-                    //   const imageModel = await new ImageRepository().findByCriteria({
-                    //     title: item.title.toLowerCase()
-                    //   });
-                    //   if (imageModel)
-                    //     next(new RecordExists(`Image title: ${item.title} exists`, 400));
-                    //   const image = await new ImageRepository().create(item);
-                    //   return res.status(201).json({
-                    //     message: 'Operation successful',
-                    //     data: image
-                    //   });
-                    // } else {
-                    //   return next(
-                    //     new InvalidContent(`${fileExtension} is not a supported format`, 400)
-                    //   );
-                    // }
                 }
                 catch (err) {
                     // next(new InternalServerError('Internal Server error occured', 500));
@@ -113,8 +72,110 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.update = function () { };
     MediaController.prototype.delete = function () { };
-    MediaController.prototype.fetch = function () { };
-    MediaController.prototype.findById = function () { };
+    MediaController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaType, condition, upload, _a, audioBusiness, audioResult, imageBusiness, imageResult, videoBusiness, videoResult, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 8, , 9]);
+                        // audio, video, image, general
+                        // if media = audio then fetch from audioCollection
+                        // uploadType = all, set uploadType=''
+                        // with uploadType and userId, set up condition
+                        // SAMPLE QUERY REQUEST
+                        // TODO:: http://localhost:9000?user=1234&medias?type=all&upload=single
+                        // TODO:: http://localhost:9000?user=1234&medias?type=all&upload=all
+                        // TODO:: http://localhost:9000?medias?type=videos&upload=single
+                        // TODO:: http://localhost:9000?medias?type=images&upload=all
+                        // TODO:: http://localhost:9000?medias?type=audios&upload=multiple
+                        if (!req.query.type) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: 400,
+                                    message: "Bad request.Parameter 'type' is missing in query"
+                                }))];
+                        }
+                        if (!req.query.upload) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: 400,
+                                    message: "Bad request.Parameter 'upload' is missing in query"
+                                }))];
+                        }
+                        mediaType = req.query.type.toLowerCase();
+                        condition = {};
+                        upload = req.query.upload.toLowerCase();
+                        condition.uploadType = interfaces_1.MediaUploadType[upload];
+                        if (condition['upload'] === interfaces_1.MediaUploadType.all) {
+                            condition.uploadType = '';
+                        }
+                        if (req.query.userId) {
+                            condition.user = req.query.userId;
+                        }
+                        _a = mediaType;
+                        switch (_a) {
+                            case interfaces_1.MediaType.audio: return [3 /*break*/, 1];
+                            case interfaces_1.MediaType.image: return [3 /*break*/, 3];
+                            case interfaces_1.MediaType.video: return [3 /*break*/, 5];
+                        }
+                        return [3 /*break*/, 7];
+                    case 1:
+                        audioBusiness = new AudioBusiness();
+                        return [4 /*yield*/, audioBusiness.fetch(condition)];
+                    case 2:
+                        audioResult = _b.sent();
+                        if (audioResult.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: audioResult.responseCode,
+                                    message: "Error occured. " + audioResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(audioResult.responseCode).json({
+                                message: 'Audio Operation successful',
+                                data: audioResult.data
+                            })];
+                    case 3:
+                        imageBusiness = new ImageBusiness();
+                        return [4 /*yield*/, imageBusiness.fetch(condition)];
+                    case 4:
+                        imageResult = _b.sent();
+                        if (imageResult.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: imageResult.responseCode,
+                                    message: "Error occured. " + imageResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(imageResult.responseCode).json({
+                                message: 'Operation successful',
+                                data: imageResult.data
+                            })];
+                    case 5:
+                        videoBusiness = new VideoBusiness();
+                        return [4 /*yield*/, videoBusiness.fetch(condition)];
+                    case 6:
+                        videoResult = _b.sent();
+                        if (videoResult.error) {
+                            return [2 /*return*/, next(error_1.PlatformError.error({
+                                    code: videoResult.responseCode,
+                                    message: "Error occured. " + videoResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(videoResult.responseCode).json({
+                                message: 'Operation successful',
+                                data: videoResult.data
+                            })];
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        err_1 = _b.sent();
+                        return [2 /*return*/, next(error_1.PlatformError.error({
+                                code: 500,
+                                message: "Internal Server error occured." + err_1
+                            }))];
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MediaController.prototype.findById = function (req, res, next) { };
     __decorate([
         decorators_1.post('/'),
         decorators_1.requestValidators('title', 'items'),
@@ -122,9 +183,22 @@ var MediaController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "create", null);
+    __decorate([
+        decorators_1.get('/'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.get('/:id'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", void 0)
+    ], MediaController.prototype, "findById", null);
     MediaController = __decorate([
-        decorators_1.controller('/v1/medias')
+        decorators_1.controller('/v1/media')
     ], MediaController);
     return MediaController;
 }());
+exports.MediaController = MediaController;
 //# sourceMappingURL=MediaController.js.map

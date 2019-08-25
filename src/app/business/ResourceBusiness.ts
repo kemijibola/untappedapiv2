@@ -21,9 +21,21 @@ class ResourceBusiness implements IResourceBusiness {
 
   async findById(id: string): Promise<Result<IResource>> {
     try {
+      if (!id) return Result.fail<IResource>(400, 'Bad request');
       const resource = await this._resourceRepository.findById(id);
       if (!resource)
         return Result.fail<IResource>(404, `Resource of Id ${id} not found`);
+      else return Result.ok<IResource>(200, resource);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IResource>> {
+    try {
+      if (!condition) return Result.fail<IResource>(400, 'Bad request');
+      const resource = await this._resourceRepository.findByOne(condition);
+      if (!resource) return Result.fail<IResource>(404, `Resource not found`);
       else return Result.ok<IResource>(200, resource);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

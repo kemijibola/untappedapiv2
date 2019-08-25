@@ -103,6 +103,8 @@ class UserBusiness implements IUserBusiness {
 
       const authData: IAuthData = {
         _id: user._id,
+        email: user.email,
+        fullName: user.fullName,
         roles: [...user.roles],
         token: userToken
       };
@@ -154,9 +156,40 @@ class UserBusiness implements IUserBusiness {
   }
   async findById(id: string): Promise<Result<any>> {
     try {
+      if (!id) return Result.fail<IUserModel>(400, 'Bad request');
       const user = await this._userRepository.findById(id);
       if (!user) {
         return Result.fail<IUserModel>(404, `User with Id ${id} not found`);
+      } else {
+        let refinedUser: UserViewModel = {
+          _id: user._id,
+          email: user.email,
+          fullName: user.fullName,
+          isEmailConfirmed: user.isEmailConfirmed,
+          isPhoneConfirmed: user.isPhoneConfirmed,
+          isProfileCompleted: user.isProfileCompleted,
+          generalNotification: user.generalNotification,
+          emailNotification: user.emailNotification,
+          profileVisibility: user.profileVisibility,
+          loginCount: user.loginCount,
+          status: [user.status],
+          roles: user.roles,
+          lastLogin: user.lastLogin,
+          createdAt: user.createdAt
+        };
+        return Result.ok<UserViewModel>(200, refinedUser);
+      }
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<any>> {
+    try {
+      if (!condition) return Result.fail<IUserModel>(400, 'Bad request');
+      const user = await this._userRepository.findByOne(condition);
+      if (!user) {
+        return Result.fail<IUserModel>(404, `User not found`);
       } else {
         let refinedUser: UserViewModel = {
           _id: user._id,

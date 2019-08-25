@@ -21,12 +21,27 @@ class ProfessionalBusiness implements IProfessionalBusiness {
 
   async findById(id: string): Promise<Result<IProfessional>> {
     try {
+      if (!id) return Result.fail<IProfessional>(400, 'Bad request');
       const professional = await this._professionalRepository.findById(id);
       if (!professional)
         return Result.fail<IProfessional>(
           404,
           `Professional of Id ${id} not found`
         );
+      else return Result.ok<IProfessional>(200, professional);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IProfessional>> {
+    try {
+      if (!condition) return Result.fail<IProfessional>(400, 'Bad request');
+      const professional = await this._professionalRepository.findByOne(
+        condition
+      );
+      if (!professional)
+        return Result.fail<IProfessional>(404, `Professional not found`);
       else return Result.ok<IProfessional>(200, professional);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

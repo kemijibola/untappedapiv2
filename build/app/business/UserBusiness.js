@@ -106,6 +106,8 @@ var UserBusiness = /** @class */ (function () {
                         userToken = _a.sent();
                         authData = {
                             _id: user._id,
+                            email: user.email,
+                            fullName: user.fullName,
                             roles: user.roles.slice(),
                             token: userToken
                         };
@@ -190,6 +192,8 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!id)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
                         return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
@@ -224,14 +228,16 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
-    UserBusiness.prototype.findByCriteria = function (criteria) {
+    UserBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var user, refinedUser, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
+                        if (!condition)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                        return [4 /*yield*/, this._userRepository.findByOne(condition)];
                     case 1:
                         user = _a.sent();
                         if (!user) {
@@ -265,9 +271,50 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
+    UserBusiness.prototype.findByCriteria = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, refinedUser, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user) {
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
+                        }
+                        else {
+                            refinedUser = {
+                                _id: user._id,
+                                email: user.email,
+                                fullName: user.fullName,
+                                isEmailConfirmed: user.isEmailConfirmed,
+                                isPhoneConfirmed: user.isPhoneConfirmed,
+                                isProfileCompleted: user.isProfileCompleted,
+                                generalNotification: user.generalNotification,
+                                emailNotification: user.emailNotification,
+                                profileVisibility: user.profileVisibility,
+                                loginCount: user.loginCount,
+                                status: [user.status],
+                                roles: user.roles,
+                                lastLogin: user.lastLogin,
+                                createdAt: user.createdAt
+                            };
+                            return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_6 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_6.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, schedule, err_6;
+            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, schedule, err_7;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -339,8 +386,8 @@ var UserBusiness = /** @class */ (function () {
                         console.log(schedule);
                         return [2 /*return*/, Result_1.Result.ok(201, true)];
                     case 9:
-                        err_6 = _b.sent();
-                        throw new Error("InternalServer error occured." + err_6);
+                        err_7 = _b.sent();
+                        throw new Error("InternalServer error occured." + err_7);
                     case 10: return [2 /*return*/];
                 }
             });
@@ -348,7 +395,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser, refinedUser, err_7;
+            var newUser, refinedUser, err_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -374,8 +421,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         return [2 /*return*/, Result_1.Result.ok(201, refinedUser)];
                     case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
+                        err_8 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_8.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -383,7 +430,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, err_8;
+            var user, updateObj, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -398,8 +445,8 @@ var UserBusiness = /** @class */ (function () {
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
-                        err_8 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_8.message);
+                        err_9 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_9.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -407,7 +454,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.patch = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, refinedUser, err_9;
+            var user, updateObj, refinedUser, err_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -439,8 +486,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
                     case 3:
-                        err_9 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_9.message);
+                        err_10 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_10.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -448,7 +495,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_10;
+            var isDeleted, err_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -458,8 +505,8 @@ var UserBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_10 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_10.message);
+                        err_11 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_11.message);
                     case 3: return [2 /*return*/];
                 }
             });

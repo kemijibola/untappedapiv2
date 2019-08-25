@@ -12,4 +12,5 @@ __export(require("./ResourcePermissionController"));
 __export(require("./ApplicationController"));
 __export(require("./UserController"));
 __export(require("./UploadController"));
+__export(require("./MediaController"));
 //# sourceMappingURL=index.js.map

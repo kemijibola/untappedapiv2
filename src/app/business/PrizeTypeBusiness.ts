@@ -21,9 +21,22 @@ class PrizeTypeBusiness implements IPrizeTypeBusiness {
 
   async findById(id: string): Promise<Result<IPrizeType>> {
     try {
+      if (!id) return Result.fail<IPrizeType>(400, 'Bad request');
       const prizeType = await this._prizeTypeRepository.findById(id);
       if (!prizeType)
         return Result.fail<IPrizeType>(404, `Prize type of Id ${id} not found`);
+      else return Result.ok<IPrizeType>(200, prizeType);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IPrizeType>> {
+    try {
+      if (!condition) return Result.fail<IPrizeType>(400, 'Bad request');
+      const prizeType = await this._prizeTypeRepository.findByOne(condition);
+      if (!prizeType)
+        return Result.fail<IPrizeType>(404, `Prize type not found`);
       else return Result.ok<IPrizeType>(200, prizeType);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

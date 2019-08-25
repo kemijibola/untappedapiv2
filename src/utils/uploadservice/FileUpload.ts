@@ -20,6 +20,10 @@ export class FileUpload {
     return urls;
   }
 
+  // async deleteObject(key: string): void {
+
+  // }
+
   // async getClientPresignedUrls(keys: string[]): Promise<string[]> {
   //   // const urls = await this.storage.g;
   // }

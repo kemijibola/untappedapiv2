@@ -69,6 +69,8 @@ var ImageBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!id)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
                         return [4 /*yield*/, this._imageRepository.findById(id)];
                     case 1:
                         image = _a.sent();
@@ -85,14 +87,16 @@ var ImageBusiness = /** @class */ (function () {
             });
         });
     };
-    ImageBusiness.prototype.findByCriteria = function (criteria) {
+    ImageBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var image, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._imageRepository.findByCriteria(criteria)];
+                        if (!condition)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                        return [4 /*yield*/, this._imageRepository.findByOne(condition)];
                     case 1:
                         image = _a.sent();
                         if (!image)
@@ -108,9 +112,32 @@ var ImageBusiness = /** @class */ (function () {
             });
         });
     };
+    ImageBusiness.prototype.findByCriteria = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var image, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._imageRepository.findByCriteria(criteria)];
+                    case 1:
+                        image = _a.sent();
+                        if (!image)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Image not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, image)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_4 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_4.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ImageBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newImage, err_4;
+            var newImage, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -121,8 +148,8 @@ var ImageBusiness = /** @class */ (function () {
                         // TODO:: Create approval request
                         return [2 /*return*/, Result_1.Result.ok(201, newImage)];
                     case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
+                        err_5 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_5.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -130,7 +157,7 @@ var ImageBusiness = /** @class */ (function () {
     };
     ImageBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var image, updateObj, err_5;
+            var image, updateObj, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -145,8 +172,8 @@ var ImageBusiness = /** @class */ (function () {
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
+                        err_6 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_6.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -154,7 +181,7 @@ var ImageBusiness = /** @class */ (function () {
     };
     ImageBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_6;
+            var isDeleted, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -164,8 +191,8 @@ var ImageBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
+                        err_7 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_7.message);
                     case 3: return [2 /*return*/];
                 }
             });

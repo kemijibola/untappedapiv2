@@ -96,6 +96,8 @@ var ContestBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!id)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
                         return [4 /*yield*/, this._contestRepository.findById(id)];
                     case 1:
                         contest = _a.sent();
@@ -112,14 +114,16 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
-    ContestBusiness.prototype.findByCriteria = function (criteria) {
+    ContestBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var contest, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._contestRepository.findByCriteria(criteria)];
+                        if (!condition)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                        return [4 /*yield*/, this._contestRepository.findByOne(condition)];
                     case 1:
                         contest = _a.sent();
                         if (!contest)
@@ -135,9 +139,32 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.findByCriteria = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contest, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this._contestRepository.findByCriteria(criteria)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                        else
+                            return [2 /*return*/, Result_1.Result.ok(200, contest)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_5 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_5.message);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var endDate, isGrandFinaleDateAfter, newContest, err_5;
+            var endDate, isGrandFinaleDateAfter, newContest, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -168,9 +195,9 @@ var ContestBusiness = /** @class */ (function () {
                         newContest = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newContest)];
                     case 2:
-                        err_5 = _a.sent();
+                        err_6 = _a.sent();
                         // TODO:: create schedule email to remind user at the point of making payment
-                        throw new Error("InternalServer error occured." + err_5.message);
+                        throw new Error("InternalServer error occured." + err_6.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -178,7 +205,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, err_6;
+            var contest, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -190,8 +217,8 @@ var ContestBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contest)];
                     case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
+                        err_7 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_7.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -199,7 +226,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.patch = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, updateObj, err_7;
+            var contest, updateObj, err_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -217,8 +244,8 @@ var ContestBusiness = /** @class */ (function () {
                         // console.log(updateObj.);
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                     case 3:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
+                        err_8 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_8.message);
                     case 4: return [2 /*return*/];
                 }
             });
@@ -226,7 +253,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_8;
+            var isDeleted, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -236,8 +263,8 @@ var ContestBusiness = /** @class */ (function () {
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
                     case 2:
-                        err_8 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_8.message);
+                        err_9 = _a.sent();
+                        throw new Error("InternalServer error occured." + err_9.message);
                     case 3: return [2 /*return*/];
                 }
             });

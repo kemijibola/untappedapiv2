@@ -20,6 +20,7 @@ var RepositoryBase = /** @class */ (function () {
     };
     RepositoryBase.prototype.fetch = function (condition) {
         var _this = this;
+        if (condition === void 0) { condition = {}; }
         return new Promise(function (resolve, reject) {
             _this._model
                 .find(condition, function (error, result) {
@@ -67,6 +68,19 @@ var RepositoryBase = /** @class */ (function () {
             // .cache({ collectionName: this._model.collection.name });
         });
     };
+    RepositoryBase.prototype.findByOne = function (condition) {
+        var _this = this;
+        if (condition === void 0) { condition = {}; }
+        return new Promise(function (resolve, reject) {
+            _this._model.findOne(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+            // .cacheDocQuery({ collectionName: this._model.collection.name });
+        });
+    };
     RepositoryBase.prototype.findById = function (_id) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -81,6 +95,7 @@ var RepositoryBase = /** @class */ (function () {
     };
     RepositoryBase.prototype.findByCriteria = function (criteria) {
         var _this = this;
+        if (criteria === void 0) { criteria = {}; }
         return new Promise(function (resolve, reject) {
             _this._model.findOne(criteria, function (error, result) {
                 if (error)

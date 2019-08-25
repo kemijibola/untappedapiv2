@@ -21,12 +21,25 @@ class PermissionBusiness implements IPermissionBusiness {
 
   async findById(id: string): Promise<Result<IPermission>> {
     try {
+      if (!id) return Result.fail<IPermission>(400, 'Bad request');
       const permission = await this._permissionRepository.findById(id);
       if (!permission)
         return Result.fail<IPermission>(
           404,
           `Permission of Id ${id} not found`
         );
+      else return Result.ok<IPermission>(200, permission);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IPermission>> {
+    try {
+      if (!condition) return Result.fail<IPermission>(400, 'Bad request');
+      const permission = await this._permissionRepository.findByOne(condition);
+      if (!permission)
+        return Result.fail<IPermission>(404, `Permission not found`);
       else return Result.ok<IPermission>(200, permission);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

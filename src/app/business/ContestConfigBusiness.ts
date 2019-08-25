@@ -23,12 +23,27 @@ class ContestConfigBusiness implements IContestConfigBusiness {
 
   async findById(id: string): Promise<Result<IContestConfig>> {
     try {
+      if (!id) return Result.fail<IContestConfig>(400, 'Bad request.');
       const contestConfig = await this._contestConfigRepository.findById(id);
       if (!contestConfig)
         return Result.fail<IContestConfig>(
           404,
           `Contest config of Id ${id} not found`
         );
+      else return Result.ok<IContestConfig>(200, contestConfig);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IContestConfig>> {
+    try {
+      if (!condition) return Result.fail<IContestConfig>(400, 'Bad request.');
+      const contestConfig = await this._contestConfigRepository.findByOne(
+        condition
+      );
+      if (!contestConfig)
+        return Result.fail<IContestConfig>(404, `Contest config not found`);
       else return Result.ok<IContestConfig>(200, contestConfig);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

@@ -4,8 +4,14 @@ import { IUser } from './User';
 import { IAppSpec } from './AppSpec';
 
 export enum MediaUploadType {
-  SINGLE = 'SINGLE',
-  MULTIPLE = 'MULTIPLE'
+  single = 'single',
+  multiple = 'multiple',
+  all = 'all'
+}
+export enum MediaType {
+  audio = 'audio',
+  video = 'video',
+  image = 'image'
 }
 export interface IMediaItem {
   index: number;
@@ -17,16 +23,20 @@ export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   shortDescription: string;
   user: IUser['_id'];
   items: IMediaItem[];
+  albumCover?: string;
   uploadType: MediaUploadType;
   isApproved: boolean;
-  playedCount: number;
-  videoPlayCount: number;
+  watchCount: number;
+  playCount: number;
+  viewCount: number;
 }
 
 export interface IAudio extends IMedia {
-  playedCount: number;
+  playCount: number;
 }
 export interface IVideo extends IMedia {
-  videoPlayCount: number;
+  watchCount: number;
 }
-export interface IImage extends IMedia {}
+export interface IImage extends IMedia {
+  viewCount: number;
+}

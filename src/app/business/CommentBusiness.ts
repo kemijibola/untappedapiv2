@@ -21,9 +21,21 @@ class CommentBusiness implements ICommentBusiness {
 
   async findById(id: string): Promise<Result<IComment>> {
     try {
+      if (!id) return Result.fail<IComment>(400, 'Bad request.');
       const comment = await this._commentRepository.findById(id);
       if (!comment)
         return Result.fail<IComment>(404, `Comment of Id ${id} not found`);
+      else return Result.ok<IComment>(200, comment);
+    } catch (err) {
+      throw new Error(`InternalServer error occured.${err.message}`);
+    }
+  }
+
+  async findOne(condition: any): Promise<Result<IComment>> {
+    try {
+      if (!condition) return Result.fail<IComment>(400, 'Bad request.');
+      const comment = await this._commentRepository.findByOne(condition);
+      if (!comment) return Result.fail<IComment>(404, `Comment not found`);
       else return Result.ok<IComment>(200, comment);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
