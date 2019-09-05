@@ -18,6 +18,7 @@ var imageSchema = new mongoose_1.Schema({
     viewCount: { type: Number, default: 0 },
     uploadType: { type: Media_1.MediaUploadType, required: true },
     isApproved: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Application',

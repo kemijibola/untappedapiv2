@@ -6,7 +6,6 @@ import * as AWS from 'aws-sdk';
 import { escapeJSON } from '../lib';
 AWS.config.update({ region: 'us-east-1' });
 
-
 let mailParams: IEmail = {
   receivers: [],
   subject: '',
@@ -17,8 +16,7 @@ let mailParams: IEmail = {
 
 export const mailHandler: Handler = async (
   event: any = {},
-  context: Context,
-  cb: Callback
+  context: Context
 ): Promise<any> => {
   const headers = { 'Access-Control-Allow-Origin': '*' };
   try {
@@ -33,7 +31,7 @@ export const mailHandler: Handler = async (
     let escapebbccAddresses: string[] = [];
     let escapeSenderName = '';
 
-    const body = event.email;
+    const body = event.data;
 
     escapesubject = JSON.parse(escapeJSON(body.subject));
     escapebody = JSON.parse(escapeJSON(body.mail));
@@ -70,17 +68,8 @@ export const mailHandler: Handler = async (
       senderName: escapeSenderName
     };
     const mailer = EmailService.mailer(mailParams);
-    const result = await mailer.sendMail(ses);
-    cb(null, {
-      statusCode: 200,
-      headers: headers,
-      body: JSON.stringify({ message: result })
-    });
+    await mailer.sendMail(ses);
   } catch (err) {
-    cb(null, {
-      statusCode: 500,
-      headers: headers,
-      body: JSON.stringify({ error: err })
-    });
+    // log error here
   }
 };

@@ -18,6 +18,7 @@ const imageSchema = new Schema({
   viewCount: { type: Number, default: 0 },
   uploadType: { type: MediaUploadType, required: true },
   isApproved: { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false },
   application: {
     type: Schema.Types.ObjectId,
     ref: 'Application',

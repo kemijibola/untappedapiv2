@@ -3,7 +3,12 @@ import { controller, post, requestValidators, get } from '../decorators';
 import AudioBusiness = require('../app/business/AudioBusiness');
 import VideoBusiness = require('../app/business/VideoBusiness');
 import ImageBusiness = require('../app/business/ImageBusiness');
-import { IMedia, MediaType, MediaUploadType } from '../app/models/interfaces';
+import {
+  IMedia,
+  MediaType,
+  MediaUploadType,
+  IAudio
+} from '../app/models/interfaces';
 import {
   audioExtentions,
   videoExtensions,
@@ -12,17 +17,47 @@ import {
 } from '../utils/lib';
 import { PlatformError } from '../utils/error';
 
-// TODO:: http://localhost:9000?user=1234&medias?type=all&upload=single
-// TODO:: http://localhost:9000?user=1234&medias?type=all&upload=all
-// TODO:: http://localhost:9000?medias?type=videos&upload=single
-// TODO:: http://localhost:9000?medias?type=images&upload=all
-// TODO:: http://localhost:9000?medias?type=audios&upload=multiple
-@controller('/v1/media')
+// SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
+// SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
+// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=videos&upload=single
+// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=images&upload=all
+// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=audios&upload=multiple
+
+// SAMPLE POST ROUTE:: http://localhost:8900/medias?type=audio
+@controller('/v1/medias')
 export class MediaController {
   @post('/')
-  @requestValidators('title', 'items')
+  @requestValidators('title', 'items', 'uploadType')
   async create(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.query.type) {
+        return next(
+          PlatformError.error({
+            code: 400,
+            message: `Bad request. Parameter 'type' is missing in query`
+          })
+        );
+      }
+      // TODO:: get current user id here
+      const mediaType = req.query.type.toLowerCase();
+      switch (mediaType) {
+        case MediaType.audio:
+          const item: IAudio = req.body;
+          const audioBusiness = new AudioBusiness();
+          const audioResult = await audioBusiness.create(item);
+          if (audioResult.error) {
+            return next(
+              PlatformError.error({
+                code: audioResult.responseCode,
+                message: `Error occured. ${audioResult.error}`
+              })
+            );
+          }
+          return res.status(audioResult.responseCode).json({
+            message: 'Operation successful',
+            data: audioResult.data
+          });
+      }
     } catch (err) {
       // next(new InternalServerError('Internal Server error occured', 500));
     }
@@ -49,7 +84,7 @@ export class MediaController {
         return next(
           PlatformError.error({
             code: 400,
-            message: `Bad request.Parameter 'type' is missing in query`
+            message: `Bad request. Parameter 'type' is missing in query`
           })
         );
       }
@@ -87,7 +122,6 @@ export class MediaController {
             message: 'Audio Operation successful',
             data: audioResult.data
           });
-          break;
         case MediaType.image:
           const imageBusiness = new ImageBusiness();
           const imageResult = await imageBusiness.fetch(condition);
@@ -103,7 +137,6 @@ export class MediaController {
             message: 'Operation successful',
             data: imageResult.data
           });
-          break;
         case MediaType.video:
           const videoBusiness = new VideoBusiness();
           const videoResult = await videoBusiness.fetch(condition);
@@ -119,7 +152,6 @@ export class MediaController {
             message: 'Operation successful',
             data: videoResult.data
           });
-          break;
       }
     } catch (err) {
       return next(

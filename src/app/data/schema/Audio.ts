@@ -17,6 +17,7 @@ const audioSchema = new Schema({
   albumCover: { type: String },
   uploadType: { type: MediaUploadType, required: true },
   isApproved: { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false },
   playCount: { type: Number, default: 0 },
   application: {
     type: Schema.Types.ObjectId,

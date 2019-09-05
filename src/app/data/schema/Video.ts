@@ -17,8 +17,9 @@ const videoSchema = new Schema(
     items: [{ type: videoItemSchema, required: true }],
     albumCover: { type: String },
     uploadType: { type: MediaUploadType, required: true },
-    isApproved: { type: Boolean, default: false },
     watchCount: { type: Number, default: 0 },
+    isApproved: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
     application: {
       type: Schema.Types.ObjectId,
       ref: 'Application',

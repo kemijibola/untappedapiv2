@@ -16,8 +16,9 @@ var videoSchema = new mongoose_1.Schema({
     items: [{ type: videoItemSchema, required: true }],
     albumCover: { type: String },
     uploadType: { type: Media_1.MediaUploadType, required: true },
-    isApproved: { type: Boolean, default: false },
     watchCount: { type: Number, default: 0 },
+    isApproved: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Application',

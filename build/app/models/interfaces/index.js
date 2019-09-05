@@ -7,6 +7,7 @@ __export(require("./User"));
 __export(require("./Talent"));
 __export(require("./ScheduledEmail"));
 __export(require("./Permission"));
+__export(require("./Approval"));
 __export(require("./Media"));
 __export(require("./TalentFilterCategory"));
 __export(require("./Payment"));

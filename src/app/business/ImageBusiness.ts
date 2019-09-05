@@ -1,7 +1,9 @@
 import ImageRepository from '../repository/ImageRepository';
 import IImageBusiness = require('./interfaces/ImageBusiness');
-import { IImage } from '../models/interfaces';
+import { IImage, ApprovalOperations, IApproval } from '../models/interfaces';
 import { Result } from '../../utils/Result';
+import { schedule } from '../../utils/TaskScheduler';
+import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
 
 class ImageBusiness implements IImageBusiness {
   private _imageRepository: ImageRepository;
@@ -12,6 +14,8 @@ class ImageBusiness implements IImageBusiness {
 
   async fetch(condition: any): Promise<Result<IImage[]>> {
     try {
+      condition.isApproved = true;
+      condition.isDeleted = false;
       const images = await this._imageRepository.fetch(condition);
       return Result.ok<IImage[]>(200, images);
     } catch (err) {
@@ -22,7 +26,12 @@ class ImageBusiness implements IImageBusiness {
   async findById(id: string): Promise<Result<IImage>> {
     try {
       if (!id) return Result.fail<IImage>(400, 'Bad request.');
-      const image = await this._imageRepository.findById(id);
+      const criteria = {
+        id,
+        isApproved: true,
+        isDeleted: false
+      };
+      const image = await this._imageRepository.findByIdCriteria(criteria);
       if (!image)
         return Result.fail<IImage>(404, `Image of Id ${id} not found`);
       else return Result.ok<IImage>(200, image);
@@ -34,6 +43,8 @@ class ImageBusiness implements IImageBusiness {
   async findOne(condition: any): Promise<Result<IImage>> {
     try {
       if (!condition) return Result.fail<IImage>(400, 'Bad request.');
+      condition.isApproved = true;
+      condition.isDeleted = false;
       const image = await this._imageRepository.findByOne(condition);
       if (!image) return Result.fail<IImage>(404, `Image not found`);
       else return Result.ok<IImage>(200, image);
@@ -44,6 +55,9 @@ class ImageBusiness implements IImageBusiness {
 
   async findByCriteria(criteria: any): Promise<Result<IImage>> {
     try {
+      if (!criteria) return Result.fail<IImage>(400, 'Bad request');
+      criteria.isApproved = true;
+      criteria.isDeleted = false;
       const image = await this._imageRepository.findByCriteria(criteria);
       if (!image) return Result.fail<IImage>(404, `Image not found`);
       else return Result.ok<IImage>(200, image);
@@ -52,11 +66,25 @@ class ImageBusiness implements IImageBusiness {
     }
   }
 
-  async create(item: IImage): Promise<Result<IImage>> {
+  async create(item: IImage): Promise<Result<any>> {
     try {
+      item.isApproved = false;
+      item.isDeleted = false;
       const newImage = await this._imageRepository.create(item);
-      // TODO:: Create approval request
-      return Result.ok<IImage>(201, newImage);
+
+      // create approval request
+      const approvalRequest: IApproval = Object.assign({
+        entity: newImage._id,
+        operation: ApprovalOperations.ImageUpload,
+        application: 'untappedpool.com'
+      });
+
+      await schedule(
+        StateMachineArns.MediaStateMachine,
+        newImage.createdAt,
+        approvalRequest
+      );
+      return Result.ok<boolean>(201, true);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
@@ -64,12 +92,18 @@ class ImageBusiness implements IImageBusiness {
 
   async update(id: string, item: IImage): Promise<Result<IImage>> {
     try {
-      const image = await this._imageRepository.findById(id);
+      const criteria = {
+        id,
+        isApproved: true,
+        isDeleted: false
+      };
+      const image = await this._imageRepository.findByIdCriteria(criteria);
       if (!image)
         return Result.fail<IImage>(
           404,
           `Could not update image.Image with Id ${id} not found`
         );
+      item.isApproved = image.isApproved;
       const updateObj = await this._imageRepository.update(image._id, item);
       return Result.ok<IImage>(200, updateObj);
     } catch (err) {

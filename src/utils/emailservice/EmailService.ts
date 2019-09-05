@@ -38,6 +38,7 @@ export class EmailService {
   static mailer(params: IEmail): EmailService {
     return new EmailService(params);
   }
+
   async sendMail(send: Sender): Promise<any> {
     return send(
       this.receivers,

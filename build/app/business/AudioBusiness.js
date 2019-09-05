@@ -38,7 +38,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var AudioRepository_1 = __importDefault(require("../repository/AudioRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
+var TaskScheduler_1 = require("../../utils/TaskScheduler");
+var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var AudioBusiness = /** @class */ (function () {
     function AudioBusiness() {
         this._audioRepository = new AudioRepository_1.default();
@@ -51,6 +54,7 @@ var AudioBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         condition.isApproved = true;
+                        condition.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.fetch(condition)];
                     case 1:
                         audios = _a.sent();
@@ -65,14 +69,19 @@ var AudioBusiness = /** @class */ (function () {
     };
     AudioBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var audio, err_2;
+            var criteria, audio, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
-                        return [4 /*yield*/, this._audioRepository.findById(id)];
+                        criteria = {
+                            id: id,
+                            isApproved: true,
+                            isDeleted: false
+                        };
+                        return [4 /*yield*/, this._audioRepository.findByIdCriteria(criteria)];
                     case 1:
                         audio = _a.sent();
                         if (!audio)
@@ -97,6 +106,8 @@ var AudioBusiness = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         if (!condition)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                        condition.isApproved = true;
+                        condition.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.findById(condition)];
                     case 1:
                         audio = _a.sent();
@@ -120,6 +131,10 @@ var AudioBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!criteria)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                        criteria.isApproved = true;
+                        criteria.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.findByCriteria(criteria)];
                     case 1:
                         audio = _a.sent();
@@ -138,20 +153,29 @@ var AudioBusiness = /** @class */ (function () {
     };
     AudioBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newAudio, err_5;
+            var newAudio, approvalRequest, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
+                        item.isApproved = false;
+                        item.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.create(item)];
                     case 1:
                         newAudio = _a.sent();
-                        // TODO:: create approval request
-                        return [2 /*return*/, Result_1.Result.ok(201, newAudio)];
+                        approvalRequest = Object.assign({
+                            entity: newAudio._id,
+                            operation: interfaces_1.ApprovalOperations.AudioUpload,
+                            application: 'untappedpool.com'
+                        });
+                        return [4 /*yield*/, TaskScheduler_1.schedule(StateMachineArns_1.StateMachineArns.MediaStateMachine, newAudio.createdAt, approvalRequest)];
                     case 2:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, true)];
+                    case 3:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -168,6 +192,8 @@ var AudioBusiness = /** @class */ (function () {
                         audio = _a.sent();
                         if (!audio)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update audio.Audio with Id " + id + " not found")];
+                        item.isApproved = audio.isApproved;
+                        item.isDeleted = audio.isDeleted;
                         return [4 /*yield*/, this._audioRepository.update(audio._id, item)];
                     case 2:
                         updateObj = _a.sent();

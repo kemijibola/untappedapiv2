@@ -85,6 +85,16 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  findByIdCriteria(criteria = {}): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this._model.findById(criteria, (error: any, result: T) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+      // .cacheDocQuery({ collectionName: this._model.collection.name });
+    });
+  }
+
   findByCriteria(criteria = {}): Promise<T> {
     return new Promise((resolve, reject) => {
       this._model.findOne(criteria, (error: any, result: T) => {

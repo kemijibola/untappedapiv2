@@ -46,7 +46,8 @@ var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
 var emailtemplates_1 = require("../../utils/emailtemplates");
 var TemplatePlaceHolder_1 = require("../../utils/lib/TemplatePlaceHolder");
 var config = require('../../config/keys');
-var ScheduleEmail_1 = require("../../utils/emailservice/ScheduleEmail");
+var TaskScheduler_1 = require("../../utils/TaskScheduler");
+var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentKey = '';
@@ -314,7 +315,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, schedule, err_7;
+            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, err_7;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -380,10 +381,11 @@ var UserBusiness = /** @class */ (function () {
                             senderEmail: 'talents@untappedpool.com',
                             senderName: 'Untapped Pool'
                         };
-                        return [4 /*yield*/, ScheduleEmail_1.scheduleEmail(newUser.createdAt, mailParams)];
+                        // const dueDate = addSeconds(newUser.createdAt, 10);
+                        return [4 /*yield*/, TaskScheduler_1.schedule(StateMachineArns_1.StateMachineArns.EmailStateMachine, newUser.createdAt, mailParams)];
                     case 8:
-                        schedule = _b.sent();
-                        console.log(schedule);
+                        // const dueDate = addSeconds(newUser.createdAt, 10);
+                        _b.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, true)];
                     case 9:
                         err_7 = _b.sent();

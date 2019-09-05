@@ -43,7 +43,6 @@ export interface ScheduledEmailSQS {
   url: string;
   queueName: string;
 }
-
 export interface Serverless {
   access_key_id: string;
   secret_access_key: string;

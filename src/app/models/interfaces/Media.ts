@@ -29,6 +29,7 @@ export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   watchCount: number;
   playCount: number;
   viewCount: number;
+  isDeleted: boolean;
 }
 
 export interface IAudio extends IMedia {

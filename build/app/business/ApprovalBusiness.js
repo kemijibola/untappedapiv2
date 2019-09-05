@@ -139,25 +139,20 @@ var ApprovalBusiness = /** @class */ (function () {
     };
     ApprovalBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperation, newApproval, err_5;
+            var newApproval, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._approvalOperationRepository.findById(item.approvalOperation)];
-                    case 1:
-                        approvalOperation = _a.sent();
-                        if (approvalOperation === null) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Approval operation " + item.approvalOperation + " is invalid.")];
-                        }
+                        _a.trys.push([0, 2, , 3]);
+                        item.approved = false;
                         return [4 /*yield*/, this._approvalRepository.create(item)];
-                    case 2:
+                    case 1:
                         newApproval = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newApproval)];
-                    case 3:
+                    case 2:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

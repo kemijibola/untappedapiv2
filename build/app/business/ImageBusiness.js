@@ -38,7 +38,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ImageRepository_1 = __importDefault(require("../repository/ImageRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
+var TaskScheduler_1 = require("../../utils/TaskScheduler");
+var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var ImageBusiness = /** @class */ (function () {
     function ImageBusiness() {
         this._imageRepository = new ImageRepository_1.default();
@@ -50,6 +53,8 @@ var ImageBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        condition.isApproved = true;
+                        condition.isDeleted = false;
                         return [4 /*yield*/, this._imageRepository.fetch(condition)];
                     case 1:
                         images = _a.sent();
@@ -64,14 +69,19 @@ var ImageBusiness = /** @class */ (function () {
     };
     ImageBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var image, err_2;
+            var criteria, image, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
-                        return [4 /*yield*/, this._imageRepository.findById(id)];
+                        criteria = {
+                            id: id,
+                            isApproved: true,
+                            isDeleted: false
+                        };
+                        return [4 /*yield*/, this._imageRepository.findByIdCriteria(criteria)];
                     case 1:
                         image = _a.sent();
                         if (!image)
@@ -96,6 +106,8 @@ var ImageBusiness = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         if (!condition)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                        condition.isApproved = true;
+                        condition.isDeleted = false;
                         return [4 /*yield*/, this._imageRepository.findByOne(condition)];
                     case 1:
                         image = _a.sent();
@@ -119,6 +131,10 @@ var ImageBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!criteria)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                        criteria.isApproved = true;
+                        criteria.isDeleted = false;
                         return [4 /*yield*/, this._imageRepository.findByCriteria(criteria)];
                     case 1:
                         image = _a.sent();
@@ -137,36 +153,51 @@ var ImageBusiness = /** @class */ (function () {
     };
     ImageBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newImage, err_5;
+            var newImage, approvalRequest, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
+                        item.isApproved = false;
+                        item.isDeleted = false;
                         return [4 /*yield*/, this._imageRepository.create(item)];
                     case 1:
                         newImage = _a.sent();
-                        // TODO:: Create approval request
-                        return [2 /*return*/, Result_1.Result.ok(201, newImage)];
+                        approvalRequest = Object.assign({
+                            entity: newImage._id,
+                            operation: interfaces_1.ApprovalOperations.ImageUpload,
+                            application: 'untappedpool.com'
+                        });
+                        return [4 /*yield*/, TaskScheduler_1.schedule(StateMachineArns_1.StateMachineArns.MediaStateMachine, newImage.createdAt, approvalRequest)];
                     case 2:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, true)];
+                    case 3:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ImageBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var image, updateObj, err_6;
+            var criteria, image, updateObj, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._imageRepository.findById(id)];
+                        criteria = {
+                            id: id,
+                            isApproved: true,
+                            isDeleted: false
+                        };
+                        return [4 /*yield*/, this._imageRepository.findByIdCriteria(criteria)];
                     case 1:
                         image = _a.sent();
                         if (!image)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update image.Image with Id " + id + " not found")];
+                        item.isApproved = image.isApproved;
                         return [4 /*yield*/, this._imageRepository.update(image._id, item)];
                     case 2:
                         updateObj = _a.sent();

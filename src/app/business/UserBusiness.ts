@@ -39,8 +39,10 @@ import {
 } from '../../utils/lib/TemplatePlaceHolder';
 const config: AppConfig = require('../../config/keys');
 import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
+import { schedule } from '../../utils/TaskScheduler';
 import { IEmail } from '../../utils/emailservice/EmailService';
 import { UserSchema } from '../data/schema/User';
+import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
 
 class UserBusiness implements IUserBusiness {
   private _currentKey = '';
@@ -315,8 +317,12 @@ class UserBusiness implements IUserBusiness {
 
       // const dueDate = addSeconds(newUser.createdAt, 10);
 
-      const schedule = await scheduleEmail(newUser.createdAt, mailParams);
-      console.log(schedule);
+      await schedule(
+        StateMachineArns.EmailStateMachine,
+        newUser.createdAt,
+        mailParams
+      );
+
       return Result.ok<bool>(201, true);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err}`);

@@ -93,6 +93,19 @@ var RepositoryBase = /** @class */ (function () {
             // .cacheDocQuery({ collectionName: this._model.collection.name });
         });
     };
+    RepositoryBase.prototype.findByIdCriteria = function (criteria) {
+        var _this = this;
+        if (criteria === void 0) { criteria = {}; }
+        return new Promise(function (resolve, reject) {
+            _this._model.findById(criteria, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+            // .cacheDocQuery({ collectionName: this._model.collection.name });
+        });
+    };
     RepositoryBase.prototype.findByCriteria = function (criteria) {
         var _this = this;
         if (criteria === void 0) { criteria = {}; }

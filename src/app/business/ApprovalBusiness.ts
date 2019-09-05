@@ -57,15 +57,7 @@ class ApprovalBusiness implements IApprovalBusiness {
 
   async create(item: IApproval): Promise<Result<IApproval>> {
     try {
-      const approvalOperation = await this._approvalOperationRepository.findById(
-        item.approvalOperation
-      );
-      if (approvalOperation === null) {
-        return Result.fail<IApproval>(
-          400,
-          `Approval operation ${item.approvalOperation} is invalid.`
-        );
-      }
+      item.approved = false;
       const newApproval = await this._approvalRepository.create(item);
       return Result.ok<IApproval>(201, newApproval);
     } catch (err) {

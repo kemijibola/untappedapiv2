@@ -55,10 +55,10 @@ var mailParams = {
     senderEmail: '',
     senderName: ''
 };
-exports.mailHandler = function (event, context, cb) {
+exports.mailHandler = function (event, context) {
     if (event === void 0) { event = {}; }
     return __awaiter(_this, void 0, void 0, function () {
-        var headers, escapeReceivers, escapesubject, escapebody, escapesenderEmail, escapeCcAddresses, escapebbccAddresses, escapeSenderName, body, _i, _a, email, _b, _c, email, _d, _e, email, mailer, result, err_1;
+        var headers, escapeReceivers, escapesubject, escapebody, escapesenderEmail, escapeCcAddresses, escapebbccAddresses, escapeSenderName, body, _i, _a, email, _b, _c, email, _d, _e, email, mailer, err_1;
         return __generator(this, function (_f) {
             switch (_f.label) {
                 case 0:
@@ -73,7 +73,7 @@ exports.mailHandler = function (event, context, cb) {
                     escapeCcAddresses = [];
                     escapebbccAddresses = [];
                     escapeSenderName = '';
-                    body = event.email;
+                    body = event.data;
                     escapesubject = JSON.parse(lib_1.escapeJSON(body.subject));
                     escapebody = JSON.parse(lib_1.escapeJSON(body.mail));
                     escapesenderEmail = JSON.parse(lib_1.escapeJSON(body.senderEmail));
@@ -111,20 +111,10 @@ exports.mailHandler = function (event, context, cb) {
                     mailer = EmailService_1.EmailService.mailer(mailParams);
                     return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
                 case 2:
-                    result = _f.sent();
-                    cb(null, {
-                        statusCode: 200,
-                        headers: headers,
-                        body: JSON.stringify({ message: result })
-                    });
+                    _f.sent();
                     return [3 /*break*/, 4];
                 case 3:
                     err_1 = _f.sent();
-                    cb(null, {
-                        statusCode: 500,
-                        headers: headers,
-                        body: JSON.stringify({ error: err_1 })
-                    });
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
