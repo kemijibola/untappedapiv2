@@ -44,7 +44,6 @@ export class S3Storage implements Storage {
       const filesMap: ObjectKeyString = data.files.reduce(
         (theMap: ObjectKeyString, item: IFileMetaData) => {
           let fileExtension = item.file.split('.').pop() || '';
-          console.log(fileExtension);
           fileExtension = fileExtension.toLowerCase();
           // we are ensuring the user sent valid media type for processing on s3
           if (!AcceptedMedias[fileExtension]) {

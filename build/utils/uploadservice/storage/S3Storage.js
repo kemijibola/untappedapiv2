@@ -79,7 +79,6 @@ var S3Storage = /** @class */ (function () {
                         if (!data.files) return [3 /*break*/, 7];
                         filesMap = data.files.reduce(function (theMap, item) {
                             var fileExtension = item.file.split('.').pop() || '';
-                            console.log(fileExtension);
                             fileExtension = fileExtension.toLowerCase();
                             // we are ensuring the user sent valid media type for processing on s3
                             if (!lib_1.AcceptedMedias[fileExtension]) {
