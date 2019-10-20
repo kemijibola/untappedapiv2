@@ -26,7 +26,7 @@ const userSchema: Schema = new Schema(
     profileVisibility: { type: Boolean, default: false },
     isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: [{ type: userAccountStatusSchema }],
+    status: { type: AccountStatus, default: AccountStatus.DEFAULT },
     roles: [
       {
         type: Schema.Types.ObjectId,
@@ -60,6 +60,15 @@ userSchema.methods.generateToken = async function(
    */
   signOptions.subject = this._id.toString();
   return await jwt.sign(payload, privateKey, signOptions);
+};
+
+userSchema.methods.verifyToken = async function(
+  encodedJwt: string,
+  publicKey: string,
+  verifyOptions: any
+): Promise<any> {
+  verifyOptions.subject = this._id.toString();
+  return await jwt.verify(encodedJwt, publicKey, verifyOptions);
 };
 
 userSchema.pre<IUserModel>('save', function(next) {

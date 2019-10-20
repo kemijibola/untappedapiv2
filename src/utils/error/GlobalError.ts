@@ -4,11 +4,10 @@ export interface IError {
 }
 
 export class GlobalError extends Error {
-  public code: number;
+  code: number;
+  message: string;
   constructor(public error: IError) {
-    super();
-    Error.captureStackTrace(this, this.constructor);
-    this.name = this.constructor.name;
+    super(error.message);
     this.message = error.message;
     this.code = error.code;
   }

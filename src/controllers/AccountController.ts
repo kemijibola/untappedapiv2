@@ -4,6 +4,7 @@ import UserBusiness from '../app/business/UserBusiness';
 import { PlatformError } from '../utils/error';
 import { ILogin, IRegister } from '../app/models/interfaces';
 import { issuer } from '../utils/lib';
+import { IError } from '../utils/error/GlobalError';
 
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
@@ -27,10 +28,11 @@ export class AuthController {
       };
 
       const userBusiness = new UserBusiness();
+
       const result = await userBusiness.login(loginParams);
       if (result.error)
-        return next(
-          PlatformError.error({
+        next(
+          new PlatformError({
             code: result.responseCode,
             message: result.error
           })
@@ -40,10 +42,12 @@ export class AuthController {
         data: result.data
       });
     } catch (err) {
-      return next(
-        PlatformError.error({
-          code: 500,
-          message: `Internal Server error occured.${err}`
+      // console.log(err.message);
+      // log err.message to a logger with name of action
+      next(
+        new PlatformError({
+          code: err.code,
+          message: 'Internal Server error occured.'
         })
       );
     }
@@ -66,7 +70,7 @@ export class AuthController {
       const result = await userBusiness.register(signUpParams);
       if (result.error)
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: result.error
           })
@@ -77,7 +81,7 @@ export class AuthController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

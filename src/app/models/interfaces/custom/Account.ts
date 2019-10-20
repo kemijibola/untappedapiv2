@@ -12,3 +12,9 @@ export interface ILoginUser {
   password: IUser['password'];
   audience: string;
 }
+
+export interface ConfirmEmailRequest {
+  userEmail: string;
+  token: string;
+  audience: string;
+}

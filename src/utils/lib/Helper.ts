@@ -52,7 +52,7 @@ export async function tokenExchange(
     name: exchangeParams.destinationUrl
   });
   if (result.error) {
-    throw PlatformError.error({
+    throw new PlatformError({
       code: result.responseCode,
       message: result.error
     });
@@ -66,11 +66,9 @@ export async function tokenExchange(
         resource: destinationResource._id
       });
       if (result.error) {
-        throw PlatformError.error({
+        throw new PlatformError({
           code: result.responseCode,
-          message: `There are no permissions configured for route ${
-            destinationResource.name
-          }`
+          message: `There are no permissions configured for route ${destinationResource.name}`
         });
       }
       if (result.data) {

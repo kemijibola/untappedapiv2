@@ -58,34 +58,19 @@ exports.AcceptedMedias = {
     wma: 'audio',
     '3gp': 'video'
 };
-function getCurrentKey() {
-    var key = '';
-    var keySearch = config.RSA_PRIVATE.filter(function (x) { return x.key === '42'; })[0];
-    if (keySearch) {
-        key = keySearch.key;
-    }
-    return key;
-}
-function getCurrentRsa() {
-    var rsa = '';
-    var rsaSearch = config.RSA_PRIVATE.filter(function (x) { return x.rsaAlgType === 'RS256'; })[0];
-    if (rsaSearch) {
-        rsa = rsaSearch.rsaAlgType;
-    }
-    return rsa;
-}
 function getIssuer() {
-    return config.ISSUER.toLowerCase() || '';
+    return config.ISSUER.toLowerCase() || 'http://localhost:8900';
 }
 function getAuthExpiration() {
-    return config.AUTH_EXPIRESIN || '';
+    return config.AUTH_EXPIRESIN || '12h';
 }
 function getMailExpiration() {
-    return config.MAIL_EXPIRESIN || '';
+    return config.MAIL_EXPIRESIN || '2h';
 }
-exports.currentKey = getCurrentKey();
-exports.rsaAlgType = getCurrentRsa();
+exports.currentAuthKey = '42';
+exports.currentVerifyKey = '43';
+exports.currentRsaAlgType = 'RS256';
 exports.issuer = getIssuer();
 exports.authExpiration = getAuthExpiration();
-exports.mailExpiration = getMailExpiration();
+exports.verifyTokenExpiration = getMailExpiration();
 //# sourceMappingURL=Constant.js.map

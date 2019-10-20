@@ -16,7 +16,7 @@ export class ApprovalController {
       const approvalBusiness = new ApprovalBusiness();
       const result = await approvalBusiness.create(item);
       if (result.error) {
-        return PlatformError.error({
+        return new PlatformError({
           code: result.responseCode,
           message: `Error occured. ${result.error}`
         });

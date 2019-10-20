@@ -3,16 +3,20 @@ import { IRole } from './Role';
 import { TokenType } from './custom/GlobalEnum';
 
 export interface IAuthData {
-  _id: string;
-  email: string;
-  fullName: string;
-  token?: string;
+  access_token: string;
   roles: IRole['_id'][];
+  permissions: string[];
+  user_data: IUserData;
+}
+
+interface IUserData {
+  _id: string;
+  fullName: string;
+  email: string;
 }
 
 export interface AuthPayload {
-  usage: TokenType;
-  permissions: string[];
+  type: TokenType;
 }
 export interface ILogin extends IDestinationUrl {
   email: string;

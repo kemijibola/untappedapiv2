@@ -14,7 +14,7 @@ export function authorizePermission(policies: string[]): RequestHandler {
       }
       if (!found) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: 403,
             message: ' You are not authorized.'
           })

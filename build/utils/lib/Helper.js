@@ -75,7 +75,7 @@ function tokenExchange(exchangeParams) {
                 case 1:
                     result = _b.sent();
                     if (result.error) {
-                        throw error_1.PlatformError.error({
+                        throw new error_1.PlatformError({
                             code: result.responseCode,
                             message: result.error
                         });
@@ -94,7 +94,7 @@ function tokenExchange(exchangeParams) {
                 case 3:
                     result_1 = _b.sent();
                     if (result_1.error) {
-                        throw error_1.PlatformError.error({
+                        throw new error_1.PlatformError({
                             code: result_1.responseCode,
                             message: "There are no permissions configured for route " + destinationResource.name
                         });

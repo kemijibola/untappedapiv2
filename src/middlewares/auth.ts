@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { decode } from 'jsonwebtoken';
 import { PlatformError } from '../utils/error';
 import {
-  currentKey,
+  currentAuthKey,
   issuer,
   authExpiration,
-  rsaAlgType,
+  currentRsaAlgType,
   getSecretByKey,
   getPublicKey,
   IExchangeToken,
@@ -35,7 +35,7 @@ export async function requireAuth(
     let subject = '';
     if (authorization === '' || typeof authorization === 'undefined') {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 401,
           message: 'You must be logged in to perform thus operation.'
         })
@@ -45,7 +45,7 @@ export async function requireAuth(
     const parts = encodedJWT.split('.');
     if (parts.length !== 3) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 400,
           message: 'Token is invalid.'
         })
@@ -58,9 +58,9 @@ export async function requireAuth(
     audience = payload.aud;
     subject = payload.sub;
 
-    if (header.kid !== currentKey) {
+    if (header.kid !== currentAuthKey) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 400,
           message: 'Token is invalid.'
         })
@@ -68,7 +68,7 @@ export async function requireAuth(
     }
     if (payload.usage !== TokenType.AUTH) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 400,
           message: 'Token is invalid.'
         })
@@ -79,14 +79,14 @@ export async function requireAuth(
       subject: payload.sub,
       audience: payload.aud,
       expiresIn: authExpiration,
-      algorithms: [rsaAlgType],
-      keyid: currentKey
+      algorithms: [currentRsaAlgType],
+      keyid: currentAuthKey
     };
-    const publicKey = getPublicKey(currentKey);
+    const publicKey = getPublicKey(currentAuthKey);
     const decoded = await jwt.verify(encodedJWT, publicKey, verifyOptions);
     if (!decoded) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 400,
           message: 'Token is invalid.'
         })
@@ -115,18 +115,17 @@ export async function requireAuth(
         issuer: destinationResourceUrl,
         audience: audience,
         expiresIn: authExpiration,
-        algorithm: rsaAlgType,
-        keyid: currentKey,
+        algorithm: currentRsaAlgType,
+        keyid: currentAuthKey,
         subject: subject
       };
       const payload: AuthPayload = {
-        usage: TokenType.AUTH,
-        permissions: Object.keys(permissions)
+        type: TokenType.AUTH
       };
-      const privateKey: string = getSecretByKey(currentKey);
+      const privateKey: string = getSecretByKey(currentAuthKey);
       if (privateKey === '') {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: 500,
             message: 'Token is invalid'
           })
@@ -147,7 +146,7 @@ export async function requireAuth(
   } catch (err) {
     console.log(err);
     return next(
-      PlatformError.error({
+      new PlatformError({
         code: 500,
         message: `${err.message}. Please generate another token.`
       })

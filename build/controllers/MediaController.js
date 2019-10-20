@@ -67,7 +67,7 @@ var MediaController = /** @class */ (function () {
                     case 0:
                         _b.trys.push([0, 4, , 5]);
                         if (!req.query.type) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "Bad request. Parameter 'type' is missing in query"
                                 }))];
@@ -85,7 +85,7 @@ var MediaController = /** @class */ (function () {
                     case 2:
                         audioResult = _b.sent();
                         if (audioResult.error) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: audioResult.responseCode,
                                     message: "Error occured. " + audioResult.error
                                 }))];
@@ -123,13 +123,13 @@ var MediaController = /** @class */ (function () {
                         // TODO:: http://localhost:9000?medias?type=images&upload=all
                         // TODO:: http://localhost:9000?medias?type=audios&upload=multiple
                         if (!req.query.type) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "Bad request. Parameter 'type' is missing in query"
                                 }))];
                         }
                         if (!req.query.upload) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "Bad request.Parameter 'upload' is missing in query"
                                 }))];
@@ -157,7 +157,7 @@ var MediaController = /** @class */ (function () {
                     case 2:
                         audioResult = _b.sent();
                         if (audioResult.error) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: audioResult.responseCode,
                                     message: "Error occured. " + audioResult.error
                                 }))];
@@ -172,7 +172,7 @@ var MediaController = /** @class */ (function () {
                     case 4:
                         imageResult = _b.sent();
                         if (imageResult.error) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: imageResult.responseCode,
                                     message: "Error occured. " + imageResult.error
                                 }))];
@@ -187,7 +187,7 @@ var MediaController = /** @class */ (function () {
                     case 6:
                         videoResult = _b.sent();
                         if (videoResult.error) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: videoResult.responseCode,
                                     message: "Error occured. " + videoResult.error
                                 }))];
@@ -199,7 +199,7 @@ var MediaController = /** @class */ (function () {
                     case 7: return [3 /*break*/, 9];
                     case 8:
                         err_2 = _b.sent();
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured." + err_2
                             }))];

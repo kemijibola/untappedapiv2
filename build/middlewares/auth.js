@@ -54,7 +54,7 @@ function requireAuth(req, res, next) {
                     audience = '';
                     subject = '';
                     if (authorization === '' || typeof authorization === 'undefined') {
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 401,
                                 message: 'You must be logged in to perform thus operation.'
                             }))];
@@ -62,7 +62,7 @@ function requireAuth(req, res, next) {
                     encodedJWT = authorization.substr('JWT '.length);
                     parts = encodedJWT.split('.');
                     if (parts.length !== 3) {
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 400,
                                 message: 'Token is invalid.'
                             }))];
@@ -71,14 +71,14 @@ function requireAuth(req, res, next) {
                     payload = JSON.parse(Buffer.from(parts[1], 'base64'));
                     audience = payload.aud;
                     subject = payload.sub;
-                    if (header.kid !== lib_1.currentKey) {
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                    if (header.kid !== lib_1.currentAuthKey) {
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 400,
                                 message: 'Token is invalid.'
                             }))];
                     }
                     if (payload.usage !== GlobalEnum_1.TokenType.AUTH) {
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 400,
                                 message: 'Token is invalid.'
                             }))];
@@ -88,15 +88,15 @@ function requireAuth(req, res, next) {
                         subject: payload.sub,
                         audience: payload.aud,
                         expiresIn: lib_1.authExpiration,
-                        algorithms: [lib_1.rsaAlgType],
-                        keyid: lib_1.currentKey
+                        algorithms: [lib_1.currentRsaAlgType],
+                        keyid: lib_1.currentAuthKey
                     };
-                    publicKey = lib_1.getPublicKey(lib_1.currentKey);
+                    publicKey = lib_1.getPublicKey(lib_1.currentAuthKey);
                     return [4 /*yield*/, jsonwebtoken_1.default.verify(encodedJWT, publicKey, verifyOptions)];
                 case 1:
                     decoded = _a.sent();
                     if (!decoded) {
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 400,
                                 message: 'Token is invalid.'
                             }))];
@@ -125,17 +125,16 @@ function requireAuth(req, res, next) {
                         issuer: destinationResourceUrl,
                         audience: audience,
                         expiresIn: lib_1.authExpiration,
-                        algorithm: lib_1.rsaAlgType,
-                        keyid: lib_1.currentKey,
+                        algorithm: lib_1.currentRsaAlgType,
+                        keyid: lib_1.currentAuthKey,
                         subject: subject
                     };
                     payload_1 = {
-                        usage: GlobalEnum_1.TokenType.AUTH,
-                        permissions: Object.keys(permissions)
+                        type: GlobalEnum_1.TokenType.AUTH
                     };
-                    privateKey = lib_1.getSecretByKey(lib_1.currentKey);
+                    privateKey = lib_1.getSecretByKey(lib_1.currentAuthKey);
                     if (privateKey === '') {
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: 'Token is invalid'
                             }))];
@@ -153,7 +152,7 @@ function requireAuth(req, res, next) {
                 case 6:
                     err_1 = _a.sent();
                     console.log(err_1);
-                    return [2 /*return*/, next(error_1.PlatformError.error({
+                    return [2 /*return*/, next(new error_1.PlatformError({
                             code: 500,
                             message: err_1.message + ". Please generate another token."
                         }))];

@@ -79,20 +79,23 @@ var AuthController = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         if (result.error)
-                            return [2 /*return*/, next(error_1.PlatformError.error({
-                                    code: result.responseCode,
-                                    message: result.error
-                                }))];
+                            next(new error_1.PlatformError({
+                                code: result.responseCode,
+                                message: result.error
+                            }));
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: 'Operation successful',
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        return [2 /*return*/, next(error_1.PlatformError.error({
-                                code: 500,
-                                message: "Internal Server error occured." + err_1
-                            }))];
+                        // console.log(err.message);
+                        // log err.message to a logger with name of action
+                        next(new error_1.PlatformError({
+                            code: err_1.code,
+                            message: 'Internal Server error occured.'
+                        }));
+                        return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -119,7 +122,7 @@ var AuthController = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         if (result.error)
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
                                     message: result.error
                                 }))];
@@ -129,7 +132,7 @@ var AuthController = /** @class */ (function () {
                             })];
                     case 2:
                         err_2 = _a.sent();
-                        return [2 /*return*/, next(error_1.PlatformError.error({
+                        return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured." + err_2
                             }))];

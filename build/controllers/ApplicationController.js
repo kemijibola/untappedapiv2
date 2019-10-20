@@ -66,7 +66,7 @@ var ApplicationController = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         if (result.error) {
-                            return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
                                     message: "Error occured. " + result.error
                                 }))];
@@ -77,7 +77,7 @@ var ApplicationController = /** @class */ (function () {
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured." + err_1
                             }))];
@@ -99,7 +99,7 @@ var ApplicationController = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         if (result.error) {
-                            return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
                                     message: "Error occured. " + result.error
                                 }))];
@@ -110,7 +110,7 @@ var ApplicationController = /** @class */ (function () {
                             })];
                     case 2:
                         err_2 = _a.sent();
-                        return [2 /*return*/, next(ApplicationError_1.PlatformError.error({
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured." + err_2
                             }))];

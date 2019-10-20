@@ -16,7 +16,7 @@ export class PermissionController {
       const result = await permissionBusiness.create(item);
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })

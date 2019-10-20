@@ -25,7 +25,7 @@ export class ContestController {
       const result = await contestBusiness.create(item);
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -37,7 +37,7 @@ export class ContestController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

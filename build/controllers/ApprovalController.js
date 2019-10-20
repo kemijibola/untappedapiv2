@@ -66,7 +66,7 @@ var ApprovalController = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         if (result.error) {
-                            return [2 /*return*/, error_1.PlatformError.error({
+                            return [2 /*return*/, new error_1.PlatformError({
                                     code: result.responseCode,
                                     message: "Error occured. " + result.error
                                 })];

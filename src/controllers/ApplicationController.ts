@@ -18,7 +18,7 @@ export class ApplicationController {
       const result = await applicationBusiness.fetch(condition);
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -30,7 +30,7 @@ export class ApplicationController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })
@@ -47,7 +47,7 @@ export class ApplicationController {
       const result = await applicationBusiness.create(item);
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -59,7 +59,7 @@ export class ApplicationController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

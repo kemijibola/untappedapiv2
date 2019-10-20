@@ -20,7 +20,7 @@ export class UploadController {
 
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -32,7 +32,7 @@ export class UploadController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

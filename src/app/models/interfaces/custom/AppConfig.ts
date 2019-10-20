@@ -19,12 +19,14 @@ export interface AppConfig {
   APP_BUCKET: AppBucket;
   SCHEDULED_EMAIL_SQS: ScheduledEmailSQS;
   SERVERLESS: Serverless;
+  AUTH_ISSUER_SERVER: string;
 }
 
 export interface RsaSecret {
   Secret: string;
   key: string;
   rsaAlgType: string;
+  type: string;
 }
 
 export interface AppBucket {

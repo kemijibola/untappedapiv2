@@ -1,6 +1,6 @@
 import { GlobalError, IError } from './GlobalError';
 
-export class PlatformError extends GlobalError {
+export class EntityNotFoundError extends GlobalError {
   constructor(error: IError) {
     super(error);
   }

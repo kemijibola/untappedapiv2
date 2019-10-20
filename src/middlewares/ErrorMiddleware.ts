@@ -8,11 +8,10 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  const status = err.code;
-  const message = err.message;
-  return res.json({
-    status: status,
-    error: message,
-    data: null
+  const status = err.code || 500;
+  const message = err.message || 'Something went wrong';
+  res.status(status).send({
+    response_code: status,
+    response_message: message
   });
 }

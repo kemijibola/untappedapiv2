@@ -15,7 +15,7 @@ export class ResourcePermissionController {
       const result = await resourcePermissionBusiness.create(item);
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -27,7 +27,7 @@ export class ResourcePermissionController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

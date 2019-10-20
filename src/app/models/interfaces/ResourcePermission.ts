@@ -11,5 +11,5 @@ export interface IResourcePermission
     mongoose.Document {
   resource: IResource['_id'];
   role: IRole['_id'];
-  permissions: IPermission['_id'];
+  permissions: IPermission['_id'][];
 }

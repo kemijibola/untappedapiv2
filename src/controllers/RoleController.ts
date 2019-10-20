@@ -13,7 +13,7 @@ export class RoleController {
       const result = await roleBusiness.fetch({});
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -25,7 +25,7 @@ export class RoleController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })
@@ -42,7 +42,7 @@ export class RoleController {
       const result = await roleBusiness.create(item);
       if (result.error) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: result.responseCode,
             message: `Error occured. ${result.error}`
           })
@@ -54,7 +54,7 @@ export class RoleController {
       });
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

@@ -16,10 +16,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var GlobalError = /** @class */ (function (_super) {
     __extends(GlobalError, _super);
     function GlobalError(error) {
-        var _this = _super.call(this) || this;
+        var _this = _super.call(this, error.message) || this;
         _this.error = error;
-        Error.captureStackTrace(_this, _this.constructor);
-        _this.name = _this.constructor.name;
         _this.message = error.message;
         _this.code = error.code;
         return _this;

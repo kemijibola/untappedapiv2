@@ -14,12 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var GlobalError_1 = require("./GlobalError");
-var PlatformError = /** @class */ (function (_super) {
-    __extends(PlatformError, _super);
-    function PlatformError(error) {
+var EntityNotFoundError = /** @class */ (function (_super) {
+    __extends(EntityNotFoundError, _super);
+    function EntityNotFoundError(error) {
         return _super.call(this, error) || this;
     }
-    return PlatformError;
+    return EntityNotFoundError;
 }(GlobalError_1.GlobalError));
-exports.PlatformError = PlatformError;
-//# sourceMappingURL=ApplicationError.js.map
+exports.EntityNotFoundError = EntityNotFoundError;
+//# sourceMappingURL=EntityNotFound.js.map

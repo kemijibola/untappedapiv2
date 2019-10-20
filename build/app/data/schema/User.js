@@ -62,7 +62,7 @@ var userSchema = new mongoose_1.Schema({
     profileVisibility: { type: Boolean, default: false },
     isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: [{ type: userAccountStatusSchema }],
+    status: { type: interfaces_1.AccountStatus, default: interfaces_1.AccountStatus.DEFAULT },
     roles: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
@@ -97,6 +97,18 @@ userSchema.methods.generateToken = function (privateKey, signOptions, payload) {
                      */
                     signOptions.subject = this._id.toString();
                     return [4 /*yield*/, jsonwebtoken_1.default.sign(payload, privateKey, signOptions)];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+};
+userSchema.methods.verifyToken = function (encodedJwt, publicKey, verifyOptions) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    verifyOptions.subject = this._id.toString();
+                    return [4 /*yield*/, jsonwebtoken_1.default.verify(encodedJwt, publicKey, verifyOptions)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });

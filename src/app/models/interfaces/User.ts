@@ -7,7 +7,8 @@ import { IAppSpec } from './AppSpec';
 export enum AccountStatus {
   ACTIVATED = 'ACTIVATED',
   SUSPENDED = 'SUSPENDED',
-  DELETED = 'DELETED'
+  DELETED = 'DELETED',
+  DEFAULT = 'DEFAULT'
 }
 export interface IUserAccountStatus {
   status: AccountStatus;
@@ -41,4 +42,9 @@ export interface IUserModel extends IUser, mongoose.Document {
     signOptions: SignInOptions,
     payload: any
   ): Promise<string>;
+  verifyToken(
+    encodedJwt: string,
+    publicKey: string,
+    verifyOptions: any
+  ): Promise<any>;
 }

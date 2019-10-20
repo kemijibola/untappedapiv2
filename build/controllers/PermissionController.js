@@ -66,7 +66,7 @@ var PermissionController = /** @class */ (function () {
                     case 2:
                         result = _a.sent();
                         if (result.error) {
-                            return [2 /*return*/, next(error_1.PlatformError.error({
+                            return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
                                     message: "Error occured. " + result.error
                                 }))];

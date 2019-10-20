@@ -4,9 +4,7 @@ import { PlatformError } from '../error';
 export function requestValidators(keys: string[]): RequestHandler {
   return function(req: Request, res: Response, next: NextFunction) {
     if (!req.body) {
-      return next(
-        PlatformError.error({ code: 400, message: 'Invalid request' })
-      );
+      return next(new PlatformError({ code: 400, message: 'Invalid request' }));
     }
     let missingProps = '';
     for (let i = 0; i < keys.length; i++) {
@@ -20,7 +18,7 @@ export function requestValidators(keys: string[]): RequestHandler {
     }
     if (missingProps) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 400,
           message: `Invalid request.Missing property '${missingProps}'`
         })

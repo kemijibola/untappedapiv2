@@ -4,7 +4,7 @@ var error_1 = require("../error");
 function requestValidators(keys) {
     return function (req, res, next) {
         if (!req.body) {
-            return next(error_1.PlatformError.error({ code: 400, message: 'Invalid request' }));
+            return next(new error_1.PlatformError({ code: 400, message: 'Invalid request' }));
         }
         var missingProps = '';
         for (var i = 0; i < keys.length; i++) {
@@ -18,7 +18,7 @@ function requestValidators(keys) {
             }
         }
         if (missingProps) {
-            return next(error_1.PlatformError.error({
+            return next(new error_1.PlatformError({
                 code: 400,
                 message: "Invalid request.Missing property '" + missingProps + "'"
             }));

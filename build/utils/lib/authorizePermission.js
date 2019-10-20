@@ -12,7 +12,7 @@ function authorizePermission(policies) {
                 }
             }
             if (!found) {
-                return next(error_1.PlatformError.error({
+                return next(new error_1.PlatformError({
                     code: 403,
                     message: ' You are not authorized.'
                 }));

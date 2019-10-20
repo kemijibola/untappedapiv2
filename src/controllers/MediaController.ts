@@ -32,7 +32,7 @@ export class MediaController {
     try {
       if (!req.query.type) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: 400,
             message: `Bad request. Parameter 'type' is missing in query`
           })
@@ -47,7 +47,7 @@ export class MediaController {
           const audioResult = await audioBusiness.create(item);
           if (audioResult.error) {
             return next(
-              PlatformError.error({
+              new PlatformError({
                 code: audioResult.responseCode,
                 message: `Error occured. ${audioResult.error}`
               })
@@ -82,7 +82,7 @@ export class MediaController {
 
       if (!req.query.type) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: 400,
             message: `Bad request. Parameter 'type' is missing in query`
           })
@@ -90,7 +90,7 @@ export class MediaController {
       }
       if (!req.query.upload) {
         return next(
-          PlatformError.error({
+          new PlatformError({
             code: 400,
             message: `Bad request.Parameter 'upload' is missing in query`
           })
@@ -112,7 +112,7 @@ export class MediaController {
           const audioResult = await audioBusiness.fetch(condition);
           if (audioResult.error) {
             return next(
-              PlatformError.error({
+              new PlatformError({
                 code: audioResult.responseCode,
                 message: `Error occured. ${audioResult.error}`
               })
@@ -127,7 +127,7 @@ export class MediaController {
           const imageResult = await imageBusiness.fetch(condition);
           if (imageResult.error) {
             return next(
-              PlatformError.error({
+              new PlatformError({
                 code: imageResult.responseCode,
                 message: `Error occured. ${imageResult.error}`
               })
@@ -142,7 +142,7 @@ export class MediaController {
           const videoResult = await videoBusiness.fetch(condition);
           if (videoResult.error) {
             return next(
-              PlatformError.error({
+              new PlatformError({
                 code: videoResult.responseCode,
                 message: `Error occured. ${videoResult.error}`
               })
@@ -155,7 +155,7 @@ export class MediaController {
       }
     } catch (err) {
       return next(
-        PlatformError.error({
+        new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`
         })

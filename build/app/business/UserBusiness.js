@@ -40,6 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var ScheduledEmailRepository_1 = __importDefault(require("../repository/ScheduledEmailRepository"));
+var ResourceRepository_1 = __importDefault(require("../repository/ResourceRepository"));
+var ResourcePermissionRepository_1 = __importDefault(require("../repository/ResourcePermissionRepository"));
+var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
 var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
@@ -48,28 +51,47 @@ var TemplatePlaceHolder_1 = require("../../utils/lib/TemplatePlaceHolder");
 var config = require('../../config/keys');
 var TaskScheduler_1 = require("../../utils/TaskScheduler");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
+var error_1 = require("../../utils/error");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
-        this._currentKey = '';
+        this._currentAuthKey = '';
+        this._currentVerifyKey = '';
         this._currentRsaAlgType = '';
         this._authExpiration = '';
+        this._verifyExpiration = '';
+        this.chunkedUserPermissons = {};
         this._userRepository = new UserRepository_1.default();
         this._roleRepository = new RoleRepository_1.default();
         this._scheduledEmailRepository = new ScheduledEmailRepository_1.default();
-        this._currentKey = lib_1.currentKey;
-        this._currentRsaAlgType = lib_1.rsaAlgType;
+        this._resourceRepository = new ResourceRepository_1.default();
+        this._resourcePermissionRepository = new ResourcePermissionRepository_1.default();
+        this._permissionRepository = new PermissionRepository_1.default();
+        this._currentAuthKey = lib_1.currentAuthKey;
+        this._currentVerifyKey = lib_1.currentVerifyKey;
+        this._currentRsaAlgType = lib_1.currentRsaAlgType;
         this._authExpiration = lib_1.authExpiration;
+        this._verifyExpiration = lib_1.verifyTokenExpiration;
     }
+    UserBusiness.prototype.findUserByEmail = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.login = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, passwordMatched, permissionParams, permissions, signInOptions, payload, privateKey, userToken, authData, err_1;
+            var criteria, user, passwordMatched, resource, permissions, signInOptions, payload, privateKey, userToken, authData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this._userRepository.findByCriteria({
-                                email: params.email.toLowerCase()
-                            })];
+                        criteria = {
+                            email: params.email.toLowerCase()
+                        };
+                        return [4 /*yield*/, this.findUserByEmail(criteria)];
                     case 1:
                         user = _a.sent();
                         if (!user)
@@ -79,55 +101,112 @@ var UserBusiness = /** @class */ (function () {
                         passwordMatched = _a.sent();
                         if (!passwordMatched)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Invalid credentials')];
-                        permissionParams = {
-                            destinationUrl: params.destinationUrl.toLowerCase(),
-                            roles: user.roles.slice()
-                        };
-                        return [4 /*yield*/, lib_1.tokenExchange(permissionParams)];
+                        if (!user.isEmailConfirmed)
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Please verify your email.')];
+                        return [4 /*yield*/, this.fetchResourceByName(params.destinationUrl.toLowerCase())];
                     case 3:
+                        resource = _a.sent();
+                        if (resource === null)
+                            throw new error_1.PlatformError({
+                                code: 404,
+                                message: "Route: " + params.destinationUrl.toLowerCase() + " is not configured."
+                            });
+                        return [4 /*yield*/, this.fetchRolePermissionByResourceId(user.roles, resource._id)];
+                    case 4:
                         permissions = _a.sent();
                         signInOptions = {
                             issuer: params.issuer,
                             audience: params.audience,
                             expiresIn: this._authExpiration,
                             algorithm: this._currentRsaAlgType,
-                            keyid: this._currentKey,
+                            keyid: this._currentAuthKey,
                             subject: ''
                         };
                         payload = {
-                            usage: GlobalEnum_1.TokenType.AUTH,
-                            permissions: Object.keys(permissions)
+                            type: GlobalEnum_1.TokenType.AUTH
                         };
-                        privateKey = lib_1.getSecretByKey(this._currentKey);
+                        privateKey = lib_1.getSecretByKey(this._currentAuthKey);
                         if (privateKey === '') {
-                            return [2 /*return*/, Result_1.Result.fail(400, 'The token key provided is invalid')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Private Key is missing for " + this._currentAuthKey)];
                         }
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
-                    case 4:
+                    case 5:
                         userToken = _a.sent();
                         authData = {
-                            _id: user._id,
-                            email: user.email,
-                            fullName: user.fullName,
+                            access_token: userToken,
                             roles: user.roles.slice(),
-                            token: userToken
+                            permissions: Object.keys(permissions),
+                            user_data: {
+                                _id: user._id,
+                                fullName: user.fullName,
+                                email: user.email
+                            }
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, authData)];
-                    case 5:
-                        err_1 = _a.sent();
-                        throw new Error(err_1.message);
-                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.confirmEmail = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var criteria, unverifiedUser, publicKey, verifyOptions, decoded;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        criteria = {
+                            email: request.userEmail.toLowerCase(),
+                            isEmailConfirmed: true
+                        };
+                        return [4 /*yield*/, this.findUserByEmail(criteria)];
+                    case 1:
+                        unverifiedUser = _a.sent();
+                        if (!unverifiedUser)
+                            return [2 /*return*/, Result_1.Result.fail(404, 'User not found.')];
+                        publicKey = lib_1.getPublicKey(this._currentVerifyKey);
+                        verifyOptions = {
+                            issuer: lib_1.issuer,
+                            email: unverifiedUser.email,
+                            audience: request.audience,
+                            expiresIn: lib_1.verifyTokenExpiration,
+                            algorithms: [lib_1.currentRsaAlgType],
+                            keyid: this._currentVerifyKey
+                        };
+                        return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
+                    case 2:
+                        decoded = _a.sent();
+                        if (!decoded)
+                            if (!unverifiedUser)
+                                return [2 /*return*/, Result_1.Result.fail(404, 'Token is invalid')];
+                        // otherwise, set isEmailConfirmed to true
+                        return [4 /*yield*/, this.updateUserIsEmailConfirmed(unverifiedUser)];
+                    case 3:
+                        // otherwise, set isEmailConfirmed to true
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.updateUserIsEmailConfirmed = function (user) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        user.isEmailConfirmed = true;
+                        return [4 /*yield*/, this._userRepository.update(user._id, user)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var refinedUsers, users, _i, users_1, user, userViewModel, err_2;
+            var refinedUsers, users, _i, users_1, user, userViewModel;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         refinedUsers = [];
                         return [4 /*yield*/, this._userRepository.fetch(condition)];
                     case 1:
@@ -153,22 +232,16 @@ var UserBusiness = /** @class */ (function () {
                             refinedUsers = refinedUsers.concat([userViewModel]);
                         }
                         return [2 /*return*/, Result_1.Result.ok(200, refinedUsers)];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.findUserForExchange = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, err_3;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
                         if (!user) {
@@ -177,22 +250,17 @@ var UserBusiness = /** @class */ (function () {
                         else {
                             return [2 /*return*/, Result_1.Result.ok(200, user)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser, err_4;
+            var user, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
                         return [4 /*yield*/, this._userRepository.findById(id)];
@@ -220,22 +288,17 @@ var UserBusiness = /** @class */ (function () {
                             };
                             return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser, err_5;
+            var user, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
                             return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
                         return [4 /*yield*/, this._userRepository.findByOne(condition)];
@@ -263,23 +326,17 @@ var UserBusiness = /** @class */ (function () {
                             };
                             return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser, err_6;
+            var user, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
                     case 1:
                         user = _a.sent();
                         if (!user) {
@@ -304,25 +361,19 @@ var UserBusiness = /** @class */ (function () {
                             };
                             return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams, err_7;
+            var user, roleIds, _i, _a, key, role, newUser, tokenOptions, payload, privateKey, verificationToken, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 9, , 10]);
-                        return [4 /*yield*/, this._userRepository.findByCriteria({
-                                email: item.email
-                            })];
+                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
+                            email: item.email
+                        })];
                     case 1:
                         user = _b.sent();
                         if (user) {
@@ -355,15 +406,16 @@ var UserBusiness = /** @class */ (function () {
                             audience: item.audience,
                             expiresIn: this._authExpiration,
                             algorithm: this._currentRsaAlgType,
-                            keyid: this._currentKey,
+                            keyid: this._currentVerifyKey,
                             subject: ''
                         };
                         payload = {
-                            tokenType: GlobalEnum_1.TokenType.MAIL
+                            type: GlobalEnum_1.TokenType.MAIL,
+                            email: newUser.email
                         };
-                        privateKey = lib_1.getSecretByKey(this._currentKey);
-                        if (!privateKey)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'The token key provided is invalid')];
+                        privateKey = lib_1.getSecretByKey(this._currentVerifyKey);
+                        if (privateKey == '')
+                            return [2 /*return*/, Result_1.Result.fail(400, "Private Key is missing for " + this._currentVerifyKey)];
                         return [4 /*yield*/, newUser.generateToken(privateKey, tokenOptions, payload)];
                     case 7:
                         verificationToken = _b.sent();
@@ -387,22 +439,16 @@ var UserBusiness = /** @class */ (function () {
                         // const dueDate = addSeconds(newUser.createdAt, 10);
                         _b.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, true)];
-                    case 9:
-                        err_7 = _b.sent();
-                        throw new Error("InternalServer error occured." + err_7);
-                    case 10: return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser, refinedUser, err_8;
+            var newUser, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._userRepository.create(item)];
                     case 1:
                         newUser = _a.sent();
                         refinedUser = {
@@ -422,22 +468,16 @@ var UserBusiness = /** @class */ (function () {
                             createdAt: newUser.createdAt
                         };
                         return [2 /*return*/, Result_1.Result.ok(201, refinedUser)];
-                    case 2:
-                        err_8 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_8.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, err_9;
+            var user, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
                         if (!user)
@@ -446,22 +486,16 @@ var UserBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_9 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_9.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.patch = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, refinedUser, err_10;
+            var user, updateObj, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
                         if (!user)
@@ -487,29 +521,19 @@ var UserBusiness = /** @class */ (function () {
                             createdAt: updateObj.createdAt
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
-                    case 3:
-                        err_10 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_10.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     UserBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_11;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._userRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._userRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_11 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_11.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -541,6 +565,85 @@ var UserBusiness = /** @class */ (function () {
                 value: audience
             }
         ];
+    };
+    UserBusiness.prototype.fetchResourceByName = function (destinationUrl) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._resourceRepository.findByCriteria({
+                            name: destinationUrl
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.fetchRolePermissionByResourceId = function (roles, resourceId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _i, roles_1, role, resourcePermission;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _i = 0, roles_1 = roles;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < roles_1.length)) return [3 /*break*/, 5];
+                        role = roles_1[_i];
+                        return [4 /*yield*/, this._resourcePermissionRepository.findByCriteria({
+                                role: role,
+                                resource: resourceId
+                            })];
+                    case 2:
+                        resourcePermission = _a.sent();
+                        if (resourcePermission === null)
+                            throw new error_1.PlatformError({
+                                code: 404,
+                                message: "There is no resource permission configured for route with Id " + resourceId
+                            });
+                        if (resourcePermission.permissions.length < 1)
+                            throw new error_1.PlatformError({
+                                code: 404,
+                                message: "There are no permissions configured for route with Id " + resourceId
+                            });
+                        return [4 /*yield*/, this.chunckPermission(resourcePermission.permissions)];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/, this.chunkedUserPermissons];
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.chunckPermission = function (permissions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _i, permissions_1, item, permission;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _i = 0, permissions_1 = permissions;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < permissions_1.length)) return [3 /*break*/, 4];
+                        item = permissions_1[_i];
+                        return [4 /*yield*/, this._permissionRepository.findByCriteria(item)];
+                    case 2:
+                        permission = _a.sent();
+                        if (permission) {
+                            if (!this.chunkedUserPermissons[permission.name]) {
+                                this.chunkedUserPermissons[permission.name] = permission.name;
+                            }
+                        }
+                        _a.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
     };
     return UserBusiness;
 }());
