@@ -1,8 +1,10 @@
 import * as AWS from 'aws-sdk';
+import { AppConfig } from '../../../app/models/interfaces/custom/AppConfig';
+const config: AppConfig = module.require('../../../config/keys');
 
 AWS.config.update({
-  accessKeyId: 'AKIAUHX2MMXUCQ64RPPY',
-  secretAccessKey: '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',
+  accessKeyId: config.SERVERLESS.access_key_id,
+  secretAccessKey: config.SERVERLESS.secret_access_key,
   region: 'us-east-1'
 });
 
