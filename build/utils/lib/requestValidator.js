@@ -9,12 +9,7 @@ function requestValidators(keys) {
         var missingProps = '';
         for (var i = 0; i < keys.length; i++) {
             if (!req.body[keys[i]]) {
-                if (i === keys.length - 1) {
-                    missingProps += keys[i];
-                }
-                else {
-                    missingProps += keys[i] + ", ";
-                }
+                missingProps += keys[i];
             }
         }
         if (missingProps) {

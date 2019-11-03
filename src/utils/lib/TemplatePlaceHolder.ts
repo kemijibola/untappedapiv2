@@ -9,7 +9,8 @@ export enum PlaceHolderKey {
   Instagram = '[Instagram]',
   Name = '[Name]',
   PlatformUrl = '[PlatformUrl]',
-  VerificationUrl = '[VerificationUrl]'
+  VerifyToken = '[VerifyToken]',
+  FullVerifyToken = '[FullVerifyToken]'
 }
 
 export interface TemplateKeyValue {

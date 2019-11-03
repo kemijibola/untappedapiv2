@@ -1,10 +1,7 @@
-import { APIGatewayEvent, Handler, Context, Callback } from 'aws-lambda';
-import { EmailService, IEmail } from './EmailService';
-import { ses } from './aws/Sender';
-
-import * as AWS from 'aws-sdk';
-import { escapeJSON } from '../lib';
-AWS.config.update({ region: 'us-east-1' });
+import { Handler, Context } from 'aws-lambda';
+import { EmailService, IEmail } from '../utils/emailservice/EmailService';
+import { ses } from '../utils/emailservice/aws/Sender';
+import { escapeJSON } from '../utils/lib';
 
 let mailParams: IEmail = {
   receivers: [],
@@ -14,15 +11,11 @@ let mailParams: IEmail = {
   senderName: ''
 };
 
-export const mailHandler: Handler = async (
+export const handle: Handler = async (
   event: any = {},
   context: Context
 ): Promise<any> => {
-  const headers = { 'Access-Control-Allow-Origin': '*' };
   try {
-    // const fromJson = event.email;
-    // let data = escapeJSON(fromJson.receivers);
-    // const parsed = JSON.parse(data);
     let escapeReceivers: string[] = [];
     let escapesubject: string;
     let escapebody: string;
@@ -69,7 +62,5 @@ export const mailHandler: Handler = async (
     };
     const mailer = EmailService.mailer(mailParams);
     await mailer.sendMail(ses);
-  } catch (err) {
-    // log error here
-  }
+  } catch (err) {}
 };

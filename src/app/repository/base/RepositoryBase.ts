@@ -31,11 +31,11 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  update(_id: mongoose.Types.ObjectId, item: T): Promise<T> {
+  update(_id: string, item: T): Promise<T> {
     const options = { new: true, useFindAndModify: false };
     return new Promise((resolve, reject) => {
       this._model.findByIdAndUpdate(
-        { _id: _id },
+        _id,
         item,
         options,
         (error: any, result: any) => {
@@ -46,14 +46,28 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  updateMany(_ids: mongoose.Types.ObjectId[], item: T): Promise<T> {
+  patch(_id: string, item: any): Promise<T> {
+    const options = { new: true, useFindAndModify: false };
     return new Promise((resolve, reject) => {
-      this._model.updateMany({ _id: _ids }, item, (error: any, result: any) => {
-        if (error) reject(error);
-        else resolve(result);
-      });
+      this._model.findByIdAndUpdate(
+        _id,
+        item,
+        options,
+        (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
     });
   }
+  // updateMany(_ids: string[], item: T): Promise<T> {
+  //   return new Promise((resolve, reject) => {
+  //     this._model.updateMany({ _id: this.toObjectId(_ids) }, item, (error: any, result: any) => {
+  //       if (error) reject(error);
+  //       else resolve(result);
+  //     });
+  //   });
+  // }
 
   delete(_id: string): Promise<boolean> {
     return new Promise((resolve, reject) => {

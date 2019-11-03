@@ -20,6 +20,7 @@ export interface AppConfig {
   SCHEDULED_EMAIL_SQS: ScheduledEmailSQS;
   SERVERLESS: Serverless;
   AUTH_ISSUER_SERVER: string;
+  VERIFICATION_URI: string;
 }
 
 export interface RsaSecret {

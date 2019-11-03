@@ -44,7 +44,6 @@ var PermissionBusiness_1 = __importDefault(require("../../app/business/Permissio
 var ResourcePermissionBusiness_1 = __importDefault(require("../../app/business/ResourcePermissionBusiness"));
 var ApplicationBusiness_1 = __importDefault(require("../../app/business/ApplicationBusiness"));
 var error_1 = require("../error");
-var mongoose_1 = __importDefault(require("mongoose"));
 var Result_1 = require("../Result");
 var chunkedUserPermissons = {};
 exports.getSecretByKey = function (keyId) {
@@ -145,10 +144,6 @@ function chunckPermission(permissions) {
         });
     });
 }
-function toObjectId(_id) {
-    return mongoose_1.default.Types.ObjectId.createFromHexString(_id);
-}
-exports.toObjectId = toObjectId;
 function isValidIdentity(audience) {
     return __awaiter(this, void 0, void 0, function () {
         var applicationBusiness, app, err_1;

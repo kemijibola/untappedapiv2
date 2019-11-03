@@ -2,7 +2,7 @@ import ImageRepository from '../repository/ImageRepository';
 import IImageBusiness = require('./interfaces/ImageBusiness');
 import { IImage, ApprovalOperations, IApproval } from '../models/interfaces';
 import { Result } from '../../utils/Result';
-import { schedule } from '../../utils/TaskScheduler';
+import { schedule } from '../../handlers/ScheduleTask';
 import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
 
 class ImageBusiness implements IImageBusiness {

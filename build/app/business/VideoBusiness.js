@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var VideoRepository_1 = __importDefault(require("../repository/VideoRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
-var TaskScheduler_1 = require("../../utils/TaskScheduler");
+var ScheduleTask_1 = require("../../handlers/ScheduleTask");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var VideoBusiness = /** @class */ (function () {
     function VideoBusiness() {
@@ -169,7 +169,7 @@ var VideoBusiness = /** @class */ (function () {
                             operation: interfaces_1.ApprovalOperations.VideoUpload,
                             application: 'untappedpool.com'
                         });
-                        return [4 /*yield*/, TaskScheduler_1.schedule(StateMachineArns_1.StateMachineArns.MediaStateMachine, newVideo.createdAt, approvalRequest)];
+                        return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.MediaStateMachine, newVideo.createdAt, approvalRequest)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, true)];

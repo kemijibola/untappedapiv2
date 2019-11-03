@@ -72,5 +72,6 @@ exports.currentVerifyKey = '43';
 exports.currentRsaAlgType = 'RS256';
 exports.issuer = getIssuer();
 exports.authExpiration = getAuthExpiration();
+exports.mailExpiration = getMailExpiration();
 exports.verifyTokenExpiration = getMailExpiration();
 //# sourceMappingURL=Constant.js.map

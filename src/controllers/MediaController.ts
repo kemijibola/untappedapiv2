@@ -64,6 +64,7 @@ export class MediaController {
   }
   update(): void {}
   delete(): void {}
+
   @get('/')
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
@@ -99,7 +100,7 @@ export class MediaController {
       const mediaType = req.query.type.toLowerCase();
       let condition: ObjectKeyString = {};
       const upload = req.query.upload.toLowerCase();
-      condition.uploadType = MediaUploadType[upload];
+      // condition.uploadType = MediaUploadType[upload];
       if (condition['upload'] === MediaUploadType.all) {
         condition.uploadType = '';
       }
@@ -162,6 +163,7 @@ export class MediaController {
       );
     }
   }
+
   @get('/:id')
   findById(req: Request, res: Response, next: NextFunction) {}
 }

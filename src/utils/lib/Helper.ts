@@ -11,7 +11,6 @@ import PermissionBusiness from '../../app/business/PermissionBusiness';
 import ResourcePermissionBusiness from '../../app/business/ResourcePermissionBusiness';
 import ApplicationBusiness from '../../app/business/ApplicationBusiness';
 import { PlatformError } from '../error';
-import mongoose from 'mongoose';
 import { Result } from '../Result';
 
 export type ObjectKeyString = { [x: string]: string };
@@ -92,10 +91,6 @@ async function chunckPermission(permissions: string[]) {
         chunkedUserPermissons[result.data.name] = result.data.name;
       }
   }
-}
-
-export function toObjectId(_id: string): mongoose.Types.ObjectId {
-  return mongoose.Types.ObjectId.createFromHexString(_id);
 }
 
 export async function isValidIdentity(

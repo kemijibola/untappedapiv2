@@ -42,7 +42,6 @@ var ResourceRepository_1 = __importDefault(require("../repository/ResourceReposi
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var Result_1 = require("../../utils/Result");
-var lib_1 = require("../../utils/lib");
 var ResourcePermissionBusiness = /** @class */ (function () {
     function ResourcePermissionBusiness() {
         this._resourcePermissionRepository = new ResourcePermissionRepository_1.default();
@@ -170,7 +169,7 @@ var ResourcePermissionBusiness = /** @class */ (function () {
                         permission = _b.sent();
                         if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(400, "Permission id " + key + " is not a valid Permission")];
-                        permissionIds.push(lib_1.toObjectId(key));
+                        permissionIds.push(key);
                         _b.label = 5;
                     case 5:
                         _i++;

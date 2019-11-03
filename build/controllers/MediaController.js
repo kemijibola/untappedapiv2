@@ -137,7 +137,7 @@ var MediaController = /** @class */ (function () {
                         mediaType = req.query.type.toLowerCase();
                         condition = {};
                         upload = req.query.upload.toLowerCase();
-                        condition.uploadType = interfaces_1.MediaUploadType[upload];
+                        // condition.uploadType = MediaUploadType[upload];
                         if (condition['upload'] === interfaces_1.MediaUploadType.all) {
                             condition.uploadType = '';
                         }

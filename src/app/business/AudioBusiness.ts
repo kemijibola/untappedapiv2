@@ -2,7 +2,7 @@ import AudioRepository from '../repository/AudioRepository';
 import IAudioBusiness = require('./interfaces/AudioBusiness');
 import { IAudio, IApproval, ApprovalOperations } from '../models/interfaces';
 import { Result } from '../../utils/Result';
-import { schedule } from '../../utils/TaskScheduler';
+import { schedule } from '../../handlers/ScheduleTask';
 import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
 
 class AudioBusiness implements IAudioBusiness {

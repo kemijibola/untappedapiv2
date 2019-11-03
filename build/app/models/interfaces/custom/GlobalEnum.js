@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var TokenType;
 (function (TokenType) {
-    TokenType["MAIL"] = "MAIL";
+    TokenType["VERIFY"] = "VERIFY";
     TokenType["AUTH"] = "AUTH";
     TokenType["JUDGEEVALUATION"] = "JUDGEEVALUATION";
 })(TokenType = exports.TokenType || (exports.TokenType = {}));

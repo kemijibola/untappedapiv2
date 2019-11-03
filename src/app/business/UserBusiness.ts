@@ -21,7 +21,6 @@ import {
   IExchangeToken,
   tokenExchange,
   getSecretByKey,
-  toObjectId,
   IStringDate,
   ObjectKeyString,
   currentAuthKey,
@@ -29,6 +28,7 @@ import {
   currentRsaAlgType,
   issuer,
   authExpiration,
+  mailExpiration,
   verifyTokenExpiration,
   getPublicKey
 } from '../../utils/lib';
@@ -46,20 +46,26 @@ import {
   replaceTemplateString
 } from '../../utils/lib/TemplatePlaceHolder';
 const config: AppConfig = require('../../config/keys');
-import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
-import { schedule } from '../../utils/TaskScheduler';
+// import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
+import { schedule } from '../../handlers/ScheduleTask';
 import { IEmail } from '../../utils/emailservice/EmailService';
 import { UserSchema } from '../data/schema/User';
 import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
 import { PlatformError } from '../../utils/error';
 import { EntityNotFoundError } from '../../utils/error/EntityNotFound';
-import { ConfirmEmailRequest } from '../models/interfaces/custom/Account';
+import {
+  ConfirmEmailRequest,
+  TokenResult,
+  ResetPasswordData,
+  TokenGenerationRequest
+} from '../models/interfaces/custom/Account';
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = '';
   private _currentVerifyKey = '';
   private _currentRsaAlgType = '';
   private _authExpiration = '';
+  private _mailExpiratation = '';
   private _verifyExpiration = '';
   private _userRepository: UserRepository;
   private _roleRepository: RoleRepository;
@@ -81,6 +87,7 @@ class UserBusiness implements IUserBusiness {
     this._currentRsaAlgType = currentRsaAlgType;
     this._authExpiration = authExpiration;
     this._verifyExpiration = verifyTokenExpiration;
+    this._mailExpiratation = mailExpiration;
   }
 
   async findUserByEmail(criteria: any): Promise<IUserModel> {
@@ -90,7 +97,8 @@ class UserBusiness implements IUserBusiness {
   async login(params: ILogin): Promise<Result<IAuthData>> {
     {
       const criteria = {
-        email: params.email.toLowerCase()
+        email: params.email.toLowerCase(),
+        isEmailConfirmed: true
       };
       const user = await this.findUserByEmail(criteria);
 
@@ -102,8 +110,8 @@ class UserBusiness implements IUserBusiness {
       if (!passwordMatched)
         return Result.fail<IAuthData>(400, 'Invalid credentials');
 
-      if (!user.isEmailConfirmed)
-        return Result.fail<IAuthData>(400, 'Please verify your email.');
+      // if (!user.isEmailConfirmed)
+      //   return Result.fail<IAuthData>(400, 'Please verify your email.');
 
       const resource = await this.fetchResourceByName(
         params.destinationUrl.toLowerCase()
@@ -137,57 +145,71 @@ class UserBusiness implements IUserBusiness {
           `Private Key is missing for ${this._currentAuthKey}`
         );
       }
-      const userToken: string = await user.generateToken(
+      const userToken: TokenResult = await user.generateToken(
         privateKey,
         signInOptions,
         payload
       );
 
+      if (userToken.error)
+        return Result.fail<IAuthData>(
+          400,
+          `Error occured while generating token. ${userToken.error}`
+        );
+      const typeOfUser = await this._roleRepository.findById(user.roles[0]);
       const authData: IAuthData = {
-        access_token: userToken,
-        roles: [...user.roles],
+        access_token: userToken.data,
         permissions: Object.keys(permissions),
         user_data: {
           _id: user._id,
           fullName: user.fullName,
-          email: user.email
+          email: user.email,
+          role: {
+            _id: typeOfUser._id,
+            name: typeOfUser.name
+          }
         }
       };
       return Result.ok<IAuthData>(200, authData);
     }
   }
 
-  async confirmEmail(request: ConfirmEmailRequest): Promise<Result<boolean>> {
+  async confirmEmail(request: ConfirmEmailRequest): Promise<Result<string>> {
     const criteria = {
-      email: request.userEmail.toLowerCase(),
-      isEmailConfirmed: true
+      email: request.userEmail.toLowerCase()
     };
     const unverifiedUser: IUserModel = await this.findUserByEmail(criteria);
-    if (!unverifiedUser) return Result.fail<boolean>(404, 'User not found.');
+    if (!unverifiedUser) return Result.fail<string>(404, 'User not found.');
+    if (unverifiedUser.isEmailConfirmed)
+      return Result.fail<string>(
+        400,
+        `${unverifiedUser.email} has already been verified.`
+      );
     const publicKey = getPublicKey(this._currentVerifyKey);
     const verifyOptions = {
-      issuer: issuer,
-      email: unverifiedUser.email,
+      kid: this._currentVerifyKey,
+      issuer: config.VERIFICATION_URI,
+      email: request.userEmail,
+      type: TokenType.VERIFY,
       audience: request.audience,
-      expiresIn: verifyTokenExpiration,
-      algorithms: [currentRsaAlgType],
-      keyid: this._currentVerifyKey
+      keyid: this._currentVerifyKey,
+      ignoreExpiration: false,
+      maxAge: this._mailExpiratation
     };
-    const decoded = await unverifiedUser.verifyToken(
+    const decoded: TokenResult = await unverifiedUser.verifyToken(
       request.token,
       publicKey,
       verifyOptions
     );
-    if (!decoded)
-      if (!unverifiedUser) return Result.fail<boolean>(404, 'Token is invalid');
-    // otherwise, set isEmailConfirmed to true
-    await this.updateUserIsEmailConfirmed(unverifiedUser);
-    return Result.ok<boolean>(200, true);
+    if (decoded.error)
+      return Result.fail<string>(400, `${decoded.error.split('.')[0]}`);
+    await this.updateUserIsEmailConfirmed(unverifiedUser._id, unverifiedUser);
+    return Result.ok<string>(200, 'Email successfully verified');
   }
 
-  async updateUserIsEmailConfirmed(user: IUserModel) {
+  async updateUserIsEmailConfirmed(id: string, user: IUserModel) {
     user.isEmailConfirmed = true;
-    await this._userRepository.update(user._id, user);
+    await this._userRepository.patch(id, { isEmailConfirmed: true });
   }
 
   async fetch(condition: any): Promise<Result<any[]>> {
@@ -308,7 +330,7 @@ class UserBusiness implements IUserBusiness {
     });
     if (user) {
       return Result.fail<boolean>(
-        400,
+        409,
         `There is a user registered with this email: ${item.email}`
       );
     }
@@ -316,27 +338,99 @@ class UserBusiness implements IUserBusiness {
     let roleIds = [];
     for (let key of item.roles) {
       const role = await this._roleRepository.findByCriteria({
-        _id: toObjectId(key),
+        _id: key,
         isActive: true
       });
       if (!role)
         return Result.fail<boolean>(400, `Role id ${key} is not a valid role`);
-      roleIds.push(toObjectId(key));
+      roleIds.push(key);
     }
 
     const newUser: IUserModel = await this._userRepository.register(item);
-
-    const tokenOptions: SignInOptions = {
-      issuer: item.issuer,
+    // generate token and send to email
+    const data: TokenGenerationRequest = {
+      user: newUser,
       audience: item.audience,
-      expiresIn: this._authExpiration,
+      confirmationUrl: item.confirmationUrl
+    };
+    this.generateTokenAndSendToMail(data);
+    return Result.ok<bool>(201, true);
+  }
+
+  async forgotPassword(
+    email: string,
+    audience: string,
+    verificationUrl: string
+  ): Promise<Result<boolean>> {
+    const user: IUserModel = await this._userRepository.findByCriteria({
+      email
+    });
+    if (user) {
+      const request: TokenGenerationRequest = {
+        user,
+        audience,
+        confirmationUrl: verificationUrl
+      };
+      this.generateTokenAndSendToMail(request);
+    }
+    return Result.ok<bool>(200, true);
+  }
+
+  async resetPassword(data: ResetPasswordData): Promise<Result<boolean>> {
+    // fetch user by email
+    const user: IUserModel = await this._userRepository.findByCriteria({
+      _id: data.userId,
+      isEmailConfirmed: true
+    });
+    if (!user) return Result.fail<boolean>(400, 'User not found');
+    const passwordMatched: boolean = await user.comparePassword(
+      data.oldPassword
+    );
+    if (!passwordMatched)
+      return Result.fail<boolean>(400, 'Invalid credentials');
+
+    user.password = data.newPassword;
+    user.save();
+
+    return Result.ok<bool>(200, true);
+  }
+  async resendVerificationLink(
+    email: string,
+    audience: string,
+    verificationUrl: string
+  ): Promise<Result<boolean>> {
+    const user: IUserModel = await this._userRepository.findByCriteria({
+      email
+    });
+    if (!user) {
+      return Result.fail<boolean>(400, 'User not found');
+    }
+    if (user.isEmailConfirmed)
+      return Result.fail<boolean>(
+        400,
+        `${user.email} has already been verified.`
+      );
+    const data: TokenGenerationRequest = {
+      user,
+      audience,
+      confirmationUrl: verificationUrl
+    };
+    this.generateTokenAndSendToMail(data);
+    return Result.ok<bool>(200, true);
+  }
+
+  private async generateTokenAndSendToMail(data: TokenGenerationRequest) {
+    const tokenOptions: SignInOptions = {
+      issuer: config.VERIFICATION_URI,
+      audience: data.audience,
+      expiresIn: this._mailExpiratation,
       algorithm: this._currentRsaAlgType,
       keyid: this._currentVerifyKey,
       subject: ''
     };
     const payload: ObjectKeyString = {
-      type: TokenType.MAIL,
-      email: newUser.email
+      type: TokenType.VERIFY,
+      email: data.user.email
     };
     const privateKey: string = getSecretByKey(this._currentVerifyKey);
     if (privateKey == '')
@@ -344,41 +438,41 @@ class UserBusiness implements IUserBusiness {
         400,
         `Private Key is missing for ${this._currentVerifyKey}`
       );
-    const verificationToken: string = await newUser.generateToken(
+    const generated: TokenResult = await data.user.generateToken(
       privateKey,
       tokenOptions,
       payload
     );
 
-    const welcomeEmailKeyValues: TemplateKeyValue[] = this.welcomeEmailKeyValue(
-      newUser.fullName,
-      item.audience,
-      verificationToken
-    );
-    const welcomeTemplateString: string = WelcomeEmail.template;
+    if (generated.data) {
+      const welcomeEmailKeyValues: TemplateKeyValue[] = this.welcomeEmailKeyValue(
+        data.user.fullName,
+        data.audience,
+        `${data.confirmationUrl}?email=${data.user.email}&token=${generated.data}`
+      );
 
-    const welcomeEmailPlaceHolder: TemplatePlaceHolder = {
-      template: welcomeTemplateString,
-      placeholders: welcomeEmailKeyValues
-    };
+      const welcomeTemplateString: string = WelcomeEmail.template;
 
-    const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
-    const mailParams: IEmail = {
-      receivers: [newUser.email],
-      subject: 'Signup Welcome Email',
-      mail: emailBody,
-      senderEmail: 'talents@untappedpool.com',
-      senderName: 'Untapped Pool'
-    };
+      const welcomeEmailPlaceHolder: TemplatePlaceHolder = {
+        template: welcomeTemplateString,
+        placeholders: welcomeEmailKeyValues
+      };
 
-    // const dueDate = addSeconds(newUser.createdAt, 10);
+      const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
+      const mailParams: IEmail = {
+        receivers: [data.user.email],
+        subject: 'Signup Welcome Email',
+        mail: emailBody,
+        senderEmail: 'talents@untappedpool.com',
+        senderName: 'Untapped Pool'
+      };
 
-    await schedule(
-      StateMachineArns.EmailStateMachine,
-      newUser.createdAt,
-      mailParams
-    );
-    return Result.ok<bool>(201, true);
+      await schedule(
+        StateMachineArns.EmailStateMachine,
+        new Date(),
+        mailParams
+      );
+    }
   }
 
   async create(item: IUserModel): Promise<Result<any>> {
@@ -470,12 +564,16 @@ class UserBusiness implements IUserBusiness {
         value: userName
       },
       {
-        key: PlaceHolderKey.VerificationUrl,
+        key: PlaceHolderKey.VerifyToken,
         value: verificationUrl
       },
       {
         key: PlaceHolderKey.PlatformUrl,
         value: audience
+      },
+      {
+        key: PlaceHolderKey.FullVerifyToken,
+        value: verificationUrl
       }
     ];
   }

@@ -1,4 +1,4 @@
-import { IUser, IRole } from '../';
+import { IUser, IRole, IUserModel } from '../';
 
 export interface ICreateUser {
   email: IUser['email'];
@@ -17,4 +17,21 @@ export interface ConfirmEmailRequest {
   userEmail: string;
   token: string;
   audience: string;
+}
+
+export interface TokenGenerationRequest {
+  user: IUserModel;
+  audience: string;
+  confirmationUrl: string;
+}
+
+export interface TokenResult {
+  data: any;
+  error: string;
+}
+
+export interface ResetPasswordData {
+  userId: string;
+  oldPassword: string;
+  newPassword: string;
 }

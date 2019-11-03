@@ -1,6 +1,12 @@
 import * as AWS from 'aws-sdk';
-AWS.config.update({ region: 'us-east-1' });
-const stepfunctions = new AWS.StepFunctions();
+
+AWS.config.update({
+  accessKeyId: 'AKIAUHX2MMXUCQ64RPPY',
+  secretAccessKey: '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',
+  region: 'us-east-1'
+});
+
+const stepfunctions = new AWS.StepFunctions({ region: 'us-east-1' });
 
 declare module 'aws-lambda' {
   interface APIGatewayProxyEvent {
@@ -16,11 +22,13 @@ export type TaskScheduler = (
 ) => Promise<any>;
 
 export const schedule: TaskScheduler = async (
-  stateMachineArn: string,
+  stateMachine: string,
   dueDate: Date,
   data: any
 ): Promise<any> => {
   try {
+    const stateMachineArn =
+      'arn:aws:states:us-east-1:291509134824:stateMachine:EmailSchedulingStateMachine';
     return await stepfunctions
       .startExecution({
         stateMachineArn,
@@ -30,5 +38,7 @@ export const schedule: TaskScheduler = async (
         })
       })
       .promise();
-  } catch (err) {}
+  } catch (err) {
+    console.log('Error', err);
+  }
 };

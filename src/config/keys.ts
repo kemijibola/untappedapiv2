@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import { Environment } from '../app/models/interfaces/custom/Environment';
 import * as development from './development.json';
 import * as ci from './ci.json';

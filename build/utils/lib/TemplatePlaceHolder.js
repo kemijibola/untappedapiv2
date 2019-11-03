@@ -12,7 +12,8 @@ var PlaceHolderKey;
     PlaceHolderKey["Instagram"] = "[Instagram]";
     PlaceHolderKey["Name"] = "[Name]";
     PlaceHolderKey["PlatformUrl"] = "[PlatformUrl]";
-    PlaceHolderKey["VerificationUrl"] = "[VerificationUrl]";
+    PlaceHolderKey["VerifyToken"] = "[VerifyToken]";
+    PlaceHolderKey["FullVerifyToken"] = "[FullVerifyToken]";
 })(PlaceHolderKey = exports.PlaceHolderKey || (exports.PlaceHolderKey = {}));
 function replaceTemplateString(param) {
     var template = param.template;

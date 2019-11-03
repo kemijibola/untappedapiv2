@@ -3,8 +3,11 @@ import { controller, get, post, requestValidators, use } from '../decorators';
 import UserBusiness from '../app/business/UserBusiness';
 import { PlatformError } from '../utils/error';
 import { ILogin, IRegister } from '../app/models/interfaces';
-import { issuer } from '../utils/lib';
-import { IError } from '../utils/error/GlobalError';
+import { issuer, tokenExchange } from '../utils/lib';
+import {
+  ConfirmEmailRequest,
+  ResetPasswordData
+} from '../app/models/interfaces/custom/Account';
 
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
@@ -28,7 +31,6 @@ export class AuthController {
       };
 
       const userBusiness = new UserBusiness();
-
       const result = await userBusiness.login(loginParams);
       if (result.error)
         next(
@@ -44,27 +46,181 @@ export class AuthController {
     } catch (err) {
       // console.log(err.message);
       // log err.message to a logger with name of action
-      next(
+      return next(
         new PlatformError({
-          code: err.code,
-          message: 'Internal Server error occured.'
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
+    }
+  }
+
+  @post('/account/password/reset')
+  @requestValidators('email', 'audience', 'confirmationUrl')
+  async postforgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userBusiness = new UserBusiness();
+      const result = await userBusiness.forgotPassword(
+        req.body.email.toLowerCase(),
+        req.body.audience.toLowerCase(),
+        req.body.confirmationUrl.toLowerCase()
+      );
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: 'Operation successful',
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
+    }
+  }
+
+  @post('/account/password/change')
+  @requestValidators('oldPassword', 'newPassword')
+  async postChangePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      // TODO: get userId from tokenExchange
+      const userBusiness = new UserBusiness();
+      const data: ResetPasswordData = {
+        userId: '5db803b9fd13673bd81547e4',
+        oldPassword: req.body.oldPassword,
+        newPassword: req.body.newPassword
+      };
+      const result = await userBusiness.resetPassword(data);
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: 'Operation successful',
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
+    }
+  }
+
+  @post('/account/resend-link')
+  @requestValidators('email', 'audience', 'confirmationUrl')
+  async postResendVerificationLink(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userBusiness = new UserBusiness();
+
+      const result = await userBusiness.resendVerificationLink(
+        req.body.email.toLowerCase(),
+        req.body.audience.toLowerCase(),
+        req.body.confirmationUrl.toLowerCase()
+      );
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: 'Operation successful',
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
+    }
+  }
+
+  @post('/account/verify')
+  @requestValidators('email', 'audience', 'token')
+  async postVerifyEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      // if (!req.query.email)
+      //   next(
+      //     new PlatformError({
+      //       code: 400,
+      //       message: 'Request is missing email parameter'
+      //     })
+      //   );
+      // if (!req.query.token)
+      //   next(
+      //     new PlatformError({
+      //       code: 400,
+      //       message: 'Request is missing token parameter'
+      //     })
+      //   );
+      const request: ConfirmEmailRequest = {
+        userEmail: req.body.email,
+        token: req.body.token,
+        audience: req.body.audience
+      };
+
+      const userBusiness = new UserBusiness();
+      const result = await userBusiness.confirmEmail(request);
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: 'Operation successful',
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
         })
       );
     }
   }
 
   @post('/account/signup')
-  @requestValidators('email', 'password', 'audience', 'username', 'roles')
+  @requestValidators(
+    'email',
+    'password',
+    'audience',
+    'fullName',
+    'roles',
+    'confirmationUrl'
+  )
   async postSignup(req: Request, res: Response, next: NextFunction) {
     try {
-      const destinationIssuer = `${issuer}${req.originalUrl}`;
+      // const destinationIssuer = `${issuer}${req.originalUrl}`;
       const signUpParams: IRegister = {
-        username: req.body.username,
+        fullName: req.body.fullName,
         email: req.body.email,
         password: req.body.password,
         roles: req.body.roles,
         audience: req.body.audience,
-        issuer: destinationIssuer
+        confirmationUrl: req.body.confirmationUrl
       };
       const userBusiness = new UserBusiness();
       const result = await userBusiness.register(signUpParams);
@@ -83,14 +239,9 @@ export class AuthController {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: 'Internal Server error occured. Please try again later.'
         })
       );
     }
   }
-  create(req: Request, res: Response, next: NextFunction) {}
-  update(): void {}
-  delete(): void {}
-  fetch(): void {}
-  findById(): void {}
 }

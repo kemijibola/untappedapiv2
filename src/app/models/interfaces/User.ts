@@ -41,7 +41,7 @@ export interface IUserModel extends IUser, mongoose.Document {
     privateKey: string,
     signOptions: SignInOptions,
     payload: any
-  ): Promise<string>;
+  ): Promise<any>;
   verifyToken(
     encodedJwt: string,
     publicKey: string,

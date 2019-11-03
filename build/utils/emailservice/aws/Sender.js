@@ -44,7 +44,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var AWS = __importStar(require("aws-sdk"));
-AWS.config.update({ region: 'us-east-1' });
+AWS.config.update({
+    accessKeyId: 'AKIAUHX2MMXUCQ64RPPY',
+    secretAccessKey: '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',
+    region: 'us-east-1'
+});
 var awsSes = new AWS.SES({ region: 'us-east-1' });
 exports.ses = function (receivers, subject, body, senderEmail, ccAddresses, bccAddresses) { return __awaiter(_this, void 0, void 0, function () {
     var charset, params;

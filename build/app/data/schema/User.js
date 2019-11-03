@@ -42,12 +42,8 @@ var MongodataAccess_1 = __importDefault(require("../MongodataAccess"));
 var mongoose_1 = require("mongoose");
 var interfaces_1 = require("../../models/interfaces");
 var bcrypt_1 = __importDefault(require("bcrypt"));
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var JwtHelper_1 = __importDefault(require("../../../utils/wrappers/JwtHelper"));
 var mongooseConnection = MongodataAccess_1.default.mongooseConnection;
-var userAccountStatusSchema = new mongoose_1.Schema({
-    status: { type: interfaces_1.AccountStatus },
-    updatedAt: { type: Date }
-});
 var userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
@@ -73,8 +69,7 @@ var userSchema = new mongoose_1.Schema({
     lastLogin: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
-        required: true
+        ref: 'Application'
     }
 }, { timestamps: true });
 userSchema.methods.comparePassword = function (candidatePassword) {
@@ -96,7 +91,7 @@ userSchema.methods.generateToken = function (privateKey, signOptions, payload) {
                      **   and any extra information the system might need
                      */
                     signOptions.subject = this._id.toString();
-                    return [4 /*yield*/, jsonwebtoken_1.default.sign(payload, privateKey, signOptions)];
+                    return [4 /*yield*/, JwtHelper_1.default.JwtInitializer().generateToken(payload, signOptions, privateKey)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });
@@ -108,7 +103,7 @@ userSchema.methods.verifyToken = function (encodedJwt, publicKey, verifyOptions)
             switch (_a.label) {
                 case 0:
                     verifyOptions.subject = this._id.toString();
-                    return [4 /*yield*/, jsonwebtoken_1.default.verify(encodedJwt, publicKey, verifyOptions)];
+                    return [4 /*yield*/, JwtHelper_1.default.JwtInitializer().verifyToken(encodedJwt, publicKey, verifyOptions)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });

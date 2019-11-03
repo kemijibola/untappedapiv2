@@ -37,7 +37,7 @@ var RepositoryBase = /** @class */ (function () {
         var _this = this;
         var options = { new: true, useFindAndModify: false };
         return new Promise(function (resolve, reject) {
-            _this._model.findByIdAndUpdate({ _id: _id }, item, options, function (error, result) {
+            _this._model.findByIdAndUpdate(_id, item, options, function (error, result) {
                 if (error)
                     reject(error);
                 else
@@ -45,10 +45,11 @@ var RepositoryBase = /** @class */ (function () {
             });
         });
     };
-    RepositoryBase.prototype.updateMany = function (_ids, item) {
+    RepositoryBase.prototype.patch = function (_id, item) {
         var _this = this;
+        var options = { new: true, useFindAndModify: false };
         return new Promise(function (resolve, reject) {
-            _this._model.updateMany({ _id: _ids }, item, function (error, result) {
+            _this._model.findByIdAndUpdate(_id, item, options, function (error, result) {
                 if (error)
                     reject(error);
                 else
@@ -56,6 +57,14 @@ var RepositoryBase = /** @class */ (function () {
             });
         });
     };
+    // updateMany(_ids: string[], item: T): Promise<T> {
+    //   return new Promise((resolve, reject) => {
+    //     this._model.updateMany({ _id: this.toObjectId(_ids) }, item, (error: any, result: any) => {
+    //       if (error) reject(error);
+    //       else resolve(result);
+    //     });
+    //   });
+    // }
     RepositoryBase.prototype.delete = function (_id) {
         var _this = this;
         return new Promise(function (resolve, reject) {

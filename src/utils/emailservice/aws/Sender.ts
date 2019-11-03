@@ -1,5 +1,11 @@
 import * as AWS from 'aws-sdk';
-AWS.config.update({ region: 'us-east-1' });
+
+AWS.config.update({
+  accessKeyId: 'AKIAUHX2MMXUCQ64RPPY',
+  secretAccessKey: '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',
+  region: 'us-east-1'
+});
+
 const awsSes = new AWS.SES({ region: 'us-east-1' });
 import { Sender } from '../EmailService';
 

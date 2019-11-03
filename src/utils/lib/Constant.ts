@@ -78,4 +78,5 @@ export const currentVerifyKey: string = '43';
 export const currentRsaAlgType: string = 'RS256';
 export const issuer: string = getIssuer();
 export const authExpiration: string = getAuthExpiration();
+export const mailExpiration: string = getMailExpiration();
 export const verifyTokenExpiration: string = getMailExpiration();

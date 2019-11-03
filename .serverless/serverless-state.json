@@ -1,14 +1,14 @@
 {
   "service": {
-    "service": "untapped-email-scheduler-development",
+    "service": "up-serverless-deploy",
     "serviceObject": {
-      "name": "untapped-email-scheduler-development"
+      "name": "up-serverless-deploy"
     },
     "provider": {
       "stage": "dev",
-      "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*]+?)}",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*?]+?)}",
       "name": "aws",
-      "runtime": "nodejs10.x",
+      "runtime": "nodejs8.10",
       "region": "us-east-1",
       "profile": "untapped-pool-serverless-admin",
       "iamRoleStatements": [
@@ -56,13 +56,13 @@
           "ScheduleEmailLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/untapped-email-scheduler-development-dev-ScheduleEmail"
+              "LogGroupName": "/aws/lambda/up-serverless-deploy-dev-ScheduleEmail"
             }
           },
           "SendEmailLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/untapped-email-scheduler-development-dev-SendEmail"
+              "LogGroupName": "/aws/lambda/up-serverless-deploy-dev-SendEmail"
             }
           },
           "IamRoleLambdaExecution": {
@@ -91,7 +91,7 @@
                       "-",
                       [
                         "dev",
-                        "untapped-email-scheduler-development",
+                        "up-serverless-deploy",
                         "lambda"
                       ]
                     ]
@@ -106,7 +106,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/untapped-email-scheduler-development-dev*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/up-serverless-deploy-dev*:*"
                           }
                         ]
                       },
@@ -117,7 +117,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/untapped-email-scheduler-development-dev*:*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/up-serverless-deploy-dev*:*:*"
                           }
                         ]
                       },
@@ -136,7 +136,7 @@
                 "Fn::Join": [
                   "-",
                   [
-                    "untapped-email-scheduler-development",
+                    "up-serverless-deploy",
                     "dev",
                     {
                       "Ref": "AWS::Region"
@@ -154,10 +154,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/untapped-email-scheduler-development/dev/1564049472565-2019-07-25T10:11:12.565Z/ScheduleEmail.zip"
+                "S3Key": "serverless/up-serverless-deploy/dev/1572335204544-2019-10-29T07:46:44.544Z/ScheduleEmail.zip"
               },
-              "FunctionName": "untapped-email-scheduler-development-dev-ScheduleEmail",
-              "Handler": "src/utils/emailservice/ScheduleEmail.scheduleEmail",
+              "FunctionName": "up-serverless-deploy-dev-ScheduleEmail",
+              "Handler": "src/handlers/ScheduleTask.schedule",
               "MemorySize": 1024,
               "Role": {
                 "Fn::GetAtt": [
@@ -165,7 +165,7 @@
                   "Arn"
                 ]
               },
-              "Runtime": "nodejs10.x",
+              "Runtime": "nodejs8.10",
               "Timeout": 6,
               "Environment": {
                 "Variables": {
@@ -180,14 +180,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "ScheduleEmailLambdaVersionuuUNwYCxkHsnVkqlw966uX3iHfcj3ztR2fcx5Rmnpc": {
+          "ScheduleEmailLambdaVersionuifNdN57xZUrXaJPUiRWBd9hd8ws2Hbs1a6BtU8g": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ScheduleEmailLambdaFunction"
               },
-              "CodeSha256": "/5iVpHs7FYE5qZ2KQ1Rb4Fv6vgRXTsMbFQSW1SdJ9uk="
+              "CodeSha256": "TirLhyhUzLNEIUhWIMjMw0ZXyn5FizpPAYuQKPfYNOs="
             }
           },
           "SendEmailLambdaFunction": {
@@ -197,10 +197,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/untapped-email-scheduler-development/dev/1564049472565-2019-07-25T10:11:12.565Z/SendEmail.zip"
+                "S3Key": "serverless/up-serverless-deploy/dev/1572335204544-2019-10-29T07:46:44.544Z/SendEmail.zip"
               },
-              "FunctionName": "untapped-email-scheduler-development-dev-SendEmail",
-              "Handler": "src/utils/emailservice/Handler.mailHandler",
+              "FunctionName": "up-serverless-deploy-dev-SendEmail",
+              "Handler": "src/handlers/SendEmail.handle",
               "MemorySize": 1024,
               "Role": {
                 "Fn::GetAtt": [
@@ -208,7 +208,7 @@
                   "Arn"
                 ]
               },
-              "Runtime": "nodejs10.x",
+              "Runtime": "nodejs8.10",
               "Timeout": 6,
               "Environment": {
                 "Variables": {
@@ -221,14 +221,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "SendEmailLambdaVersionzE6mQlwXEDrf3UE0N6vYwewsbw54UdLw62vxYAoWE": {
+          "SendEmailLambdaVersionYvPsVxaOPn6V8pVbwdujxjp1MVgTbempELl5akGeX2o": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "SendEmailLambdaFunction"
               },
-              "CodeSha256": "4ygszpz03Hnt3mcSBiJkPKKYoVhZPyjbw/3g5VZDNVg="
+              "CodeSha256": "B4hQMAXwtcrYFLG5oNs9yDI6wubVyTDTb4q6AO3bFXA="
             }
           },
           "IamRoleStateMachineExecution": {
@@ -248,7 +248,7 @@
               },
               "Policies": [
                 {
-                  "PolicyName": "dev-us-east-1-untapped-email-scheduler-development-statemachine",
+                  "PolicyName": "dev-us-east-1-up-serverless-deploy-statemachine",
                   "PolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -259,7 +259,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:untapped-email-scheduler-development-dev-SendEmail"
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:up-serverless-deploy-dev-SendEmail"
                           }
                         ]
                       }
@@ -273,7 +273,7 @@
             "Type": "AWS::StepFunctions::StateMachine",
             "Properties": {
               "DefinitionString": {
-                "Fn::Sub": "{\n  \"Comment\": \"Schedules an email to be sent at a future date\",\n  \"StartAt\": \"WaitForDueDate\",\n  \"States\": {\n    \"WaitForDueDate\": {\n      \"Type\": \"Wait\",\n      \"TimestampPath\": \"$.dueDate\",\n      \"Next\": \"SendEmail\"\n    },\n    \"SendEmail\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:untapped-email-scheduler-development-dev-SendEmail\",\n      \"End\": true\n    }\n  }\n}"
+                "Fn::Sub": "{\n  \"Comment\": \"Schedules an email to be sent at a future date\",\n  \"StartAt\": \"WaitForDueDate\",\n  \"States\": {\n    \"WaitForDueDate\": {\n      \"Type\": \"Wait\",\n      \"TimestampPath\": \"$.dueDate\",\n      \"Next\": \"SendEmail\"\n    },\n    \"SendEmail\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:up-serverless-deploy-dev-SendEmail\",\n      \"End\": true\n    }\n  }\n}"
               },
               "RoleArn": {
                 "Fn::GetAtt": [
@@ -298,13 +298,13 @@
           "ScheduleEmailLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ScheduleEmailLambdaVersionuuUNwYCxkHsnVkqlw966uX3iHfcj3ztR2fcx5Rmnpc"
+              "Ref": "ScheduleEmailLambdaVersionuifNdN57xZUrXaJPUiRWBd9hd8ws2Hbs1a6BtU8g"
             }
           },
           "SendEmailLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "SendEmailLambdaVersionzE6mQlwXEDrf3UE0N6vYwewsbw54UdLw62vxYAoWE"
+              "Ref": "SendEmailLambdaVersionYvPsVxaOPn6V8pVbwdujxjp1MVgTbempELl5akGeX2o"
             }
           },
           "EmailSchedulingStateMachineArn": {
@@ -314,7 +314,7 @@
             }
           },
           "EmailSchedulingStateMachine": {
-            "Description": "The ARN of the Untapped Pool EmailSchedulingStateMachine",
+            "Description": "The ARN of the EmailSchedulingStateMachine",
             "Value": {
               "Ref": "EmailSchedulingStateMachine"
             }
@@ -361,42 +361,42 @@
     "pluginsData": {},
     "functions": {
       "ScheduleEmail": {
-        "handler": "src/utils/emailservice/ScheduleEmail.scheduleEmail",
+        "handler": "src/handlers/ScheduleTask.schedule",
         "environment": {
           "STATEMACHINE_ARN": {
             "Ref": "EmailSchedulingStateMachine"
           }
         },
         "events": [],
-        "name": "untapped-email-scheduler-development-dev-ScheduleEmail",
+        "name": "up-serverless-deploy-dev-ScheduleEmail",
         "package": {
           "artifact": ".serverless\\ScheduleEmail.zip"
         },
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs10.x",
+        "runtime": "nodejs8.10",
         "vpc": {}
       },
       "SendEmail": {
-        "handler": "src/utils/emailservice/Handler.mailHandler",
+        "handler": "src/handlers/SendEmail.handle",
         "environment": {
           "EMAIL_SENDER_ADDRESS": "talents@untappedpool.com"
         },
         "events": [],
-        "name": "untapped-email-scheduler-development-dev-SendEmail",
+        "name": "up-serverless-deploy-dev-SendEmail",
         "package": {
           "artifact": ".serverless\\SendEmail.zip"
         },
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs10.x",
+        "runtime": "nodejs8.10",
         "vpc": {}
       }
     },
     "resources": {
       "Outputs": {
         "EmailSchedulingStateMachine": {
-          "Description": "The ARN of the Untapped Pool EmailSchedulingStateMachine",
+          "Description": "The ARN of the EmailSchedulingStateMachine",
           "Value": {
             "$ref": "$[\"service\"][\"functions\"][\"ScheduleEmail\"][\"environment\"][\"STATEMACHINE_ARN\"]"
           }
@@ -421,7 +421,7 @@
               },
               "SendEmail": {
                 "Type": "Task",
-                "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:untapped-email-scheduler-development-dev-SendEmail",
+                "Resource": "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:up-serverless-deploy-dev-SendEmail",
                 "End": true
               }
             }
@@ -433,7 +433,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/untapped-email-scheduler-development/dev/1564049472565-2019-07-25T10:11:12.565Z",
+    "artifactDirectoryName": "serverless/up-serverless-deploy/dev/1572335204544-2019-10-29T07:46:44.544Z",
     "artifact": ""
   }
 }

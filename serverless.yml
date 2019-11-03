@@ -1,69 +1,12 @@
-service: untapped-scheduler
+service: up-serverless-deploy
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs8.10
   region: us-east-1
-  profile: serverless-untapped-scheduler-agent
   stage: dev
-  iamRoleStatements:
-    - Effect: 'Allow'
-    Action:
-      - 'states.StartExecution'
-    Resource:
-      - Ref: SchedulingStateMachine
-    - Effect: 'Allow'
-    Action:
-      - 'createSchedule'
-
-package:
-  individually: true
-
-functions:
-  ScheduleTask:
-    handler: src/utils/TaskScheduler.schedule
-    environment:
-      STATEMACHINE_ARN: ${self:resources.Outputs.EmailSchedulingStateMachine.Value}
-  CreateSchedule:
-    handler: src/utils/approvals/Handler.approvalHandler
-
-stepFunctions:
-  stateMachines:
-    SchedulingStateMachine:
-      name: SchedulingStateMachine
-      definition:
-        Comment: 'Schedules approval request at specified date'
-        StartAt: WaitForDueDate
-        States:
-          WaitForDueDate:
-            Type: Wait
-            TimestampPath: '$.dueDate'
-            Next: CreateApproval
-          CreateApproval:
-            Type: Task
-            End: true
-resources:
-  Outputs:
-    SchedulingStateMachine:
-      Description: The ARN of the Untapped Pool SchedulingStateMachine
-      Value:
-        Ref: SchedulingStateMachine
-
-plugins:
-  - serverless-step-functions
-  - serverless-pseudo-parameters
-  - serverless-webpack
-
-        
-
-service: untapped-email-scheduler-development
-
-provider:
-  name: aws
-  runtime: nodejs10.x
-  region: us-east-1
-  profile: serverless-untapped-scheduler-agent
-  stage: dev
+  # change this to use your own profile (https://serverless.com/framework/docs/providers/aws/guide/credentials#using-aws-profiles)
+  profile: untapped-pool-serverless-admin
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -80,24 +23,22 @@ custom:
 
 package:
   individually: true
-
 functions:
-  ScheduleTask:
-    handler: src/utils/TaskScheduler.schedule
+  ScheduleEmail:
+    handler: src/handlers/ScheduleTask.schedule
     environment:
       STATEMACHINE_ARN: ${self:resources.Outputs.EmailSchedulingStateMachine.Value}
   SendEmail:
-    handler: src/utils/emailservice/Handler.mailHandler
+    handler: src/handlers/SendEmail.handle
     environment:
       EMAIL_SENDER_ADDRESS: ${self:custom.EMAIL_SENDER_ADDRESS}
-  
 
 stepFunctions:
   stateMachines:
     EmailSchedulingStateMachine:
       name: EmailSchedulingStateMachine
       definition:
-        Comment: 'Schedules an email to be sent at a specific date'
+        Comment: 'Schedules an email to be sent at a future date'
         StartAt: WaitForDueDate
         States:
           WaitForDueDate:
@@ -112,7 +53,7 @@ stepFunctions:
 resources:
   Outputs:
     EmailSchedulingStateMachine:
-      Description: The ARN of the Untapped Pool EmailSchedulingStateMachine
+      Description: The ARN of the EmailSchedulingStateMachine
       Value:
         Ref: EmailSchedulingStateMachine
 
@@ -120,20 +61,3 @@ plugins:
   - serverless-step-functions
   - serverless-pseudo-parameters
   - serverless-webpack
-
-
-
-service: talents-filter-by-categories
-
-provider:
-  name: aws
-  runtime: nodejs10.x
-
-functions:
-  fetchTalentsByCategories:
-    handler: src/utils/talentscategory/Handler.fetchTalentsByCategory
-    events:
-      # Runs every 30 mins
-      - schedule:
-        rate: rate(30 minute)
-        enabled: true

@@ -2,14 +2,11 @@ import MongodataAccess from '../MongodataAccess';
 import { Schema } from 'mongoose';
 import { IUserModel, AccountStatus } from '../../models/interfaces';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+// import {JW } from '../../../utils/wrappers/JwtHelper';
 import { SignInOptions } from '../../models/interfaces/custom/Global';
+import { TokenResult } from '../../models/interfaces/custom/Account';
+import JwtHelper from '../../../utils/wrappers/JwtHelper';
 const mongooseConnection = MongodataAccess.mongooseConnection;
-
-const userAccountStatusSchema: Schema = new Schema({
-  status: { type: AccountStatus },
-  updatedAt: { type: Date }
-});
 
 const userSchema: Schema = new Schema(
   {
@@ -37,8 +34,7 @@ const userSchema: Schema = new Schema(
     lastLogin: { type: Date },
     application: {
       type: Schema.Types.ObjectId,
-      ref: 'Application',
-      required: true
+      ref: 'Application'
     }
   },
   { timestamps: true }
@@ -54,12 +50,16 @@ userSchema.methods.generateToken = async function(
   privateKey: string,
   signOptions: SignInOptions,
   payload: any
-): Promise<string> {
+): Promise<any> {
   /*  extra data to be sent back to user is an object = { scopes: [], user_type: ''}
    **   and any extra information the system might need
    */
   signOptions.subject = this._id.toString();
-  return await jwt.sign(payload, privateKey, signOptions);
+  return await JwtHelper.JwtInitializer().generateToken(
+    payload,
+    signOptions,
+    privateKey
+  );
 };
 
 userSchema.methods.verifyToken = async function(
@@ -68,7 +68,11 @@ userSchema.methods.verifyToken = async function(
   verifyOptions: any
 ): Promise<any> {
   verifyOptions.subject = this._id.toString();
-  return await jwt.verify(encodedJwt, publicKey, verifyOptions);
+  return await JwtHelper.JwtInitializer().verifyToken(
+    encodedJwt,
+    publicKey,
+    verifyOptions
+  );
 };
 
 userSchema.pre<IUserModel>('save', function(next) {

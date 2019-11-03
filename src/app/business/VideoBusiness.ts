@@ -2,7 +2,7 @@ import VideoRepository from '../repository/VideoRepository';
 import IVideoBusiness = require('./interfaces/VideoBusiness');
 import { IVideo, ApprovalOperations, IApproval } from '../models/interfaces';
 import { Result } from '../../utils/Result';
-import { schedule } from '../../utils/TaskScheduler';
+import { schedule } from '../../handlers/ScheduleTask';
 import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
 
 class VideoBusiness implements IVideoBusiness {

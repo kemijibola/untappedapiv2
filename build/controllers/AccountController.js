@@ -91,34 +91,24 @@ var AuthController = /** @class */ (function () {
                         err_1 = _a.sent();
                         // console.log(err.message);
                         // log err.message to a logger with name of action
-                        next(new error_1.PlatformError({
-                            code: err_1.code,
-                            message: 'Internal Server error occured.'
-                        }));
-                        return [3 /*break*/, 3];
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    AuthController.prototype.postSignup = function (req, res, next) {
+    AuthController.prototype.postforgotPassword = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var destinationIssuer, signUpParams, userBusiness, result, err_2;
+            var userBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        destinationIssuer = "" + lib_1.issuer + req.originalUrl;
-                        signUpParams = {
-                            username: req.body.username,
-                            email: req.body.email,
-                            password: req.body.password,
-                            roles: req.body.roles,
-                            audience: req.body.audience,
-                            issuer: destinationIssuer
-                        };
                         userBusiness = new UserBusiness_1.default();
-                        return [4 /*yield*/, userBusiness.register(signUpParams)];
+                        return [4 /*yield*/, userBusiness.forgotPassword(req.body.email.toLowerCase(), req.body.audience.toLowerCase(), req.body.confirmationUrl.toLowerCase())];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -134,18 +124,155 @@ var AuthController = /** @class */ (function () {
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_2
+                                message: 'Internal Server error occured. Please try again later.'
                             }))];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    AuthController.prototype.create = function (req, res, next) { };
-    AuthController.prototype.update = function () { };
-    AuthController.prototype.delete = function () { };
-    AuthController.prototype.fetch = function () { };
-    AuthController.prototype.findById = function () { };
+    AuthController.prototype.postChangePassword = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, data, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness_1.default();
+                        data = {
+                            userId: '5db803b9fd13673bd81547e4',
+                            oldPassword: req.body.oldPassword,
+                            newPassword: req.body.newPassword
+                        };
+                        return [4 /*yield*/, userBusiness.resetPassword(data)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.postResendVerificationLink = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, result, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.resendVerificationLink(req.body.email.toLowerCase(), req.body.audience.toLowerCase(), req.body.confirmationUrl.toLowerCase())];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.postVerifyEmail = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, userBusiness, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        request = {
+                            userEmail: req.body.email,
+                            token: req.body.token,
+                            audience: req.body.audience
+                        };
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.confirmEmail(request)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.postSignup = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signUpParams, userBusiness, result, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        signUpParams = {
+                            fullName: req.body.fullName,
+                            email: req.body.email,
+                            password: req.body.password,
+                            roles: req.body.roles,
+                            audience: req.body.audience,
+                            confirmationUrl: req.body.confirmationUrl
+                        };
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.register(signUpParams)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: 'Operation successful',
+                                data: result.data
+                            })];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.post('/authentication'),
         decorators_1.requestValidators('email', 'password', 'audience'),
@@ -154,8 +281,36 @@ var AuthController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postLogin", null);
     __decorate([
+        decorators_1.post('/account/password/reset'),
+        decorators_1.requestValidators('email', 'audience', 'confirmationUrl'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postforgotPassword", null);
+    __decorate([
+        decorators_1.post('/account/password/change'),
+        decorators_1.requestValidators('oldPassword', 'newPassword'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postChangePassword", null);
+    __decorate([
+        decorators_1.post('/account/resend-link'),
+        decorators_1.requestValidators('email', 'audience', 'confirmationUrl'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postResendVerificationLink", null);
+    __decorate([
+        decorators_1.post('/account/verify'),
+        decorators_1.requestValidators('email', 'audience', 'token'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postVerifyEmail", null);
+    __decorate([
         decorators_1.post('/account/signup'),
-        decorators_1.requestValidators('email', 'password', 'audience', 'username', 'roles'),
+        decorators_1.requestValidators('email', 'password', 'audience', 'fullName', 'roles', 'confirmationUrl'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

@@ -4,7 +4,6 @@ import { TokenType } from './custom/GlobalEnum';
 
 export interface IAuthData {
   access_token: string;
-  roles: IRole['_id'][];
   permissions: string[];
   user_data: IUserData;
 }
@@ -13,6 +12,12 @@ interface IUserData {
   _id: string;
   fullName: string;
   email: string;
+  role: UserRole;
+}
+
+interface UserRole {
+  _id: string;
+  name: string;
 }
 
 export interface AuthPayload {
@@ -26,12 +31,12 @@ export interface ILogin extends IDestinationUrl {
 }
 
 export interface IRegister {
-  username: string;
+  fullName: string;
   email: string;
   password: string;
   roles: IRole['_id'][];
   audience: string;
-  issuer: string;
+  confirmationUrl: string;
 }
 
 export interface IDestinationUrl {

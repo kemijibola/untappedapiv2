@@ -1,5 +1,5 @@
 export enum TokenType {
-  MAIL = 'MAIL',
+  VERIFY = 'VERIFY',
   AUTH = 'AUTH',
   JUDGEEVALUATION = 'JUDGEEVALUATION'
 }

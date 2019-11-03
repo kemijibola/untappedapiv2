@@ -5,8 +5,6 @@ import PermissionRepository from '../repository/PermissionRepository';
 import IResourcePermissionBusiness = require('./interfaces/ResourcePermissionBusiness');
 import { IResourcePermission, IPermission } from '../models/interfaces';
 import { Result } from '../../utils/Result';
-import { StringListMerger } from '../../utils/lib/StringMerger';
-import { toObjectId } from '../../utils/lib';
 
 class ResourcePermissionBusiness implements IResourcePermissionBusiness {
   private _resourcePermissionRepository: ResourcePermissionRepository;
@@ -110,7 +108,7 @@ class ResourcePermissionBusiness implements IResourcePermissionBusiness {
             400,
             `Permission id ${key} is not a valid Permission`
           );
-        permissionIds.push(toObjectId(key));
+        permissionIds.push(key);
       }
 
       // Before saving resource permission, ensure resource and role is not duplicated

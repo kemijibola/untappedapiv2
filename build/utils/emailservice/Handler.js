@@ -34,20 +34,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var EmailService_1 = require("./EmailService");
 var Sender_1 = require("./aws/Sender");
-var AWS = __importStar(require("aws-sdk"));
 var lib_1 = require("../lib");
-AWS.config.update({ region: 'us-east-1' });
 var mailParams = {
     receivers: [],
     subject: '',
@@ -58,14 +49,11 @@ var mailParams = {
 exports.mailHandler = function (event, context) {
     if (event === void 0) { event = {}; }
     return __awaiter(_this, void 0, void 0, function () {
-        var headers, escapeReceivers, escapesubject, escapebody, escapesenderEmail, escapeCcAddresses, escapebbccAddresses, escapeSenderName, body, _i, _a, email, _b, _c, email, _d, _e, email, mailer, err_1;
+        var escapeReceivers, escapesubject, escapebody, escapesenderEmail, escapeCcAddresses, escapebbccAddresses, escapeSenderName, body, _i, _a, email, _b, _c, email, _d, _e, email, mailer, err_1;
         return __generator(this, function (_f) {
             switch (_f.label) {
                 case 0:
-                    headers = { 'Access-Control-Allow-Origin': '*' };
-                    _f.label = 1;
-                case 1:
-                    _f.trys.push([1, 3, , 4]);
+                    _f.trys.push([0, 2, , 3]);
                     escapeReceivers = [];
                     escapesubject = void 0;
                     escapebody = void 0;
@@ -110,13 +98,13 @@ exports.mailHandler = function (event, context) {
                     };
                     mailer = EmailService_1.EmailService.mailer(mailParams);
                     return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
-                case 2:
+                case 1:
                     _f.sent();
-                    return [3 /*break*/, 4];
-                case 3:
+                    return [3 /*break*/, 3];
+                case 2:
                     err_1 = _f.sent();
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     });
