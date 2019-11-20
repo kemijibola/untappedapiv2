@@ -66,7 +66,7 @@ var CommentController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
@@ -77,7 +77,7 @@ var CommentController = /** @class */ (function () {
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: 'Internal Server error occured. Please try again later.'
                             }))];
                     case 3: return [2 /*return*/];
                 }

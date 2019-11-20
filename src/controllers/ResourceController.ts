@@ -11,7 +11,7 @@ import {
 import IBaseControler from './interfaces/base/BaseController';
 import { IResource } from '../app/models/interfaces';
 import ResourceBusiness = require('../app/business/ResourceBusiness');
-import { requireAuth } from '../middlewares/auth';
+// import { requireAuth } from '../middlewares/auth';
 import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
 
 export const roles = ['canViewProfessionals', 'canViewTalents'];
@@ -28,7 +28,7 @@ export class ResourceController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: result.error
           })
         );
       }
@@ -40,7 +40,7 @@ export class ResourceController {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: 'Internal Server error occured. Please try again later.'
         })
       );
     }
@@ -48,7 +48,7 @@ export class ResourceController {
   update(): void {}
   delete(): void {}
   @get('/')
-  @use(requireAuth)
+  // @use(requireAuth)
   @authorize(...roles)
   async fetch(req: RequestWithUser, res: Response, next: NextFunction) {
     try {

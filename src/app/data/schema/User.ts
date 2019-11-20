@@ -13,6 +13,7 @@ const userSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     password: { type: String, required: true },
+    userType: { type: Schema.Types.ObjectId, ref: 'UserType', required: true },
     profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },

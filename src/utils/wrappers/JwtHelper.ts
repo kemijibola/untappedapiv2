@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
-import { SignInOptions } from '../../app/models/interfaces/custom/Global';
-import { TokenResult } from '../../app/models/interfaces/custom/Account';
+import jwt from "jsonwebtoken";
+import { SignInOptions } from "../../app/models/interfaces/custom/Global";
+import { TokenResult } from "../../app/models/interfaces/custom/Account";
 
 class JwtHelper {
   static JwtInitializer(): JwtHelper {
@@ -13,13 +13,13 @@ class JwtHelper {
     privateKey: string
   ): Promise<any> {
     const promise = new Promise(resolve => {
-      let result: TokenResult = { data: '', error: '' };
+      let result: TokenResult = { data: "", error: "" };
       jwt.sign(payload, privateKey, options, function(err: any, token: any) {
         if (err) {
-          result = { error: err, data: '' };
+          result = { error: err, data: "" };
           resolve(result);
         }
-        result = { error: '', data: token };
+        result = { error: "", data: token };
         resolve(result);
       });
     });
@@ -28,13 +28,13 @@ class JwtHelper {
 
   verifyToken(token: string, publicKey: string, options: any): Promise<any> {
     const promise = new Promise(resolve => {
-      let result: TokenResult = { data: '', error: '' };
+      let result: TokenResult = { data: "", error: "" };
       jwt.verify(token, publicKey, options, function(err, decoded) {
         if (err) {
-          result = { error: err.message, data: '' };
+          result = { error: err.message, data: "" };
           resolve(result);
         }
-        result = { error: '', data: decoded };
+        result = { error: "", data: decoded };
         resolve(result);
       });
     });

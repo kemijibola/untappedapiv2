@@ -152,27 +152,37 @@ var RoleBusiness = /** @class */ (function () {
     };
     RoleBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, newRole, err_5;
+            var role, roleExist, newRole, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 6, , 7]);
                         return [4 /*yield*/, this._roleRepository.findByCriteria({
                                 name: item.name
                             })];
                     case 1:
                         role = _a.sent();
-                        if (!(role === null)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this._roleRepository.create(item)];
+                        if (!(role === null)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this._roleRepository.findByCriteria({
+                                name: 'Free',
+                                isDefault: item.isDefault,
+                                isActive: true
+                            })];
                     case 2:
+                        roleExist = _a.sent();
+                        if (!(roleExist === null)) return [3 /*break*/, 4];
+                        item.isActive = false;
+                        return [4 /*yield*/, this._roleRepository.create(item)];
+                    case 3:
                         newRole = _a.sent();
                         // TODO:: create approval request here
                         return [2 /*return*/, Result_1.Result.ok(201, newRole)];
-                    case 3: return [2 /*return*/, Result_1.Result.fail(400, "Role with name " + role.name + " exists")];
-                    case 4:
+                    case 4: return [2 /*return*/, Result_1.Result.fail(400, 'A role is currently set as default.')];
+                    case 5: return [2 /*return*/, Result_1.Result.fail(400, "Role with name '" + role.name + "' exists")];
+                    case 6:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 5: return [2 /*return*/];
+                    case 7: return [2 /*return*/];
                 }
             });
         });

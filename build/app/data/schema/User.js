@@ -48,6 +48,7 @@ var userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     password: { type: String, required: true },
+    userType: { type: mongoose_1.Schema.Types.ObjectId, ref: 'UserType', required: true },
     profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },

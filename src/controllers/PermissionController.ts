@@ -7,9 +7,8 @@ import PermissionBusiness = require('../app/business/PermissionBusiness');
 @controller('/v1/permissions')
 export class PermissionController {
   @post('/')
-  @requestValidators('name', 'type')
+  @requestValidators('name', 'role')
   async create(req: Request, res: Response, next: NextFunction) {
-    const item: IPermission = req.body;
     try {
       const item: IPermission = req.body;
       const permissionBusiness = new PermissionBusiness();
@@ -18,7 +17,7 @@ export class PermissionController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: result.error
           })
         );
       }
@@ -27,7 +26,12 @@ export class PermissionController {
         data: result.data
       });
     } catch (err) {
-      //new InternalServerError('Internal Server error occured', 500);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
     }
   }
   update(): void {}

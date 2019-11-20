@@ -87,7 +87,7 @@ var MediaController = /** @class */ (function () {
                         if (audioResult.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: audioResult.responseCode,
-                                    message: "Error occured. " + audioResult.error
+                                    message: audioResult.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(audioResult.responseCode).json({
@@ -97,7 +97,10 @@ var MediaController = /** @class */ (function () {
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         err_1 = _b.sent();
-                        return [3 /*break*/, 5];
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
                     case 5: return [2 /*return*/];
                 }
             });

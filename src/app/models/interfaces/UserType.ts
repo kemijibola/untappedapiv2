@@ -4,6 +4,7 @@ import { IAppSpec } from './AppSpec';
 
 export interface IUserType extends ITimeStamp, IAppSpec, mongoose.Document {
   name: string;
-  global: boolean;
+  isAdmin: boolean;
   description: string;
+  isActive: boolean;
 }

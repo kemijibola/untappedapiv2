@@ -1,21 +1,22 @@
 import { IPermission } from './Permission';
-import { IRole } from './Role';
 import { TokenType } from './custom/GlobalEnum';
+import { IRole, IUserType } from '.';
 
 export interface IAuthData {
   access_token: string;
-  permissions: string[];
+  permissions: IPermission[];
   user_data: IUserData;
 }
 
 interface IUserData {
   _id: string;
-  fullName: string;
+  full_name: string;
   email: string;
-  role: UserRole;
+  profile_is_completed: boolean;
+  userType: UserType;
 }
 
-interface UserRole {
+interface UserType {
   _id: string;
   name: string;
 }
@@ -23,7 +24,7 @@ interface UserRole {
 export interface AuthPayload {
   type: TokenType;
 }
-export interface ILogin extends IDestinationUrl {
+export interface ILogin {
   email: string;
   password: string;
   audience: string;
@@ -34,9 +35,10 @@ export interface IRegister {
   fullName: string;
   email: string;
   password: string;
-  roles: IRole['_id'][];
+  userType: string;
   audience: string;
   confirmationUrl: string;
+  roles: string[];
 }
 
 export interface IDestinationUrl {

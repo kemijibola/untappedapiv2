@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import { controller, get, post, requestValidators, use } from '../decorators';
-import UserBusiness from '../app/business/UserBusiness';
-import { PlatformError } from '../utils/error';
-import { ILogin, IRegister } from '../app/models/interfaces';
-import { issuer, tokenExchange } from '../utils/lib';
+import { Request, Response, NextFunction } from "express";
+import { controller, get, post, requestValidators, use } from "../decorators";
+import UserBusiness from "../app/business/UserBusiness";
+import { PlatformError } from "../utils/error";
+import { ILogin, IRegister } from "../app/models/interfaces";
+import { issuer } from "../utils/lib";
 import {
   ConfirmEmailRequest,
   ResetPasswordData
-} from '../app/models/interfaces/custom/Account';
+} from "../app/models/interfaces/custom/Account";
 
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
@@ -15,19 +15,17 @@ import {
 //   next();
 // }
 
-@controller('/v1')
+@controller("/v1")
 export class AuthController {
-  @post('/authentication')
-  @requestValidators('email', 'password', 'audience')
+  @post("/authentication")
+  @requestValidators("email", "password", "audience")
   async postLogin(req: Request, res: Response, next: NextFunction) {
     try {
-      const destinationIssuer = `${issuer}${req.originalUrl}`;
       const loginParams: ILogin = {
         email: req.body.email,
         password: req.body.password,
         audience: req.body.audience,
-        issuer: destinationIssuer,
-        destinationUrl: req.url.toLowerCase()
+        issuer: ""
       };
 
       const userBusiness = new UserBusiness();
@@ -40,23 +38,24 @@ export class AuthController {
           })
         );
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
+      console.log(err);
       // console.log(err.message);
       // log err.message to a logger with name of action
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }
   }
 
-  @post('/account/password/reset')
-  @requestValidators('email', 'audience', 'confirmationUrl')
+  @post("/account/password/reset")
+  @requestValidators("email", "audience", "confirmationUrl")
   async postforgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const userBusiness = new UserBusiness();
@@ -73,27 +72,27 @@ export class AuthController {
           })
         );
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }
   }
 
-  @post('/account/password/change')
-  @requestValidators('oldPassword', 'newPassword')
+  @post("/account/password/change")
+  @requestValidators("oldPassword", "newPassword")
   async postChangePassword(req: Request, res: Response, next: NextFunction) {
     try {
       // TODO: get userId from tokenExchange
       const userBusiness = new UserBusiness();
       const data: ResetPasswordData = {
-        userId: '5db803b9fd13673bd81547e4',
+        userId: "5db803b9fd13673bd81547e4",
         oldPassword: req.body.oldPassword,
         newPassword: req.body.newPassword
       };
@@ -106,21 +105,21 @@ export class AuthController {
           })
         );
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }
   }
 
-  @post('/account/resend-link')
-  @requestValidators('email', 'audience', 'confirmationUrl')
+  @post("/account/resend-link")
+  @requestValidators("email", "audience", "confirmationUrl")
   async postResendVerificationLink(
     req: Request,
     res: Response,
@@ -142,37 +141,23 @@ export class AuthController {
           })
         );
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }
   }
 
-  @post('/account/verify')
-  @requestValidators('email', 'audience', 'token')
+  @post("/account/verify")
+  @requestValidators("email", "audience", "token")
   async postVerifyEmail(req: Request, res: Response, next: NextFunction) {
     try {
-      // if (!req.query.email)
-      //   next(
-      //     new PlatformError({
-      //       code: 400,
-      //       message: 'Request is missing email parameter'
-      //     })
-      //   );
-      // if (!req.query.token)
-      //   next(
-      //     new PlatformError({
-      //       code: 400,
-      //       message: 'Request is missing token parameter'
-      //     })
-      //   );
       const request: ConfirmEmailRequest = {
         userEmail: req.body.email,
         token: req.body.token,
@@ -189,38 +174,40 @@ export class AuthController {
           })
         );
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }
   }
 
-  @post('/account/signup')
+  @post("/account/signup")
   @requestValidators(
-    'email',
-    'password',
-    'audience',
-    'fullName',
-    'roles',
-    'confirmationUrl'
+    "email",
+    "password",
+    "audience",
+    "fullName",
+    "userType",
+    "confirmationUrl"
   )
   async postSignup(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("got here");
       // const destinationIssuer = `${issuer}${req.originalUrl}`;
       const signUpParams: IRegister = {
         fullName: req.body.fullName,
         email: req.body.email,
         password: req.body.password,
-        roles: req.body.roles,
+        userType: req.body.userType,
         audience: req.body.audience,
-        confirmationUrl: req.body.confirmationUrl
+        confirmationUrl: req.body.confirmationUrl,
+        roles: []
       };
       const userBusiness = new UserBusiness();
       const result = await userBusiness.register(signUpParams);
@@ -232,14 +219,14 @@ export class AuthController {
           })
         );
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }

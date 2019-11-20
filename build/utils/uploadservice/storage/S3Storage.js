@@ -47,22 +47,30 @@ var Upload_1 = require("../Helper/Upload");
 var lib_1 = require("../../lib");
 var uuid = require("uuid");
 var Result_1 = require("../../Result");
-var config = module.require('../../../config/keys');
+var config = module.require("../../../config/keys");
 // import * as cloudConfig from '../../../config/cloudConfig.json';
+AWS.config.update({
+    accessKeyId: config.APP_BUCKET.access_key_id,
+    secretAccessKey: config.APP_BUCKET.secret_access_key,
+    region: config.APP_BUCKET.region,
+    signatureVersion: "v4"
+});
 var S3Storage = /** @class */ (function () {
+    // private s3 ;
     function S3Storage() {
-        AWS.config.update({
-            region: config.APP_BUCKET.region
-        });
-        this.s3 = new AWS.S3({
-            accessKeyId: config.APP_BUCKET.access_key_id,
-            secretAccessKey: config.APP_BUCKET.secret_access_key,
-            useAccelerateEndpoint: true
-        });
+        // AWS.config.update({
+        //   accessKeyId: config.APP_BUCKET.access_key_id,
+        //   secretAccessKey: config.APP_BUCKET.secret_access_key,
+        //   region: config.APP_BUCKET.region,
+        //   signatureVersion: "v4"
+        // });
+        // this.s3 = new AWS.S3({
+        //   useAccelerateEndpoint: true
+        // });
     }
     S3Storage.prototype.putObject = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var signedUrlExpireSeconds, signedUrls, signedUrl, filesMap, _a, _b, _i, item, url, err_1;
+            var signedUrlExpireSeconds, signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_1;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -72,13 +80,13 @@ var S3Storage = /** @class */ (function () {
                             action: Upload_1.UPLOADOPERATIONS.ProfileImage
                         };
                         signedUrl = {
-                            file: '',
-                            url: '',
-                            key: ''
+                            file: "",
+                            url: "",
+                            key: ""
                         };
                         if (!data.files) return [3 /*break*/, 7];
                         filesMap = data.files.reduce(function (theMap, item) {
-                            var fileExtension = item.file.split('.').pop() || '';
+                            var fileExtension = item.file.split(".").pop() || "";
                             fileExtension = fileExtension.toLowerCase();
                             // we are ensuring the user sent valid media type for processing on s3
                             if (!lib_1.AcceptedMedias[fileExtension]) {
@@ -90,6 +98,44 @@ var S3Storage = /** @class */ (function () {
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 6, , 7]);
+                        _loop_1 = function (item) {
+                            var params, options, client, signed;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        console.log(data.files[0].file_type);
+                                        params = {
+                                            Bucket: config.APP_BUCKET.bucket,
+                                            Key: filesMap[item],
+                                            Expires: 30 * 60,
+                                            ContentType: data.files[0].file_type
+                                        };
+                                        options = {
+                                            signatureVersion: "v4",
+                                            region: config.APP_BUCKET.region,
+                                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+                                            useAccelerateEndpoint: true
+                                        };
+                                        client = new AWS.S3(options);
+                                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                                client.getSignedUrl("putObject", params, function (err, data) {
+                                                    if (err)
+                                                        reject(err);
+                                                    resolve(data);
+                                                });
+                                            })];
+                                    case 1:
+                                        signed = _a.sent();
+                                        signedUrl = {
+                                            file: item,
+                                            url: signed,
+                                            key: filesMap[item]
+                                        };
+                                        signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
                         _a = [];
                         for (_b in filesMap)
                             _a.push(_b);
@@ -98,21 +144,9 @@ var S3Storage = /** @class */ (function () {
                     case 2:
                         if (!(_i < _a.length)) return [3 /*break*/, 5];
                         item = _a[_i];
-                        return [4 /*yield*/, this.s3.getSignedUrl('putObject', {
-                                Bucket: config.APP_BUCKET.bucket,
-                                Key: filesMap[item],
-                                Expires: signedUrlExpireSeconds,
-                                ACL: 'bucket-owner-full-control',
-                                ContentType: data.files[0].file_type
-                            })];
+                        return [5 /*yield**/, _loop_1(item)];
                     case 3:
-                        url = _c.sent();
-                        signedUrl = {
-                            file: item,
-                            url: url,
-                            key: filesMap[item]
-                        };
-                        signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
+                        _c.sent();
                         _c.label = 4;
                     case 4:
                         _i++;
@@ -120,8 +154,9 @@ var S3Storage = /** @class */ (function () {
                     case 5: return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
                     case 6:
                         err_1 = _c.sent();
-                        throw new Error('Internal server error occured');
-                    case 7: return [2 /*return*/, Result_1.Result.fail(400, 'No file uploaded.')];
+                        console.log(err_1);
+                        throw new Error("Internal server error occured");
+                    case 7: return [2 /*return*/, Result_1.Result.fail(400, "No file uploaded.")];
                 }
             });
         });

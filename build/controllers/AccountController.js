@@ -50,7 +50,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var UserBusiness_1 = __importDefault(require("../app/business/UserBusiness"));
 var error_1 = require("../utils/error");
-var lib_1 = require("../utils/lib");
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
 //   console.log('Request was made');
@@ -61,18 +60,16 @@ var AuthController = /** @class */ (function () {
     }
     AuthController.prototype.postLogin = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var destinationIssuer, loginParams, userBusiness, result, err_1;
+            var loginParams, userBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        destinationIssuer = "" + lib_1.issuer + req.originalUrl;
                         loginParams = {
                             email: req.body.email,
                             password: req.body.password,
                             audience: req.body.audience,
-                            issuer: destinationIssuer,
-                            destinationUrl: req.url.toLowerCase()
+                            issuer: ""
                         };
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.login(loginParams)];
@@ -84,16 +81,17 @@ var AuthController = /** @class */ (function () {
                                 message: result.error
                             }));
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
+                        console.log(err_1);
                         // console.log(err.message);
                         // log err.message to a logger with name of action
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -117,14 +115,14 @@ var AuthController = /** @class */ (function () {
                                     message: result.error
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -140,7 +138,7 @@ var AuthController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness_1.default();
                         data = {
-                            userId: '5db803b9fd13673bd81547e4',
+                            userId: "5db803b9fd13673bd81547e4",
                             oldPassword: req.body.oldPassword,
                             newPassword: req.body.newPassword
                         };
@@ -153,14 +151,14 @@ var AuthController = /** @class */ (function () {
                                     message: result.error
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -184,14 +182,14 @@ var AuthController = /** @class */ (function () {
                                     message: result.error
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_4 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -220,14 +218,14 @@ var AuthController = /** @class */ (function () {
                                     message: result.error
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_5 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -241,13 +239,15 @@ var AuthController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        console.log("got here");
                         signUpParams = {
                             fullName: req.body.fullName,
                             email: req.body.email,
                             password: req.body.password,
-                            roles: req.body.roles,
+                            userType: req.body.userType,
                             audience: req.body.audience,
-                            confirmationUrl: req.body.confirmationUrl
+                            confirmationUrl: req.body.confirmationUrl,
+                            roles: []
                         };
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.register(signUpParams)];
@@ -259,14 +259,14 @@ var AuthController = /** @class */ (function () {
                                     message: result.error
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_6 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -274,49 +274,49 @@ var AuthController = /** @class */ (function () {
         });
     };
     __decorate([
-        decorators_1.post('/authentication'),
-        decorators_1.requestValidators('email', 'password', 'audience'),
+        decorators_1.post("/authentication"),
+        decorators_1.requestValidators("email", "password", "audience"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postLogin", null);
     __decorate([
-        decorators_1.post('/account/password/reset'),
-        decorators_1.requestValidators('email', 'audience', 'confirmationUrl'),
+        decorators_1.post("/account/password/reset"),
+        decorators_1.requestValidators("email", "audience", "confirmationUrl"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postforgotPassword", null);
     __decorate([
-        decorators_1.post('/account/password/change'),
-        decorators_1.requestValidators('oldPassword', 'newPassword'),
+        decorators_1.post("/account/password/change"),
+        decorators_1.requestValidators("oldPassword", "newPassword"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postChangePassword", null);
     __decorate([
-        decorators_1.post('/account/resend-link'),
-        decorators_1.requestValidators('email', 'audience', 'confirmationUrl'),
+        decorators_1.post("/account/resend-link"),
+        decorators_1.requestValidators("email", "audience", "confirmationUrl"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postResendVerificationLink", null);
     __decorate([
-        decorators_1.post('/account/verify'),
-        decorators_1.requestValidators('email', 'audience', 'token'),
+        decorators_1.post("/account/verify"),
+        decorators_1.requestValidators("email", "audience", "token"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postVerifyEmail", null);
     __decorate([
-        decorators_1.post('/account/signup'),
-        decorators_1.requestValidators('email', 'password', 'audience', 'fullName', 'roles', 'confirmationUrl'),
+        decorators_1.post("/account/signup"),
+        decorators_1.requestValidators("email", "password", "audience", "fullName", "userType", "confirmationUrl"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postSignup", null);
     AuthController = __decorate([
-        decorators_1.controller('/v1')
+        decorators_1.controller("/v1")
     ], AuthController);
     return AuthController;
 }());

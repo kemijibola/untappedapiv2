@@ -4,6 +4,7 @@ import { IAppSpec } from './AppSpec';
 
 export interface IRole extends ITimeStamp, IAppSpec, mongoose.Document {
   name: string;
-  global: boolean;
   description: string;
+  isActive: boolean;
+  isDefault: boolean;
 }

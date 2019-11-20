@@ -9,23 +9,21 @@ const roleSchema: Schema = new Schema(
       type: String,
       required: true
     },
-    global: {
-      type: Boolean,
-      required: true,
-      default: false
+    userType: {
+      type: Schema.Types.ObjectId,
+      ref: 'UserType'
     },
     description: {
-      type: String,
+      type: String
+    },
+
+    isDefault: {
+      type: Boolean,
       required: true
     },
     isActive: {
       type: Boolean,
       default: false
-    },
-    application: {
-      type: Schema.Types.ObjectId,
-      ref: 'Application',
-      required: true
     }
   },
   { timestamps: true }

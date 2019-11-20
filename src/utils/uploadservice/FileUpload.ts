@@ -16,8 +16,7 @@ export class FileUpload {
   async getPresignedUrls(
     filesToUpload: IUploadFileRequest
   ): Promise<Result<SignedUrl>> {
-    const urls = await this.storage.putObject(filesToUpload);
-    return urls;
+    return await this.storage.putObject(filesToUpload);
   }
 
   // async deleteObject(key: string): void {

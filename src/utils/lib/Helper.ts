@@ -8,7 +8,6 @@ import {
 const config: AppConfig = require('../../config/keys');
 import ResourceBusiness from '../../app/business/ResourceBusiness';
 import PermissionBusiness from '../../app/business/PermissionBusiness';
-import ResourcePermissionBusiness from '../../app/business/ResourcePermissionBusiness';
 import ApplicationBusiness from '../../app/business/ApplicationBusiness';
 import { PlatformError } from '../error';
 import { Result } from '../Result';
@@ -32,6 +31,12 @@ export const getSecretByKey: (keyId: string) => string = (
   return secret.Secret.replace(/\\n/g, '\n');
 };
 
+export const validateObjectId: (id: string) => boolean = (
+  id: string
+): boolean => {
+  var hexReg = new RegExp('^[0-9a-fA-F]{24}$');
+  return hexReg.test(id);
+};
 export const getPublicKey: (keyId: string) => string = (
   keyId: string
 ): string => {
@@ -41,57 +46,6 @@ export const getPublicKey: (keyId: string) => string = (
   }
   return secret.Secret.replace(/\\n/g, '\n');
 };
-
-export async function tokenExchange(
-  exchangeParams: IExchangeToken
-): Promise<ObjectKeyString> {
-  const resourceBusiness = new ResourceBusiness();
-  const resourcePermissionBusiness = new ResourcePermissionBusiness();
-  const result = await resourceBusiness.findByCriteria({
-    name: exchangeParams.destinationUrl
-  });
-  if (result.error) {
-    throw new PlatformError({
-      code: result.responseCode,
-      message: result.error
-    });
-  }
-  if (result.data) {
-    const destinationResource: IResource = result.data;
-
-    for (let role of exchangeParams.roles) {
-      const result = await resourcePermissionBusiness.findByCriteria({
-        role: role,
-        resource: destinationResource._id
-      });
-      if (result.error) {
-        throw new PlatformError({
-          code: result.responseCode,
-          message: `There are no permissions configured for route ${destinationResource.name}`
-        });
-      }
-      if (result.data) {
-        const resourcePermission: IResourcePermission = result.data;
-        if (resourcePermission.permissions) {
-          await chunckPermission(resourcePermission.permissions);
-        }
-      }
-    }
-  }
-  Object.seal(chunkedUserPermissons);
-  return chunkedUserPermissons;
-}
-
-async function chunckPermission(permissions: string[]) {
-  const permissionBusiness = new PermissionBusiness();
-  for (let item of permissions) {
-    const result = await permissionBusiness.findByCriteria(item);
-    if (result.data)
-      if (!chunkedUserPermissons[result.data.name]) {
-        chunkedUserPermissons[result.data.name] = result.data.name;
-      }
-  }
-}
 
 export async function isValidIdentity(
   audience: string

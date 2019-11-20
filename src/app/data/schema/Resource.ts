@@ -8,9 +8,15 @@ const resourceSchema: Schema = new Schema(
     name: { type: String, required: true },
     application: {
       type: Schema.Types.ObjectId,
-      ref: 'Application',
-      required: true
-    }
+      ref: 'Application'
+    },
+    permissions: [ 
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Permission',
+        required: true
+      }
+    ]
   },
   { timestamps: true }
 );

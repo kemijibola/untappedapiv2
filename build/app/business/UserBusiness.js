@@ -41,32 +41,31 @@ var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var ScheduledEmailRepository_1 = __importDefault(require("../repository/ScheduledEmailRepository"));
 var ResourceRepository_1 = __importDefault(require("../repository/ResourceRepository"));
-var ResourcePermissionRepository_1 = __importDefault(require("../repository/ResourcePermissionRepository"));
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
 var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
 var emailtemplates_1 = require("../../utils/emailtemplates");
 var TemplatePlaceHolder_1 = require("../../utils/lib/TemplatePlaceHolder");
-var config = require('../../config/keys');
+var config = require("../../config/keys");
 // import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
 var ScheduleTask_1 = require("../../handlers/ScheduleTask");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
-var error_1 = require("../../utils/error");
+var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
-        this._currentAuthKey = '';
-        this._currentVerifyKey = '';
-        this._currentRsaAlgType = '';
-        this._authExpiration = '';
-        this._mailExpiratation = '';
-        this._verifyExpiration = '';
-        this.chunkedUserPermissons = {};
+        this._currentAuthKey = "";
+        this._currentVerifyKey = "";
+        this._currentRsaAlgType = "";
+        this._authExpiration = "";
+        this._mailExpiratation = "";
+        this._verifyExpiration = "";
+        this.chunkedUserPermissons = [];
         this._userRepository = new UserRepository_1.default();
         this._roleRepository = new RoleRepository_1.default();
+        this._userTypeRepository = new UserTypeRepository_1.default();
         this._scheduledEmailRepository = new ScheduledEmailRepository_1.default();
         this._resourceRepository = new ResourceRepository_1.default();
-        this._resourcePermissionRepository = new ResourcePermissionRepository_1.default();
         this._permissionRepository = new PermissionRepository_1.default();
         this._currentAuthKey = lib_1.currentAuthKey;
         this._currentVerifyKey = lib_1.currentVerifyKey;
@@ -87,9 +86,10 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.login = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var criteria, user, passwordMatched, resource, permissions, signInOptions, payload, privateKey, userToken, typeOfUser, authData;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, userToken, typeOfUser, authData;
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         criteria = {
                             email: params.email.toLowerCase(),
@@ -97,59 +97,64 @@ var UserBusiness = /** @class */ (function () {
                         };
                         return [4 /*yield*/, this.findUserByEmail(criteria)];
                     case 1:
-                        user = _a.sent();
+                        user = _c.sent();
                         if (!user)
-                            return [2 /*return*/, Result_1.Result.fail(404, 'User not found.')];
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found.")];
                         return [4 /*yield*/, user.comparePassword(params.password)];
                     case 2:
-                        passwordMatched = _a.sent();
+                        passwordMatched = _c.sent();
                         if (!passwordMatched)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Invalid credentials')];
-                        return [4 /*yield*/, this.fetchResourceByName(params.destinationUrl.toLowerCase())];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid credentials")];
+                        if (!user.isEmailConfirmed)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please verify your email.")];
+                        _i = 0, _a = user.roles;
+                        _c.label = 3;
                     case 3:
-                        resource = _a.sent();
-                        if (resource === null)
-                            throw new error_1.PlatformError({
-                                code: 404,
-                                message: "Route: " + params.destinationUrl.toLowerCase() + " is not configured."
-                            });
-                        return [4 /*yield*/, this.fetchRolePermissionByResourceId(user.roles, resource._id)];
+                        if (!(_i < _a.length)) return [3 /*break*/, 6];
+                        role = _a[_i];
+                        return [4 /*yield*/, this.fetchPermissionsByRole(role)];
                     case 4:
-                        permissions = _a.sent();
+                        permissions = _c.sent();
+                        if (permissions) {
+                            (_b = this.chunkedUserPermissons).push.apply(_b, permissions);
+                        }
+                        _c.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6:
                         signInOptions = {
-                            issuer: params.issuer,
+                            issuer: config.AUTH_ISSUER_SERVER,
                             audience: params.audience,
                             expiresIn: this._authExpiration,
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
-                            subject: ''
+                            subject: ""
                         };
                         payload = {
                             type: GlobalEnum_1.TokenType.AUTH
                         };
                         privateKey = lib_1.getSecretByKey(this._currentAuthKey);
-                        if (privateKey === '') {
+                        if (privateKey === "") {
                             return [2 /*return*/, Result_1.Result.fail(400, "Private Key is missing for " + this._currentAuthKey)];
                         }
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
-                    case 5:
-                        userToken = _a.sent();
+                    case 7:
+                        userToken = _c.sent();
                         if (userToken.error)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Error occured while generating token. " + userToken.error)];
-                        return [4 /*yield*/, this._roleRepository.findById(user.roles[0])];
-                    case 6:
-                        typeOfUser = _a.sent();
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid token.")];
+                        return [4 /*yield*/, this._userTypeRepository.findById(user.userType)];
+                    case 8:
+                        typeOfUser = _c.sent();
                         authData = {
                             access_token: userToken.data,
-                            permissions: Object.keys(permissions),
+                            permissions: this.chunkedUserPermissons,
                             user_data: {
                                 _id: user._id,
-                                fullName: user.fullName,
+                                full_name: user.fullName,
                                 email: user.email,
-                                role: {
-                                    _id: typeOfUser._id,
-                                    name: typeOfUser.name
-                                }
+                                profile_is_completed: user.isProfileCompleted,
+                                userType: { _id: typeOfUser._id, name: typeOfUser.name }
                             }
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, authData)];
@@ -170,7 +175,7 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         unverifiedUser = _a.sent();
                         if (!unverifiedUser)
-                            return [2 /*return*/, Result_1.Result.fail(404, 'User not found.')];
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found.")];
                         if (unverifiedUser.isEmailConfirmed)
                             return [2 /*return*/, Result_1.Result.fail(400, unverifiedUser.email + " has already been verified.")];
                         publicKey = lib_1.getPublicKey(this._currentVerifyKey);
@@ -188,11 +193,11 @@ var UserBusiness = /** @class */ (function () {
                     case 2:
                         decoded = _a.sent();
                         if (decoded.error)
-                            return [2 /*return*/, Result_1.Result.fail(400, "" + decoded.error.split('.')[0])];
+                            return [2 /*return*/, Result_1.Result.fail(400, "" + decoded.error.split(".")[0])];
                         return [4 /*yield*/, this.updateUserIsEmailConfirmed(unverifiedUser._id, unverifiedUser)];
                     case 3:
                         _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, 'Email successfully verified')];
+                        return [2 /*return*/, Result_1.Result.ok(200, "Email successfully verified")];
                 }
             });
         });
@@ -272,7 +277,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
@@ -310,7 +315,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._userRepository.findByOne(condition)];
                     case 1:
                         user = _a.sent();
@@ -378,39 +383,42 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, roleIds, _i, _a, key, role, newUser, data;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
-                            email: item.email
-                        })];
+            var user, isUserTypeValid, userType, defaultRole, newUser, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("got here");
+                        return [4 /*yield*/, this._userRepository.findByCriteria({
+                                email: item.email
+                            })];
                     case 1:
-                        user = _b.sent();
+                        user = _a.sent();
                         if (user) {
                             return [2 /*return*/, Result_1.Result.fail(409, "There is a user registered with this email: " + item.email)];
                         }
-                        roleIds = [];
-                        _i = 0, _a = item.roles;
-                        _b.label = 2;
+                        isUserTypeValid = lib_1.validateObjectId(item.userType);
+                        if (!isUserTypeValid) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid UserType")];
+                        }
+                        return [4 /*yield*/, this._userTypeRepository.findById(item.userType)];
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 5];
-                        key = _a[_i];
+                        userType = _a.sent();
+                        if (userType === null) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "UserType not found")];
+                        }
                         return [4 /*yield*/, this._roleRepository.findByCriteria({
-                                _id: key,
+                                isDefault: true,
                                 isActive: true
                             })];
                     case 3:
-                        role = _b.sent();
-                        if (!role)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Role id " + key + " is not a valid role")];
-                        roleIds.push(key);
-                        _b.label = 4;
+                        defaultRole = _a.sent();
+                        if (defaultRole === null) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "No role has been assigned yet.")];
+                        }
+                        item.roles.push(defaultRole._id);
+                        return [4 /*yield*/, this._userRepository.register(item)];
                     case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5: return [4 /*yield*/, this._userRepository.register(item)];
-                    case 6:
-                        newUser = _b.sent();
+                        newUser = _a.sent();
                         data = {
                             user: newUser,
                             audience: item.audience,
@@ -457,12 +465,12 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'User not found')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "User not found")];
                         return [4 /*yield*/, user.comparePassword(data.oldPassword)];
                     case 2:
                         passwordMatched = _a.sent();
                         if (!passwordMatched)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Invalid credentials')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid credentials")];
                         user.password = data.newPassword;
                         user.save();
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
@@ -481,7 +489,7 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user) {
-                            return [2 /*return*/, Result_1.Result.fail(400, 'User not found')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "User not found")];
                         }
                         if (user.isEmailConfirmed)
                             return [2 /*return*/, Result_1.Result.fail(400, user.email + " has already been verified.")];
@@ -508,14 +516,14 @@ var UserBusiness = /** @class */ (function () {
                             expiresIn: this._mailExpiratation,
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentVerifyKey,
-                            subject: ''
+                            subject: ""
                         };
                         payload = {
                             type: GlobalEnum_1.TokenType.VERIFY,
                             email: data.user.email
                         };
                         privateKey = lib_1.getSecretByKey(this._currentVerifyKey);
-                        if (privateKey == '')
+                        if (privateKey == "")
                             return [2 /*return*/, Result_1.Result.fail(400, "Private Key is missing for " + this._currentVerifyKey)];
                         return [4 /*yield*/, data.user.generateToken(privateKey, tokenOptions, payload)];
                     case 1:
@@ -530,10 +538,10 @@ var UserBusiness = /** @class */ (function () {
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
                         mailParams = {
                             receivers: [data.user.email],
-                            subject: 'Signup Welcome Email',
+                            subject: "Signup Welcome Email",
                             mail: emailBody,
-                            senderEmail: 'talents@untappedpool.com',
-                            senderName: 'Untapped Pool'
+                            senderEmail: "talents@untappedpool.com",
+                            senderName: "Untapped Pool"
                         };
                         return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.EmailStateMachine, new Date(), mailParams)];
                     case 2:
@@ -596,7 +604,10 @@ var UserBusiness = /** @class */ (function () {
             var user, updateObj, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0:
+                        console.log(item);
+                        console.log(id);
+                        return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
                         if (!user)
@@ -683,69 +694,12 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
-    UserBusiness.prototype.fetchRolePermissionByResourceId = function (roles, resourceId) {
+    UserBusiness.prototype.fetchPermissionsByRole = function (role) {
         return __awaiter(this, void 0, void 0, function () {
-            var _i, roles_1, role, resourcePermission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _i = 0, roles_1 = roles;
-                        _a.label = 1;
-                    case 1:
-                        if (!(_i < roles_1.length)) return [3 /*break*/, 5];
-                        role = roles_1[_i];
-                        return [4 /*yield*/, this._resourcePermissionRepository.findByCriteria({
-                                role: role,
-                                resource: resourceId
-                            })];
-                    case 2:
-                        resourcePermission = _a.sent();
-                        if (resourcePermission === null)
-                            throw new error_1.PlatformError({
-                                code: 404,
-                                message: "There is no resource permission configured for route with Id " + resourceId
-                            });
-                        if (resourcePermission.permissions.length < 1)
-                            throw new error_1.PlatformError({
-                                code: 404,
-                                message: "There are no permissions configured for route with Id " + resourceId
-                            });
-                        return [4 /*yield*/, this.chunckPermission(resourcePermission.permissions)];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/, this.chunkedUserPermissons];
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UserBusiness.prototype.chunckPermission = function (permissions) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _i, permissions_1, item, permission;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _i = 0, permissions_1 = permissions;
-                        _a.label = 1;
-                    case 1:
-                        if (!(_i < permissions_1.length)) return [3 /*break*/, 4];
-                        item = permissions_1[_i];
-                        return [4 /*yield*/, this._permissionRepository.findByCriteria(item)];
-                    case 2:
-                        permission = _a.sent();
-                        if (permission) {
-                            if (!this.chunkedUserPermissons[permission.name]) {
-                                this.chunkedUserPermissons[permission.name] = permission.name;
-                            }
-                        }
-                        _a.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4: return [2 /*return*/];
+                    case 0: return [4 /*yield*/, this._permissionRepository.fetch({ role: role })];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });

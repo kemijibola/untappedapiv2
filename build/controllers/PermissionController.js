@@ -52,33 +52,33 @@ var PermissionController = /** @class */ (function () {
     }
     PermissionController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, item_1, permissionBusiness, result, err_1;
+            var item, permissionBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        item_1 = req.body;
                         permissionBusiness = new PermissionBusiness();
-                        return [4 /*yield*/, permissionBusiness.create(item_1)];
-                    case 2:
+                        return [4 /*yield*/, permissionBusiness.create(item)];
+                    case 1:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
                                 message: 'Operation successful',
                                 data: result.data
                             })];
-                    case 3:
+                    case 2:
                         err_1 = _a.sent();
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: 'Internal Server error occured. Please try again later.'
+                            }))];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -89,7 +89,7 @@ var PermissionController = /** @class */ (function () {
     PermissionController.prototype.findById = function () { };
     __decorate([
         decorators_1.post('/'),
-        decorators_1.requestValidators('name', 'type'),
+        decorators_1.requestValidators('name', 'role'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

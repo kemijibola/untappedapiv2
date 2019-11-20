@@ -19,7 +19,7 @@ export class CategoryController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: result.error
           })
         );
       }
@@ -31,7 +31,7 @@ export class CategoryController {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: 'Internal Server error occured. Please try again later.'
         })
       );
     }

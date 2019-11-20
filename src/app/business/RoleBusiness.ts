@@ -3,6 +3,8 @@ import IRoleBusiness = require('./interfaces/RoleBusiness');
 import { IRole } from '../models/interfaces';
 import { Result } from '../../utils/Result';
 import { RoleViewModel } from '../models/viewmodels';
+import UserTypeRepository from '../repository/UserTypeRepository';
+import { validateObjectId } from '../../utils/lib';
 
 class RoleBusiness implements IRoleBusiness {
   private _roleRepository: RoleRepository;
@@ -72,11 +74,22 @@ class RoleBusiness implements IRoleBusiness {
         name: item.name
       });
       if (role === null) {
-        const newRole = await this._roleRepository.create(item);
-        // TODO:: create approval request here
-        return Result.ok<IRole>(201, newRole);
+        // check if any role has been set to default
+        const roleExist = await this._roleRepository.findByCriteria({
+          name: 'Free',
+          isDefault: item.isDefault,
+          isActive: true
+        });
+ 
+        if (roleExist === null) {
+          item.isActive = false;
+          const newRole = await this._roleRepository.create(item);
+          // TODO:: create approval request here
+          return Result.ok<IRole>(201, newRole);
+        }
+        return Result.fail<IRole>(400, 'A role is currently set as default.');
       }
-      return Result.fail<IRole>(400, `Role with name ${role.name} exists`);
+      return Result.fail<IRole>(400, `Role with name '${role.name}' exists`);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }

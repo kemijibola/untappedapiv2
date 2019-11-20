@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { ITimeStamp } from './Timestamp';
 import { IAppSpec } from './AppSpec';
+import { IRole } from '.';
 
 export enum PermissionType {
   DEFAULT = 'DEFAULT',
@@ -9,5 +10,5 @@ export enum PermissionType {
 
 export interface IPermission extends ITimeStamp, IAppSpec, mongoose.Document {
   name: string;
-  type: PermissionType;
+  role: IRole['_id'];
 }

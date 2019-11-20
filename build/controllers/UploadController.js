@@ -48,6 +48,7 @@ var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
 var FileUpload_1 = require("../utils/uploadservice/FileUpload");
 var S3Storage_1 = require("../utils/uploadservice/storage/S3Storage");
+var auth_1 = require("../middlewares/auth");
 var UploadController = /** @class */ (function () {
     function UploadController() {
     }
@@ -59,8 +60,7 @@ var UploadController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        // item.uploader = req.user || '8be9da14-6033-494a-908c-404b13558b15';
-                        item.uploader = '8be9da14-6033-494a-908c-404b13558b15';
+                        item.uploader = req.user;
                         uploader = FileUpload_1.FileUpload.uploader(new S3Storage_1.S3Storage());
                         return [4 /*yield*/, uploader.getPresignedUrls(item)];
                     case 1:
@@ -68,18 +68,18 @@ var UploadController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
-                        return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -91,14 +91,15 @@ var UploadController = /** @class */ (function () {
     UploadController.prototype.fetch = function () { };
     UploadController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('action', 'files'),
+        decorators_1.post("/"),
+        decorators_1.requestValidators("action", "files"),
+        decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UploadController.prototype, "create", null);
     UploadController = __decorate([
-        decorators_1.controller('/v1/uploads')
+        decorators_1.controller("/v1/uploads")
     ], UploadController);
     return UploadController;
 }());

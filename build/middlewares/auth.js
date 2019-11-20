@@ -38,125 +38,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var error_1 = require("../utils/error");
 var lib_1 = require("../utils/lib");
 var GlobalEnum_1 = require("../app/models/interfaces/custom/GlobalEnum");
-var UserBusiness_1 = __importDefault(require("../app/business/UserBusiness"));
+var config = require("../config/keys");
+var JwtHelper_1 = __importDefault(require("../utils/wrappers/JwtHelper"));
 function requireAuth(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var authorization, audience, subject, encodedJWT, parts, header, payload, verifyOptions, publicKey, decoded, destinationResourceUrl, userBusiness, user, permissionParams, permissions, signInOptions, payload_1, privateKey, userToken, err_1;
+        var authorization, encodedJWT, verifyOptions, publicKey, decoded, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 7]);
-                    authorization = req.headers['authorization'] || '';
-                    audience = '';
-                    subject = '';
-                    if (authorization === '' || typeof authorization === 'undefined') {
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 401,
-                                message: 'You must be logged in to perform thus operation.'
-                            }))];
-                    }
-                    encodedJWT = authorization.substr('JWT '.length);
-                    parts = encodedJWT.split('.');
-                    if (parts.length !== 3) {
+                    _a.trys.push([0, 2, , 3]);
+                    authorization = req.headers["authorization"] || "";
+                    encodedJWT = authorization.substr("Bearer ".length);
+                    if (!encodedJWT) {
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 400,
-                                message: 'Token is invalid.'
-                            }))];
-                    }
-                    header = JSON.parse(Buffer.from(parts[0], 'base64'));
-                    payload = JSON.parse(Buffer.from(parts[1], 'base64'));
-                    audience = payload.aud;
-                    subject = payload.sub;
-                    if (header.kid !== lib_1.currentAuthKey) {
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 400,
-                                message: 'Token is invalid.'
-                            }))];
-                    }
-                    if (payload.usage !== GlobalEnum_1.TokenType.AUTH) {
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 400,
-                                message: 'Token is invalid.'
+                                message: "Please provide a valid token"
                             }))];
                     }
                     verifyOptions = {
-                        issuer: payload.iss,
-                        subject: payload.sub,
-                        audience: payload.aud,
+                        issuer: config.AUTH_ISSUER_SERVER,
+                        audience: req.body.audience,
+                        type: GlobalEnum_1.TokenType.AUTH,
                         expiresIn: lib_1.authExpiration,
                         algorithms: [lib_1.currentRsaAlgType],
                         keyid: lib_1.currentAuthKey
                     };
                     publicKey = lib_1.getPublicKey(lib_1.currentAuthKey);
-                    return [4 /*yield*/, jsonwebtoken_1.default.verify(encodedJWT, publicKey, verifyOptions)];
+                    return [4 /*yield*/, JwtHelper_1.default.JwtInitializer().verifyToken(encodedJWT, publicKey, verifyOptions)];
                 case 1:
                     decoded = _a.sent();
-                    if (!decoded) {
+                    if (decoded.error) {
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 400,
-                                message: 'Token is invalid.'
+                                message: "Invalid token."
                             }))];
                     }
-                    destinationResourceUrl = "" + lib_1.issuer + req.originalUrl;
-                    if (destinationResourceUrl === payload.iss) {
-                        req.user = {
-                            id: payload.sub,
-                            permissions: payload.permissions
-                        };
-                        return [2 /*return*/, next()];
-                    }
-                    userBusiness = new UserBusiness_1.default();
-                    return [4 /*yield*/, userBusiness.findUserForExchange(payload.sub)];
-                case 2:
-                    user = _a.sent();
-                    if (!user.data) return [3 /*break*/, 5];
-                    permissionParams = {
-                        destinationUrl: req.originalUrl.toLowerCase(),
-                        roles: user.data.roles.slice()
-                    };
-                    return [4 /*yield*/, lib_1.tokenExchange(permissionParams)];
-                case 3:
-                    permissions = _a.sent();
-                    signInOptions = {
-                        issuer: destinationResourceUrl,
-                        audience: audience,
-                        expiresIn: lib_1.authExpiration,
-                        algorithm: lib_1.currentRsaAlgType,
-                        keyid: lib_1.currentAuthKey,
-                        subject: subject
-                    };
-                    payload_1 = {
-                        type: GlobalEnum_1.TokenType.AUTH
-                    };
-                    privateKey = lib_1.getSecretByKey(lib_1.currentAuthKey);
-                    if (privateKey === '') {
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 500,
-                                message: 'Token is invalid'
-                            }))];
-                    }
-                    return [4 /*yield*/, user.data.generateToken(privateKey, signInOptions, payload_1)];
-                case 4:
-                    userToken = _a.sent();
-                    res.setHeader('authorization', userToken);
-                    req.user = {
-                        id: user.data._id,
-                        permissions: permissions
-                    };
+                    req.user = decoded.data.sub;
                     return [2 /*return*/, next()];
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 2:
                     err_1 = _a.sent();
-                    console.log(err_1);
                     return [2 /*return*/, next(new error_1.PlatformError({
                             code: 500,
-                            message: err_1.message + ". Please generate another token."
+                            message: "Internal Server error occured. Please try again later."
                         }))];
-                case 7: return [2 /*return*/];
+                case 3: return [2 /*return*/];
             }
         });
     });

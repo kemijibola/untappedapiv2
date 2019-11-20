@@ -18,7 +18,7 @@ export class ApprovalController {
       if (result.error) {
         return new PlatformError({
           code: result.responseCode,
-          message: `Error occured. ${result.error}`
+          message: result.error
         });
       }
       return res.status(200).json({
@@ -26,7 +26,12 @@ export class ApprovalController {
         data: result.data
       });
     } catch (err) {
-      //next(new InternalServerError('Internal Server error occured', 500));
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
     }
   }
   update(req: Request, res: Response, next: NextFunction): void {}

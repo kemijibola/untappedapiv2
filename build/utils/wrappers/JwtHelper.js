@@ -11,13 +11,13 @@ var JwtHelper = /** @class */ (function () {
     };
     JwtHelper.prototype.generateToken = function (payload, options, privateKey) {
         var promise = new Promise(function (resolve) {
-            var result = { data: '', error: '' };
+            var result = { data: "", error: "" };
             jsonwebtoken_1.default.sign(payload, privateKey, options, function (err, token) {
                 if (err) {
-                    result = { error: err, data: '' };
+                    result = { error: err, data: "" };
                     resolve(result);
                 }
-                result = { error: '', data: token };
+                result = { error: "", data: token };
                 resolve(result);
             });
         });
@@ -25,13 +25,13 @@ var JwtHelper = /** @class */ (function () {
     };
     JwtHelper.prototype.verifyToken = function (token, publicKey, options) {
         var promise = new Promise(function (resolve) {
-            var result = { data: '', error: '' };
+            var result = { data: "", error: "" };
             jsonwebtoken_1.default.verify(token, publicKey, options, function (err, decoded) {
                 if (err) {
-                    result = { error: err.message, data: '' };
+                    result = { error: err.message, data: "" };
                     resolve(result);
                 }
-                result = { error: '', data: decoded };
+                result = { error: "", data: decoded };
                 resolve(result);
             });
         });

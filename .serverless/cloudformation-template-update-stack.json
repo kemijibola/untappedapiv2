@@ -19,13 +19,13 @@
     "ScheduleEmailLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/up-serverless-deploy-dev-ScheduleEmail"
+        "LogGroupName": "/aws/lambda/serverless-untappd-admin-dev-ScheduleEmail"
       }
     },
     "SendEmailLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/up-serverless-deploy-dev-SendEmail"
+        "LogGroupName": "/aws/lambda/serverless-untappd-admin-dev-SendEmail"
       }
     },
     "IamRoleLambdaExecution": {
@@ -54,7 +54,7 @@
                 "-",
                 [
                   "dev",
-                  "up-serverless-deploy",
+                  "serverless-untappd-admin",
                   "lambda"
                 ]
               ]
@@ -69,7 +69,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/up-serverless-deploy-dev*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-untappd-admin-dev*:*"
                     }
                   ]
                 },
@@ -80,7 +80,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/up-serverless-deploy-dev*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-untappd-admin-dev*:*:*"
                     }
                   ]
                 },
@@ -113,7 +113,7 @@
           "Fn::Join": [
             "-",
             [
-              "up-serverless-deploy",
+              "serverless-untappd-admin",
               "dev",
               {
                 "Ref": "AWS::Region"
@@ -131,9 +131,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/up-serverless-deploy/dev/1572335204544-2019-10-29T07:46:44.544Z/ScheduleEmail.zip"
+          "S3Key": "serverless/serverless-untappd-admin/dev/1572868421106-2019-11-04T11:53:41.106Z/ScheduleEmail.zip"
         },
-        "FunctionName": "up-serverless-deploy-dev-ScheduleEmail",
+        "FunctionName": "serverless-untappd-admin-dev-ScheduleEmail",
         "Handler": "src/handlers/ScheduleTask.schedule",
         "MemorySize": 1024,
         "Role": {
@@ -157,14 +157,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "ScheduleEmailLambdaVersionuifNdN57xZUrXaJPUiRWBd9hd8ws2Hbs1a6BtU8g": {
+    "ScheduleEmailLambdaVersionUi0YU2Ji7KTBG6ghj9yPq11X5JzeSfinfUXxgKCoDI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ScheduleEmailLambdaFunction"
         },
-        "CodeSha256": "TirLhyhUzLNEIUhWIMjMw0ZXyn5FizpPAYuQKPfYNOs="
+        "CodeSha256": "JDSHrpF9Fn650DOKQaKAfdAzQVsxKl10Z0Al3o/9fxY="
       }
     },
     "SendEmailLambdaFunction": {
@@ -174,9 +174,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/up-serverless-deploy/dev/1572335204544-2019-10-29T07:46:44.544Z/SendEmail.zip"
+          "S3Key": "serverless/serverless-untappd-admin/dev/1572868421106-2019-11-04T11:53:41.106Z/SendEmail.zip"
         },
-        "FunctionName": "up-serverless-deploy-dev-SendEmail",
+        "FunctionName": "serverless-untappd-admin-dev-SendEmail",
         "Handler": "src/handlers/SendEmail.handle",
         "MemorySize": 1024,
         "Role": {
@@ -198,14 +198,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SendEmailLambdaVersionYvPsVxaOPn6V8pVbwdujxjp1MVgTbempELl5akGeX2o": {
+    "SendEmailLambdaVersionvHj5dkjvfjl1Ct6tGNhjUEqTw7cFNdkc4w6lYDz5B8": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SendEmailLambdaFunction"
         },
-        "CodeSha256": "B4hQMAXwtcrYFLG5oNs9yDI6wubVyTDTb4q6AO3bFXA="
+        "CodeSha256": "HOG1eIurB56SD2M5OBvztZjQ4YlEMeBFpvXAYxrWYKk="
       }
     },
     "IamRoleStateMachineExecution": {
@@ -225,7 +225,7 @@
         },
         "Policies": [
           {
-            "PolicyName": "dev-us-east-1-up-serverless-deploy-statemachine",
+            "PolicyName": "dev-us-east-1-serverless-untappd-admin-statemachine",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -236,7 +236,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:up-serverless-deploy-dev-SendEmail"
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:serverless-untappd-admin-dev-SendEmail"
                     }
                   ]
                 }
@@ -250,7 +250,7 @@
       "Type": "AWS::StepFunctions::StateMachine",
       "Properties": {
         "DefinitionString": {
-          "Fn::Sub": "{\n  \"Comment\": \"Schedules an email to be sent at a future date\",\n  \"StartAt\": \"WaitForDueDate\",\n  \"States\": {\n    \"WaitForDueDate\": {\n      \"Type\": \"Wait\",\n      \"TimestampPath\": \"$.dueDate\",\n      \"Next\": \"SendEmail\"\n    },\n    \"SendEmail\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:up-serverless-deploy-dev-SendEmail\",\n      \"End\": true\n    }\n  }\n}"
+          "Fn::Sub": "{\n  \"Comment\": \"Schedules an email to be sent at a future date\",\n  \"StartAt\": \"WaitForDueDate\",\n  \"States\": {\n    \"WaitForDueDate\": {\n      \"Type\": \"Wait\",\n      \"TimestampPath\": \"$.dueDate\",\n      \"Next\": \"SendEmail\"\n    },\n    \"SendEmail\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:serverless-untappd-admin-dev-SendEmail\",\n      \"End\": true\n    }\n  }\n}"
         },
         "RoleArn": {
           "Fn::GetAtt": [
@@ -275,13 +275,13 @@
     "ScheduleEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ScheduleEmailLambdaVersionuifNdN57xZUrXaJPUiRWBd9hd8ws2Hbs1a6BtU8g"
+        "Ref": "ScheduleEmailLambdaVersionUi0YU2Ji7KTBG6ghj9yPq11X5JzeSfinfUXxgKCoDI"
       }
     },
     "SendEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SendEmailLambdaVersionYvPsVxaOPn6V8pVbwdujxjp1MVgTbempELl5akGeX2o"
+        "Ref": "SendEmailLambdaVersionvHj5dkjvfjl1Ct6tGNhjUEqTw7cFNdkc4w6lYDz5B8"
       }
     },
     "EmailSchedulingStateMachineArn": {

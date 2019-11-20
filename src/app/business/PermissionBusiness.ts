@@ -1,13 +1,17 @@
 import PermissionRepository from '../repository/PermissionRepository';
+import RoleRepository from '../repository/RoleRepository';
 import IPermissionBusiness = require('./interfaces/PermissionBusiness');
 import { IPermission } from '../models/interfaces';
 import { Result } from '../../utils/Result';
+import { validateObjectId } from '../../utils/lib';
 
 class PermissionBusiness implements IPermissionBusiness {
   private _permissionRepository: PermissionRepository;
+  private _roleRepository: RoleRepository;
 
   constructor() {
     this._permissionRepository = new PermissionRepository();
+    this._roleRepository = new RoleRepository();
   }
 
   async fetch(condition: any): Promise<Result<IPermission[]>> {
@@ -62,18 +66,23 @@ class PermissionBusiness implements IPermissionBusiness {
   async create(item: IPermission): Promise<Result<IPermission>> {
     try {
       const permission = await this._permissionRepository.findByCriteria({
-        name: item.name,
-        type: item.type
+        name: item.name
       });
       if (permission === null) {
+        const isRoleValid = validateObjectId(item.role);
+        if (!isRoleValid) {
+          return Result.fail<IPermission>(400, 'Role is invalid');
+        }
+        const role = await this._roleRepository.findById(item.role);
+        if (role === null) {
+          return Result.fail<IPermission>(400, 'Role not found');
+        }
         const newPermission = await this._permissionRepository.create(item);
         return Result.ok<IPermission>(201, newPermission);
       }
       return Result.fail<IPermission>(
         400,
-        `Permission with name '${permission.name}' and type '${
-          permission.type
-        }' exists.`
+        `Permission with name '${permission.name}' already exist.`
       );
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

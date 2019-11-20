@@ -8,9 +8,9 @@ __export(require("./CategoryController"));
 __export(require("./RoleController"));
 __export(require("./ResourceController"));
 __export(require("./PermissionController"));
-__export(require("./ResourcePermissionController"));
 __export(require("./ApplicationController"));
 __export(require("./UserController"));
 __export(require("./UploadController"));
 __export(require("./MediaController"));
+__export(require("./UserTypeController"));
 //# sourceMappingURL=index.js.map

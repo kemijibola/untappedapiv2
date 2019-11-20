@@ -1,4 +1,4 @@
-service: up-serverless-deploy
+service: serverless-untappd-admin
 
 provider:
   name: aws
@@ -6,7 +6,7 @@ provider:
   region: us-east-1
   stage: dev
   # change this to use your own profile (https://serverless.com/framework/docs/providers/aws/guide/credentials#using-aws-profiles)
-  profile: untapped-pool-serverless-admin
+  profile: untapped-admin-serverless
   iamRoleStatements:
     - Effect: 'Allow'
       Action:

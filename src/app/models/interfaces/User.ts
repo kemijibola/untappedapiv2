@@ -20,6 +20,7 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   email: string;
   fullName: string;
   password: string;
+  userType: string;
   profileImagePath?: string;
   isEmailConfirmed: boolean;
   isPhoneConfirmed: boolean;
@@ -28,6 +29,7 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   generalNotification: boolean;
   emailNotification: boolean;
   profileVisibility: boolean;
+
   isBounced: boolean;
   loginCount: number;
   status: IUserAccountStatus;

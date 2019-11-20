@@ -47,7 +47,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var ResourceBusiness = require("../app/business/ResourceBusiness");
-var auth_1 = require("../middlewares/auth");
 exports.roles = ['canViewProfessionals', 'canViewTalents'];
 var ResourceController = /** @class */ (function () {
     function ResourceController() {
@@ -67,7 +66,7 @@ var ResourceController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
@@ -78,7 +77,7 @@ var ResourceController = /** @class */ (function () {
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: 'Internal Server error occured. Please try again later.'
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -128,8 +127,9 @@ var ResourceController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ResourceController.prototype, "create", null);
     __decorate([
-        decorators_1.get('/'),
-        decorators_1.use(auth_1.requireAuth),
+        decorators_1.get('/')
+        // @use(requireAuth)
+        ,
         decorators_1.authorize.apply(void 0, exports.roles),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

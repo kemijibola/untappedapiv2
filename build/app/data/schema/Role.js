@@ -8,23 +8,20 @@ var roleSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
-    global: {
-        type: Boolean,
-        required: true,
-        default: false
+    userType: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'UserType'
     },
     description: {
-        type: String,
+        type: String
+    },
+    isDefault: {
+        type: Boolean,
         required: true
     },
     isActive: {
         type: Boolean,
         default: false
-    },
-    application: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
-        required: true
     }
 }, { timestamps: true });
 exports.RoleSchema = mongooseConnection.model('Role', roleSchema);

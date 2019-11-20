@@ -64,7 +64,7 @@ var RoleController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
@@ -75,7 +75,7 @@ var RoleController = /** @class */ (function () {
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: 'Internal Server error occured. Please try again later.'
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -97,7 +97,7 @@ var RoleController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
@@ -108,7 +108,7 @@ var RoleController = /** @class */ (function () {
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_2
+                                message: 'Internal Server error occured. Please try again later.'
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -126,7 +126,7 @@ var RoleController = /** @class */ (function () {
     ], RoleController.prototype, "fetch", null);
     __decorate([
         decorators_1.post('/'),
-        decorators_1.requestValidators('name', 'global', 'description'),
+        decorators_1.requestValidators('name', 'isDefault'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

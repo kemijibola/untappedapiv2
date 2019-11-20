@@ -49,7 +49,7 @@ export class MediaController {
             return next(
               new PlatformError({
                 code: audioResult.responseCode,
-                message: `Error occured. ${audioResult.error}`
+                message: audioResult.error
               })
             );
           }
@@ -59,7 +59,12 @@ export class MediaController {
           });
       }
     } catch (err) {
-      // next(new InternalServerError('Internal Server error occured', 500));
+      return next(
+        new PlatformError({
+          code: 500,
+          message: 'Internal Server error occured. Please try again later.'
+        })
+      );
     }
   }
   update(): void {}

@@ -38,10 +38,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
+var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var Result_1 = require("../../utils/Result");
+var lib_1 = require("../../utils/lib");
 var PermissionBusiness = /** @class */ (function () {
     function PermissionBusiness() {
         this._permissionRepository = new PermissionRepository_1.default();
+        this._roleRepository = new RoleRepository_1.default();
     }
     PermissionBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -137,27 +140,36 @@ var PermissionBusiness = /** @class */ (function () {
     };
     PermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, newPermission, err_5;
+            var permission, isRoleValid, role, newPermission, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 5, , 6]);
                         return [4 /*yield*/, this._permissionRepository.findByCriteria({
-                                name: item.name,
-                                type: item.type
+                                name: item.name
                             })];
                     case 1:
                         permission = _a.sent();
-                        if (!(permission === null)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this._permissionRepository.create(item)];
+                        if (!(permission === null)) return [3 /*break*/, 4];
+                        isRoleValid = lib_1.validateObjectId(item.role);
+                        if (!isRoleValid) {
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Role is invalid')];
+                        }
+                        return [4 /*yield*/, this._roleRepository.findById(item.role)];
                     case 2:
+                        role = _a.sent();
+                        if (role === null) {
+                            return [2 /*return*/, Result_1.Result.fail(400, 'Role not found')];
+                        }
+                        return [4 /*yield*/, this._permissionRepository.create(item)];
+                    case 3:
                         newPermission = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newPermission)];
-                    case 3: return [2 /*return*/, Result_1.Result.fail(400, "Permission with name '" + permission.name + "' and type '" + permission.type + "' exists.")];
-                    case 4:
+                    case 4: return [2 /*return*/, Result_1.Result.fail(400, "Permission with name '" + permission.name + "' already exist.")];
+                    case 5:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

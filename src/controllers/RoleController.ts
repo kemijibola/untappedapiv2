@@ -15,7 +15,7 @@ export class RoleController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: result.error
           })
         );
       }
@@ -27,14 +27,14 @@ export class RoleController {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: 'Internal Server error occured. Please try again later.'
         })
       );
     }
   }
 
   @post('/')
-  @requestValidators('name', 'global', 'description')
+  @requestValidators('name', 'isDefault')
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const item: IRole = req.body;
@@ -44,7 +44,7 @@ export class RoleController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: result.error
           })
         );
       }
@@ -56,7 +56,7 @@ export class RoleController {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: 'Internal Server error occured. Please try again later.'
         })
       );
     }

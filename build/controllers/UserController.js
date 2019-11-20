@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
 var UserBusiness = require("../app/business/UserBusiness");
+var auth_1 = require("../middlewares/auth");
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -59,7 +60,7 @@ var UserController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         condition = {};
                         if (req.query) {
-                            condition.email = req.query.email || '';
+                            condition.email = req.query.email || "";
                         }
                         userBusiness = new UserBusiness();
                         return [4 /*yield*/, userBusiness.fetch(condition)];
@@ -68,18 +69,18 @@ var UserController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -94,25 +95,25 @@ var UserController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness();
-                        user = '5d39c97b432a2e5fd0484375';
+                        user = req.user;
                         return [4 /*yield*/, userBusiness.patch(user, req.body)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_2
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -120,19 +121,20 @@ var UserController = /** @class */ (function () {
         });
     };
     __decorate([
-        decorators_1.get('/'),
+        decorators_1.get("/"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
     __decorate([
-        decorators_1.patch('/:id'),
+        decorators_1.patch("/"),
+        decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "patch", null);
     UserController = __decorate([
-        decorators_1.controller('/v1/users')
+        decorators_1.controller("/v1/users")
     ], UserController);
     return UserController;
 }());
