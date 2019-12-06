@@ -13,4 +13,5 @@ __export(require("./UserController"));
 __export(require("./UploadController"));
 __export(require("./MediaController"));
 __export(require("./UserTypeController"));
+__export(require("./CategoryTypeController"));
 //# sourceMappingURL=index.js.map

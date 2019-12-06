@@ -38,7 +38,7 @@ export async function requireAuth(
     if (!encodedJWT) {
       return next(
         new PlatformError({
-          code: 400,
+          code: 401,
           message: "Please provide a valid token"
         })
       );
@@ -60,7 +60,7 @@ export async function requireAuth(
     if (decoded.error) {
       return next(
         new PlatformError({
-          code: 400,
+          code: 401,
           message: "Invalid token."
         })
       );

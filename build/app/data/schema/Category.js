@@ -7,9 +7,8 @@ var categorySchema = new mongoose_1.Schema({
     name: { type: String, required: true, unique: true },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
-        required: true
+        ref: "Application"
     }
 }, { timestamps: true });
-exports.CategorySchema = mongooseConnection.model('Category', categorySchema);
+exports.CategorySchema = mongooseConnection.model("Category", categorySchema);
 //# sourceMappingURL=Category.js.map

@@ -52,6 +52,7 @@ var config = require("../../config/keys");
 var ScheduleTask_1 = require("../../handlers/ScheduleTask");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
+var MediaMakerFactory_1 = require("../../utils/uploads/MediaMakerFactory");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentAuthKey = "";
@@ -154,6 +155,7 @@ var UserBusiness = /** @class */ (function () {
                                 full_name: user.fullName,
                                 email: user.email,
                                 profile_is_completed: user.isProfileCompleted,
+                                profile_image_path: user.profileImagePath || "",
                                 userType: { _id: typeOfUser._id, name: typeOfUser.name }
                             }
                         };
@@ -282,7 +284,7 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user) {
-                            return [2 /*return*/, Result_1.Result.fail(404, "User with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         }
                         else {
                             refinedUser = {
@@ -703,6 +705,11 @@ var UserBusiness = /** @class */ (function () {
                 }
             });
         });
+    };
+    UserBusiness.prototype.fetchUserProfileImage = function (key, editParams) {
+        var mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create("image");
+        var result = mediaFactory.fetchObjectFromCloudFormation(key, editParams);
+        return Result_1.Result.ok(200, result);
     };
     return UserBusiness;
 }());

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import IRead from '../interface/base/Read';
-import IWrite from '../interface/base/Write';
+import mongoose from "mongoose";
+import IRead from "../interface/base/Read";
+import IWrite from "../interface/base/Write";
 
 class RepositoryBase<T extends mongoose.Document>
   implements IRead<T>, IWrite<T> {
@@ -16,6 +16,19 @@ class RepositoryBase<T extends mongoose.Document>
         if (error) reject(error);
         else resolve(result);
       });
+    });
+  }
+
+  populateFetch(path: string, condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate(path, "_id name")
+        .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
     });
   }
 
@@ -111,10 +124,12 @@ class RepositoryBase<T extends mongoose.Document>
 
   findByCriteria(criteria = {}): Promise<T> {
     return new Promise((resolve, reject) => {
-      this._model.findOne(criteria, (error: any, result: T) => {
-        if (error) reject(error);
-        else resolve(result);
-      });
+      this._model
+        .findOne(criteria, (error: any, result: T) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .cacheDocQuery({ collectionName: this._model.collection.name });
     });
   }
 

@@ -54,7 +54,7 @@ function requireAuth(req, res, next) {
                     encodedJWT = authorization.substr("Bearer ".length);
                     if (!encodedJWT) {
                         return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 400,
+                                code: 401,
                                 message: "Please provide a valid token"
                             }))];
                     }
@@ -72,7 +72,7 @@ function requireAuth(req, res, next) {
                     decoded = _a.sent();
                     if (decoded.error) {
                         return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 400,
+                                code: 401,
                                 message: "Invalid token."
                             }))];
                     }

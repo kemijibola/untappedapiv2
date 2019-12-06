@@ -46,23 +46,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
-var FileUpload_1 = require("../utils/uploadservice/FileUpload");
-var S3Storage_1 = require("../utils/uploadservice/storage/S3Storage");
 var auth_1 = require("../middlewares/auth");
+var MediaMakerFactory_1 = require("../utils/uploads/MediaMakerFactory");
 var UploadController = /** @class */ (function () {
     function UploadController() {
     }
     UploadController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, uploader, result, err_1;
+            var item, mediaFactory, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
                         item.uploader = req.user;
-                        uploader = FileUpload_1.FileUpload.uploader(new S3Storage_1.S3Storage());
-                        return [4 /*yield*/, uploader.getPresignedUrls(item)];
+                        mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.typeOfFile);
+                        return [4 /*yield*/, mediaFactory.getPresignedUrl(item)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -92,7 +91,7 @@ var UploadController = /** @class */ (function () {
     UploadController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
-        decorators_1.requestValidators("action", "files"),
+        decorators_1.requestValidators("action", "files", "typeOfFile"),
         decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

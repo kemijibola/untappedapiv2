@@ -1,7 +1,7 @@
-import CategoryRepository from '../repository/CategoryRepository';
-import ICategoryBusiness = require('./interfaces/CategoryBusiness');
-import { ICategory } from '../models/interfaces';
-import { Result } from '../../utils/Result';
+import CategoryRepository from "../repository/CategoryRepository";
+import ICategoryBusiness = require("./interfaces/CategoryBusiness");
+import { ICategory } from "../models/interfaces";
+import { Result } from "../../utils/Result";
 
 class CategoryBusiness implements ICategoryBusiness {
   private _categoryRepository: CategoryRepository;
@@ -21,7 +21,7 @@ class CategoryBusiness implements ICategoryBusiness {
 
   async findById(id: string): Promise<Result<ICategory>> {
     try {
-      if (!id) return Result.fail<ICategory>(400, 'Bad request.');
+      if (!id) return Result.fail<ICategory>(400, "Bad request.");
       const category = await this._categoryRepository.findById(id);
       if (!category)
         return Result.fail<ICategory>(404, `Category of Id ${id} not found`);
@@ -33,7 +33,7 @@ class CategoryBusiness implements ICategoryBusiness {
 
   async findOne(condition: any): Promise<Result<ICategory>> {
     try {
-      if (!condition) return Result.fail<ICategory>(400, 'Bad request.');
+      if (!condition) return Result.fail<ICategory>(400, "Bad request.");
       const category = await this._categoryRepository.findByOne(condition);
       if (!category) return Result.fail<ICategory>(404, `Category not found`);
       else return Result.ok<ICategory>(200, category);
@@ -45,7 +45,8 @@ class CategoryBusiness implements ICategoryBusiness {
   async findByCriteria(criteria: any): Promise<Result<ICategory>> {
     try {
       const category = await this._categoryRepository.findByCriteria(criteria);
-      if (!category) return Result.fail<ICategory>(404, `Approval not found`);
+      if (!category)
+        return Result.fail<ICategory>(404, `Category type not found`);
       else return Result.ok<ICategory>(200, category);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);

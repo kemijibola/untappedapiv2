@@ -13,7 +13,8 @@ import {
   MailType,
   AuthPayload,
   IResource,
-  IPermission
+  IPermission,
+  ImageEditRequest
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import {
@@ -59,6 +60,8 @@ import {
   TokenGenerationRequest
 } from "../models/interfaces/custom/Account";
 import UserTypeRepository from "../repository/UserTypeRepository";
+import { AbstractMedia } from "../../utils/uploads/Uploader";
+import { MediaMakerFactory } from "../../utils/uploads/MediaMakerFactory";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
@@ -155,6 +158,7 @@ class UserBusiness implements IUserBusiness {
           full_name: user.fullName,
           email: user.email,
           profile_is_completed: user.isProfileCompleted,
+          profile_image_path: user.profileImagePath || "",
           userType: { _id: typeOfUser._id, name: typeOfUser.name }
         }
       };
@@ -238,7 +242,7 @@ class UserBusiness implements IUserBusiness {
     if (!id) return Result.fail<IUserModel>(400, "Bad request");
     const user = await this._userRepository.findById(id);
     if (!user) {
-      return Result.fail<IUserModel>(404, `User with Id ${id} not found`);
+      return Result.fail<IUserModel>(404, `User not found`);
     } else {
       let refinedUser: UserViewModel = {
         _id: user._id,
@@ -589,16 +593,14 @@ class UserBusiness implements IUserBusiness {
     return await this._permissionRepository.fetch({ role });
   }
 
-  // async chunckPermission(permissions: IPermission[]) {
-  //   for (let item of permissions) {
-  //     const permission = await this._permissionRepository.findByCriteria(item);
-  //     if (permission) {
-  //       if (!this.chunkedUserPermissons[permission.name]) {
-  //         this.chunkedUserPermissons[permission.name] = permission.name;
-  //       }
-  //     }
-  //   }
-  // }
+  fetchUserProfileImage(
+    key: string,
+    editParams: ImageEditRequest
+  ): Result<string> {
+    var mediaFactory: AbstractMedia = new MediaMakerFactory().create("image");
+    const result = mediaFactory.fetchObjectFromCloudFormation(key, editParams);
+    return Result.ok<any>(200, result);
+  }
 }
 
 Object.seal(UserBusiness);

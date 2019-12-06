@@ -70,7 +70,7 @@ var CategoryBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._categoryRepository.findById(id)];
                     case 1:
                         category = _a.sent();
@@ -95,7 +95,7 @@ var CategoryBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._categoryRepository.findByOne(condition)];
                     case 1:
                         category = _a.sent();
@@ -123,7 +123,7 @@ var CategoryBusiness = /** @class */ (function () {
                     case 1:
                         category = _a.sent();
                         if (!category)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Approval not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Category type not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, category)];
                         return [3 /*break*/, 3];

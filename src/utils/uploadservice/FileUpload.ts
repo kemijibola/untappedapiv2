@@ -1,5 +1,5 @@
-import { PresignedUrl, IUploadFileRequest, SignedUrl } from './Helper/Upload';
-import { Result } from '../Result';
+import { PresignedUrl, IUploadFileRequest, SignedUrl } from "./Helper/Upload";
+import { Result } from "../Result";
 
 export interface Storage {
   putObject(files: IUploadFileRequest): Promise<Result<SignedUrl>>;
@@ -19,9 +19,7 @@ export class FileUpload {
     return await this.storage.putObject(filesToUpload);
   }
 
-  // async deleteObject(key: string): void {
-
-  // }
+  // async deleteObject(key: string) {}
 
   // async getClientPresignedUrls(keys: string[]): Promise<string[]> {
   //   // const urls = await this.storage.g;

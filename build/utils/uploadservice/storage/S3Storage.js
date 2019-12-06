@@ -68,6 +68,7 @@ var S3Storage = /** @class */ (function () {
         //   useAccelerateEndpoint: true
         // });
     }
+    // async getObject():
     S3Storage.prototype.putObject = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var signedUrlExpireSeconds, signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_1;
@@ -103,7 +104,6 @@ var S3Storage = /** @class */ (function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        console.log(data.files[0].file_type);
                                         params = {
                                             Bucket: config.APP_BUCKET.bucket,
                                             Key: filesMap[item],

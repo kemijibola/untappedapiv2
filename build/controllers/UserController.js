@@ -87,6 +87,37 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.fetchUserProfilePicture = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var editParams, key, userBusiness, result;
+            return __generator(this, function (_a) {
+                try {
+                    editParams = req.body.editParams;
+                    key = req.body.key;
+                    userBusiness = new UserBusiness();
+                    result = userBusiness.fetchUserProfileImage(key, editParams);
+                    if (result.error) {
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: result.responseCode,
+                                message: result.error
+                            }))];
+                    }
+                    return [2 /*return*/, res.status(result.responseCode).json({
+                            message: "Operation successful",
+                            data: result.data
+                        })];
+                }
+                catch (err) {
+                    console.log("error occured", err);
+                    return [2 /*return*/, next(new error_1.PlatformError({
+                            code: 500,
+                            message: "Internal Server error occured. Please try again later."
+                        }))];
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     UserController.prototype.patch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var userBusiness, user, result, err_2;
@@ -126,6 +157,14 @@ var UserController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.post("/profile/picture"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.requestValidators("key", "editParams"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "fetchUserProfilePicture", null);
     __decorate([
         decorators_1.patch("/"),
         decorators_1.use(auth_1.requireAuth),

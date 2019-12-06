@@ -17,6 +17,9 @@ export interface AppConfig {
   AUTH_EXPIRESIN: string;
   MAIL_EXPIRESIN: string;
   APP_BUCKET: AppBucket;
+  IMAGE_BUCKET: Bucket;
+  VIDEO_BUCKET: Bucket;
+  AUDIO_BUCKET: Bucket;
   SCHEDULED_EMAIL_SQS: ScheduledEmailSQS;
   SERVERLESS: Serverless;
   AUTH_ISSUER_SERVER: string;
@@ -30,6 +33,14 @@ export interface RsaSecret {
   type: string;
 }
 
+export interface Bucket {
+  bucket: string;
+  access_key_id: string;
+  secret_access_key: string;
+  region: string;
+  accelerate_endpoint: string;
+  cloudformation_api_endpoint?: string;
+}
 export interface AppBucket {
   bucket: string;
   access_key_id: string;

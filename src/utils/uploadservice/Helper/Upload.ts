@@ -1,11 +1,12 @@
-import { IUser } from '../../../app/models/interfaces';
-import { ObjectKeyString } from '../../lib';
+import { IUser, MediaType } from "../../../app/models/interfaces";
+import { ObjectKeyString } from "../../lib";
 
 export enum UPLOADOPERATIONS {
-  ProfileImage = 'ProfileImage',
-  Portfolio = 'Portfolio',
-  Entries = 'Entries',
-  ContestBanner = 'ContestBanner'
+  ProfileImage = "ProfileImage",
+  Portfolio = "Portfolio",
+  Entries = "Entries",
+  ContestBanner = "ContestBanner",
+  Default = "Default"
 }
 export interface IFileMetaData {
   file: string;
@@ -23,7 +24,8 @@ export interface PresignedUrl {
 }
 
 export interface IUploadFileRequest {
+  typeOfFile: string;
   action: UPLOADOPERATIONS;
   files: IFileMetaData[];
-  uploader: IUser['_id'];
+  uploader: IUser["_id"];
 }

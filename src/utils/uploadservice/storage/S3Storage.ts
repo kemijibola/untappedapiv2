@@ -37,6 +37,7 @@ export class S3Storage implements Storage {
     // });
   }
 
+  // async getObject():
   async putObject(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     const signedUrlExpireSeconds = 60 * 60;
     let signedUrls: SignedUrl = {
@@ -70,7 +71,6 @@ export class S3Storage implements Storage {
       );
       try {
         for (let item in filesMap) {
-          console.log(data.files[0].file_type);
           const params = {
             Bucket: config.APP_BUCKET.bucket,
             Key: filesMap[item],
@@ -106,6 +106,4 @@ export class S3Storage implements Storage {
     }
     return Result.fail<SignedUrl>(400, "No file uploaded.");
   }
-
-  // async getPresignedUrls(keys: string[]): Promise<string[]> {}
 }

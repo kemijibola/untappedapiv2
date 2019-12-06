@@ -1,6 +1,6 @@
-import { IContestConfig } from '../models/interfaces';
-import { ContestConfigSchema } from '../data/schema/ContestConfig';
-import RepositoryBase from './base/RepositoryBase';
+import { IContestConfig } from "../models/interfaces";
+import { ContestConfigSchema } from "../data/schema/ContestConfig";
+import RepositoryBase from "./base/RepositoryBase";
 
 class ContestConfigRepository extends RepositoryBase<IContestConfig> {
   constructor() {

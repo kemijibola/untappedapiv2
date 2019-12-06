@@ -1,6 +1,6 @@
-import { IPermission } from './Permission';
-import { TokenType } from './custom/GlobalEnum';
-import { IRole, IUserType } from '.';
+import { IPermission } from "./Permission";
+import { TokenType } from "./custom/GlobalEnum";
+import { IRole, IUserType } from ".";
 
 export interface IAuthData {
   access_token: string;
@@ -13,6 +13,7 @@ interface IUserData {
   full_name: string;
   email: string;
   profile_is_completed: boolean;
+  profile_image_path: string;
   userType: UserType;
 }
 

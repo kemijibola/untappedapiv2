@@ -1,21 +1,20 @@
-import MongodataAccess = require('../MongodataAccess');
-import { Schema } from 'mongoose';
+import MongodataAccess = require("../MongodataAccess");
+import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { ICategory } from '../../models/interfaces';
+import { ICategory } from "../../models/interfaces";
 
 const categorySchema: Schema = new Schema(
   {
     name: { type: String, required: true, unique: true },
     application: {
       type: Schema.Types.ObjectId,
-      ref: 'Application',
-      required: true
+      ref: "Application"
     }
   },
   { timestamps: true }
 );
 
 export const CategorySchema = mongooseConnection.model<ICategory>(
-  'Category',
+  "Category",
   categorySchema
 );
