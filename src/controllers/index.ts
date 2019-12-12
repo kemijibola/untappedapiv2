@@ -9,3 +9,4 @@ export * from "./UploadController";
 export * from "./MediaController";
 export * from "./UserTypeController";
 export * from "./CategoryTypeController";
+export * from "./ProfileController";

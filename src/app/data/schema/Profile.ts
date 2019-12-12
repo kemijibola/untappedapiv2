@@ -1,7 +1,7 @@
-import MongodataAccess = require('../MongodataAccess');
-import { Schema } from 'mongoose';
+import MongodataAccess = require("../MongodataAccess");
+import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { ITalent, SocialMedia } from '../../models/interfaces';
+import { IProfile, SocialMedia } from "../../models/interfaces";
 
 export const socialMediaSchema: Schema = new Schema({
   type: { type: SocialMedia },
@@ -14,37 +14,34 @@ const physicalStatisticsSchema: Schema = new Schema({
   color: { type: String }
 });
 
-const talentSchema: Schema = new Schema(
+const profileSchema: Schema = new Schema(
   {
-    stageName: { type: String, required: true },
+    name: { type: String },
+    rcNumber: { type: String },
     location: { type: String, required: true },
-    phoneNumbers: [{ type: String, required: true }],
+    phoneNumbers: [{ type: String }],
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true
     },
     shortBio: { type: String, required: true, minlength: 20, maxlength: 300 },
     categories: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: "Category",
         required: true
       }
     ],
     socialMedias: [{ type: socialMediaSchema }],
     physicalStats: { type: physicalStatisticsSchema },
     tapCount: { type: Number, default: 0 },
-    application: {
-      type: Schema.Types.ObjectId,
-      ref: 'Application',
-      required: true
-    }
+    bannerImagePath: { type: String }
   },
   { timestamps: true }
 );
 
-export const TalentSchema = mongooseConnection.model<ITalent>(
-  'Talent',
-  talentSchema
+export const ProfileSchema = mongooseConnection.model<IProfile>(
+  "Profile",
+  profileSchema
 );

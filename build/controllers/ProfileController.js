@@ -45,9 +45,112 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+var ProfileBusiness = require("../app/business/ProfileBusiness");
+var error_1 = require("../utils/error");
+var auth_1 = require("../middlewares/auth");
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
+    ProfileController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var condition, userTypeBusiness, result, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        condition = {};
+                        if (req.body) {
+                            condition = req.body;
+                        }
+                        userTypeBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, userTypeBusiness.fetch(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProfileController.prototype.fetchUserProfile = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userTypeBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userTypeBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, userTypeBusiness.findByUser(req.user)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProfileController.prototype.fetchProfile = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userTypeBusiness, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userTypeBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, userTypeBusiness.fetch({})];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ProfileController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -87,18 +190,38 @@ var ProfileController = /** @class */ (function () {
     };
     ProfileController.prototype.update = function () { };
     ProfileController.prototype.delete = function () { };
-    ProfileController.prototype.fetch = function () { };
     ProfileController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('phoneNumbers', 'location', 'categories'),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.get("/"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.get("/user"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "fetchUserProfile", null);
+    __decorate([
+        decorators_1.get("/:id"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "fetchProfile", null);
+    __decorate([
+        decorators_1.post("/"),
+        decorators_1.requestValidators("phoneNumbers", "location", "categories"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "create", null);
     ProfileController = __decorate([
-        decorators_1.controller('/v1/profile')
+        decorators_1.controller("/v1/profiles")
     ], ProfileController);
     return ProfileController;
 }());
+exports.ProfileController = ProfileController;
 //# sourceMappingURL=ProfileController.js.map

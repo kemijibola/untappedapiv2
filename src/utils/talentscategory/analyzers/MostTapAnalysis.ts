@@ -1,10 +1,10 @@
-import { Analyzer } from '../Helper/Summary';
+import { Analyzer } from "../Helper/Summary";
 import {
   IFilterCategory,
   FilterCategory,
   ReportType
-} from '../../../app/models/interfaces';
-import { MatchData } from '../Helper/MatchData';
+} from "../../../app/models/interfaces";
+import { MatchData } from "../Helper/MatchData";
 
 export class MostTapAnalysis implements Analyzer {
   run(talents: MatchData[]): FilterCategory {
@@ -19,10 +19,10 @@ export class MostTapAnalysis implements Analyzer {
     for (let talent of talents) {
       const filtered: IFilterCategory = {
         userId: talent.user,
-        stageName: talent.stageName,
+        name: talent.name || "",
         // profileImage: talent.profileImagePath || '',
-        profileImage: '',
-        shortBio: talent.shortBio
+        profileImage: "",
+        shortBio: talent.shortBio || ""
       };
       sortedCategory.result = [...sortedCategory.result, filtered];
     }

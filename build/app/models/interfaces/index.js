@@ -4,7 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./User"));
-__export(require("./Talent"));
+__export(require("./Profile"));
 __export(require("./ScheduledEmail"));
 __export(require("./Permission"));
 __export(require("./Approval"));

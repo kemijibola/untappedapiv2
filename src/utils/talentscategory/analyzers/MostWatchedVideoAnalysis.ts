@@ -1,16 +1,16 @@
-import { Analyzer } from '../Helper/Summary';
-import { MatchData } from '../Helper/MatchData';
+import { Analyzer } from "../Helper/Summary";
+import { MatchData } from "../Helper/MatchData";
 import {
   FilterCategory,
   IVideo,
   IFilterCategory,
   ReportType
-} from '../../../app/models/interfaces';
+} from "../../../app/models/interfaces";
 import {
   ITalentPortfolio,
   TalentMediaComment,
   TalentPortfolio
-} from '../TalentPortfolio';
+} from "../TalentPortfolio";
 
 export class MostWatchedVideoAnalysis implements Analyzer {
   run(talents: MatchData[]): FilterCategory {
@@ -24,7 +24,7 @@ export class MostWatchedVideoAnalysis implements Analyzer {
       talentPortfolio.fetchTalentVideos().then((data: IVideo[]) => {
         acc.push({
           medias: data,
-          talent: theItem
+          profile: theItem
         });
       });
       return acc;
@@ -36,7 +36,7 @@ export class MostWatchedVideoAnalysis implements Analyzer {
       for (let video of talentVideo.medias) {
         talentsVideoComment.push({
           count: video.watchCount,
-          talent: talentVideo.talent
+          profile: talentVideo.profile
         });
       }
     }
@@ -47,11 +47,11 @@ export class MostWatchedVideoAnalysis implements Analyzer {
 
     for (let talentVideoComment of talentsVideoComment) {
       const filtered: IFilterCategory = {
-        userId: talentVideoComment.talent._id,
-        stageName: talentVideoComment.talent.stageName,
+        userId: talentVideoComment.profile._id,
+        name: talentVideoComment.profile.name || "",
         // profileImage: talentVideoComment.talent.profileImagePath || '',
-        profileImage: '',
-        shortBio: talentVideoComment.talent.shortBio
+        profileImage: "",
+        shortBio: talentVideoComment.profile.shortBio || ""
       };
       sortedCategory.result = [...sortedCategory.result, filtered];
     }

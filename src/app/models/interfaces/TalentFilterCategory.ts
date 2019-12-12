@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
-import { ITimeStamp } from './Timestamp';
-import { IUser } from './User';
-import { IAppSpec } from './AppSpec';
+import mongoose from "mongoose";
+import { ITimeStamp } from "./Timestamp";
+import { IUser } from "./User";
+import { IAppSpec } from "./AppSpec";
 
 export enum ReportType {
-  MostTaps = 'MostTaps',
-  HighestComments = 'HighestComments',
-  MostWatchedVideos = 'MostWatchedVideos',
-  MostPlayedSongs = 'MostPlayedSongs',
-  MostLikedPhotos = 'MostLikedPhotos'
+  MostTaps = "MostTaps",
+  HighestComments = "HighestComments",
+  MostWatchedVideos = "MostWatchedVideos",
+  MostPlayedSongs = "MostPlayedSongs",
+  MostLikedPhotos = "MostLikedPhotos"
 }
 
 export interface ITalentFilterCategory
@@ -20,8 +20,8 @@ export interface ITalentFilterCategory
 }
 
 export interface IFilterCategory {
-  userId: IUser['_id'];
-  stageName: string;
+  userId: IUser["_id"];
+  name: string;
   profileImage: string;
   shortBio: string;
 }

@@ -3,20 +3,20 @@ import {
   IAudio,
   IImage,
   IMedia,
-  ITalent
-} from '../../app/models/interfaces';
-import VideoBusiness from '../../app/business/VideoBusiness';
-import AudioBusiness from '../../app/business/AudioBusiness';
-import ImageBusiness from '../../app/business/ImageBusiness';
-import TalentBusiness from '../../app/business/TalentBusiness';
+  IProfile
+} from "../../app/models/interfaces";
+import VideoBusiness from "../../app/business/VideoBusiness";
+import AudioBusiness from "../../app/business/AudioBusiness";
+import ImageBusiness from "../../app/business/ImageBusiness";
+import TalentBusiness from "../../app/business/ProfileBusiness";
 
 export interface ITalentPortfolio {
   medias: IMedia[];
-  talent: ITalent;
+  profile: IProfile;
 }
 export interface TalentMediaComment {
   count: number;
-  talent: ITalent;
+  profile: IProfile;
 }
 
 export class TalentPortfolio {
@@ -48,8 +48,8 @@ export class TalentPortfolio {
     return images;
   }
 
-  async fetchTalents(condition: any): Promise<ITalent[]> {
-    let talents: ITalent[] = [];
+  async fetchTalents(condition: any): Promise<IProfile[]> {
+    let talents: IProfile[] = [];
     const talentBusiness = new TalentBusiness();
     const talentsModel = await talentBusiness.fetch(condition);
     talents = talentsModel.data || [];

@@ -1,15 +1,15 @@
-import { Analyzer } from '../Helper/Summary';
-import { MatchData } from '../Helper/MatchData';
+import { Analyzer } from "../Helper/Summary";
+import { MatchData } from "../Helper/MatchData";
 import {
   FilterCategory,
   IMedia,
   IComment,
   IFilterCategory,
   ReportType
-} from '../../../app/models/interfaces';
-import CommentBusiness from '../../../app/business/CommentBusiness';
-import { TalentMediaComment, ITalentPortfolio } from '../TalentPortfolio';
-import { TalentPortfolio } from '../TalentPortfolio';
+} from "../../../app/models/interfaces";
+import CommentBusiness from "../../../app/business/CommentBusiness";
+import { TalentMediaComment, ITalentPortfolio } from "../TalentPortfolio";
+import { TalentPortfolio } from "../TalentPortfolio";
 
 export class HighestCommentAnalysis implements Analyzer {
   run(talents: MatchData[]): FilterCategory {
@@ -21,7 +21,7 @@ export class HighestCommentAnalysis implements Analyzer {
       this.fetchTalentMedia(theItem._id).then((data: IMedia[]) => {
         acc.push({
           medias: data,
-          talent: theItem
+          profile: theItem
         });
       });
       return acc;
@@ -37,7 +37,7 @@ export class HighestCommentAnalysis implements Analyzer {
         });
         talentsMediaComment.push({
           count: mediasCount,
-          talent: talentMedia.talent
+          profile: talentMedia.profile
         });
       }
     }
@@ -48,11 +48,11 @@ export class HighestCommentAnalysis implements Analyzer {
 
     for (let talentMediaComment of talentsMediaComment) {
       const filtered: IFilterCategory = {
-        userId: talentMediaComment.talent._id,
-        stageName: talentMediaComment.talent.stageName,
+        userId: talentMediaComment.profile._id,
+        name: talentMediaComment.profile.name || "",
         // profileImage: talentMediaComment.talent.profileImagePath || '',
-        profileImage: '',
-        shortBio: talentMediaComment.talent.shortBio
+        profileImage: "",
+        shortBio: talentMediaComment.profile.shortBio || ""
       };
       sortedCategory.result = [...sortedCategory.result, filtered];
     }

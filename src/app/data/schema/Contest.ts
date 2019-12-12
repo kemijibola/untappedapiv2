@@ -7,7 +7,7 @@ import {
   ComplaintStatus,
   MediaType
 } from '../../models/interfaces';
-import { socialMediaSchema } from './Talent';
+import { socialMediaSchema } from './Profile';
 
 export enum ContestType {
   Online = 'Online',

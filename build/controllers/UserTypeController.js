@@ -68,14 +68,14 @@ var UserTypeController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again.'
+                                message: "Internal Server error occured. Please try again."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -101,14 +101,14 @@ var UserTypeController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -119,20 +119,20 @@ var UserTypeController = /** @class */ (function () {
     UserTypeController.prototype.delete = function () { };
     UserTypeController.prototype.findById = function () { };
     __decorate([
-        decorators_1.get('/'),
+        decorators_1.get("/"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserTypeController.prototype, "fetch", null);
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('name', 'isAdmin', 'description'),
+        decorators_1.post("/"),
+        decorators_1.requestValidators("name", "isAdmin", "description"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserTypeController.prototype, "create", null);
     UserTypeController = __decorate([
-        decorators_1.controller('/v1/user-types')
+        decorators_1.controller("/v1/user-types")
     ], UserTypeController);
     return UserTypeController;
 }());

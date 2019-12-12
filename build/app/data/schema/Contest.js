@@ -4,7 +4,7 @@ var MongodataAccess = require("../MongodataAccess");
 var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
 var interfaces_1 = require("../../models/interfaces");
-var Talent_1 = require("./Talent");
+var Profile_1 = require("./Profile");
 var ContestType;
 (function (ContestType) {
     ContestType["Online"] = "Online";
@@ -25,7 +25,7 @@ var judgeSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     email: { type: String },
     profile: { type: String, required: true },
-    socialMedias: [Talent_1.socialMediaSchema],
+    socialMedias: [Profile_1.socialMediaSchema],
     profession: [{ type: String, required: true }],
     judgeProfileImage: { type: String },
     yearsOfExperience: { type: Number, default: 0 }

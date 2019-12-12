@@ -1,7 +1,7 @@
-import { ITalent } from '../../../app/models/interfaces';
-import { Summary } from './Summary';
+import { IProfile } from "../../../app/models/interfaces";
+import { Summary } from "./Summary";
 
-export type MatchData = ITalent;
+export type MatchData = IProfile;
 
 export function generateTalentReport(data: MatchData[]): void {
   // generate and save most tap analysis

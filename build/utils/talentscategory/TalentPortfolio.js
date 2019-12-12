@@ -41,7 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var VideoBusiness_1 = __importDefault(require("../../app/business/VideoBusiness"));
 var AudioBusiness_1 = __importDefault(require("../../app/business/AudioBusiness"));
 var ImageBusiness_1 = __importDefault(require("../../app/business/ImageBusiness"));
-var TalentBusiness_1 = __importDefault(require("../../app/business/TalentBusiness"));
+var ProfileBusiness_1 = __importDefault(require("../../app/business/ProfileBusiness"));
 var TalentPortfolio = /** @class */ (function () {
     function TalentPortfolio(userId) {
         this.userId = userId;
@@ -110,7 +110,7 @@ var TalentPortfolio = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         talents = [];
-                        talentBusiness = new TalentBusiness_1.default();
+                        talentBusiness = new ProfileBusiness_1.default();
                         return [4 /*yield*/, talentBusiness.fetch(condition)];
                     case 1:
                         talentsModel = _a.sent();

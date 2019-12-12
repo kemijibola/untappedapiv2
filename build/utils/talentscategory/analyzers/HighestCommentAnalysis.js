@@ -54,7 +54,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
             _this.fetchTalentMedia(theItem._id).then(function (data) {
                 acc.push({
                     medias: data,
-                    talent: theItem
+                    profile: theItem
                 });
             });
             return acc;
@@ -70,7 +70,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
                 });
                 talentsMediaComment.push({
                     count: mediasCount,
-                    talent: talentMedia.talent
+                    profile: talentMedia.profile
                 });
             }
         };
@@ -85,11 +85,11 @@ var HighestCommentAnalysis = /** @class */ (function () {
         for (var _a = 0, talentsMediaComment_1 = talentsMediaComment; _a < talentsMediaComment_1.length; _a++) {
             var talentMediaComment = talentsMediaComment_1[_a];
             var filtered = {
-                userId: talentMediaComment.talent._id,
-                stageName: talentMediaComment.talent.stageName,
+                userId: talentMediaComment.profile._id,
+                name: talentMediaComment.profile.name || "",
                 // profileImage: talentMediaComment.talent.profileImagePath || '',
-                profileImage: '',
-                shortBio: talentMediaComment.talent.shortBio
+                profileImage: "",
+                shortBio: talentMediaComment.profile.shortBio || ""
             };
             sortedCategory.result = sortedCategory.result.concat([filtered]);
         }

@@ -1,19 +1,117 @@
-import { Request, Response, NextFunction } from 'express';
-import { controller, post, patch, requestValidators } from '../decorators';
-import IBaseController from './interfaces/base/BaseController';
-import TalentRepository = require('../app/repository/TalentRepository');
-import ProfessionalRepository = require('../app/repository/ProfessionalRepository');
-import UserRepository = require('../app/repository/UserRepository');
-import CategoryRepository = require('../app/repository/CategoryRepository');
-import { ITalent, IProfessional, IUserModel } from '../app/models/interfaces';
-import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
-import { IProfile } from '../app/models/interfaces/custom/Profile';
-import { UserTypes } from '../app/models/interfaces/custom/GlobalEnum';
+import { Request, Response, NextFunction } from "express";
+import {
+  controller,
+  post,
+  patch,
+  requestValidators,
+  get,
+  use
+} from "../decorators";
+import IBaseController from "./interfaces/base/BaseController";
+import ProfileRepository = require("../app/repository/ProfileRepository");
+import UserRepository = require("../app/repository/UserRepository");
 
-@controller('/v1/profile')
-class ProfileController {
-  @post('/')
-  @requestValidators('phoneNumbers', 'location', 'categories')
+import { IProfile } from "../app/models/interfaces";
+import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
+import ProfileBusiness = require("../app/business/ProfileBusiness");
+import { PlatformError } from "../utils/error";
+import { requireAuth } from "../middlewares/auth";
+
+@controller("/v1/profiles")
+export class ProfileController {
+  @use(requireAuth)
+  @get("/")
+  async fetch(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      let condition = {};
+      if (req.body) {
+        condition = req.body;
+      }
+      const userTypeBusiness = new ProfileBusiness();
+      const result = await userTypeBusiness.fetch(condition);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again."
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @get("/user")
+  async fetchUserProfile(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userTypeBusiness = new ProfileBusiness();
+      const result = await userTypeBusiness.findByUser(req.user);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again."
+        })
+      );
+    }
+  }
+
+  @get("/:id")
+  async fetchProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userTypeBusiness = new ProfileBusiness();
+      const result = await userTypeBusiness.fetch({});
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again."
+        })
+      );
+    }
+  }
+
+  @post("/")
+  @requestValidators("phoneNumbers", "location", "categories")
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       // const userId: string = req.user;
@@ -48,6 +146,5 @@ class ProfileController {
 
   update(): void {}
   delete(): void {}
-  fetch(): void {}
   findById(): void {}
 }

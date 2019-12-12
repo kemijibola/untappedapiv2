@@ -15,7 +15,7 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
             talentPortfolio.fetchTalentVideos().then(function (data) {
                 acc.push({
                     medias: data,
-                    talent: theItem
+                    profile: theItem
                 });
             });
             return acc;
@@ -28,7 +28,7 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
                 var video = _b[_a];
                 talentsVideoComment.push({
                     count: video.watchCount,
-                    talent: talentVideo.talent
+                    profile: talentVideo.profile
                 });
             }
         }
@@ -38,11 +38,11 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
         for (var _c = 0, talentsVideoComment_1 = talentsVideoComment; _c < talentsVideoComment_1.length; _c++) {
             var talentVideoComment = talentsVideoComment_1[_c];
             var filtered = {
-                userId: talentVideoComment.talent._id,
-                stageName: talentVideoComment.talent.stageName,
+                userId: talentVideoComment.profile._id,
+                name: talentVideoComment.profile.name || "",
                 // profileImage: talentVideoComment.talent.profileImagePath || '',
-                profileImage: '',
-                shortBio: talentVideoComment.talent.shortBio
+                profileImage: "",
+                shortBio: talentVideoComment.profile.shortBio || ""
             };
             sortedCategory.result = sortedCategory.result.concat([filtered]);
         }

@@ -5,7 +5,7 @@ import { IEvaluation } from './Evaluation';
 import { IUser } from './User';
 import { ITimeStamp } from './Timestamp';
 import { ContestType } from '../../data/schema/Contest';
-import { IUserSocialMedia } from './Talent';
+import { IUserSocialMedia } from './Profile';
 import { PaymentStatus } from './Payment';
 import { IAppSpec } from './AppSpec';
 import { IIssueCategory, ComplaintStatus } from './IssueCategory';

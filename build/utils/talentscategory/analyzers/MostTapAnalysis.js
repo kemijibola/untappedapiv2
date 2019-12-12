@@ -16,10 +16,10 @@ var MostTapAnalysis = /** @class */ (function () {
             var talent = talents_1[_i];
             var filtered = {
                 userId: talent.user,
-                stageName: talent.stageName,
+                name: talent.name || "",
                 // profileImage: talent.profileImagePath || '',
-                profileImage: '',
-                shortBio: talent.shortBio
+                profileImage: "",
+                shortBio: talent.shortBio || ""
             };
             sortedCategory.result = sortedCategory.result.concat([filtered]);
         }
