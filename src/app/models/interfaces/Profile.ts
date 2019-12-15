@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IUser } from "./User";
+import { IUser, IUserModel } from "./User";
 import { ICategory } from "./Category";
 import { ITimeStamp } from "./Timestamp";
 import { IAppSpec } from "./AppSpec";
@@ -14,12 +14,13 @@ export enum SocialMedia {
   FACEBOOK = "FACEBOOK",
   TWITTER = "TWITTER",
   INSTAGRAM = "INSTAGRAM",
+  YOUTUBE = "YOUTUBE",
   OTHER = "OTHER"
 }
 
 export interface IUserSocialMedia {
   type: SocialMedia;
-  handles: string[];
+  handle: string;
 }
 
 export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
@@ -27,11 +28,15 @@ export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
   rcNumber?: string;
   location: string;
   phoneNumbers?: string[];
-  user: IUser["_id"];
-  tapCount: number;
+  tapCount?: number;
+  user?: IUserModel["_id"];
   shortBio?: string;
   categories?: ICategory["_id"][];
-  socialMedias?: IUserSocialMedia[];
+  twitter?: string;
+  facebook?: string;
+  instagram?: string;
+  youtube?: string;
+  additionalSocial?: string[];
   physicalStats?: IPhysicalStatistics;
   bannerImagePath?: string;
 }

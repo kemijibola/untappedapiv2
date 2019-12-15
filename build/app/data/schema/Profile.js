@@ -6,7 +6,7 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 var interfaces_1 = require("../../models/interfaces");
 exports.socialMediaSchema = new mongoose_1.Schema({
     type: { type: interfaces_1.SocialMedia },
-    handles: [{ type: String }]
+    handle: { type: String }
 });
 var physicalStatisticsSchema = new mongoose_1.Schema({
     height: { type: String },
@@ -31,7 +31,11 @@ var profileSchema = new mongoose_1.Schema({
             required: true
         }
     ],
-    socialMedias: [{ type: exports.socialMediaSchema }],
+    twitter: { type: String },
+    facebook: { type: String },
+    instagram: { type: String },
+    youtube: { type: String },
+    additionalSocial: [{ type: String }],
     physicalStats: { type: physicalStatisticsSchema },
     tapCount: { type: Number, default: 0 },
     bannerImagePath: { type: String }

@@ -53,7 +53,7 @@ var ProfileController = /** @class */ (function () {
     }
     ProfileController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var condition, userTypeBusiness, result, err_1;
+            var condition, profileBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -62,8 +62,8 @@ var ProfileController = /** @class */ (function () {
                         if (req.body) {
                             condition = req.body;
                         }
-                        userTypeBusiness = new ProfileBusiness();
-                        return [4 /*yield*/, userTypeBusiness.fetch(condition)];
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.fetch(condition)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -89,13 +89,13 @@ var ProfileController = /** @class */ (function () {
     };
     ProfileController.prototype.fetchUserProfile = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userTypeBusiness, result, err_2;
+            var profileBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        userTypeBusiness = new ProfileBusiness();
-                        return [4 /*yield*/, userTypeBusiness.findByUser(req.user)];
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.findByUser(req.user)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -121,13 +121,13 @@ var ProfileController = /** @class */ (function () {
     };
     ProfileController.prototype.fetchProfile = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userTypeBusiness, result, err_3;
+            var profileBusiness, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        userTypeBusiness = new ProfileBusiness();
-                        return [4 /*yield*/, userTypeBusiness.fetch({})];
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.fetch({})];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -153,42 +153,72 @@ var ProfileController = /** @class */ (function () {
     };
     ProfileController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
+            var item, profileBusiness, result, err_4;
             return __generator(this, function (_a) {
-                try {
-                    // const userId: string = req.user;
-                    // const userModel: IUserModel = await new UserRepository().userTypeByUser(
-                    //   userId
-                    // );
-                    // if (!userModel.userType.name)
-                    //   return next(
-                    //     new RecordNotFound(`User with id ${userId} not found`, 404)
-                    //   );
-                    // // validate categories sent by user
-                    // const profile: IProfile = req.body;
-                    // for (let item of profile.categories) {
-                    //   const categoryModel = await new CategoryRepository().findById(item._id);
-                    //   if (!categoryModel)
-                    //     return next(
-                    //       new RecordNotFound(`Invalid category of id ${item}`, 404)
-                    //     );
-                    // }
-                    // switch (userModel.userType.name) {
-                    //   case UserTypes.TALENT:
-                    //     const talentModel = await new TalentRepository().break;
-                    //   case UserTypes.PROFESSIONAL:
-                    //     break;
-                    //   default:
-                    //     break;
-                    // }
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        item = req.body;
+                        item.user = req.user;
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.create(item)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again."
+                            }))];
+                    case 3: return [2 /*return*/];
                 }
-                catch (err) {
-                    //next(new InternalServerError('Internal Server error occured', 500));
-                }
-                return [2 /*return*/];
             });
         });
     };
-    ProfileController.prototype.update = function () { };
+    ProfileController.prototype.updateProfile = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var item, profileBusiness, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        item = req.body;
+                        item.user = req.user;
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.patch(item._id, item)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ProfileController.prototype.delete = function () { };
     ProfileController.prototype.findById = function () { };
     __decorate([
@@ -212,12 +242,21 @@ var ProfileController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "fetchProfile", null);
     __decorate([
+        decorators_1.use(auth_1.requireAuth),
         decorators_1.post("/"),
-        decorators_1.requestValidators("phoneNumbers", "location", "categories"),
+        decorators_1.requestValidators(),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "create", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.put("/"),
+        decorators_1.requestValidators("_id", "location", "categories"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "updateProfile", null);
     ProfileController = __decorate([
         decorators_1.controller("/v1/profiles")
     ], ProfileController);

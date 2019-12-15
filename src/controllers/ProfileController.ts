@@ -5,7 +5,8 @@ import {
   patch,
   requestValidators,
   get,
-  use
+  use,
+  put
 } from "../decorators";
 import IBaseController from "./interfaces/base/BaseController";
 import ProfileRepository = require("../app/repository/ProfileRepository");
@@ -27,8 +28,8 @@ export class ProfileController {
       if (req.body) {
         condition = req.body;
       }
-      const userTypeBusiness = new ProfileBusiness();
-      const result = await userTypeBusiness.fetch(condition);
+      const profileBusiness = new ProfileBusiness();
+      const result = await profileBusiness.fetch(condition);
       if (result.error) {
         return next(
           new PlatformError({
@@ -59,8 +60,8 @@ export class ProfileController {
     next: NextFunction
   ) {
     try {
-      const userTypeBusiness = new ProfileBusiness();
-      const result = await userTypeBusiness.findByUser(req.user);
+      const profileBusiness = new ProfileBusiness();
+      const result = await profileBusiness.findByUser(req.user);
       if (result.error) {
         return next(
           new PlatformError({
@@ -86,8 +87,8 @@ export class ProfileController {
   @get("/:id")
   async fetchProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const userTypeBusiness = new ProfileBusiness();
-      const result = await userTypeBusiness.fetch({});
+      const profileBusiness = new ProfileBusiness();
+      const result = await profileBusiness.fetch({});
       if (result.error) {
         return next(
           new PlatformError({
@@ -110,41 +111,68 @@ export class ProfileController {
     }
   }
 
+  @use(requireAuth)
   @post("/")
-  @requestValidators("phoneNumbers", "location", "categories")
+  @requestValidators()
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      // const userId: string = req.user;
-      // const userModel: IUserModel = await new UserRepository().userTypeByUser(
-      //   userId
-      // );
-      // if (!userModel.userType.name)
-      //   return next(
-      //     new RecordNotFound(`User with id ${userId} not found`, 404)
-      //   );
-      // // validate categories sent by user
-      // const profile: IProfile = req.body;
-      // for (let item of profile.categories) {
-      //   const categoryModel = await new CategoryRepository().findById(item._id);
-      //   if (!categoryModel)
-      //     return next(
-      //       new RecordNotFound(`Invalid category of id ${item}`, 404)
-      //     );
-      // }
-      // switch (userModel.userType.name) {
-      //   case UserTypes.TALENT:
-      //     const talentModel = await new TalentRepository().break;
-      //   case UserTypes.PROFESSIONAL:
-      //     break;
-      //   default:
-      //     break;
-      // }
+      const item: IProfile = req.body;
+      item.user = req.user;
+      const profileBusiness = new ProfileBusiness();
+      const result = await profileBusiness.create(item);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
     } catch (err) {
-      //next(new InternalServerError('Internal Server error occured', 500));
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again."
+        })
+      );
     }
   }
 
-  update(): void {}
+  @use(requireAuth)
+  @put("/")
+  @requestValidators("_id", "location", "categories")
+  async updateProfile(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const item: IProfile = req.body;
+      item.user = req.user;
+      const profileBusiness = new ProfileBusiness();
+      const result = await profileBusiness.patch(item._id, item);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again."
+        })
+      );
+    }
+  }
+
   delete(): void {}
   findById(): void {}
 }

@@ -5,7 +5,7 @@ import { IProfile, SocialMedia } from "../../models/interfaces";
 
 export const socialMediaSchema: Schema = new Schema({
   type: { type: SocialMedia },
-  handles: [{ type: String }]
+  handle: { type: String }
 });
 
 const physicalStatisticsSchema: Schema = new Schema({
@@ -33,7 +33,11 @@ const profileSchema: Schema = new Schema(
         required: true
       }
     ],
-    socialMedias: [{ type: socialMediaSchema }],
+    twitter: { type: String },
+    facebook: { type: String },
+    instagram: { type: String },
+    youtube: { type: String },
+    additionalSocial: [{ type: String }],
     physicalStats: { type: physicalStatisticsSchema },
     tapCount: { type: Number, default: 0 },
     bannerImagePath: { type: String }

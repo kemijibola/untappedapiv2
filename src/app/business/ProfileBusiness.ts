@@ -65,11 +65,25 @@ class ProfileBusiness implements IProfileBusiness {
 
   async create(item: IProfile): Promise<Result<IProfile>> {
     try {
+      item.tapCount = 0;
       const newProfile = await this._profileRepository.create(item);
       return Result.ok<IProfile>(201, newProfile);
     } catch (err) {
       throw new Error(`InternalServer error occured.${err.message}`);
     }
+  }
+
+  async patch(id: string, item: any): Promise<Result<IProfile>> {
+    const profile = await this._profileRepository.findById(id);
+    if (!profile)
+      return Result.fail<IProfile>(
+        404,
+        `Could not update profile.Profile with Id ${id} not found`
+      );
+    item.tapCount = profile.tapCount;
+    item.updateAt = Date.now();
+    const updateObj = await this._profileRepository.patch(profile._id, item);
+    return Result.ok<IProfile>(200, updateObj);
   }
 
   async update(id: string, item: IProfile): Promise<Result<IProfile>> {
