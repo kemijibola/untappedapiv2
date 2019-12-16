@@ -129,7 +129,7 @@ class RepositoryBase<T extends mongoose.Document>
           if (error) reject(error);
           else resolve(result);
         })
-        .cacheDocQuery({ collectionName: this._model.collection.name });
+        // .cacheDocQuery({ collectionName: this._model.collection.name });
     });
   }
 

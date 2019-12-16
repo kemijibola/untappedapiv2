@@ -75,7 +75,7 @@ var AudioBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         criteria = {
                             id: id,
                             isApproved: true,
@@ -105,7 +105,7 @@ var AudioBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         condition.isApproved = true;
                         condition.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.findById(condition)];
@@ -132,7 +132,7 @@ var AudioBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!criteria)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         criteria.isApproved = true;
                         criteria.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.findByCriteria(criteria)];
@@ -158,6 +158,7 @@ var AudioBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        item.viewCount = 0;
                         item.isApproved = false;
                         item.isDeleted = false;
                         return [4 /*yield*/, this._audioRepository.create(item)];
@@ -166,7 +167,7 @@ var AudioBusiness = /** @class */ (function () {
                         approvalRequest = Object.assign({
                             entity: newAudio._id,
                             operation: interfaces_1.ApprovalOperations.AudioUpload,
-                            application: 'untappedpool.com'
+                            application: "untappedpool.com"
                         });
                         return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.MediaStateMachine, newAudio.createdAt, approvalRequest)];
                     case 2:

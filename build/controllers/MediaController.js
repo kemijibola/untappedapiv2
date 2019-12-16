@@ -50,6 +50,7 @@ var VideoBusiness = require("../app/business/VideoBusiness");
 var ImageBusiness = require("../app/business/ImageBusiness");
 var interfaces_1 = require("../app/models/interfaces");
 var error_1 = require("../utils/error");
+var auth_1 = require("../middlewares/auth");
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
 // SAMPLE GET ROUTE:: http://localhost:9000?medias?type=videos&upload=single
@@ -61,12 +62,12 @@ var MediaController = /** @class */ (function () {
     }
     MediaController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaType, _a, item, audioBusiness, audioResult, err_1;
+            var mediaType, _a, audioItem, audioBusiness, audioResult, imageItem, imageBusiness, imageResult, videoItem, videoBusiness, videoResult, err_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 4, , 5]);
-                        if (!req.query.type) {
+                        _b.trys.push([0, 8, , 9]);
+                        if (!req.params.type) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "Bad request. Parameter 'type' is missing in query"
@@ -76,12 +77,15 @@ var MediaController = /** @class */ (function () {
                         _a = mediaType;
                         switch (_a) {
                             case interfaces_1.MediaType.audio: return [3 /*break*/, 1];
+                            case interfaces_1.MediaType.image: return [3 /*break*/, 3];
+                            case interfaces_1.MediaType.video: return [3 /*break*/, 5];
                         }
-                        return [3 /*break*/, 3];
+                        return [3 /*break*/, 7];
                     case 1:
-                        item = req.body;
+                        audioItem = req.body;
+                        audioItem.user = req.user;
                         audioBusiness = new AudioBusiness();
-                        return [4 /*yield*/, audioBusiness.create(item)];
+                        return [4 /*yield*/, audioBusiness.create(audioItem)];
                     case 2:
                         audioResult = _b.sent();
                         if (audioResult.error) {
@@ -91,26 +95,156 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(audioResult.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: audioResult.data
                             })];
-                    case 3: return [3 /*break*/, 5];
+                    case 3:
+                        imageItem = req.body;
+                        imageItem.user = req.user;
+                        imageBusiness = new ImageBusiness();
+                        return [4 /*yield*/, imageBusiness.create(imageItem)];
                     case 4:
+                        imageResult = _b.sent();
+                        if (imageResult.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: imageResult.responseCode,
+                                    message: imageResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(imageResult.responseCode).json({
+                                message: "Operation successful",
+                                data: imageResult.data
+                            })];
+                    case 5:
+                        videoItem = req.body;
+                        videoItem.user = req.user;
+                        videoBusiness = new VideoBusiness();
+                        return [4 /*yield*/, videoBusiness.create(videoItem)];
+                    case 6:
+                        videoResult = _b.sent();
+                        if (videoResult.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: videoResult.responseCode,
+                                    message: videoResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(videoResult.responseCode).json({
+                                message: "Operation successful",
+                                data: videoResult.data
+                            })];
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
                         err_1 = _b.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
-                    case 5: return [2 /*return*/];
+                    case 9: return [2 /*return*/];
                 }
             });
         });
     };
     MediaController.prototype.update = function () { };
     MediaController.prototype.delete = function () { };
+    MediaController.prototype.fetchUserMedia = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaType, uploadType, condition, _a, audioBusiness, audioResult, imageBusiness, imageResult, videoBusiness, videoResult, err_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 8, , 9]);
+                        // TODO:: http://localhost:9000/v1/medias/user?type=video&upload=single
+                        // TODO:: http://localhost:9000/v1/medias/user?type=video&upload=all
+                        // TODO:: http://localhost:9000/v1/medias/user?type=video&upload=multiple
+                        // TODO:: http://localhost:9000/v1/medias/user?type=image&upload=all
+                        // TODO:: http://localhost:9000/v1/medias/user?type=audio&upload=multiple
+                        if (!req.params.type) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Bad request. Parameter 'type' is missing in params"
+                                }))];
+                        }
+                        if (!req.params.upload_type) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Bad request.Parameter 'upload' is missing in params"
+                                }))];
+                        }
+                        mediaType = req.params.type.toLowerCase();
+                        uploadType = req.params.upload_type.toLowerCase();
+                        condition = {};
+                        // condition.uploadType = MediaUploadType[upload];
+                        if (uploadType === interfaces_1.MediaUploadType.all) {
+                            condition.uploadType = "";
+                        }
+                        condition.user = req.user;
+                        _a = mediaType;
+                        switch (_a) {
+                            case interfaces_1.MediaType.audio: return [3 /*break*/, 1];
+                            case interfaces_1.MediaType.image: return [3 /*break*/, 3];
+                            case interfaces_1.MediaType.video: return [3 /*break*/, 5];
+                        }
+                        return [3 /*break*/, 7];
+                    case 1:
+                        audioBusiness = new AudioBusiness();
+                        return [4 /*yield*/, audioBusiness.fetch(condition)];
+                    case 2:
+                        audioResult = _b.sent();
+                        if (audioResult.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: audioResult.responseCode,
+                                    message: audioResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(audioResult.responseCode).json({
+                                message: "Operation successful",
+                                data: audioResult.data
+                            })];
+                    case 3:
+                        imageBusiness = new ImageBusiness();
+                        return [4 /*yield*/, imageBusiness.fetch(condition)];
+                    case 4:
+                        imageResult = _b.sent();
+                        if (imageResult.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: imageResult.responseCode,
+                                    message: imageResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(imageResult.responseCode).json({
+                                message: "Operation successful",
+                                data: imageResult.data
+                            })];
+                    case 5:
+                        videoBusiness = new VideoBusiness();
+                        return [4 /*yield*/, videoBusiness.fetch(condition)];
+                    case 6:
+                        videoResult = _b.sent();
+                        if (videoResult.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: videoResult.responseCode,
+                                    message: videoResult.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(videoResult.responseCode).json({
+                                message: "Operation successful",
+                                data: videoResult.data
+                            })];
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        err_2 = _b.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_2
+                            }))];
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
     MediaController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaType, condition, upload, _a, audioBusiness, audioResult, imageBusiness, imageResult, videoBusiness, videoResult, err_2;
+            var mediaType, condition, upload, _a, audioBusiness, audioResult, imageBusiness, imageResult, videoBusiness, videoResult, err_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -141,8 +275,8 @@ var MediaController = /** @class */ (function () {
                         condition = {};
                         upload = req.query.upload.toLowerCase();
                         // condition.uploadType = MediaUploadType[upload];
-                        if (condition['upload'] === interfaces_1.MediaUploadType.all) {
-                            condition.uploadType = '';
+                        if (condition["upload"] === interfaces_1.MediaUploadType.all) {
+                            condition.uploadType = "";
                         }
                         if (req.query.userId) {
                             condition.user = req.query.userId;
@@ -166,7 +300,7 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(audioResult.responseCode).json({
-                                message: 'Audio Operation successful',
+                                message: "Audio Operation successful",
                                 data: audioResult.data
                             })];
                     case 3:
@@ -181,7 +315,7 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(imageResult.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: imageResult.data
                             })];
                     case 5:
@@ -196,15 +330,15 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(videoResult.responseCode).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: videoResult.data
                             })];
                     case 7: return [3 /*break*/, 9];
                     case 8:
-                        err_2 = _b.sent();
+                        err_3 = _b.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_2
+                                message: "Internal Server error occured." + err_3
                             }))];
                     case 9: return [2 /*return*/];
                 }
@@ -213,26 +347,33 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.findById = function (req, res, next) { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('title', 'items', 'uploadType'),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.post("/"),
+        decorators_1.requestValidators("title", "items", "uploadType"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "create", null);
     __decorate([
-        decorators_1.get('/'),
+        decorators_1.get("/user"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "fetchUserMedia", null);
+    __decorate([
+        decorators_1.get("/"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "fetch", null);
     __decorate([
-        decorators_1.get('/:id'),
+        decorators_1.get("/:id"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", void 0)
     ], MediaController.prototype, "findById", null);
     MediaController = __decorate([
-        decorators_1.controller('/v1/medias')
+        decorators_1.controller("/v1/medias")
     ], MediaController);
     return MediaController;
 }());

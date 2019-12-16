@@ -1,9 +1,9 @@
-import AudioRepository from '../repository/AudioRepository';
-import IAudioBusiness = require('./interfaces/AudioBusiness');
-import { IAudio, IApproval, ApprovalOperations } from '../models/interfaces';
-import { Result } from '../../utils/Result';
-import { schedule } from '../../handlers/ScheduleTask';
-import { StateMachineArns } from '../models/interfaces/custom/StateMachineArns';
+import AudioRepository from "../repository/AudioRepository";
+import IAudioBusiness = require("./interfaces/AudioBusiness");
+import { IAudio, IApproval, ApprovalOperations } from "../models/interfaces";
+import { Result } from "../../utils/Result";
+import { schedule } from "../../handlers/ScheduleTask";
+import { StateMachineArns } from "../models/interfaces/custom/StateMachineArns";
 
 class AudioBusiness implements IAudioBusiness {
   private _audioRepository: AudioRepository;
@@ -25,7 +25,7 @@ class AudioBusiness implements IAudioBusiness {
 
   async findById(id: string): Promise<Result<IAudio>> {
     try {
-      if (!id) return Result.fail<IAudio>(400, 'Bad request.');
+      if (!id) return Result.fail<IAudio>(400, "Bad request.");
       const criteria = {
         id,
         isApproved: true,
@@ -42,7 +42,7 @@ class AudioBusiness implements IAudioBusiness {
 
   async findOne(condition: any): Promise<Result<IAudio>> {
     try {
-      if (!condition) return Result.fail<IAudio>(400, 'Bad request.');
+      if (!condition) return Result.fail<IAudio>(400, "Bad request.");
       condition.isApproved = true;
       condition.isDeleted = false;
       const audio = await this._audioRepository.findById(condition);
@@ -55,7 +55,7 @@ class AudioBusiness implements IAudioBusiness {
 
   async findByCriteria(criteria: any): Promise<Result<IAudio>> {
     try {
-      if (!criteria) return Result.fail<IAudio>(400, 'Bad request');
+      if (!criteria) return Result.fail<IAudio>(400, "Bad request");
       criteria.isApproved = true;
       criteria.isDeleted = false;
       const audio = await this._audioRepository.findByCriteria(criteria);
@@ -68,16 +68,16 @@ class AudioBusiness implements IAudioBusiness {
 
   async create(item: IAudio): Promise<Result<any>> {
     try {
+      item.viewCount = 0;
       item.isApproved = false;
       item.isDeleted = false;
       const newAudio = await this._audioRepository.create(item);
-
       // create approval request
 
       const approvalRequest: IApproval = Object.assign({
         entity: newAudio._id,
         operation: ApprovalOperations.AudioUpload,
-        application: 'untappedpool.com'
+        application: "untappedpool.com"
       });
       await schedule(
         StateMachineArns.MediaStateMachine,

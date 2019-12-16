@@ -118,6 +118,7 @@ export class ProfileController {
     try {
       const item: IProfile = req.body;
       item.user = req.user;
+      console.log("post operation");
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.create(item);
       if (result.error) {
@@ -133,6 +134,7 @@ export class ProfileController {
         data: result.data
       });
     } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,
@@ -143,14 +145,14 @@ export class ProfileController {
   }
 
   @use(requireAuth)
-  @put("/")
-  @requestValidators("_id", "location", "categories")
+  @put("/:id")
   async updateProfile(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IProfile = req.body;
       item.user = req.user;
+      const id = req.params.id;
       const profileBusiness = new ProfileBusiness();
-      const result = await profileBusiness.patch(item._id, item);
+      const result = await profileBusiness.patch(id, item);
       if (result.error) {
         return next(
           new PlatformError({

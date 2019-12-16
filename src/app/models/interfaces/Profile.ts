@@ -28,7 +28,7 @@ export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
   rcNumber?: string;
   location: string;
   phoneNumbers?: string[];
-  tapCount?: number;
+  tapCount: number;
   user?: IUserModel["_id"];
   shortBio?: string;
   categories?: ICategory["_id"][];

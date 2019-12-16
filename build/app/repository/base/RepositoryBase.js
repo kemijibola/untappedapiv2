@@ -140,8 +140,8 @@ var RepositoryBase = /** @class */ (function () {
                     reject(error);
                 else
                     resolve(result);
-            })
-                .cacheDocQuery({ collectionName: _this._model.collection.name });
+            });
+            // .cacheDocQuery({ collectionName: this._model.collection.name });
         });
     };
     RepositoryBase.prototype.toObjectId = function (_id) {

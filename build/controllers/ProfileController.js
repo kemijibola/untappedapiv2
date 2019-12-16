@@ -160,6 +160,7 @@ var ProfileController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
                         item.user = req.user;
+                        console.log("post operation");
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.create(item)];
                     case 1:
@@ -176,6 +177,7 @@ var ProfileController = /** @class */ (function () {
                             })];
                     case 2:
                         err_4 = _a.sent();
+                        console.log(err_4);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again."
@@ -187,15 +189,16 @@ var ProfileController = /** @class */ (function () {
     };
     ProfileController.prototype.updateProfile = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, profileBusiness, result, err_5;
+            var item, id, profileBusiness, result, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
                         item.user = req.user;
+                        id = req.params.id;
                         profileBusiness = new ProfileBusiness();
-                        return [4 /*yield*/, profileBusiness.patch(item._id, item)];
+                        return [4 /*yield*/, profileBusiness.patch(id, item)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -251,8 +254,7 @@ var ProfileController = /** @class */ (function () {
     ], ProfileController.prototype, "create", null);
     __decorate([
         decorators_1.use(auth_1.requireAuth),
-        decorators_1.put("/"),
-        decorators_1.requestValidators("_id", "location", "categories"),
+        decorators_1.put("/:id"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
