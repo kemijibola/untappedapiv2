@@ -11,91 +11,60 @@ class CategoryBusiness implements ICategoryBusiness {
   }
 
   async fetch(condition: any): Promise<Result<ICategory[]>> {
-    try {
-      const categories = await this._categoryRepository.fetch(condition);
-      return Result.ok<ICategory[]>(200, categories);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const categories = await this._categoryRepository.fetch(condition);
+    return Result.ok<ICategory[]>(200, categories);
   }
 
   async findById(id: string): Promise<Result<ICategory>> {
-    try {
-      if (!id) return Result.fail<ICategory>(400, "Bad request.");
-      const category = await this._categoryRepository.findById(id);
-      if (!category)
-        return Result.fail<ICategory>(404, `Category of Id ${id} not found`);
-      else return Result.ok<ICategory>(200, category);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    if (!id) return Result.fail<ICategory>(400, "Bad request.");
+    const category = await this._categoryRepository.findById(id);
+    if (!category)
+      return Result.fail<ICategory>(404, `Category of Id ${id} not found`);
+    return Result.ok<ICategory>(200, category);
   }
 
   async findOne(condition: any): Promise<Result<ICategory>> {
-    try {
-      if (!condition) return Result.fail<ICategory>(400, "Bad request.");
-      const category = await this._categoryRepository.findByOne(condition);
-      if (!category) return Result.fail<ICategory>(404, `Category not found`);
-      else return Result.ok<ICategory>(200, category);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    if (!condition) return Result.fail<ICategory>(400, "Bad request.");
+    const category = await this._categoryRepository.findByOne(condition);
+    if (!category) return Result.fail<ICategory>(404, `Category not found`);
+    return Result.ok<ICategory>(200, category);
   }
 
   async findByCriteria(criteria: any): Promise<Result<ICategory>> {
-    try {
-      const category = await this._categoryRepository.findByCriteria(criteria);
-      if (!category)
-        return Result.fail<ICategory>(404, `Category type not found`);
-      else return Result.ok<ICategory>(200, category);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const category = await this._categoryRepository.findByCriteria(criteria);
+    if (!category)
+      return Result.fail<ICategory>(404, `Category type not found`);
+    return Result.ok<ICategory>(200, category);
   }
 
   async create(item: ICategory): Promise<Result<ICategory>> {
-    try {
-      const category = await this._categoryRepository.findByCriteria({
-        name: item.name
-      });
-      if (category === null) {
-        const newCategory = await this._categoryRepository.create(item);
-        return Result.ok<ICategory>(201, newCategory);
-      }
-      return Result.fail<ICategory>(
-        400,
-        `Category with name ${category.name} exists.`
-      );
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
+    const category = await this._categoryRepository.findByCriteria({
+      name: item.name
+    });
+    if (category === null) {
+      const newCategory = await this._categoryRepository.create(item);
+      return Result.ok<ICategory>(201, newCategory);
     }
+    return Result.fail<ICategory>(
+      400,
+      `Category with name ${category.name} exists.`
+    );
   }
 
   async update(id: string, item: ICategory): Promise<Result<ICategory>> {
-    try {
-      const category = await this._categoryRepository.findById(id);
-      if (!category)
-        return Result.fail<ICategory>(
-          404,
-          `Could not update category.Category with Id ${id} not found`
-        );
-      const updateObj = await this._categoryRepository.update(
-        category._id,
-        item
+    const category = await this._categoryRepository.findById(id);
+    if (!category)
+      return Result.fail<ICategory>(
+        404,
+        `Could not update category.Category with Id ${id} not found`
       );
-      return Result.ok<ICategory>(200, updateObj);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const updateObj = await this._categoryRepository.update(category._id, item);
+    return Result.ok<ICategory>(200, updateObj);
   }
 
   async delete(id: string): Promise<Result<boolean>> {
-    try {
-      const isDeleted = await this._categoryRepository.delete(id);
-      return Result.ok<boolean>(200, isDeleted);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const isDeleted = await this._categoryRepository.delete(id);
+    return Result.ok<boolean>(200, isDeleted);
   }
 }
 

@@ -6,10 +6,6 @@ export abstract class AbstractMedia {
   abstract getPresignedUrl(
     data: IUploadFileRequest
   ): Promise<Result<SignedUrl>>;
-  abstract fetchObjectFromCloudFormation(
-    key: string,
-    editParams: ImageEditRequest
-  ): string;
 }
 
 export class Uploader {
@@ -23,9 +19,5 @@ export class Uploader {
     filesToUpload: IUploadFileRequest
   ): Promise<Result<SignedUrl>> {
     return await this.media.getPresignedUrl(filesToUpload);
-  }
-
-  fetchObject(key: string, editParams: ImageEditRequest): string {
-    return this.media.fetchObjectFromCloudFormation(key, editParams);
   }
 }

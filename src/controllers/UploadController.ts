@@ -20,7 +20,7 @@ export class UploadController {
       item.uploader = req.user;
 
       var mediaFactory: AbstractMedia = new MediaMakerFactory().create(
-        item.typeOfFile
+        item.typeOfFile.toLowerCase()
       );
       const result = await mediaFactory.getPresignedUrl(item);
       if (result.error) {

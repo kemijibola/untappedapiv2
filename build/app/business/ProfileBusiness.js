@@ -114,64 +114,45 @@ var ProfileBusiness = /** @class */ (function () {
     };
     ProfileBusiness.prototype.findByUser = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, err_4;
+            var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._profileRepository.findByCriteria({
-                                user: id
-                            })];
+                    case 0: return [4 /*yield*/, this._profileRepository.findByCriteria({
+                            user: id
+                        })];
                     case 1:
                         profile = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, profile)];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     ProfileBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, err_5;
+            var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._profileRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._profileRepository.findByCriteria(criteria)];
                     case 1:
                         profile = _a.sent();
                         if (!profile)
                             return [2 /*return*/, Result_1.Result.fail(404, "Profile not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, profile)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, profile)];
                 }
             });
         });
     };
     ProfileBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newProfile, err_6;
+            var newProfile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         item.tapCount = 0;
                         return [4 /*yield*/, this._profileRepository.create(item)];
                     case 1:
                         newProfile = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newProfile)];
-                    case 2:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -198,12 +179,10 @@ var ProfileBusiness = /** @class */ (function () {
     };
     ProfileBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, updateObj, err_7;
+            var profile, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._profileRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._profileRepository.findById(id)];
                     case 1:
                         profile = _a.sent();
                         if (!profile)
@@ -212,29 +191,19 @@ var ProfileBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ProfileBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_8;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._profileRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._profileRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_8 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_8.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

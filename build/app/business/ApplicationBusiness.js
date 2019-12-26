@@ -45,11 +45,10 @@ var ApplicationBusiness = /** @class */ (function () {
     }
     ApplicationBusiness.prototype.fetch = function (condidtion) {
         return __awaiter(this, void 0, void 0, function () {
-            var refinedApplications, applications, _i, applications_1, application, applicationViewModel, err_1;
+            var refinedApplications, applications, _i, applications_1, application, applicationViewModel;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         refinedApplications = [];
                         return [4 /*yield*/, this._applicationRepository.fetch(condidtion)];
                     case 1:
@@ -67,23 +66,18 @@ var ApplicationBusiness = /** @class */ (function () {
                             refinedApplications = refinedApplications.concat([applicationViewModel]);
                         }
                         return [2 /*return*/, Result_1.Result.ok(200, refinedApplications)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, refinedApplication, err_2;
+            var application, refinedApplication;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._applicationRepository.findById(id)];
                     case 1:
                         application = _a.sent();
@@ -101,24 +95,19 @@ var ApplicationBusiness = /** @class */ (function () {
                             };
                             return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, refinedApplication, err_3;
+            var application, refinedApplication;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._applicationRepository.findByOne(condition)];
                     case 1:
                         application = _a.sent();
@@ -136,22 +125,17 @@ var ApplicationBusiness = /** @class */ (function () {
                             };
                             return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, refinedApplication, err_4;
+            var application, refinedApplication;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         criteria.isActive = true;
                         return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
                     case 1:
@@ -170,23 +154,17 @@ var ApplicationBusiness = /** @class */ (function () {
                             };
                             return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newApplication, refinedApplication, err_5;
+            var newApplication, refinedApplication;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._applicationRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._applicationRepository.create(item)];
                     case 1:
                         newApplication = _a.sent();
                         refinedApplication = {
@@ -198,22 +176,16 @@ var ApplicationBusiness = /** @class */ (function () {
                             domain: newApplication.domain
                         };
                         return [2 /*return*/, Result_1.Result.ok(201, refinedApplication)];
-                    case 2:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, updateObj, err_6;
+            var application, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._applicationRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._applicationRepository.findById(id)];
                     case 1:
                         application = _a.sent();
                         if (!application)
@@ -222,29 +194,19 @@ var ApplicationBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._applicationRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._applicationRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

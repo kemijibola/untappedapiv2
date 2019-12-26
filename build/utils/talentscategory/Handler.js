@@ -36,28 +36,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var TalentPortfolio_1 = require("./TalentPortfolio");
-var MatchData_1 = require("./Helper/MatchData");
 exports.fetchTalentsByCategory = function (event, context, cb) {
     if (event === void 0) { event = {}; }
     return __awaiter(_this, void 0, void 0, function () {
-        var talentPortfolio, talents, err_1;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp('');
-                    return [4 /*yield*/, talentPortfolio.fetchTalents({})];
-                case 1:
-                    talents = _a.sent();
-                    MatchData_1.generateTalentReport(talents);
-                    return [3 /*break*/, 3];
-                case 2:
-                    err_1 = _a.sent();
-                    console.log(err_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+            try {
+                // fetch talents for processing
+                // const talentPortfolio = TalentPortfolio.setUp("");
+                // const talents = await talentPortfolio.fetchTalents({});
+                // generateTalentReport(talents);
             }
+            catch (err) {
+                console.log(err);
+            }
+            return [2 /*return*/];
         });
     });
 };

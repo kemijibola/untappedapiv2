@@ -63,12 +63,12 @@ export class HighestCommentAnalysis implements Analyzer {
     let medias: IMedia[] = [];
     const talentPortfolio = TalentPortfolio.setUp(userId);
 
-    const audios = await talentPortfolio.fetchTalentAudios();
-    medias = [...medias, ...audios];
-    const videos = await talentPortfolio.fetchTalentVideos();
-    medias = [...medias, ...videos];
-    const images = await talentPortfolio.fetchTalentImages();
-    medias = [...medias, ...images];
+    // const audios = await talentPortfolio.fetchTalentAudios();
+    // medias = [...medias, ...audios];
+    // const videos = await talentPortfolio.fetchTalentVideos();
+    // medias = [...medias, ...videos];
+    // const images = await talentPortfolio.fetchTalentImages();
+    // medias = [...medias, ...images];
     return medias;
   }
 

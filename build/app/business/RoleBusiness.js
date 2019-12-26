@@ -45,11 +45,10 @@ var RoleBusiness = /** @class */ (function () {
     }
     RoleBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var refinedRoles, roles, _i, roles_1, role, roleViewModel, err_1;
+            var refinedRoles, roles, _i, roles_1, role, roleViewModel;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         condition.global = true;
                         condition.isActive = true;
                         refinedRoles = [];
@@ -69,102 +68,74 @@ var RoleBusiness = /** @class */ (function () {
                             refinedRoles = refinedRoles.concat([roleViewModel]);
                         }
                         return [2 /*return*/, Result_1.Result.ok(200, refinedRoles)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     RoleBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, err_2;
+            var role;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._roleRepository.findById(id)];
                     case 1:
                         role = _a.sent();
                         if (!role)
                             return [2 /*return*/, Result_1.Result.fail(404, "Role of Id " + id + " not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, role)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, role)];
                 }
             });
         });
     };
     RoleBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, err_3;
+            var role;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._roleRepository.findByOne(condition)];
                     case 1:
                         role = _a.sent();
                         if (!role)
                             return [2 /*return*/, Result_1.Result.fail(404, "Role not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, role)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, role)];
                 }
             });
         });
     };
     RoleBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, err_4;
+            var role;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._roleRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._roleRepository.findByCriteria(criteria)];
                     case 1:
                         role = _a.sent();
                         if (!role)
                             return [2 /*return*/, Result_1.Result.fail(404, "Role not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, role)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, role)];
                 }
             });
         });
     };
     RoleBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, roleExist, newRole, err_5;
+            var role, roleExist, newRole;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        return [4 /*yield*/, this._roleRepository.findByCriteria({
-                                name: item.name
-                            })];
+                    case 0: return [4 /*yield*/, this._roleRepository.findByCriteria({
+                            name: item.name
+                        })];
                     case 1:
                         role = _a.sent();
                         if (!(role === null)) return [3 /*break*/, 5];
                         return [4 /*yield*/, this._roleRepository.findByCriteria({
-                                name: 'Free',
+                                name: "Free",
                                 isDefault: item.isDefault,
                                 isActive: true
                             })];
@@ -177,24 +148,18 @@ var RoleBusiness = /** @class */ (function () {
                         newRole = _a.sent();
                         // TODO:: create approval request here
                         return [2 /*return*/, Result_1.Result.ok(201, newRole)];
-                    case 4: return [2 /*return*/, Result_1.Result.fail(400, 'A role is currently set as default.')];
+                    case 4: return [2 /*return*/, Result_1.Result.fail(400, "A role is currently set as default.")];
                     case 5: return [2 /*return*/, Result_1.Result.fail(400, "Role with name '" + role.name + "' exists")];
-                    case 6:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 7: return [2 /*return*/];
                 }
             });
         });
     };
     RoleBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, updateObj, err_6;
+            var role, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._roleRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._roleRepository.findById(id)];
                     case 1:
                         role = _a.sent();
                         if (!role)
@@ -203,29 +168,19 @@ var RoleBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     RoleBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._roleRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._roleRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

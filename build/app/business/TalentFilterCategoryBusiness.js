@@ -45,123 +45,87 @@ var TalentFilterCategoryBusiness = /** @class */ (function () {
     }
     TalentFilterCategoryBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategories, err_1;
+            var talentFilterCategories;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._talentFilterCategoryRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._talentFilterCategoryRepository.fetch(condition)];
                     case 1:
                         talentFilterCategories = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategories)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     TalentFilterCategoryBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategory, err_2;
+            var talentFilterCategory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._talentFilterCategoryRepository.findById(id)];
                     case 1:
                         talentFilterCategory = _a.sent();
                         if (!talentFilterCategory)
                             return [2 /*return*/, Result_1.Result.fail(404, "Talent filter category of Id " + id + " not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategory)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategory)];
                 }
             });
         });
     };
     TalentFilterCategoryBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategory, err_3;
+            var talentFilterCategory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._talentFilterCategoryRepository.findByOne(condition)];
                     case 1:
                         talentFilterCategory = _a.sent();
                         if (!talentFilterCategory)
                             return [2 /*return*/, Result_1.Result.fail(404, "Talent filter category not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategory)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategory)];
                 }
             });
         });
     };
     TalentFilterCategoryBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategory, err_4;
+            var talentFilterCategory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._talentFilterCategoryRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._talentFilterCategoryRepository.findByCriteria(criteria)];
                     case 1:
                         talentFilterCategory = _a.sent();
                         if (!talentFilterCategory)
                             return [2 /*return*/, Result_1.Result.fail(404, "Talent filter category not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategory)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, talentFilterCategory)];
                 }
             });
         });
     };
     TalentFilterCategoryBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newTalentFilterCategory, err_5;
+            var newTalentFilterCategory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._talentFilterCategoryRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._talentFilterCategoryRepository.create(item)];
                     case 1:
                         newTalentFilterCategory = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newTalentFilterCategory)];
-                    case 2:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     TalentFilterCategoryBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategory, updateObj, err_6;
+            var talentFilterCategory, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._talentFilterCategoryRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._talentFilterCategoryRepository.findById(id)];
                     case 1:
                         talentFilterCategory = _a.sent();
                         if (!talentFilterCategory)
@@ -170,29 +134,19 @@ var TalentFilterCategoryBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     TalentFilterCategoryBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._talentFilterCategoryRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._talentFilterCategoryRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

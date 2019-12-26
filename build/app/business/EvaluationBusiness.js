@@ -45,123 +45,87 @@ var EvaluationBusiness = /** @class */ (function () {
     }
     EvaluationBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var evaluations, err_1;
+            var evaluations;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._evaluationRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._evaluationRepository.fetch(condition)];
                     case 1:
                         evaluations = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, evaluations)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     EvaluationBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var evaluation, err_2;
+            var evaluation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._evaluationRepository.findById(id)];
                     case 1:
                         evaluation = _a.sent();
                         if (!evaluation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Evaluation of Id " + id + " not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
                 }
             });
         });
     };
     EvaluationBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var evaluation, err_3;
+            var evaluation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._evaluationRepository.findByOne(condition)];
                     case 1:
                         evaluation = _a.sent();
                         if (!evaluation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Evaluation not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
                 }
             });
         });
     };
     EvaluationBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var evaluation, err_4;
+            var evaluation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._evaluationRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._evaluationRepository.findByCriteria(criteria)];
                     case 1:
                         evaluation = _a.sent();
                         if (!evaluation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Evaluation not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, evaluation)];
                 }
             });
         });
     };
     EvaluationBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newEvaluation, err_5;
+            var newEvaluation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._evaluationRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._evaluationRepository.create(item)];
                     case 1:
                         newEvaluation = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newEvaluation)];
-                    case 2:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     EvaluationBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var evaluation, updateObj, err_6;
+            var evaluation, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._evaluationRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._evaluationRepository.findById(id)];
                     case 1:
                         evaluation = _a.sent();
                         if (!evaluation)
@@ -170,29 +134,19 @@ var EvaluationBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     EvaluationBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._evaluationRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._evaluationRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

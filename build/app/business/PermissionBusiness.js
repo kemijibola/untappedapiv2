@@ -48,140 +48,104 @@ var PermissionBusiness = /** @class */ (function () {
     }
     PermissionBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var permissions, err_1;
+            var permissions;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._permissionRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._permissionRepository.fetch(condition)];
                     case 1:
                         permissions = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, permissions)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     PermissionBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, err_2;
+            var permission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._permissionRepository.findById(id)];
                     case 1:
                         permission = _a.sent();
                         if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Permission of Id " + id + " not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, permission)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, permission)];
                 }
             });
         });
     };
     PermissionBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, err_3;
+            var permission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._permissionRepository.findByOne(condition)];
                     case 1:
                         permission = _a.sent();
                         if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Permission not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, permission)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, permission)];
                 }
             });
         });
     };
     PermissionBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, err_4;
+            var permission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._permissionRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._permissionRepository.findByCriteria(criteria)];
                     case 1:
                         permission = _a.sent();
                         if (!permission)
                             return [2 /*return*/, Result_1.Result.fail(404, "Permission not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, permission)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, permission)];
                 }
             });
         });
     };
     PermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, isRoleValid, role, newPermission, err_5;
+            var permission, isRoleValid, role, newPermission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this._permissionRepository.findByCriteria({
-                                name: item.name
-                            })];
+                    case 0: return [4 /*yield*/, this._permissionRepository.findByCriteria({
+                            name: item.name
+                        })];
                     case 1:
                         permission = _a.sent();
                         if (!(permission === null)) return [3 /*break*/, 4];
                         isRoleValid = lib_1.validateObjectId(item.role);
                         if (!isRoleValid) {
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Role is invalid')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Role is invalid")];
                         }
                         return [4 /*yield*/, this._roleRepository.findById(item.role)];
                     case 2:
                         role = _a.sent();
                         if (role === null) {
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Role not found')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Role not found")];
                         }
                         return [4 /*yield*/, this._permissionRepository.create(item)];
                     case 3:
                         newPermission = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newPermission)];
                     case 4: return [2 /*return*/, Result_1.Result.fail(400, "Permission with name '" + permission.name + "' already exist.")];
-                    case 5:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 6: return [2 /*return*/];
                 }
             });
         });
     };
     PermissionBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, updateObj, err_6;
+            var permission, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._permissionRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._permissionRepository.findById(id)];
                     case 1:
                         permission = _a.sent();
                         if (!permission)
@@ -190,29 +154,19 @@ var PermissionBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     PermissionBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._permissionRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._permissionRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

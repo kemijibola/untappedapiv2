@@ -1,8 +1,8 @@
 // import mongoose from 'mongoose';
-import Mongoose = require('mongoose');
-import { Connection } from '../models/interfaces/custom/Connection';
-import { AppConfig } from '../models/interfaces/custom/AppConfig';
-const config: AppConfig = module.require('../../config/keys');
+import Mongoose = require("mongoose");
+import { Connection } from "../models/interfaces/custom/Connection";
+import { AppConfig } from "../models/interfaces/custom/AppConfig";
+const config: AppConfig = module.require("../../config/keys");
 
 class MongodataAccess {
   static mongooseInstance: any;
@@ -18,8 +18,8 @@ class MongodataAccess {
     }
 
     this.mongooseConnection = Mongoose.connection;
-    this.mongooseConnection.once('open', () => {
-      console.log('Connected to mongodb');
+    this.mongooseConnection.once("open", () => {
+      console.log("Connected to mongodb");
     });
 
     const params: Connection = {

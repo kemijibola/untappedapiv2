@@ -12,12 +12,12 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
         };
         var talentsVideo = talents.reduce(function (acc, theItem) {
             var talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp(theItem._id);
-            talentPortfolio.fetchTalentVideos().then(function (data) {
-                acc.push({
-                    medias: data,
-                    profile: theItem
-                });
-            });
+            // talentPortfolio.fetchTalentVideos().then((data: IVideo[]) => {
+            //   acc.push({
+            //     medias: data,
+            //     profile: theItem
+            //   });
+            // });
             return acc;
         }, []);
         // fetch talent's video watch
@@ -27,7 +27,7 @@ var MostWatchedVideoAnalysis = /** @class */ (function () {
             for (var _a = 0, _b = talentVideo.medias; _a < _b.length; _a++) {
                 var video = _b[_a];
                 talentsVideoComment.push({
-                    count: video.watchCount,
+                    count: video.activityCount,
                     profile: talentVideo.profile
                 });
             }

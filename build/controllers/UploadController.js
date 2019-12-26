@@ -60,7 +60,7 @@ var UploadController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
                         item.uploader = req.user;
-                        mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.typeOfFile);
+                        mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.typeOfFile.toLowerCase());
                         return [4 /*yield*/, mediaFactory.getPresignedUrl(item)];
                     case 1:
                         result = _a.sent();

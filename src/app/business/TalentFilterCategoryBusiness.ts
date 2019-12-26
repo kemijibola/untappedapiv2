@@ -1,7 +1,7 @@
-import TalentFilterCategoryRepository from '../repository/TalentFilterCategoryRepository';
-import ITalentFilterCategoryBusiness = require('./interfaces/TalentFilterCategoryBusiness');
-import { ITalentFilterCategory } from '../models/interfaces';
-import { Result } from '../../utils/Result';
+import TalentFilterCategoryRepository from "../repository/TalentFilterCategoryRepository";
+import ITalentFilterCategoryBusiness = require("./interfaces/TalentFilterCategoryBusiness");
+import { ITalentFilterCategory } from "../models/interfaces";
+import { Result } from "../../utils/Result";
 
 class TalentFilterCategoryBusiness implements ITalentFilterCategoryBusiness {
   private _talentFilterCategoryRepository: TalentFilterCategoryRepository;
@@ -11,110 +11,82 @@ class TalentFilterCategoryBusiness implements ITalentFilterCategoryBusiness {
   }
 
   async fetch(condition: any): Promise<Result<ITalentFilterCategory[]>> {
-    try {
-      const talentFilterCategories = await this._talentFilterCategoryRepository.fetch(
-        condition
-      );
-      return Result.ok<ITalentFilterCategory[]>(200, talentFilterCategories);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const talentFilterCategories = await this._talentFilterCategoryRepository.fetch(
+      condition
+    );
+    return Result.ok<ITalentFilterCategory[]>(200, talentFilterCategories);
   }
 
   async findById(id: string): Promise<Result<ITalentFilterCategory>> {
-    try {
-      if (!id) return Result.fail<ITalentFilterCategory>(400, 'Bad request');
-      const talentFilterCategory = await this._talentFilterCategoryRepository.findById(
-        id
+    if (!id) return Result.fail<ITalentFilterCategory>(400, "Bad request");
+    const talentFilterCategory = await this._talentFilterCategoryRepository.findById(
+      id
+    );
+    if (!talentFilterCategory)
+      return Result.fail<ITalentFilterCategory>(
+        404,
+        `Talent filter category of Id ${id} not found`
       );
-      if (!talentFilterCategory)
-        return Result.fail<ITalentFilterCategory>(
-          404,
-          `Talent filter category of Id ${id} not found`
-        );
-      else return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
   }
 
   async findOne(condition: any): Promise<Result<ITalentFilterCategory>> {
-    try {
-      if (!condition)
-        return Result.fail<ITalentFilterCategory>(400, 'Bad request');
-      const talentFilterCategory = await this._talentFilterCategoryRepository.findByOne(
-        condition
+    if (!condition)
+      return Result.fail<ITalentFilterCategory>(400, "Bad request");
+    const talentFilterCategory = await this._talentFilterCategoryRepository.findByOne(
+      condition
+    );
+    if (!talentFilterCategory)
+      return Result.fail<ITalentFilterCategory>(
+        404,
+        `Talent filter category not found`
       );
-      if (!talentFilterCategory)
-        return Result.fail<ITalentFilterCategory>(
-          404,
-          `Talent filter category not found`
-        );
-      else return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
   }
 
   async findByCriteria(criteria: any): Promise<Result<ITalentFilterCategory>> {
-    try {
-      const talentFilterCategory = await this._talentFilterCategoryRepository.findByCriteria(
-        criteria
+    const talentFilterCategory = await this._talentFilterCategoryRepository.findByCriteria(
+      criteria
+    );
+    if (!talentFilterCategory)
+      return Result.fail<ITalentFilterCategory>(
+        404,
+        `Talent filter category not found`
       );
-      if (!talentFilterCategory)
-        return Result.fail<ITalentFilterCategory>(
-          404,
-          `Talent filter category not found`
-        );
-      else return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    return Result.ok<ITalentFilterCategory>(200, talentFilterCategory);
   }
 
   async create(
     item: ITalentFilterCategory
   ): Promise<Result<ITalentFilterCategory>> {
-    try {
-      const newTalentFilterCategory = await this._talentFilterCategoryRepository.create(
-        item
-      );
-      return Result.ok<ITalentFilterCategory>(201, newTalentFilterCategory);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const newTalentFilterCategory = await this._talentFilterCategoryRepository.create(
+      item
+    );
+    return Result.ok<ITalentFilterCategory>(201, newTalentFilterCategory);
   }
 
   async update(
     id: string,
     item: ITalentFilterCategory
   ): Promise<Result<ITalentFilterCategory>> {
-    try {
-      const talentFilterCategory = await this._talentFilterCategoryRepository.findById(
-        id
+    const talentFilterCategory = await this._talentFilterCategoryRepository.findById(
+      id
+    );
+    if (!talentFilterCategory)
+      return Result.fail<ITalentFilterCategory>(
+        404,
+        `Could not update talent filter category.Talent filter category with Id ${id} not found`
       );
-      if (!talentFilterCategory)
-        return Result.fail<ITalentFilterCategory>(
-          404,
-          `Could not update talent filter category.Talent filter category with Id ${id} not found`
-        );
-      const updateObj = await this._talentFilterCategoryRepository.update(
-        talentFilterCategory._id,
-        item
-      );
-      return Result.ok<ITalentFilterCategory>(200, updateObj);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const updateObj = await this._talentFilterCategoryRepository.update(
+      talentFilterCategory._id,
+      item
+    );
+    return Result.ok<ITalentFilterCategory>(200, updateObj);
   }
 
   async delete(id: string): Promise<Result<boolean>> {
-    try {
-      const isDeleted = await this._talentFilterCategoryRepository.delete(id);
-      return Result.ok<boolean>(200, isDeleted);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const isDeleted = await this._talentFilterCategoryRepository.delete(id);
+    return Result.ok<boolean>(200, isDeleted);
   }
 }
 

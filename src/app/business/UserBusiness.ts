@@ -592,15 +592,6 @@ class UserBusiness implements IUserBusiness {
   async fetchPermissionsByRole(role: string): Promise<any> {
     return await this._permissionRepository.fetch({ role });
   }
-
-  fetchUserProfileImage(
-    key: string,
-    editParams: ImageEditRequest
-  ): Result<string> {
-    var mediaFactory: AbstractMedia = new MediaMakerFactory().create("image");
-    const result = mediaFactory.fetchObjectFromCloudFormation(key, editParams);
-    return Result.ok<any>(200, result);
-  }
 }
 
 Object.seal(UserBusiness);

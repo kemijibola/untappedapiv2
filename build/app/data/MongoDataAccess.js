@@ -1,7 +1,7 @@
 "use strict";
 // import mongoose from 'mongoose';
 var Mongoose = require("mongoose");
-var config = module.require('../../config/keys');
+var config = module.require("../../config/keys");
 var MongodataAccess = /** @class */ (function () {
     function MongodataAccess() {
         MongodataAccess.connect();
@@ -11,8 +11,8 @@ var MongodataAccess = /** @class */ (function () {
             return this.mongooseInstance;
         }
         this.mongooseConnection = Mongoose.connection;
-        this.mongooseConnection.once('open', function () {
-            console.log('Connected to mongodb');
+        this.mongooseConnection.once("open", function () {
+            console.log("Connected to mongodb");
         });
         var params = {
             uri: config.DATABASE_HOST + "/" + config.DATABASE_NAME

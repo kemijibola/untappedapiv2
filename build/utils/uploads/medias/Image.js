@@ -54,9 +54,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Upload_1 = require("./../../uploadservice/Helper/Upload");
 var Uploader_1 = require("../Uploader");
@@ -65,7 +62,6 @@ var Result_1 = require("../../Result");
 var lib_1 = require("../../lib");
 var uuid = require("uuid");
 var config = module.require("../../../config/keys");
-var btoa_1 = __importDefault(require("btoa"));
 AWS.config.update({
     accessKeyId: config.IMAGE_BUCKET.access_key_id,
     secretAccessKey: config.IMAGE_BUCKET.secret_access_key,
@@ -77,16 +73,6 @@ var Image = /** @class */ (function (_super) {
     function Image() {
         return _super.call(this) || this;
     }
-    Image.prototype.fetchObjectFromCloudFormation = function (key, editParams) {
-        var params = {
-            bucket: config.IMAGE_BUCKET.bucket,
-            key: key,
-            edits: editParams.edits
-        };
-        var strRequest = JSON.stringify(params);
-        var encryptedRequest = btoa_1.default(strRequest);
-        return config.IMAGE_BUCKET.cloudformation_api_endpoint + "/" + encryptedRequest;
-    };
     Image.prototype.getPresignedUrl = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_1;

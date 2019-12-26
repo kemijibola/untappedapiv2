@@ -21,12 +21,12 @@ export class MostWatchedVideoAnalysis implements Analyzer {
 
     const talentsVideo = talents.reduce((acc: ITalentPortfolio[], theItem) => {
       const talentPortfolio = TalentPortfolio.setUp(theItem._id);
-      talentPortfolio.fetchTalentVideos().then((data: IVideo[]) => {
-        acc.push({
-          medias: data,
-          profile: theItem
-        });
-      });
+      // talentPortfolio.fetchTalentVideos().then((data: IVideo[]) => {
+      //   acc.push({
+      //     medias: data,
+      //     profile: theItem
+      //   });
+      // });
       return acc;
     }, []);
 
@@ -35,7 +35,7 @@ export class MostWatchedVideoAnalysis implements Analyzer {
     for (let talentVideo of talentsVideo) {
       for (let video of talentVideo.medias) {
         talentsVideoComment.push({
-          count: video.watchCount,
+          count: video.activityCount,
           profile: talentVideo.profile
         });
       }

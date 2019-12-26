@@ -46,9 +46,10 @@ export enum MediaType {
   image = "image"
 }
 export interface IMediaItem {
-  index: number;
+  id: string;
   path: string;
-  likes: IUser["fullName"][];
+  likedBy?: IUser["fullName"][];
+  uploadDate?: Date;
 }
 export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   title: string;
@@ -57,19 +58,12 @@ export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   items: IMediaItem[];
   albumCover?: string;
   uploadType: MediaUploadType;
+  mediaType: MediaType;
   isApproved: boolean;
-  watchCount: number;
-  playCount: number;
-  viewCount: number;
+  activityCount: number;
   isDeleted: boolean;
 }
 
-export interface IAudio extends IMedia {
-  playCount: number;
-}
-export interface IVideo extends IMedia {
-  watchCount: number;
-}
-export interface IImage extends IMedia {
-  viewCount: number;
-}
+export interface IAudio extends IMedia {}
+export interface IVideo extends IMedia {}
+export interface IImage extends IMedia {}

@@ -43,34 +43,22 @@ class ProfileBusiness implements IProfileBusiness {
   }
 
   async findByUser(id: string): Promise<Result<IProfile>> {
-    try {
-      const profile = await this._profileRepository.findByCriteria({
-        user: id
-      });
-      return Result.ok<IProfile>(200, profile);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const profile = await this._profileRepository.findByCriteria({
+      user: id
+    });
+    return Result.ok<IProfile>(200, profile);
   }
 
   async findByCriteria(criteria: any): Promise<Result<IProfile>> {
-    try {
-      const profile = await this._profileRepository.findByCriteria(criteria);
-      if (!profile) return Result.fail<IProfile>(404, "Profile not found");
-      else return Result.ok<IProfile>(200, profile);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const profile = await this._profileRepository.findByCriteria(criteria);
+    if (!profile) return Result.fail<IProfile>(404, "Profile not found");
+    return Result.ok<IProfile>(200, profile);
   }
 
   async create(item: IProfile): Promise<Result<IProfile>> {
-    try {
-      item.tapCount = 0;
-      const newProfile = await this._profileRepository.create(item);
-      return Result.ok<IProfile>(201, newProfile);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    item.tapCount = 0;
+    const newProfile = await this._profileRepository.create(item);
+    return Result.ok<IProfile>(201, newProfile);
   }
 
   async patch(id: string, item: any): Promise<Result<IProfile>> {
@@ -87,27 +75,19 @@ class ProfileBusiness implements IProfileBusiness {
   }
 
   async update(id: string, item: IProfile): Promise<Result<IProfile>> {
-    try {
-      const profile = await this._profileRepository.findById(id);
-      if (!profile)
-        return Result.fail<IProfile>(
-          404,
-          `Could not update profile.Profile with Id ${id} not found`
-        );
-      const updateObj = await this._profileRepository.update(profile._id, item);
-      return Result.ok<IProfile>(200, updateObj);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const profile = await this._profileRepository.findById(id);
+    if (!profile)
+      return Result.fail<IProfile>(
+        404,
+        `Could not update profile.Profile with Id ${id} not found`
+      );
+    const updateObj = await this._profileRepository.update(profile._id, item);
+    return Result.ok<IProfile>(200, updateObj);
   }
 
   async delete(id: string): Promise<Result<boolean>> {
-    try {
-      const isDeleted = await this._profileRepository.delete(id);
-      return Result.ok<boolean>(200, isDeleted);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const isDeleted = await this._profileRepository.delete(id);
+    return Result.ok<boolean>(200, isDeleted);
   }
 }
 

@@ -47,30 +47,23 @@ var CategoryTypeBusiness = /** @class */ (function () {
     }
     CategoryTypeBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var categoryTypes, err_1;
+            var categoryTypes;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._categoryTypeRepository.populateFetch("category", condition)];
+                    case 0: return [4 /*yield*/, this._categoryTypeRepository.populateFetch("category", condition)];
                     case 1:
                         categoryTypes = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, categoryTypes)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     CategoryTypeBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var categoryType, err_2;
+            var categoryType;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
                             return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._categoryTypeRepository.findById(id)];
@@ -78,24 +71,17 @@ var CategoryTypeBusiness = /** @class */ (function () {
                         categoryType = _a.sent();
                         if (!categoryType)
                             return [2 /*return*/, Result_1.Result.fail(404, "Category type of Id " + id + " not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, categoryType)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, categoryType)];
                 }
             });
         });
     };
     CategoryTypeBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var categoryType, err_3;
+            var categoryType;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
                             return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._categoryTypeRepository.findByOne(condition)];
@@ -103,48 +89,32 @@ var CategoryTypeBusiness = /** @class */ (function () {
                         categoryType = _a.sent();
                         if (!categoryType)
                             return [2 /*return*/, Result_1.Result.fail(404, "Category type not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, categoryType)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, categoryType)];
                 }
             });
         });
     };
     CategoryTypeBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var categoryType, err_4;
+            var categoryType;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._categoryTypeRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._categoryTypeRepository.findByCriteria(criteria)];
                     case 1:
                         categoryType = _a.sent();
                         if (!categoryType)
                             return [2 /*return*/, Result_1.Result.fail(404, "Category type not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, categoryType)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, categoryType)];
                 }
             });
         });
     };
     CategoryTypeBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var category, categoryType, newCategoryType, err_5;
+            var category, categoryType, newCategoryType;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this._categoryRepository.findById(item.category)];
+                    case 0: return [4 /*yield*/, this._categoryRepository.findById(item.category)];
                     case 1:
                         category = _a.sent();
                         if (category == null) {
@@ -161,22 +131,16 @@ var CategoryTypeBusiness = /** @class */ (function () {
                         newCategoryType = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newCategoryType)];
                     case 4: return [2 /*return*/, Result_1.Result.fail(400, "Category with name " + categoryType.name + " exists.")];
-                    case 5:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 6: return [2 /*return*/];
                 }
             });
         });
     };
     CategoryTypeBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var categoryType, updateObj, err_6;
+            var categoryType, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._categoryTypeRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._categoryTypeRepository.findById(id)];
                     case 1:
                         categoryType = _a.sent();
                         if (!categoryType)
@@ -185,29 +149,19 @@ var CategoryTypeBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     CategoryTypeBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._categoryTypeRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._categoryTypeRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

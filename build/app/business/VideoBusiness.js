@@ -38,10 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var VideoRepository_1 = __importDefault(require("../repository/VideoRepository"));
-var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
-var ScheduleTask_1 = require("../../handlers/ScheduleTask");
-var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var VideoBusiness = /** @class */ (function () {
     function VideoBusiness() {
         this._videoRepository = new VideoRepository_1.default();
@@ -76,7 +73,7 @@ var VideoBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         criteria = {
                             id: id,
                             isApproved: true,
@@ -106,7 +103,7 @@ var VideoBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         condition.isApproved = true;
                         condition.isDeleted = false;
                         return [4 /*yield*/, this._videoRepository.findByOne(condition)];
@@ -133,7 +130,7 @@ var VideoBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!criteria)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         criteria.isApproved = true;
                         criteria.isDeleted = false;
                         return [4 /*yield*/, this._videoRepository.findByCriteria(criteria)];
@@ -154,29 +151,22 @@ var VideoBusiness = /** @class */ (function () {
     };
     VideoBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newVideo, approvalRequest, err_5;
+            var err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 2, , 3]);
+                        item.activityCount = 0;
                         item.isApproved = false;
                         item.isDeleted = false;
                         return [4 /*yield*/, this._videoRepository.create(item)];
                     case 1:
-                        newVideo = _a.sent();
-                        approvalRequest = Object.assign({
-                            entity: newVideo._id,
-                            operation: interfaces_1.ApprovalOperations.VideoUpload,
-                            application: 'untappedpool.com'
-                        });
-                        return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.MediaStateMachine, newVideo.createdAt, approvalRequest)];
-                    case 2:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, true)];
-                    case 3:
+                    case 2:
                         err_5 = _a.sent();
                         throw new Error("InternalServer error occured." + err_5.message);
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -195,6 +185,7 @@ var VideoBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update video.Video with Id " + id + " not found")];
                         item.isApproved = video.isApproved;
                         item.isDeleted = video.isDeleted;
+                        item.updateAt = new Date();
                         return [4 /*yield*/, this._videoRepository.update(video._id, item)];
                     case 2:
                         updateObj = _a.sent();

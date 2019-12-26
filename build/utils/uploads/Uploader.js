@@ -58,9 +58,6 @@ var Uploader = /** @class */ (function () {
             });
         });
     };
-    Uploader.prototype.fetchObject = function (key, editParams) {
-        return this.media.fetchObjectFromCloudFormation(key, editParams);
-    };
     return Uploader;
 }());
 exports.Uploader = Uploader;

@@ -45,32 +45,25 @@ var ApprovalOperationBusiness = /** @class */ (function () {
     }
     ApprovalOperationBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperations, err_1;
+            var approvalOperations;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._approvalOperationRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._approvalOperationRepository.fetch(condition)];
                     case 1:
                         approvalOperations = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, approvalOperations)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     ApprovalOperationBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperation, err_2;
+            var approvalOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._approvalOperationRepository.findById(id)];
                     case 1:
                         approvalOperation = _a.sent();
@@ -78,73 +71,52 @@ var ApprovalOperationBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "Approval operation of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, approvalOperation)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     ApprovalOperationBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperation, err_3;
+            var approvalOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request.')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request.")];
                         return [4 /*yield*/, this._approvalOperationRepository.findByOne(condition)];
                     case 1:
                         approvalOperation = _a.sent();
                         if (!approvalOperation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Approval operation not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, approvalOperation)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, approvalOperation)];
                 }
             });
         });
     };
     ApprovalOperationBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperation, err_4;
+            var approvalOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._approvalOperationRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._approvalOperationRepository.findByCriteria(criteria)];
                     case 1:
                         approvalOperation = _a.sent();
                         if (!approvalOperation)
                             return [2 /*return*/, Result_1.Result.fail(404, "Approval operation not found")];
-                        else
-                            return [2 /*return*/, Result_1.Result.ok(200, approvalOperation)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_4 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_4.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, approvalOperation)];
                 }
             });
         });
     };
     ApprovalOperationBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperation, newApprovalOperation, err_5;
+            var approvalOperation, newApprovalOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 4, , 5]);
-                        return [4 /*yield*/, this._approvalOperationRepository.findByCriteria({
-                                name: item.name
-                            })];
+                    case 0: return [4 /*yield*/, this._approvalOperationRepository.findByCriteria({
+                            name: item.name
+                        })];
                     case 1:
                         approvalOperation = _a.sent();
                         if (!(approvalOperation === null)) return [3 /*break*/, 3];
@@ -153,22 +125,16 @@ var ApprovalOperationBusiness = /** @class */ (function () {
                         newApprovalOperation = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newApprovalOperation)];
                     case 3: return [2 /*return*/, Result_1.Result.fail(400, "Approval operation with name " + approvalOperation.name + " exists.")];
-                    case 4:
-                        err_5 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_5.message);
-                    case 5: return [2 /*return*/];
                 }
             });
         });
     };
     ApprovalOperationBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var approvalOperation, updateObj, err_6;
+            var approvalOperation, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this._approvalOperationRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._approvalOperationRepository.findById(id)];
                     case 1:
                         approvalOperation = _a.sent();
                         if (!approvalOperation)
@@ -177,29 +143,19 @@ var ApprovalOperationBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_6.message);
-                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ApprovalOperationBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted, err_7;
+            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._approvalOperationRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._approvalOperationRepository.delete(id)];
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_7.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });

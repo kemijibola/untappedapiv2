@@ -54,13 +54,17 @@ export const AcceptedMedias: ObjectKeyString = {
   jpg: "image",
   gif: "image",
   svg: "image",
-  mp4: "audio",
+  mp4: "video",
   mpeg: "video",
   avi: "video",
   flv: "video",
   mp3: "audio",
   wma: "audio",
-  "3gp": "video"
+  webm: "audio",
+  wav: "audio",
+  "3gp": "video",
+  m4p: "audio",
+  aac: "audio"
 };
 
 function getIssuer(): string {

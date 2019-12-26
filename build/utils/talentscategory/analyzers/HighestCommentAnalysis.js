@@ -97,26 +97,17 @@ var HighestCommentAnalysis = /** @class */ (function () {
     };
     HighestCommentAnalysis.prototype.fetchTalentMedia = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var medias, talentPortfolio, audios, videos, images;
+            var medias, talentPortfolio;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        medias = [];
-                        talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp(userId);
-                        return [4 /*yield*/, talentPortfolio.fetchTalentAudios()];
-                    case 1:
-                        audios = _a.sent();
-                        medias = medias.concat(audios);
-                        return [4 /*yield*/, talentPortfolio.fetchTalentVideos()];
-                    case 2:
-                        videos = _a.sent();
-                        medias = medias.concat(videos);
-                        return [4 /*yield*/, talentPortfolio.fetchTalentImages()];
-                    case 3:
-                        images = _a.sent();
-                        medias = medias.concat(images);
-                        return [2 /*return*/, medias];
-                }
+                medias = [];
+                talentPortfolio = TalentPortfolio_1.TalentPortfolio.setUp(userId);
+                // const audios = await talentPortfolio.fetchTalentAudios();
+                // medias = [...medias, ...audios];
+                // const videos = await talentPortfolio.fetchTalentVideos();
+                // medias = [...medias, ...videos];
+                // const images = await talentPortfolio.fetchTalentImages();
+                // medias = [...medias, ...images];
+                return [2 /*return*/, medias];
             });
         });
     };

@@ -62,8 +62,10 @@ typings/
 .next
 
 #json config files
+*.json
 ci.json
 development.json
+production.json
 bucketConfig.json
 cloudConfig.json
 

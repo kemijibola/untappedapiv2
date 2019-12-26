@@ -52,7 +52,6 @@ var config = require("../../config/keys");
 var ScheduleTask_1 = require("../../handlers/ScheduleTask");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
-var MediaMakerFactory_1 = require("../../utils/uploads/MediaMakerFactory");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentAuthKey = "";
@@ -705,11 +704,6 @@ var UserBusiness = /** @class */ (function () {
                 }
             });
         });
-    };
-    UserBusiness.prototype.fetchUserProfileImage = function (key, editParams) {
-        var mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create("image");
-        var result = mediaFactory.fetchObjectFromCloudFormation(key, editParams);
-        return Result_1.Result.ok(200, result);
     };
     return UserBusiness;
 }());

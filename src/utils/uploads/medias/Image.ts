@@ -28,19 +28,6 @@ export class Image extends AbstractMedia {
     super();
   }
 
-  fetchObjectFromCloudFormation(
-    key: string,
-    editParams: ImageEditRequest
-  ): string {
-    const params = {
-      bucket: config.IMAGE_BUCKET.bucket,
-      key: key,
-      edits: editParams.edits
-    };
-    const strRequest = JSON.stringify(params);
-    const encryptedRequest = btoa(strRequest);
-    return `${config.IMAGE_BUCKET.cloudformation_api_endpoint}/${encryptedRequest}`;
-  }
 
   async getPresignedUrl(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     let signedUrls: SignedUrl = {

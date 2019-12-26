@@ -5,25 +5,20 @@ var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
 var Media_1 = require("../../models/interfaces/Media");
 var videoItemSchema = new mongoose_1.Schema({
-    index: { type: Number, required: true },
+    id: { type: String, required: true },
     path: { type: String, required: true },
-    likes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }]
-});
+    likedBy: [{ type: String }]
+}, { timestamps: true });
 var videoSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     shortDescription: { type: String },
-    user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     items: [{ type: videoItemSchema, required: true }],
     albumCover: { type: String },
     uploadType: { type: Media_1.MediaUploadType, required: true },
-    watchCount: { type: Number, default: 0 },
+    activityCount: { type: Number, default: 0 },
     isApproved: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false },
-    application: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
-        required: true
-    }
+    isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
-exports.VideoSchema = mongooseConnection.model('Video', videoSchema);
+exports.VideoSchema = mongooseConnection.model("Video", videoSchema);
 //# sourceMappingURL=Video.js.map

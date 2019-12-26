@@ -32,14 +32,15 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  fetch(condition = {}): Promise<any> {
+  fetch(condition: any): Promise<any> {
+    console.log("condition", condition);
     return new Promise((resolve, reject) => {
       this._model
         .find(condition, (error: any, result: any) => {
           if (error) reject(error);
           else resolve(result);
         })
-        .cacheDocQueries({ collectionName: this._model.collection.name })
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -124,12 +125,11 @@ class RepositoryBase<T extends mongoose.Document>
 
   findByCriteria(criteria = {}): Promise<T> {
     return new Promise((resolve, reject) => {
-      this._model
-        .findOne(criteria, (error: any, result: T) => {
-          if (error) reject(error);
-          else resolve(result);
-        })
-        // .cacheDocQuery({ collectionName: this._model.collection.name });
+      this._model.findOne(criteria, (error: any, result: T) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+      // .cacheDocQuery({ collectionName: this._model.collection.name });
     });
   }
 
