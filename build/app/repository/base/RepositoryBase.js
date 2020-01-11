@@ -29,13 +29,12 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .populate(path, "_id name")
-                .cacheDocQueries({ collectionName: _this._model.collection.name })
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();
         });
     };
     RepositoryBase.prototype.fetch = function (condition) {
         var _this = this;
-        console.log("condition", condition);
         return new Promise(function (resolve, reject) {
             _this._model
                 .find(condition, function (error, result) {

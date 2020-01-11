@@ -40,24 +40,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importDefault(require("mongoose"));
 var redis_1 = __importDefault(require("redis"));
+var RedisClustr = require("redis-clustr");
 var util_1 = __importDefault(require("util"));
-var config = module.require('../config/keys');
-// const cacheAddress = config.REDIS_HOST || '127.0.0.1';
-var cacheAddress = config.REDIS_HOST;
+var config = module.require("../config/keys");
+var cacheAddress = config.REDIS_HOST + ":" + config.REDIS_PORT || "127.0.0.1:6379";
 var client = redis_1.default.createClient(cacheAddress);
 client.hget = util_1.default.promisify(client.hget);
 var exec = mongoose_1.default.Query.prototype.exec;
 mongoose_1.default.Query.prototype.cache = function (options) {
     if (options === void 0) { options = {}; }
     this.useCache = true;
-    this.hashKey = JSON.stringify(options.key || '');
+    this.hashKey = JSON.stringify(options.key || "");
     this.collectionName = options.collectionName;
     return this;
 };
 mongoose_1.default.Query.prototype.cacheDocQuery = function (options) {
     if (options === void 0) { options = {}; }
     this.useCache = true;
-    this.hashKey = JSON.stringify(options.key || '');
+    this.hashKey = JSON.stringify(options.key || "");
     this.collectionName = options.collectionName;
     return this;
 };
@@ -65,7 +65,7 @@ mongoose_1.default.Query.prototype.cacheDocQueries = function (options) {
     if (options === void 0) { options = {}; }
     var collectionName = options.collectionName;
     this.useCache = true;
-    this.hashKey = JSON.stringify(options.key || '');
+    this.hashKey = JSON.stringify(options.key || "");
     this.collectionName = collectionName;
     return this;
 };
@@ -90,14 +90,14 @@ mongoose_1.default.Query.prototype.exec = function () {
                     cacheValue = _a.sent();
                     // If we do, return that
                     if (cacheValue) {
-                        console.log('from cache...');
+                        console.log("from cache...");
                         return [2 /*return*/, JSON.parse(cacheValue)];
                     }
                     return [4 /*yield*/, exec.apply(this, args)];
                 case 2:
                     result = _a.sent();
                     client.hset(this.hashKey, key, JSON.stringify(result));
-                    console.log('from db', result);
+                    console.log("from db", result);
                     return [2 /*return*/, result];
             }
         });

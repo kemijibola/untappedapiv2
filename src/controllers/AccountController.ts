@@ -31,7 +31,7 @@ export class AuthController {
       const userBusiness = new UserBusiness();
       const result = await userBusiness.login(loginParams);
       if (result.error)
-        next(
+        return next(
           new PlatformError({
             code: result.responseCode,
             message: result.error

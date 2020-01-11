@@ -7,8 +7,8 @@ var express_1 = __importDefault(require("express"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var AppRouter_1 = require("./AppRouter");
 require("./controllers");
-var config = module.require('./config/keys');
-module.require('./utils/Cache');
+var config = module.require("./config/keys");
+// module.require("./utils/Cache");
 var ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 var cors_1 = __importDefault(require("cors"));
 // import SocketIo = require('./socket/SocketIo');
@@ -30,7 +30,7 @@ app.use(function (error, req, res, next) {
     ErrorMiddleware_1.errorHandler(error, req, res, next);
 });
 var port = config.PORT || 5000;
-app.set('port', port);
+app.set("port", port);
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
     SocketIo_1.SocketIo.setUpApp(app);

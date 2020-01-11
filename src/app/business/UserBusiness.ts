@@ -105,16 +105,17 @@ class UserBusiness implements IUserBusiness {
       };
       const user = await this.findUserByEmail(criteria);
 
-      if (!user) return Result.fail<IAuthData>(404, "User not found.");
+      if (!user)
+        return Result.fail<IAuthData>(401, "Invalid username/password");
 
       const passwordMatched: boolean = await user.comparePassword(
         params.password
       );
       if (!passwordMatched)
-        return Result.fail<IAuthData>(400, "Invalid credentials");
+        return Result.fail<IAuthData>(401, "Invalid credentials");
 
       if (!user.isEmailConfirmed)
-        return Result.fail<IAuthData>(400, "Please verify your email.");
+        return Result.fail<IAuthData>(401, "Please verify your email.");
 
       for (let role of user.roles) {
         const permissions = await this.fetchPermissionsByRole(role);
@@ -137,7 +138,7 @@ class UserBusiness implements IUserBusiness {
       const privateKey: string = getSecretByKey(this._currentAuthKey);
       if (privateKey === "") {
         return Result.fail<IAuthData>(
-          400,
+          401,
           `Private Key is missing for ${this._currentAuthKey}`
         );
       }
@@ -147,7 +148,7 @@ class UserBusiness implements IUserBusiness {
         payload
       );
 
-      if (userToken.error) return Result.fail<IAuthData>(400, "Invalid token.");
+      if (userToken.error) return Result.fail<IAuthData>(401, "Invalid token.");
       const typeOfUser = await this._userTypeRepository.findById(user.userType);
 
       const authData: IAuthData = {
@@ -405,7 +406,7 @@ class UserBusiness implements IUserBusiness {
       email
     });
     if (!user) {
-      return Result.fail<boolean>(400, "User not found");
+      return Result.fail<boolean>(400, "Invalid username/password");
     }
     if (user.isEmailConfirmed)
       return Result.fail<boolean>(

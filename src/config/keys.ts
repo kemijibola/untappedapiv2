@@ -1,8 +1,9 @@
-import { Environment } from '../app/models/interfaces/custom/Environment';
-import * as development from './development.json';
-import * as ci from './ci.json';
+import { Environment } from "../app/models/interfaces/custom/Environment";
+import * as development from "./development.json";
+import * as production from "./production.json";
+import * as ci from "./ci.json";
 
-let environment: string = process.env.NODE_ENV || '';
+let environment: string = Environment.PRODUCTION || "";
 
 switch (environment) {
   case Environment.CI:
@@ -10,8 +11,8 @@ switch (environment) {
     module.exports = ci;
     break;
   case Environment.PRODUCTION:
-    // Object.seal(production);
-    // module.exports = production;
+    Object.seal(production);
+    module.exports = production;
     break;
   case Environment.STAGING:
     // Object.seal(staging);

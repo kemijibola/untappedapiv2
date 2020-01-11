@@ -76,10 +76,10 @@ var AuthController = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         if (result.error)
-                            next(new error_1.PlatformError({
-                                code: result.responseCode,
-                                message: result.error
-                            }));
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
                                 data: result.data

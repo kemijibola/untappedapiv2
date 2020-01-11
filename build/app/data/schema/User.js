@@ -41,7 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess_1 = __importDefault(require("../MongodataAccess"));
 var mongoose_1 = require("mongoose");
 var interfaces_1 = require("../../models/interfaces");
-var bcrypt_1 = __importDefault(require("bcrypt"));
+var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var JwtHelper_1 = __importDefault(require("../../../utils/wrappers/JwtHelper"));
 var mongooseConnection = MongodataAccess_1.default.mongooseConnection;
 var userSchema = new mongoose_1.Schema({
@@ -77,7 +77,7 @@ userSchema.methods.comparePassword = function (candidatePassword) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, bcrypt_1.default.compare(candidatePassword, this.password)];
+                case 0: return [4 /*yield*/, bcryptjs_1.default.compare(candidatePassword, this.password)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });
@@ -115,11 +115,11 @@ userSchema.pre('save', function (next) {
     if (!user.isModified('password')) {
         return next();
     }
-    bcrypt_1.default.genSalt(10, function (err, salt) {
+    bcryptjs_1.default.genSalt(10, function (err, salt) {
         if (err) {
             return next(err);
         }
-        bcrypt_1.default.hash(user.password, salt, function (err, hash) {
+        bcryptjs_1.default.hash(user.password, salt, function (err, hash) {
             if (err) {
                 return next(err);
             }

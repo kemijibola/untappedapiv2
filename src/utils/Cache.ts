@@ -1,10 +1,11 @@
-import mongoose, { Document } from 'mongoose';
-import redis from 'redis';
-import util from 'util';
-import { AppConfig } from '../app/models/interfaces/custom/AppConfig';
-const config: AppConfig = module.require('../config/keys');
+import mongoose, { Document } from "mongoose";
+import redis, { ClientOpts } from "redis";
+var RedisClustr = require("redis-clustr");
+import util from "util";
+import { AppConfig } from "../app/models/interfaces/custom/AppConfig";
+const config: AppConfig = module.require("../config/keys");
 
-declare module 'mongoose' {
+declare module "mongoose" {
   interface Query<T> {
     cache(options: any): Query<T>;
     useCache: boolean;
@@ -13,31 +14,32 @@ declare module 'mongoose' {
   }
 }
 
-declare module 'mongoose' {
+declare module "mongoose" {
   interface DocumentQuery<T, DocType> {
     cacheDocQuery(options: any): DocumentQuery<T, DocType>;
     cacheDocQueries(options: any): DocumentQuery<T[], DocType>;
   }
 }
 
-// const cacheAddress = config.REDIS_HOST || '127.0.0.1';
-const cacheAddress = config.REDIS_HOST;
+const cacheAddress =
+  `${config.REDIS_HOST}:${config.REDIS_PORT}` || "127.0.0.1:6379";
 
 const client: any = redis.createClient(cacheAddress);
+
 client.hget = util.promisify(client.hget);
 
 const exec: any = mongoose.Query.prototype.exec;
 
 mongoose.Query.prototype.cache = function(options: any = {}) {
   this.useCache = true;
-  this.hashKey = JSON.stringify(options.key || '');
+  this.hashKey = JSON.stringify(options.key || "");
   this.collectionName = options.collectionName;
   return this;
 };
 
 mongoose.Query.prototype.cacheDocQuery = function(options: any = {}) {
   this.useCache = true;
-  this.hashKey = JSON.stringify(options.key || '');
+  this.hashKey = JSON.stringify(options.key || "");
   this.collectionName = options.collectionName;
 
   return this;
@@ -46,7 +48,7 @@ mongoose.Query.prototype.cacheDocQuery = function(options: any = {}) {
 mongoose.Query.prototype.cacheDocQueries = function(options = {}) {
   const { collectionName } = options;
   this.useCache = true;
-  this.hashKey = JSON.stringify(options.key || '');
+  this.hashKey = JSON.stringify(options.key || "");
   this.collectionName = collectionName;
   return this;
 };
@@ -68,7 +70,7 @@ mongoose.Query.prototype.exec = async function(...args: any[]) {
 
   // If we do, return that
   if (cacheValue) {
-    console.log('from cache...');
+    console.log("from cache...");
     return JSON.parse(cacheValue);
   }
 
@@ -76,7 +78,7 @@ mongoose.Query.prototype.exec = async function(...args: any[]) {
   const result = await exec.apply(this, args);
 
   client.hset(this.hashKey, key, JSON.stringify(result));
-  console.log('from db', result);
+  console.log("from db", result);
   return result;
 };
 

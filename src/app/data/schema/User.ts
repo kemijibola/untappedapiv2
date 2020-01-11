@@ -1,7 +1,7 @@
 import MongodataAccess from '../MongodataAccess';
 import { Schema } from 'mongoose';
 import { IUserModel, AccountStatus } from '../../models/interfaces';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 // import {JW } from '../../../utils/wrappers/JwtHelper';
 import { SignInOptions } from '../../models/interfaces/custom/Global';
 import { TokenResult } from '../../models/interfaces/custom/Account';

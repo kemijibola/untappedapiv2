@@ -99,14 +99,14 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _c.sent();
                         if (!user)
-                            return [2 /*return*/, Result_1.Result.fail(404, "User not found.")];
+                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid username/password")];
                         return [4 /*yield*/, user.comparePassword(params.password)];
                     case 2:
                         passwordMatched = _c.sent();
                         if (!passwordMatched)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid credentials")];
+                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid credentials")];
                         if (!user.isEmailConfirmed)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Please verify your email.")];
+                            return [2 /*return*/, Result_1.Result.fail(401, "Please verify your email.")];
                         _i = 0, _a = user.roles;
                         _c.label = 3;
                     case 3:
@@ -136,13 +136,13 @@ var UserBusiness = /** @class */ (function () {
                         };
                         privateKey = lib_1.getSecretByKey(this._currentAuthKey);
                         if (privateKey === "") {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Private Key is missing for " + this._currentAuthKey)];
+                            return [2 /*return*/, Result_1.Result.fail(401, "Private Key is missing for " + this._currentAuthKey)];
                         }
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
                     case 7:
                         userToken = _c.sent();
                         if (userToken.error)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid token.")];
+                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
                         return [4 /*yield*/, this._userTypeRepository.findById(user.userType)];
                     case 8:
                         typeOfUser = _c.sent();
@@ -490,7 +490,7 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "User not found")];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid username/password")];
                         }
                         if (user.isEmailConfirmed)
                             return [2 /*return*/, Result_1.Result.fail(400, user.email + " has already been verified.")];
