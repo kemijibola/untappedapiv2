@@ -1,80 +1,255 @@
 FORMAT: 1A
-HOST: https://polls.apiblueprint.org/
+HOST: http://ec2-3-137-49-212.us-east-2.compute.amazonaws.com:8900/v1
 
 # untapped-pool-api
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+An online platform for showcasing talents and participating in online competitions
 
-## Questions Collection [/questions]
+## User Types [/user-types]
 
-### List All Questions [GET]
+### List All User-Types [GET]
 
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+        {
+            "message": "Operation successful",
+            "data": [
+                {
+                    "isActive": false,
+                    "_id": "5dcb6f8a272bd56cf0fb7f97",
+                    "name": "Audience",
+                    "isAdmin": false,
+                    "description": "Register to support your favourite talents",
+                    "createdAt": "2019-11-13T02:50:50.756Z",
+                    "updatedAt": "2019-11-13T02:50:50.756Z",
+                    "__v": 0
+                },
+                {
+                    "isActive": false,
+                    "_id": "5dcb6ff6625f0d6058704eef",
+                    "name": "Professional",
+                    "isAdmin": false,
+                    "description": "As a professional you will be able to search pool of talents and view talent’s personalised page. A professional can vote for a talent during competition and comment on a Talent’s act in the portfolio. A professional can set appointment to see a talent he/she is interested in.",
+                    "createdAt": "2019-11-13T02:52:38.839Z",
+                    "updatedAt": "2019-11-13T02:52:38.839Z",
+                    "__v": 0
+                },
+                {
+                    "isActive": false,
+                    "_id": "5dcb700d625f0d6058704ef0",
+                    "name": "Talent",
+                    "isAdmin": false,
+                    "description": "Register as a talents to be able to create personalised page, upload items (image, audio, video) to portfolio, receive mail from professionals, enter contest and send portfolio to a professional.",
+                    "createdAt": "2019-11-13T02:53:01.037Z",
+                    "updatedAt": "2019-11-13T02:53:01.037Z",
+                    "__v": 0
+                }
+            ]
+        }
+        
 
-### Create a New Question [POST]
+## Account Management  [/account]
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+### SignUp [POST /account/signup]
+
+Users can sign up on the platform as a Talent, Professional or Audience
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "email": "ajibola@mailinator.com",
+            "password": "password",
+            "audience": "http://localhost:4200",
+            "fullName": "Oluwakemi",
+            "userType": "5dcb6ff6625f0d6058704eef",
+            "confirmationUrl": "http://localhost:4200/account/confirmation"
         }
 
 + Response 201 (application/json)
 
-    + Headers
+    + Body
 
-            Location: /questions/2
+            {
+              "message": "Operation successful",
+              "data": true
+            }
+            
+
+
+### SignIn [POST /authentication]
+
+Users can sign in on the platform as a Talent, Professional or Audience
+
++ Request (application/json)
+
+        {
+            "email": "ajibola@mailinator.com",
+            "password": "password",
+            "audience": "http://localhost:4200"
+        }
+
++ Response 200 (application/json)
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+               "message": "Operation successful",
+               "data": {
+               "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQyIn0.eyJ0eXBlIjoiQVVUSCIsImlhdCI6MTU3OTM2MzQxOCwiZXhwIjoxNTc5NDA2NjE4LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojg5MDAiLCJzdWIiOiI1ZGNjMjcyYzVjNjMzZWUyM2MzMGE3NzMifQ.YmTGVSQe3nq3V4tbNKRuaollbNdFADM5sAK_AtBV_qDBq18Km2i8bhXx8EcZ0R9vhaVYcigeP2vXhdwlL0S_0A",
+               "permissions": [
+                   {
+                      "_id": "5dcc177aca26b13974695d2f",
+                      "name": "CanUploadGigs",
+                      "role": "5dcbb998fad6f3448023a2c9",
+                      "createdAt": "2019-11-13T14:47:22.726Z",
+                      "updatedAt": "2019-11-13T14:47:22.726Z",
+                      "__v": 0
+                   },
+                   {
+                      "_id": "5dcc17a2ca26b13974695d30",
+                      "name": "CanEditProfile",
+                      "role": "5dcbb998fad6f3448023a2c9",
+                      "createdAt": "2019-11-13T14:48:02.159Z",
+                      "updatedAt": "2019-11-13T14:48:02.159Z",
+                      "__v": 0
+                   },
+                  {
+                      "_id": "5dcc17e6ca26b13974695d31",
+                      "name": "CanCreateContest",
+                      "role": "5dcbb998fad6f3448023a2c9",
+                      "createdAt": "2019-11-13T14:49:10.692Z",
+                      "updatedAt": "2019-11-13T14:49:10.692Z",
+                      "__v": 0
+                  },
+                  {
+                     "_id": "5dcc17eeca26b13974695d32",
+                     "name": "CanEnterContest",
+                     "role": "5dcbb998fad6f3448023a2c9",
+                     "createdAt": "2019-11-13T14:49:18.727Z",
+                     "updatedAt": "2019-11-13T14:49:18.727Z",
+                    "__v": 0
+                  }
+                 ],
+                "user_data": {
+                "_id": "5dcc272c5c633ee23c30a773",
+                "full_name": "kemijibola",
+                "email": "kemijibola@yahoo.com",
+                "profile_is_completed": false,
+                "profile_image_path": "5dcc272c5c633ee23c30a773/images/ProfileImage/10344ebf-39e4-4906-be99-943b73c45948.jpg",
+                "userType": {
+                    "_id": "5dcb700d625f0d6058704ef0",
+                    "name": "Talent"
+                }
+              }
+             }
+            }
+
+### Verify Email [POST /account/verify]
+
+New signed up user can verify email address
+
++ Request (application/json)
+
+        {
+            "email": "ajibola@mailinator.com",
+            "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzcwMjEwLCJleHAiOjE1Nzk0NTY2MTAsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.VZlqZ7WCwsVdubA3bDbV2ZHpC94AefRmNFvKCQE4DkLK30kZTmbNHXLXlFDoN1w5gcgQxXhYGbb-vbZz5hbC6g",
+            "audience": "http://localhost:4200"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Email successfully verified"
+            }
+            
+
+### Change Password [POST /account/password/change]
+
+Already logged in user can change password.
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+           "oldPassword": "password",
+           "newPassword": "password1"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": true
+            }
+            
+### Forgot Password Request [POST /account/password/reset/request]
+
+User can request for password reset link
+
++ Request (application/json)
+
+        {
+          "email": "kemijibola@mailinator.com",
+          "audience": "http://localhost:4200",
+          "redirectUrl": "http://localhost:4200/account/password/reset"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Reset password link has been sent successfully."
+            }
+            
+### Password Reset Verification [POST /account/password/reset/verify]
+
+User can verify password reset link
+
++ Request (application/json)
+
+        {
+          "email": "ajibola@mailinator.com",
+          "audience": "http://localhost:4200",
+          "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzczOTIyLCJleHAiOjE1Nzk0NjAzMjIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.bYvErNIKC3DfL16rM9BH21ZUyw7JumBUCBO8hOiQ-rR6rPPZSYncJZtjyvwMdPcH9RQQvXjWbLK-56vcTcES_Q"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Forgot password request has been verified"
+            }
+            
+
+### Reset Password [POST /account/password/reset]
+
+User can reset password
+
++ Request (application/json)
+
+        {
+          "email": "kemijibola@mailinator.com",
+          "newPassword": "password20"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Password successfully reset"
             }
