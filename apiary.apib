@@ -253,3 +253,111 @@ User can reset password
                "message": "Operation successful",
                "data": "Password successfully reset"
             }
+            
+            
+## Media [/uploads]
+
+### Get Presigned For File Upload [POST]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+           "action": "ProfileImage",
+        "files": [
+             {
+                "file": "oluwakemi.jpg",
+                "file_type": "jpg"
+            },
+           {
+                "file": "test2.jpg",
+                "file_type": "png"
+           }
+        ],
+        "mediaType": "image"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": {
+               "presignedUrl": [
+                   {
+                      "file": "oluwakemi.jpg",
+                      "url": "https://untapped-pool-image-bucket.s3-accelerate.amazonaws.com/5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg?Content-Type=jpg&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUHX2MMXUCQYU43KN%2F20200118%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20200118T162534Z&X-Amz-Expires=1800&X-Amz-Signature=f7a33a4ee94f24729c0db46fe823d76c6650b8d69491c2df3af934030ca64e16&X-Amz-SignedHeaders=host",
+                      "key": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg"
+                },
+                {
+                     "file": "test2.jpg",
+                     "url": "https://untapped-pool-image-bucket.s3-accelerate.amazonaws.com/5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg?Content-Type=png&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUHX2MMXUCQYU43KN%2F20200118%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20200118T162534Z&X-Amz-Expires=1800&X-Amz-Signature=90b26d7aa4c5748e92c2c5433f68520ae652fd5724d7c62ef7717f5820458d5a&X-Amz-SignedHeaders=host",
+                     "key": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
+                }
+              ],
+              "action": "ProfileImage"
+              }
+            }
+            
+### Upload User Media [POST /media]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+          "title": "Mr & Mrs Abayomi Photoshoot",
+          "shortDescription": "The photoshoot for the newest couple in town",
+          "items": [
+              "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+              "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
+           ],
+         "uploadType": "multiple",
+         "mediaType": "image"
+        }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": {
+               "activityCount": 0,
+               "isApproved": false,
+               "isDeleted": false,
+               "_id": "5e237284c95e2806a4636cc1",
+               "title": "Mr & Mrs Abayomi Photoshoot",
+               "shortDescription": "The photoshoot for the newest couple in town",
+               "items": [
+                    {
+                      "likedBy": [],
+                      "_id": "5e237284c95e2806a4636cc3",
+                      "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+                      "createdAt": "2020-01-18T21:03:00.648Z",
+                      "updatedAt": "2020-01-18T21:03:00.648Z"
+                    },
+                    {
+                      "likedBy": [],
+                      "_id": "5e237284c95e2806a4636cc2",
+                      "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                      "createdAt": "2020-01-18T21:03:00.648Z",
+                      "updatedAt": "2020-01-18T21:03:00.648Z"
+                   }
+               ],
+               "uploadType": "multiple",
+               "mediaType": "image",
+               "user": "5dcc272c5c633ee23c30a773",
+               "createdAt": "2020-01-18T21:03:00.649Z",
+               "updatedAt": "2020-01-18T21:03:00.649Z",
+               "__v": 0
+             }
+            }
