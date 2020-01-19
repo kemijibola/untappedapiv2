@@ -657,3 +657,62 @@ User can reset password
                  }
                ]
             }
+            
+            
+### Fetch Media [GET /media/:id]
+
++ Payload Header
+
+            Content-Type: application.json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Media Operation successful",
+               "data": {
+               "activityCount": 0,
+               "isApproved": true,
+               "isDeleted": false,
+               "_id": "5e003034f2308607785ed2a1",
+               "title": "ISW Gang",
+               "items": [
+                  {
+                    "likedBy": [],
+                    "_id": "5e003034f2308607785ed2a5",
+                    "path": "5dcc272c5c633ee23c30a773/images/Portfolio/b3698136-3cbd-4aff-8990-c84b91a62738.jpg",
+                    "createdAt": "2019-12-23T03:10:44.505Z",
+                    "updatedAt": "2019-12-23T03:10:44.505Z"
+                 },
+                {
+                   "likedBy": [],
+                   "_id": "5e003034f2308607785ed2a4",
+                   "path": "5dcc272c5c633ee23c30a773/images/Portfolio/78374974-6798-49d8-a6bd-8b6a9c517fb9.jpg",
+                   "createdAt": "2019-12-23T03:10:44.506Z",
+                   "updatedAt": "2019-12-23T03:10:44.506Z"
+                },
+                {
+                  "likedBy": [],
+                  "_id": "5e003034f2308607785ed2a3",
+                  "path": "5dcc272c5c633ee23c30a773/images/Portfolio/6cafd02e-85c6-47b9-a9da-f74b85a4542f.jpg",
+                  "createdAt": "2019-12-23T03:10:44.506Z",
+                  "updatedAt": "2019-12-23T03:10:44.506Z"
+                },
+                {
+                  "likedBy": [],
+                  "_id": "5e003034f2308607785ed2a2",
+                  "path": "5dcc272c5c633ee23c30a773/images/Portfolio/4b9791fc-87e0-4072-bead-1355528c00b8.jpg",
+                  "createdAt": "2019-12-23T03:10:44.506Z",
+                  "updatedAt": "2019-12-23T03:10:44.506Z"
+                }
+               ],
+              "uploadType": "multiple",
+              "mediaType": "image",
+              "shortDescription": "I met cool people on my first day at the SWITCH",
+              "user": "5dcc272c5c633ee23c30a773",
+              "createdAt": "2019-12-23T03:10:44.506Z",
+              "updatedAt": "2019-12-23T03:10:44.506Z",
+              "__v": 0
+             }
+            }
