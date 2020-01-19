@@ -389,7 +389,7 @@ User can reset password
          "mediaType": "image"
         }
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
 
     + Body
 
@@ -455,7 +455,7 @@ User can reset password
          "mediaType": "image"
         }
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
 
     + Body
 
@@ -495,4 +495,165 @@ User can reset password
             "updatedAt": "2020-01-19T13:00:57.268Z",
             "__v": 0
               }
+            }
+            
+            
+### Fetch User Media List [GET /media/me?mediaType=all&uploadType=all]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "message": "Media Operation successful",
+              "data": [
+                   {
+                      "activityCount": 0,
+                      "isApproved": true,
+                      "isDeleted": false,
+                      "_id": "5e003034f2308607785ed2a1",
+                      "title": "ISW Gang",
+                      "items": [
+                        {
+                           "likedBy": [],
+                           "_id": "5e003034f2308607785ed2a5",
+                           "id": "b7adbe06-4d59-449a-a849-8de919028cf9",
+                           "path": "5dcc272c5c633ee23c30a773/images/Portfolio/b3698136-3cbd-4aff-8990-c84b91a62738.jpg",
+                           "createdAt": "2019-12-23T03:10:44.505Z",
+                           "updatedAt": "2019-12-23T03:10:44.505Z"
+                        },
+                       {
+                           "likedBy": [],
+                           "_id": "5e003034f2308607785ed2a4",
+                           "id": "236e178d-99d5-4202-900f-f458652c18dc",
+                           "path": "5dcc272c5c633ee23c30a773/images/Portfolio/78374974-6798-49d8-a6bd-8b6a9c517fb9.jpg",
+                           "createdAt": "2019-12-23T03:10:44.506Z",
+                           "updatedAt": "2019-12-23T03:10:44.506Z"
+                       },
+                      {
+                         "likedBy": [],
+                         "_id": "5e003034f2308607785ed2a3",
+                         "id": "68c1522a-2e5f-4708-af84-efa2e6605981",
+                         "path": "5dcc272c5c633ee23c30a773/images/Portfolio/6cafd02e-85c6-47b9-a9da-f74b85a4542f.jpg",
+                         "createdAt": "2019-12-23T03:10:44.506Z",
+                         "updatedAt": "2019-12-23T03:10:44.506Z"
+                      },
+                      {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a2",
+                        "id": "5a4a92ce-f017-4ae1-b175-9a468b2d2cb4",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/4b9791fc-87e0-4072-bead-1355528c00b8.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                      }
+                   ],
+                    "uploadType": "multiple",
+                    "mediaType": "image",
+                    "shortDescription": "I met cool people on my first day at the SWITCH",
+                    "user": "5dcc272c5c633ee23c30a773",
+                    "createdAt": "2019-12-23T03:10:44.506Z",
+                    "updatedAt": "2019-12-23T03:10:44.506Z",
+                    "__v": 0
+               }
+             ]
+            }
+            
+### Fetch Media List [GET /media?mediaType=all&uploadType=all]
+
++ Payload Header
+
+            Content-Type: application.json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Media Operation successful",
+               "data": [
+                  {
+                    "activityCount": 0,
+                    "isApproved": true,
+                    "isDeleted": false,
+                    "_id": "5e003034f2308607785ed2a1",
+                    "title": "ISW Gang",
+                    "items": [
+                      {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a5",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/b3698136-3cbd-4aff-8990-c84b91a62738.jpg",
+                        "createdAt": "2019-12-23T03:10:44.505Z",
+                        "updatedAt": "2019-12-23T03:10:44.505Z"
+                      },
+                     {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a4",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/78374974-6798-49d8-a6bd-8b6a9c517fb9.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                     },
+                     {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a3",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/6cafd02e-85c6-47b9-a9da-f74b85a4542f.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                     },
+                     {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a2",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/4b9791fc-87e0-4072-bead-1355528c00b8.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                     }
+                    ],
+                  "uploadType": "multiple",
+                  "mediaType": "image",
+                  "shortDescription": "I met cool people on my first day at the SWITCH",
+                  "user": "5dcc272c5c633ee23c30a773",
+                  "createdAt": "2019-12-23T03:10:44.506Z",
+                  "updatedAt": "2019-12-23T03:10:44.506Z",
+                  "__v": 0
+               },
+               {
+                   "activityCount": 0,
+                   "isApproved": true,
+                   "isDeleted": false,
+                   "_id": "5e2451467960cb5ba0dbb348",
+                   "title": "Mr & Mrs Abayomi Wedding 2019",
+                   "shortDescription": "The photoshoot for the newest couple in town in 2019",
+                   "items": [
+                         {
+                            "likedBy": [
+                               "ajibola",
+                               "funsho",
+                               "oyebola"
+                           ],
+                    "_id": "5e2451467960cb5ba0dbb34a",
+                    "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+                    "updatedAt": "2020-01-19T13:31:25.160Z",
+                    "createdAt": "2020-01-19T13:31:25.160Z"
+                },
+                {
+                    "likedBy": [],
+                    "_id": "5e245a2d7960cb5ba0dbb34f",
+                    "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                    "updatedAt": "2020-01-19T13:31:25.160Z",
+                    "createdAt": "2020-01-19T13:31:25.160Z"
+                }
+            ],
+                "mediaType": "image",
+                "uploadType": "multiple",
+                "user": "5dcc272c5c633ee23c30a773",
+                "createdAt": "2020-01-19T12:53:26.369Z",
+                "updatedAt": "2020-01-19T13:31:25.160Z",
+                "__v": 0
+                 }
+               ]
             }
