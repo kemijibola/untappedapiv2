@@ -37,7 +37,7 @@ import { AppConfig } from "../../app/models/interfaces/custom/AppConfig";
 import { TokenType } from "../models/interfaces/custom/GlobalEnum";
 import { UserViewModel, SignUpEmailViewModel } from "../models/viewmodels";
 import { bool } from "aws-sdk/clients/signer";
-import { WelcomeEmail } from "../../utils/emailtemplates";
+import { WelcomeEmail, ForgotPasswordEmail } from "../../utils/emailtemplates";
 import {
   TemplatePlaceHolder,
   TemplateKeyValue,
@@ -56,12 +56,16 @@ import { EntityNotFoundError } from "../../utils/error/EntityNotFound";
 import {
   ConfirmEmailRequest,
   TokenResult,
-  ResetPasswordData,
-  TokenGenerationRequest
+  TokenGenerationRequest,
+  ChangePasswordData,
+  VerifyResetPasswordRequest,
+  ResetPasswordRequest
 } from "../models/interfaces/custom/Account";
 import UserTypeRepository from "../repository/UserTypeRepository";
 import { AbstractMedia } from "../../utils/uploads/Uploader";
 import { MediaMakerFactory } from "../../utils/uploads/MediaMakerFactory";
+import { VerifyOptions } from "jsonwebtoken";
+import JwtHelper from "../../utils/wrappers/JwtHelper";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
@@ -100,8 +104,7 @@ class UserBusiness implements IUserBusiness {
   async login(params: ILogin): Promise<Result<IAuthData>> {
     {
       const criteria = {
-        email: params.email.toLowerCase(),
-        isEmailConfirmed: true
+        email: params.email.toLowerCase()
       };
       const user = await this.findUserByEmail(criteria);
 
@@ -180,14 +183,13 @@ class UserBusiness implements IUserBusiness {
       );
     const publicKey = getPublicKey(this._currentVerifyKey);
     const verifyOptions = {
-      kid: this._currentVerifyKey,
       issuer: config.VERIFICATION_URI,
+      algorithms: [this._currentRsaAlgType],
       email: request.userEmail,
       type: TokenType.VERIFY,
       audience: request.audience,
       keyid: this._currentVerifyKey,
-      ignoreExpiration: false,
-      maxAge: this._mailExpiratation
+      expiresIn: this._mailExpiratation
     };
     const decoded: TokenResult = await unverifiedUser.verifyToken(
       request.token,
@@ -317,7 +319,6 @@ class UserBusiness implements IUserBusiness {
   }
 
   async register(item: IRegister): Promise<Result<boolean>> {
-    console.log("got here");
     const user: IUserModel = await this._userRepository.findByCriteria({
       email: item.email
     });
@@ -354,17 +355,38 @@ class UserBusiness implements IUserBusiness {
     const data: TokenGenerationRequest = {
       user: newUser,
       audience: item.audience,
-      confirmationUrl: item.confirmationUrl
+      tokenExpiresIn: this._mailExpiratation,
+      tokenType: TokenType.VERIFY,
+      redirectUrl: item.confirmationUrl
     };
-    this.generateTokenAndSendToMail(data);
+
+    var token = await this.generateToken(data);
+    if (token.data) {
+      const welcomeEmailKeyValues: TemplateKeyValue[] = this.TokenEmailKeyValue(
+        newUser.fullName,
+        item.audience,
+        `${item.confirmationUrl}?email=${newUser.email}&token=${token.data}`
+      );
+
+      const welcomeTemplateString: string = WelcomeEmail.template;
+
+      const welcomeEmailPlaceHolder: TemplatePlaceHolder = {
+        template: welcomeTemplateString,
+        placeholders: welcomeEmailKeyValues
+      };
+
+      const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
+      const recievers: string[] = [newUser.email];
+      await this.sendMail(recievers, "SignUp Welcome Email", emailBody);
+    }
     return Result.ok<bool>(201, true);
   }
 
   async forgotPassword(
     email: string,
     audience: string,
-    verificationUrl: string
-  ): Promise<Result<boolean>> {
+    redirectUrl: string
+  ): Promise<Result<string>> {
     const user: IUserModel = await this._userRepository.findByCriteria({
       email
     });
@@ -372,31 +394,129 @@ class UserBusiness implements IUserBusiness {
       const request: TokenGenerationRequest = {
         user,
         audience,
-        confirmationUrl: verificationUrl
+        tokenExpiresIn: this._mailExpiratation,
+        tokenType: TokenType.VERIFY,
+        redirectUrl
       };
-      this.generateTokenAndSendToMail(request);
+      var token = await this.generateToken(request);
+      if (token.data) {
+        console.log(token.data);
+        const forgorPasswordEmailKeyValues: TemplateKeyValue[] = this.TokenEmailKeyValue(
+          user.fullName,
+          audience,
+          `${redirectUrl}?email=${user.email}&token=${token.data}`
+        );
+        const forgoPasswordTemplateString: string =
+          ForgotPasswordEmail.template;
+
+        const forgotPasswordEmailPlaceHolder: TemplatePlaceHolder = {
+          template: forgoPasswordTemplateString,
+          placeholders: forgorPasswordEmailKeyValues
+        };
+        const emailBody: string = replaceTemplateString(
+          forgotPasswordEmailPlaceHolder
+        );
+
+        const recievers: string[] = [user.email];
+        await this.sendMail(recievers, "Reset Your Password", emailBody);
+      }
     }
-    return Result.ok<bool>(200, true);
+
+    user.passwordResetRequested = true;
+    user.save();
+
+    return Result.ok<string>(
+      200,
+      "Reset password link has been sent successfully."
+    );
   }
 
-  async resetPassword(data: ResetPasswordData): Promise<Result<boolean>> {
-    // fetch user by email
+  async sendMail(receivers: string[], subject: string, mailBody: string) {
+    const mailParams: IEmail = {
+      receivers: [...receivers],
+      subject,
+      mail: mailBody,
+      senderEmail: "talents@untappedpool.com",
+      senderName: "Untapped Pool"
+    };
+
+    await schedule(StateMachineArns.EmailStateMachine, new Date(), mailParams);
+  }
+  async verifyPasswordResetLink(
+    request: VerifyResetPasswordRequest
+  ): Promise<Result<string>> {
+    const criteria = {
+      email: request.email.toLowerCase()
+    };
+    const unverifiedUser: IUserModel = await this.findUserByEmail(criteria);
+    if (!unverifiedUser) return Result.fail<string>(404, "User not found.");
+    if (!unverifiedUser.isEmailConfirmed)
+      return Result.fail<string>(400, "Please verify email.");
+    const publicKey = getPublicKey(this._currentVerifyKey);
+
+    const verifyOptions = {
+      issuer: config.VERIFICATION_URI,
+      algorithms: [this._currentRsaAlgType],
+      email: request.email,
+      type: TokenType.VERIFY,
+      audience: request.audience,
+      keyid: this._currentVerifyKey,
+      expiresIn: this._mailExpiratation
+    };
+
+    const decoded: TokenResult = await unverifiedUser.verifyToken(
+      request.token,
+      publicKey,
+      verifyOptions
+    );
+    if (decoded.error)
+      return Result.fail<string>(400, `${decoded.error.split(".")[0]}`);
+    return Result.ok<string>(200, "Forgot password request has been verified");
+  }
+
+  async resetPassword(data: ResetPasswordRequest): Promise<Result<string>> {
+    const user: IUserModel = await this._userRepository.findByCriteria({
+      email: data.email,
+      isEmailConfirmed: true
+    });
+    if (!user) return Result.fail<string>(400, "User not found");
+
+    if (!user.passwordResetRequested) {
+      return Result.fail<string>(
+        400,
+        "Invalid request, you have not requested password reset."
+      );
+    }
+    user.password = data.newPassword;
+    user.passwordResetRequested = false;
+    user.save();
+    return Result.ok<string>(200, "Password successfully reset");
+  }
+  async changePassword(data: ChangePasswordData): Promise<Result<boolean>> {
+    // fetch user by id
     const user: IUserModel = await this._userRepository.findByCriteria({
       _id: data.userId,
       isEmailConfirmed: true
     });
     if (!user) return Result.fail<boolean>(400, "User not found");
+    if (user._id !== data.userId)
+      Result.fail<boolean>(
+        403,
+        "You are not authourized to make this request."
+      );
+
     const passwordMatched: boolean = await user.comparePassword(
       data.oldPassword
     );
     if (!passwordMatched)
-      return Result.fail<boolean>(400, "Invalid credentials");
+      return Result.fail<boolean>(400, "Password is incorrect.");
 
     user.password = data.newPassword;
     user.save();
 
     return Result.ok<bool>(200, true);
   }
+
   async resendVerificationLink(
     email: string,
     audience: string,
@@ -416,66 +536,31 @@ class UserBusiness implements IUserBusiness {
     const data: TokenGenerationRequest = {
       user,
       audience,
-      confirmationUrl: verificationUrl
+      tokenExpiresIn: this._mailExpiratation,
+      tokenType: TokenType.VERIFY,
+      redirectUrl: verificationUrl
     };
-    this.generateTokenAndSendToMail(data);
+    this.generateToken(data);
     return Result.ok<bool>(200, true);
   }
 
-  private async generateTokenAndSendToMail(data: TokenGenerationRequest) {
+  private async generateToken(
+    data: TokenGenerationRequest
+  ): Promise<TokenResult> {
     const tokenOptions: SignInOptions = {
       issuer: config.VERIFICATION_URI,
       audience: data.audience,
-      expiresIn: this._mailExpiratation,
+      expiresIn: data.tokenExpiresIn,
       algorithm: this._currentRsaAlgType,
       keyid: this._currentVerifyKey,
       subject: ""
     };
     const payload: ObjectKeyString = {
-      type: TokenType.VERIFY,
+      type: data.tokenType,
       email: data.user.email
     };
     const privateKey: string = getSecretByKey(this._currentVerifyKey);
-    if (privateKey == "")
-      return Result.fail<boolean>(
-        400,
-        `Private Key is missing for ${this._currentVerifyKey}`
-      );
-    const generated: TokenResult = await data.user.generateToken(
-      privateKey,
-      tokenOptions,
-      payload
-    );
-
-    if (generated.data) {
-      const welcomeEmailKeyValues: TemplateKeyValue[] = this.welcomeEmailKeyValue(
-        data.user.fullName,
-        data.audience,
-        `${data.confirmationUrl}?email=${data.user.email}&token=${generated.data}`
-      );
-
-      const welcomeTemplateString: string = WelcomeEmail.template;
-
-      const welcomeEmailPlaceHolder: TemplatePlaceHolder = {
-        template: welcomeTemplateString,
-        placeholders: welcomeEmailKeyValues
-      };
-
-      const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
-      const mailParams: IEmail = {
-        receivers: [data.user.email],
-        subject: "Signup Welcome Email",
-        mail: emailBody,
-        senderEmail: "talents@untappedpool.com",
-        senderName: "Untapped Pool"
-      };
-
-      await schedule(
-        StateMachineArns.EmailStateMachine,
-        new Date(),
-        mailParams
-      );
-    }
+    return await data.user.generateToken(privateKey, tokenOptions, payload);
   }
 
   async create(item: IUserModel): Promise<Result<any>> {
@@ -511,8 +596,6 @@ class UserBusiness implements IUserBusiness {
   }
 
   async patch(id: string, item: any): Promise<Result<UserViewModel>> {
-    console.log(item);
-    console.log(id);
     const user = await this._userRepository.findById(id);
     if (!user)
       return Result.fail<UserViewModel>(
@@ -547,7 +630,7 @@ class UserBusiness implements IUserBusiness {
     return Result.ok<boolean>(200, isDeleted);
   }
 
-  private welcomeEmailKeyValue(
+  private TokenEmailKeyValue(
     userName: string,
     audience: string,
     verificationUrl: string

@@ -66,10 +66,8 @@ var MediaBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         criteria = {
-                            id: id,
+                            _id: id,
                             isApproved: true,
                             isDeleted: false
                         };
@@ -77,7 +75,7 @@ var MediaBusiness = /** @class */ (function () {
                     case 1:
                         media = _a.sent();
                         if (!media)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Media of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Media not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, media)];
                 }
             });
@@ -109,8 +107,6 @@ var MediaBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!criteria)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         criteria.isApproved = true;
                         criteria.isDeleted = false;
                         return [4 /*yield*/, this._mediaRepository.findByCriteria(criteria)];
@@ -125,34 +121,66 @@ var MediaBusiness = /** @class */ (function () {
     };
     MediaBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
+            var newMedia;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         item.activityCount = 0;
                         item.isApproved = false;
                         item.isDeleted = false;
-                        console.log(item);
                         return [4 /*yield*/, this._mediaRepository.create(item)];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(201, true)];
+                        newMedia = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newMedia)];
                 }
             });
         });
     };
     MediaBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var media, updateObj;
+            var media, mediaItems, _loop_1, found, newMediaItem, _i, mediaItems_1, mediaItem, state_1, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._mediaRepository.findById(id)];
                     case 1:
                         media = _a.sent();
                         if (!media)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update media.Media with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Media not found.")];
                         item.isApproved = media.isApproved;
                         item.isDeleted = media.isDeleted;
+                        item.createdAt = media.createdAt;
                         item.updateAt = new Date();
+                        mediaItems = item.items ? item.items.slice() : [];
+                        item.items = [];
+                        if (mediaItems) {
+                            _loop_1 = function (mediaItem) {
+                                if (mediaItem._id) {
+                                    found = media.items.filter(function (x) { return (x._id = mediaItem._id); })[0];
+                                    if (!found) {
+                                        return { value: Result_1.Result.fail(404, "Media item " + mediaItem._id + " not found") };
+                                    }
+                                    var imageItem = {
+                                        _id: found._id,
+                                        likedBy: mediaItem.likedBy,
+                                        path: found.path,
+                                        uploadDate: found.uploadDate
+                                    };
+                                    item.items = item.items.concat([imageItem]);
+                                }
+                                else {
+                                    newMediaItem = {
+                                        path: mediaItem.path
+                                    };
+                                    item.items = item.items.concat([newMediaItem]);
+                                }
+                            };
+                            for (_i = 0, mediaItems_1 = mediaItems; _i < mediaItems_1.length; _i++) {
+                                mediaItem = mediaItems_1[_i];
+                                state_1 = _loop_1(mediaItem);
+                                if (typeof state_1 === "object")
+                                    return [2 /*return*/, state_1.value];
+                            }
+                        }
                         return [4 /*yield*/, this._mediaRepository.update(media._id, item)];
                     case 2:
                         updateObj = _a.sent();

@@ -39,7 +39,7 @@ export async function requireAuth(
       return next(
         new PlatformError({
           code: 401,
-          message: "Please provide a valid token"
+          message: "You must be logged in to perform operation."
         })
       );
     }

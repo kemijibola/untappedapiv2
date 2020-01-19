@@ -50,6 +50,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var UserBusiness_1 = __importDefault(require("../app/business/UserBusiness"));
 var error_1 = require("../utils/error");
+var auth_1 = require("../middlewares/auth");
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
 //   console.log('Request was made');
@@ -66,9 +67,9 @@ var AuthController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         loginParams = {
-                            email: req.body.email,
+                            email: req.body.email.toLowerCase(),
                             password: req.body.password,
-                            audience: req.body.audience,
+                            audience: req.body.audience.toLowerCase(),
                             issuer: ""
                         };
                         userBusiness = new UserBusiness_1.default();
@@ -98,15 +99,19 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.postforgotPassword = function (req, res, next) {
+    AuthController.prototype.postResetPassword = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, result, err_2;
+            var userBusiness, item, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness_1.default();
-                        return [4 /*yield*/, userBusiness.forgotPassword(req.body.email.toLowerCase(), req.body.audience.toLowerCase(), req.body.confirmationUrl.toLowerCase())];
+                        item = {
+                            email: req.body.email.toLowerCase(),
+                            newPassword: req.body.newPassword
+                        };
+                        return [4 /*yield*/, userBusiness.resetPassword(item)];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -129,20 +134,20 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.postChangePassword = function (req, res, next) {
+    AuthController.prototype.postVerifyResetPassword = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, data, result, err_3;
+            var userBusiness, item, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness_1.default();
-                        data = {
-                            userId: "5db803b9fd13673bd81547e4",
-                            oldPassword: req.body.oldPassword,
-                            newPassword: req.body.newPassword
+                        item = {
+                            email: req.body.email.toLowerCase(),
+                            token: req.body.token,
+                            audience: req.body.audience.toLowerCase()
                         };
-                        return [4 /*yield*/, userBusiness.resetPassword(data)];
+                        return [4 /*yield*/, userBusiness.verifyPasswordResetLink(item)];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -165,7 +170,7 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.postResendVerificationLink = function (req, res, next) {
+    AuthController.prototype.postforgotPassword = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var userBusiness, result, err_4;
             return __generator(this, function (_a) {
@@ -173,7 +178,7 @@ var AuthController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness_1.default();
-                        return [4 /*yield*/, userBusiness.resendVerificationLink(req.body.email.toLowerCase(), req.body.audience.toLowerCase(), req.body.confirmationUrl.toLowerCase())];
+                        return [4 /*yield*/, userBusiness.forgotPassword(req.body.email.toLowerCase(), req.body.audience.toLowerCase(), req.body.redirectUrl.toLowerCase())];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -196,20 +201,20 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.postVerifyEmail = function (req, res, next) {
+    AuthController.prototype.postChangePassword = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, userBusiness, result, err_5;
+            var userBusiness, data, result, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        request = {
-                            userEmail: req.body.email,
-                            token: req.body.token,
-                            audience: req.body.audience
-                        };
                         userBusiness = new UserBusiness_1.default();
-                        return [4 /*yield*/, userBusiness.confirmEmail(request)];
+                        data = {
+                            userId: req.user,
+                            oldPassword: req.body.oldPassword,
+                            newPassword: req.body.newPassword
+                        };
+                        return [4 /*yield*/, userBusiness.changePassword(data)];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -232,9 +237,76 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
+    AuthController.prototype.postResendVerificationLink = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, result, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.resendVerificationLink(req.body.email.toLowerCase(), req.body.audience.toLowerCase(), req.body.confirmationUrl.toLowerCase())];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.postVerifyEmail = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, userBusiness, result, err_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        request = {
+                            userEmail: req.body.email.toLowerCase(),
+                            token: req.body.token,
+                            audience: req.body.audience.toLowerCase()
+                        };
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.confirmEmail(request)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_7 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     AuthController.prototype.postSignup = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var signUpParams, userBusiness, result, err_6;
+            var signUpParams, userBusiness, result, err_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -263,7 +335,7 @@ var AuthController = /** @class */ (function () {
                                 data: result.data
                             })];
                     case 2:
-                        err_6 = _a.sent();
+                        err_8 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later."
@@ -282,13 +354,28 @@ var AuthController = /** @class */ (function () {
     ], AuthController.prototype, "postLogin", null);
     __decorate([
         decorators_1.post("/account/password/reset"),
-        decorators_1.requestValidators("email", "audience", "confirmationUrl"),
+        decorators_1.requestValidators("email", "newPassword"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postResetPassword", null);
+    __decorate([
+        decorators_1.post("/account/password/reset/verify"),
+        decorators_1.requestValidators("email", "token", "audience"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postVerifyResetPassword", null);
+    __decorate([
+        decorators_1.post("/account/password/reset/request"),
+        decorators_1.requestValidators("email", "audience", "redirectUrl"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postforgotPassword", null);
     __decorate([
         decorators_1.post("/account/password/change"),
+        decorators_1.use(auth_1.requireAuth),
         decorators_1.requestValidators("oldPassword", "newPassword"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

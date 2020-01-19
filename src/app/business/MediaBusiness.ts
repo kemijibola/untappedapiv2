@@ -1,3 +1,4 @@
+import { IMediaItem } from "./../models/interfaces/Media";
 import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
 import { ApprovalOperations, IApproval, IMedia } from "../models/interfaces";
@@ -21,14 +22,13 @@ class MediaBusiness implements IMediaBusiness {
   }
 
   async findById(id: string): Promise<Result<IMedia>> {
-    if (!id) return Result.fail<IMedia>(400, "Bad request");
     const criteria = {
-      id,
+      _id: id,
       isApproved: true,
       isDeleted: false
     };
     const media = await this._mediaRepository.findByIdCriteria(criteria);
-    if (!media) return Result.fail<IMedia>(404, `Media of Id ${id} not found`);
+    if (!media) return Result.fail<IMedia>(404, "Media not found");
     return Result.ok<IMedia>(200, media);
   }
 
@@ -42,7 +42,6 @@ class MediaBusiness implements IMediaBusiness {
   }
 
   async findByCriteria(criteria: any): Promise<Result<IMedia>> {
-    if (!criteria) return Result.fail<IMedia>(400, "Bad request");
     criteria.isApproved = true;
     criteria.isDeleted = false;
     const media = await this._mediaRepository.findByCriteria(criteria);
@@ -50,26 +49,49 @@ class MediaBusiness implements IMediaBusiness {
     return Result.ok<IMedia>(200, media);
   }
 
-  async create(item: IMedia): Promise<Result<any>> {
+  async create(item: IMedia): Promise<Result<IMedia>> {
     item.activityCount = 0;
     item.isApproved = false;
     item.isDeleted = false;
-    console.log(item);
-    await this._mediaRepository.create(item);
-
-    return Result.ok<boolean>(201, true);
+    const newMedia = await this._mediaRepository.create(item);
+    return Result.ok<IMedia>(201, newMedia);
   }
 
   async update(id: string, item: IMedia): Promise<Result<IMedia>> {
     const media = await this._mediaRepository.findById(id);
-    if (!media)
-      return Result.fail<IMedia>(
-        404,
-        `Could not update media.Media with Id ${id} not found`
-      );
+    if (!media) return Result.fail<IMedia>(404, "Media not found.");
     item.isApproved = media.isApproved;
     item.isDeleted = media.isDeleted;
+    item.createdAt = media.createdAt;
     item.updateAt = new Date();
+    const mediaItems = item.items ? [...item.items] : [];
+    item.items = [];
+
+    if (mediaItems) {
+      for (let mediaItem of mediaItems) {
+        if (mediaItem._id) {
+          var found = media.items.filter(x => (x._id = mediaItem._id))[0];
+          if (!found) {
+            return Result.fail<IMedia>(
+              404,
+              `Media item ${mediaItem._id} not found`
+            );
+          }
+          const imageItem: IMediaItem = {
+            _id: found._id,
+            likedBy: mediaItem.likedBy,
+            path: found.path,
+            uploadDate: found.uploadDate
+          };
+          item.items = [...item.items, imageItem];
+        } else {
+          var newMediaItem: IMediaItem = {
+            path: mediaItem.path
+          };
+          item.items = [...item.items, newMediaItem];
+        }
+      }
+    }
     const updateObj = await this._mediaRepository.update(media._id, item);
     return Result.ok<IMedia>(200, updateObj);
   }

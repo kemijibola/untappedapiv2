@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { controller, post, requestValidators, get, use } from "../decorators";
 import { PlatformError } from "../utils/error";
-import { IUploadFileRequest } from "../utils/uploadservice/Helper/Upload";
+import {
+  IUploadFileRequest,
+  UPLOADOPERATIONS
+} from "../utils/uploadservice/Helper/Upload";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { FileUpload } from "../utils/uploadservice/FileUpload";
 import { S3Storage } from "../utils/uploadservice/storage/S3Storage";
@@ -12,15 +15,37 @@ import { MediaMakerFactory } from "../utils/uploads/MediaMakerFactory";
 @controller("/v1/uploads")
 export class UploadController {
   @post("/")
-  @requestValidators("action", "files", "typeOfFile")
+  @requestValidators("action", "files", "mediaType")
   @use(requireAuth)
-  async create(req: RequestWithUser, res: Response, next: NextFunction) {
+  async getPresignedUrl(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
+      const action: UPLOADOPERATIONS = req.body.action;
+      if (!UPLOADOPERATIONS[action]) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "action is invalid."
+          })
+        );
+      }
+
+      if (req.body.files.length < 1) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide at least 1 item in files for upload."
+          })
+        );
+      }
       const item: IUploadFileRequest = req.body;
       item.uploader = req.user;
 
       var mediaFactory: AbstractMedia = new MediaMakerFactory().create(
-        item.typeOfFile.toLowerCase()
+        item.mediaType.toLowerCase()
       );
       const result = await mediaFactory.getPresignedUrl(item);
       if (result.error) {
@@ -36,6 +61,14 @@ export class UploadController {
         data: result.data
       });
     } catch (err) {
+      if (err.code === 400) {
+        return next(
+          new PlatformError({
+            code: err.code,
+            message: err.message
+          })
+        );
+      }
       return next(
         new PlatformError({
           code: 500,

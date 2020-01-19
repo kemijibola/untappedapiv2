@@ -93,7 +93,7 @@ var Audio = /** @class */ (function (_super) {
                         filesMap = data.files.reduce(function (theMap, item) {
                             var fileExtension = item.file.split(".").pop() || "";
                             fileExtension = fileExtension.toLowerCase();
-                            if (!lib_1.AcceptedMedias[fileExtension]) {
+                            if (!lib_1.AcceptedAudioExt[fileExtension]) {
                                 return Result_1.Result.fail(400, fileExtension + " is not allowed.");
                             }
                             theMap[item.file] = data.uploader + "/audios/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;

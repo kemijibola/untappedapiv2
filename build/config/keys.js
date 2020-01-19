@@ -9,9 +9,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Environment_1 = require("../app/models/interfaces/custom/Environment");
 var development = __importStar(require("./development.json"));
-var production = __importStar(require("./production.json"));
 var ci = __importStar(require("./ci.json"));
-var environment = Environment_1.Environment.PRODUCTION || "";
+var production = __importStar(require("./production.json"));
+var environment = process.env.NODE_ENV || "";
 switch (environment) {
     case Environment_1.Environment.CI:
         Object.seal(ci);

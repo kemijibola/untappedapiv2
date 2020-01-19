@@ -8,7 +8,7 @@ import {
   SignedUrl
 } from "../Helper/Upload";
 import { S3Params } from "../../../app/models/interfaces/custom/Bucket";
-import { AcceptedMedias, ObjectKeyString } from "../../lib";
+import { AcceptedImageExt, ObjectKeyString } from "../../lib";
 import uuid = require("uuid");
 import { Result } from "../../Result";
 import { AppConfig } from "../../../app/models/interfaces/custom/AppConfig";
@@ -55,7 +55,7 @@ export class S3Storage implements Storage {
           let fileExtension = item.file.split(".").pop() || "";
           fileExtension = fileExtension.toLowerCase();
           // we are ensuring the user sent valid media type for processing on s3
-          if (!AcceptedMedias[fileExtension]) {
+          if (!AcceptedImageExt[fileExtension]) {
             return Result.fail<PresignedUrl[]>(
               400,
               `${fileExtension} is not allowed.`
@@ -63,7 +63,7 @@ export class S3Storage implements Storage {
           }
 
           theMap[item.file] = `${data.uploader}/${
-            AcceptedMedias[fileExtension]
+            AcceptedImageExt[fileExtension]
           }/${UPLOADOPERATIONS[data.action]}/${uuid()}.${fileExtension}`;
           return theMap;
         },

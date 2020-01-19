@@ -55,7 +55,7 @@ function requireAuth(req, res, next) {
                     if (!encodedJWT) {
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 401,
-                                message: "Please provide a valid token"
+                                message: "You must be logged in to perform operation."
                             }))];
                     }
                     verifyOptions = {

@@ -48,23 +48,26 @@ export const imageExtensions: string[] = [
   "bpg"
 ];
 
-export const AcceptedMedias: ObjectKeyString = {
+export const AcceptedImageExt: ObjectKeyString = {
   png: "image",
   jpeg: "image",
   jpg: "image",
   gif: "image",
-  svg: "image",
+  svg: "image"
+};
+
+export const AcceptedAudioExt: ObjectKeyString = {
+  mp3: "audio",
+  wma: "audio",
+  webm: "audio",
+  wav: "audio"
+};
+export const AcceptedVideoExt: ObjectKeyString = {
   mp4: "video",
   mpeg: "video",
   avi: "video",
   flv: "video",
-  mp3: "audio",
-  wma: "audio",
-  webm: "audio",
-  wav: "audio",
-  "3gp": "video",
-  m4p: "audio",
-  aac: "audio"
+  "3gp": "video"
 };
 
 function getIssuer(): string {

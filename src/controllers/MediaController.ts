@@ -40,28 +40,13 @@ import uuid = require("uuid");
 export class MediaController {
   @use(requireAuth)
   @put("/:id")
-  @requestValidators("title", "items", "uploadType", "mediaType")
+  @requestValidators("mediaType")
   async update(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      if (req.body.items.length < 1) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: "Bad request. Parameter 'items' is missing in request body"
-          })
-        );
+      let uploadType: string = "";
+      if (req.body.items) {
+        uploadType = req.body.items.length > 1 ? "multiple" : "single";
       }
-      const uploadType: string = req.body.uploadType.toLowerCase();
-      const systemUploadTypes: string[] = Object.values(MediaUploadType);
-      if (!systemUploadTypes.includes(uploadType)) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: "Invalid uploadType"
-          })
-        );
-      }
-
       const mediaType: string = req.body.mediaType.toLowerCase();
       const systemMediaTypes: string[] = Object.values(MediaType);
       if (!systemMediaTypes.includes(mediaType)) {
@@ -76,6 +61,7 @@ export class MediaController {
       req.body.uploadType = uploadType;
       req.body.mediaType = mediaType;
       const update: IMedia = req.body;
+
       update.user = req.user;
 
       const mediaBusiness = new MediaBusiness();
@@ -92,7 +78,8 @@ export class MediaController {
         message: "Operation successful",
         data: result.data
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,
@@ -104,27 +91,18 @@ export class MediaController {
 
   @use(requireAuth)
   @post("/")
-  @requestValidators("title", "items", "uploadType", "mediaType")
+  @requestValidators("title", "items", "mediaType")
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       if (req.body.items.length < 1) {
         return next(
           new PlatformError({
             code: 400,
-            message: "Bad request. Parameter 'items' is missing in request body"
+            message: "Please provide at least 1 media to upload in items"
           })
         );
       }
-      const uploadType: string = req.body.uploadType.toLowerCase();
-      const systemUploadTypes: string[] = Object.values(MediaUploadType);
-      if (!systemUploadTypes.includes(uploadType)) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: "Invalid uploadType"
-          })
-        );
-      }
+      const uploadType = req.body.items.length > 1 ? "multiple" : "single";
 
       const mediaType: string = req.body.mediaType.toLowerCase();
       const systemMediaTypes: string[] = Object.values(MediaType);
@@ -138,10 +116,9 @@ export class MediaController {
       }
 
       const modifiedItems = req.body.items.reduce(
-        (theMap: IMediaItem[], theItem: any) => {
+        (theMap: IMediaItem[], theItem: string) => {
           const item: IMediaItem = {
-            id: uuid(),
-            path: theItem.path
+            path: theItem
           };
           theMap = [...theMap, item];
           return theMap;
@@ -151,7 +128,6 @@ export class MediaController {
       req.body.items = [...modifiedItems];
       req.body.uploadType = uploadType;
       req.body.mediaType = mediaType;
-      console.log("modified items", req.body.items);
       const newMedia: IMedia = req.body;
       newMedia.user = req.user;
       const mediaBusiness = new MediaBusiness();
@@ -169,7 +145,6 @@ export class MediaController {
         data: result.data
       });
     } catch (err) {
-      console.log("error from controller", err);
       return next(
         new PlatformError({
           code: 500,
@@ -179,29 +154,29 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
-  @post("/user")
+  // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
+  @get("/me")
   @use(requireAuth)
   async fetchUserList(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      if (!req.query.type) {
+      if (!req.query.mediaType) {
         return next(
           new PlatformError({
             code: 400,
-            message: `Bad request. Parameter 'type' is missing in query`
+            message: "Please provide mediaType in query param"
           })
         );
       }
-      if (!req.query.upload_type) {
+      if (!req.query.uploadType) {
         return next(
           new PlatformError({
             code: 400,
-            message: `Bad request.Parameter 'upload' is missing in query`
+            message: "Please provide uploadType in query param"
           })
         );
       }
 
-      const uploadType: string = req.query.upload_type.toLowerCase();
+      const uploadType: string = req.query.uploadType.toLowerCase();
       const systemUploadTypes: string[] = Object.values(MediaUploadType);
       if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
         return next(
@@ -212,7 +187,7 @@ export class MediaController {
         );
       }
 
-      const mediaType: string = req.query.type.toLowerCase();
+      const mediaType: string = req.query.mediaType.toLowerCase();
       const systemMediaTypes: string[] = Object.values(MediaType);
       if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
         return next(
@@ -235,11 +210,12 @@ export class MediaController {
 
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.fetch(condition);
+
       if (result.error) {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: `Error occured, ${result.error}`
           })
         );
       }
@@ -261,24 +237,24 @@ export class MediaController {
   @get("/")
   async fetchList(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.query.type) {
+      if (!req.query.mediaType) {
         return next(
           new PlatformError({
             code: 400,
-            message: `Bad request. Parameter 'type' is missing in query`
+            message: "Please provide mediaType in query param"
           })
         );
       }
-      if (!req.query.upload_type) {
+      if (!req.query.uploadType) {
         return next(
           new PlatformError({
             code: 400,
-            message: `Bad request.Parameter 'upload' is missing in query`
+            message: "Please provide uploadType in query param"
           })
         );
       }
 
-      const uploadType: string = req.body.upload_type.toLowerCase();
+      const uploadType: string = req.query.uploadType.toLowerCase();
       const systemUploadTypes: string[] = Object.values(MediaUploadType);
       if (!systemUploadTypes.includes(uploadType)) {
         return next(
@@ -289,9 +265,9 @@ export class MediaController {
         );
       }
 
-      const mediaType: string = req.body.type.toLowerCase();
+      const mediaType: string = req.query.mediaType.toLowerCase();
       const systemMediaTypes: string[] = Object.values(MediaType);
-      if (!systemMediaTypes.includes(mediaType)) {
+      if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
         return next(
           new PlatformError({
             code: 400,
@@ -304,14 +280,18 @@ export class MediaController {
       if (uploadType !== "all") {
         condition.uploadType = uploadType;
       }
-      condition.mediaType = mediaType;
+
+      if (mediaType !== "all") {
+        condition.mediaType = mediaType;
+      }
+
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.fetch(condition);
       if (result.error) {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: `Error occured, ${result.error}`
           })
         );
       }
@@ -329,64 +309,17 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id?type=audio&upload_type=single
+  // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
   @get("/:id")
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.query.type) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: `Bad request. Parameter 'type' is missing in query`
-          })
-        );
-      }
-      if (!req.query.upload_type) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: `Bad request.Parameter 'upload' is missing in query`
-          })
-        );
-      }
-
-      const uploadType: string = req.body.upload_type.toLowerCase();
-      const systemUploadTypes: string[] = Object.values(MediaUploadType);
-      if (!systemUploadTypes.includes(uploadType)) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: "Invalid uploadType"
-          })
-        );
-      }
-
-      const mediaType: string = req.body.type.toLowerCase();
-      const systemMediaTypes: string[] = Object.values(MediaType);
-      if (!systemMediaTypes.includes(mediaType)) {
-        return next(
-          new PlatformError({
-            code: 400,
-            message: "Invalid mediaType"
-          })
-        );
-      }
-
-      let condition: ObjectKeyString = {};
-      if (uploadType === MediaUploadType.all) {
-        condition.uploadType = "";
-      } else {
-        condition.uploadType = uploadType;
-      }
-      condition.mediaType = mediaType;
-      condition._id = req.params.id;
       const mediaBusiness = new MediaBusiness();
-      const result = await mediaBusiness.findOne(condition);
+      const result = await mediaBusiness.findById(req.params.id);
       if (result.error) {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: result.error
           })
         );
       }

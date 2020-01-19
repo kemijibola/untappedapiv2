@@ -90,10 +90,10 @@ var S3Storage = /** @class */ (function () {
                             var fileExtension = item.file.split(".").pop() || "";
                             fileExtension = fileExtension.toLowerCase();
                             // we are ensuring the user sent valid media type for processing on s3
-                            if (!lib_1.AcceptedMedias[fileExtension]) {
+                            if (!lib_1.AcceptedImageExt[fileExtension]) {
                                 return Result_1.Result.fail(400, fileExtension + " is not allowed.");
                             }
-                            theMap[item.file] = data.uploader + "/" + lib_1.AcceptedMedias[fileExtension] + "/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;
+                            theMap[item.file] = data.uploader + "/" + lib_1.AcceptedImageExt[fileExtension] + "/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;
                             return theMap;
                         }, {});
                         _c.label = 1;

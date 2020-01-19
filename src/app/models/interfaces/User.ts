@@ -29,7 +29,7 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   generalNotification: boolean;
   emailNotification: boolean;
   profileVisibility: boolean;
-
+  passwordResetRequested: boolean;
   isBounced: boolean;
   loginCount: number;
   status: IUserAccountStatus;

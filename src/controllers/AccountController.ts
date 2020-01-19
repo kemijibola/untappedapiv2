@@ -3,11 +3,14 @@ import { controller, get, post, requestValidators, use } from "../decorators";
 import UserBusiness from "../app/business/UserBusiness";
 import { PlatformError } from "../utils/error";
 import { ILogin, IRegister } from "../app/models/interfaces";
-import { issuer } from "../utils/lib";
 import {
   ConfirmEmailRequest,
-  ResetPasswordData
+  ChangePasswordData,
+  VerifyResetPasswordRequest,
+  ResetPasswordRequest
 } from "../app/models/interfaces/custom/Account";
+import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
+import { requireAuth } from "../middlewares/auth";
 
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
@@ -22,9 +25,9 @@ export class AuthController {
   async postLogin(req: Request, res: Response, next: NextFunction) {
     try {
       const loginParams: ILogin = {
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         password: req.body.password,
-        audience: req.body.audience,
+        audience: req.body.audience.toLowerCase(),
         issuer: ""
       };
 
@@ -55,14 +58,81 @@ export class AuthController {
   }
 
   @post("/account/password/reset")
-  @requestValidators("email", "audience", "confirmationUrl")
+  @requestValidators("email", "newPassword")
+  async postResetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userBusiness = new UserBusiness();
+      const item: ResetPasswordRequest = {
+        email: req.body.email.toLowerCase(),
+        newPassword: req.body.newPassword
+      };
+      const result = await userBusiness.resetPassword(item);
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later."
+        })
+      );
+    }
+  }
+
+  @post("/account/password/reset/verify")
+  @requestValidators("email", "token", "audience")
+  async postVerifyResetPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userBusiness = new UserBusiness();
+      const item: VerifyResetPasswordRequest = {
+        email: req.body.email.toLowerCase(),
+        token: req.body.token,
+        audience: req.body.audience.toLowerCase()
+      };
+      const result = await userBusiness.verifyPasswordResetLink(item);
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later."
+        })
+      );
+    }
+  }
+
+  @post("/account/password/reset/request")
+  @requestValidators("email", "audience", "redirectUrl")
   async postforgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const userBusiness = new UserBusiness();
       const result = await userBusiness.forgotPassword(
         req.body.email.toLowerCase(),
         req.body.audience.toLowerCase(),
-        req.body.confirmationUrl.toLowerCase()
+        req.body.redirectUrl.toLowerCase()
       );
       if (result.error)
         return next(
@@ -86,17 +156,22 @@ export class AuthController {
   }
 
   @post("/account/password/change")
+  @use(requireAuth)
   @requestValidators("oldPassword", "newPassword")
-  async postChangePassword(req: Request, res: Response, next: NextFunction) {
+  async postChangePassword(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       // TODO: get userId from tokenExchange
       const userBusiness = new UserBusiness();
-      const data: ResetPasswordData = {
-        userId: "5db803b9fd13673bd81547e4",
+      const data: ChangePasswordData = {
+        userId: req.user,
         oldPassword: req.body.oldPassword,
         newPassword: req.body.newPassword
       };
-      const result = await userBusiness.resetPassword(data);
+      const result = await userBusiness.changePassword(data);
       if (result.error)
         return next(
           new PlatformError({
@@ -159,9 +234,9 @@ export class AuthController {
   async postVerifyEmail(req: Request, res: Response, next: NextFunction) {
     try {
       const request: ConfirmEmailRequest = {
-        userEmail: req.body.email,
+        userEmail: req.body.email.toLowerCase(),
         token: req.body.token,
-        audience: req.body.audience
+        audience: req.body.audience.toLowerCase()
       };
 
       const userBusiness = new UserBusiness();

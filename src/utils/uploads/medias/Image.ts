@@ -10,7 +10,7 @@ import request from "request";
 import { AppConfig } from "../../../app/models/interfaces/custom/AppConfig";
 import { SignedUrl } from "../../uploadservice/Helper/Upload";
 import { Result } from "../../Result";
-import { ObjectKeyString, AcceptedMedias } from "../../lib";
+import { ObjectKeyString, AcceptedImageExt } from "../../lib";
 import uuid = require("uuid");
 import { ImageEditRequest } from "../../../app/models/interfaces";
 const config: AppConfig = module.require("../../../config/keys");
@@ -28,7 +28,6 @@ export class Image extends AbstractMedia {
     super();
   }
 
-
   async getPresignedUrl(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     let signedUrls: SignedUrl = {
       presignedUrl: [],
@@ -45,7 +44,7 @@ export class Image extends AbstractMedia {
         (theMap: any, item: IFileMetaData) => {
           let fileExtension = item.file.split(".").pop() || "";
           fileExtension = fileExtension.toLowerCase();
-          if (!AcceptedMedias[fileExtension]) {
+          if (!AcceptedImageExt[fileExtension]) {
             return Result.fail<PresignedUrl[]>(
               400,
               `${fileExtension} is not allowed.`
@@ -60,11 +59,14 @@ export class Image extends AbstractMedia {
       );
       try {
         for (let item in filesMap) {
+          const file: IFileMetaData = data.files.filter(
+            x => x.file === item
+          )[0];
           const params = {
             Bucket: config.IMAGE_BUCKET.bucket,
             Key: filesMap[item],
             Expires: 30 * 60,
-            ContentType: data.files[0].file_type
+            ContentType: file.file_type
           };
           const options = {
             signatureVersion: "v4",

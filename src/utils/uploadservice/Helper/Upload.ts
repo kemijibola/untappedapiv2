@@ -24,7 +24,7 @@ export interface PresignedUrl {
 }
 
 export interface IUploadFileRequest {
-  typeOfFile: string;
+  mediaType: string;
   action: UPLOADOPERATIONS;
   files: IFileMetaData[];
   uploader: IUser["_id"];

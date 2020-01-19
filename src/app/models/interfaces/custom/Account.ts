@@ -1,15 +1,16 @@
-import { IUser, IRole, IUserModel } from '../';
+import { IUser, IRole, IUserModel } from "../";
+import { TokenType } from "./GlobalEnum";
 
 export interface ICreateUser {
-  email: IUser['email'];
-  fullName: IUser['fullName'];
-  password: IUser['password'];
-  roles: IRole['_id'][];
+  email: IUser["email"];
+  fullName: IUser["fullName"];
+  password: IUser["password"];
+  roles: IRole["_id"][];
 }
 
 export interface ILoginUser {
-  email: IUser['email'];
-  password: IUser['password'];
+  email: IUser["email"];
+  password: IUser["password"];
   audience: string;
 }
 
@@ -17,21 +18,35 @@ export interface ConfirmEmailRequest {
   userEmail: string;
   token: string;
   audience: string;
+  user?: IUserModel["_id"];
 }
 
 export interface TokenGenerationRequest {
   user: IUserModel;
   audience: string;
-  confirmationUrl: string;
+  redirectUrl: string;
+  tokenType: TokenType;
+  tokenExpiresIn: string;
 }
 
 export interface TokenResult {
-  data: any;
-  error: string;
+  data?: any;
+  error?: string;
 }
 
-export interface ResetPasswordData {
+export interface ChangePasswordData {
   userId: string;
   oldPassword: string;
   newPassword: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  newPassword: string;
+}
+
+export interface VerifyResetPasswordRequest {
+  email: string;
+  token: string;
+  audience: string;
 }

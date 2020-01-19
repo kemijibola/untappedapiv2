@@ -46,21 +46,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
+var Upload_1 = require("../utils/uploadservice/Helper/Upload");
 var auth_1 = require("../middlewares/auth");
 var MediaMakerFactory_1 = require("../utils/uploads/MediaMakerFactory");
 var UploadController = /** @class */ (function () {
     function UploadController() {
     }
-    UploadController.prototype.create = function (req, res, next) {
+    UploadController.prototype.getPresignedUrl = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, mediaFactory, result, err_1;
+            var action, item, mediaFactory, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        action = req.body.action;
+                        if (!Upload_1.UPLOADOPERATIONS[action]) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "action is invalid."
+                                }))];
+                        }
+                        if (req.body.files.length < 1) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide at least 1 item in files for upload."
+                                }))];
+                        }
                         item = req.body;
                         item.uploader = req.user;
-                        mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.typeOfFile.toLowerCase());
+                        mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.mediaType.toLowerCase());
                         return [4 /*yield*/, mediaFactory.getPresignedUrl(item)];
                     case 1:
                         result = _a.sent();
@@ -76,6 +90,12 @@ var UploadController = /** @class */ (function () {
                             })];
                     case 2:
                         err_1 = _a.sent();
+                        if (err_1.code === 400) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: err_1.code,
+                                    message: err_1.message
+                                }))];
+                        }
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later."
@@ -91,12 +111,12 @@ var UploadController = /** @class */ (function () {
     UploadController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
-        decorators_1.requestValidators("action", "files", "typeOfFile"),
+        decorators_1.requestValidators("action", "files", "mediaType"),
         decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], UploadController.prototype, "create", null);
+    ], UploadController.prototype, "getPresignedUrl", null);
     UploadController = __decorate([
         decorators_1.controller("/v1/uploads")
     ], UploadController);

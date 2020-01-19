@@ -92,7 +92,7 @@ var Image = /** @class */ (function (_super) {
                         filesMap = data.files.reduce(function (theMap, item) {
                             var fileExtension = item.file.split(".").pop() || "";
                             fileExtension = fileExtension.toLowerCase();
-                            if (!lib_1.AcceptedMedias[fileExtension]) {
+                            if (!lib_1.AcceptedImageExt[fileExtension]) {
                                 return Result_1.Result.fail(400, fileExtension + " is not allowed.");
                             }
                             theMap[item.file] = data.uploader + "/images/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;
@@ -102,15 +102,16 @@ var Image = /** @class */ (function (_super) {
                     case 1:
                         _c.trys.push([1, 6, , 7]);
                         _loop_1 = function (item) {
-                            var params, options, client, signed;
+                            var file, params, options, client, signed;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
+                                        file = data.files.filter(function (x) { return x.file === item; })[0];
                                         params = {
                                             Bucket: config.IMAGE_BUCKET.bucket,
                                             Key: filesMap[item],
                                             Expires: 30 * 60,
-                                            ContentType: data.files[0].file_type
+                                            ContentType: file.file_type
                                         };
                                         options = {
                                             signatureVersion: "v4",

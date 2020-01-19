@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Image_1 = require("./medias/Image");
 var Audio_1 = require("./medias/Audio");
 var Video_1 = require("./medias/Video");
+var error_1 = require("../error");
 var MediaMakerFactory = /** @class */ (function () {
     function MediaMakerFactory() {
     }
@@ -17,7 +18,10 @@ var MediaMakerFactory = /** @class */ (function () {
             return new Video_1.Video();
         }
         else {
-            throw new Error("Invalid typeOfFile");
+            throw new error_1.PlatformError({
+                code: 400,
+                message: "mediaType is an invalid media type."
+            });
         }
     };
     return MediaMakerFactory;

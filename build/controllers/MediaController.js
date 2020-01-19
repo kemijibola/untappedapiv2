@@ -49,7 +49,6 @@ var MediaBusiness = require("../app/business/MediaBusiness");
 var interfaces_1 = require("../app/models/interfaces");
 var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
-var uuid = require("uuid");
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
 // SAMPLE GET ROUTE:: http://localhost:9000?medias?type=videos&upload=single
@@ -62,24 +61,14 @@ var MediaController = /** @class */ (function () {
     }
     MediaController.prototype.update = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, update, mediaBusiness, result, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var uploadType, mediaType, systemMediaTypes, update, mediaBusiness, result, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        if (req.body.items.length < 1) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Bad request. Parameter 'items' is missing in request body"
-                                }))];
-                        }
-                        uploadType = req.body.uploadType.toLowerCase();
-                        systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
-                        if (!systemUploadTypes.includes(uploadType)) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Invalid uploadType"
-                                }))];
+                        _a.trys.push([0, 2, , 3]);
+                        uploadType = "";
+                        if (req.body.items) {
+                            uploadType = req.body.items.length > 1 ? "multiple" : "single";
                         }
                         mediaType = req.body.mediaType.toLowerCase();
                         systemMediaTypes = Object.values(interfaces_1.MediaType);
@@ -96,7 +85,7 @@ var MediaController = /** @class */ (function () {
                         mediaBusiness = new MediaBusiness();
                         return [4 /*yield*/, mediaBusiness.update(req.params.id, update)];
                     case 1:
-                        result = _b.sent();
+                        result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
@@ -108,7 +97,8 @@ var MediaController = /** @class */ (function () {
                                 data: result.data
                             })];
                     case 2:
-                        _a = _b.sent();
+                        err_1 = _a.sent();
+                        console.log(err_1);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later."
@@ -120,7 +110,7 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, modifiedItems, newMedia, mediaBusiness, result, err_1;
+            var uploadType, mediaType, systemMediaTypes, modifiedItems, newMedia, mediaBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -128,17 +118,10 @@ var MediaController = /** @class */ (function () {
                         if (req.body.items.length < 1) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Bad request. Parameter 'items' is missing in request body"
+                                    message: "Please provide at least 1 media to upload in items"
                                 }))];
                         }
-                        uploadType = req.body.uploadType.toLowerCase();
-                        systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
-                        if (!systemUploadTypes.includes(uploadType)) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Invalid uploadType"
-                                }))];
-                        }
+                        uploadType = req.body.items.length > 1 ? "multiple" : "single";
                         mediaType = req.body.mediaType.toLowerCase();
                         systemMediaTypes = Object.values(interfaces_1.MediaType);
                         if (!systemMediaTypes.includes(mediaType)) {
@@ -149,8 +132,7 @@ var MediaController = /** @class */ (function () {
                         }
                         modifiedItems = req.body.items.reduce(function (theMap, theItem) {
                             var item = {
-                                id: uuid(),
-                                path: theItem.path
+                                path: theItem
                             };
                             theMap = theMap.concat([item]);
                             return theMap;
@@ -158,7 +140,6 @@ var MediaController = /** @class */ (function () {
                         req.body.items = modifiedItems.slice();
                         req.body.uploadType = uploadType;
                         req.body.mediaType = mediaType;
-                        console.log("modified items", req.body.items);
                         newMedia = req.body;
                         newMedia.user = req.user;
                         mediaBusiness = new MediaBusiness();
@@ -176,8 +157,7 @@ var MediaController = /** @class */ (function () {
                                 data: result.data
                             })];
                     case 2:
-                        err_1 = _a.sent();
-                        console.log("error from controller", err_1);
+                        err_2 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later."
@@ -187,27 +167,27 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
+    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
     MediaController.prototype.fetchUserList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_2;
+            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        if (!req.query.type) {
+                        if (!req.query.mediaType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Bad request. Parameter 'type' is missing in query"
+                                    message: "Please provide mediaType in query param"
                                 }))];
                         }
-                        if (!req.query.upload_type) {
+                        if (!req.query.uploadType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Bad request.Parameter 'upload' is missing in query"
+                                    message: "Please provide uploadType in query param"
                                 }))];
                         }
-                        uploadType = req.query.upload_type.toLowerCase();
+                        uploadType = req.query.uploadType.toLowerCase();
                         systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
                         if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
@@ -215,7 +195,7 @@ var MediaController = /** @class */ (function () {
                                     message: "Invalid uploadType"
                                 }))];
                         }
-                        mediaType = req.query.type.toLowerCase();
+                        mediaType = req.query.mediaType.toLowerCase();
                         systemMediaTypes = Object.values(interfaces_1.MediaType);
                         if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
@@ -238,7 +218,7 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: "Error occured, " + result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
@@ -246,7 +226,7 @@ var MediaController = /** @class */ (function () {
                                 data: result.data
                             })];
                     case 2:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later"
@@ -259,24 +239,24 @@ var MediaController = /** @class */ (function () {
     // SAMPLE GET ALL LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
     MediaController.prototype.fetchList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_3;
+            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        if (!req.query.type) {
+                        if (!req.query.mediaType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Bad request. Parameter 'type' is missing in query"
+                                    message: "Please provide mediaType in query param"
                                 }))];
                         }
-                        if (!req.query.upload_type) {
+                        if (!req.query.uploadType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Bad request.Parameter 'upload' is missing in query"
+                                    message: "Please provide uploadType in query param"
                                 }))];
                         }
-                        uploadType = req.body.upload_type.toLowerCase();
+                        uploadType = req.query.uploadType.toLowerCase();
                         systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
                         if (!systemUploadTypes.includes(uploadType)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
@@ -284,9 +264,9 @@ var MediaController = /** @class */ (function () {
                                     message: "Invalid uploadType"
                                 }))];
                         }
-                        mediaType = req.body.type.toLowerCase();
+                        mediaType = req.query.mediaType.toLowerCase();
                         systemMediaTypes = Object.values(interfaces_1.MediaType);
-                        if (!systemMediaTypes.includes(mediaType)) {
+                        if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "Invalid mediaType"
@@ -296,7 +276,9 @@ var MediaController = /** @class */ (function () {
                         if (uploadType !== "all") {
                             condition.uploadType = uploadType;
                         }
-                        condition.mediaType = mediaType;
+                        if (mediaType !== "all") {
+                            condition.mediaType = mediaType;
+                        }
                         mediaBusiness = new MediaBusiness();
                         return [4 /*yield*/, mediaBusiness.fetch(condition)];
                     case 1:
@@ -304,77 +286,7 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
-                                }))];
-                        }
-                        return [2 /*return*/, res.status(result.responseCode).json({
-                                message: "Media Operation successful",
-                                data: result.data
-                            })];
-                    case 2:
-                        err_3 = _a.sent();
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured." + err_3
-                            }))];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id?type=audio&upload_type=single
-    MediaController.prototype.fetch = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        if (!req.query.type) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Bad request. Parameter 'type' is missing in query"
-                                }))];
-                        }
-                        if (!req.query.upload_type) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Bad request.Parameter 'upload' is missing in query"
-                                }))];
-                        }
-                        uploadType = req.body.upload_type.toLowerCase();
-                        systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
-                        if (!systemUploadTypes.includes(uploadType)) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Invalid uploadType"
-                                }))];
-                        }
-                        mediaType = req.body.type.toLowerCase();
-                        systemMediaTypes = Object.values(interfaces_1.MediaType);
-                        if (!systemMediaTypes.includes(mediaType)) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Invalid mediaType"
-                                }))];
-                        }
-                        condition = {};
-                        if (uploadType === interfaces_1.MediaUploadType.all) {
-                            condition.uploadType = "";
-                        }
-                        else {
-                            condition.uploadType = uploadType;
-                        }
-                        condition.mediaType = mediaType;
-                        condition._id = req.params.id;
-                        mediaBusiness = new MediaBusiness();
-                        return [4 /*yield*/, mediaBusiness.findOne(condition)];
-                    case 1:
-                        result = _a.sent();
-                        if (result.error) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: "Error occured, " + result.error
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
@@ -392,10 +304,43 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
+    // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
+    MediaController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.findById(req.params.id)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_5
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.put("/:id"),
-        decorators_1.requestValidators("title", "items", "uploadType", "mediaType"),
+        decorators_1.requestValidators("mediaType"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
@@ -403,13 +348,13 @@ var MediaController = /** @class */ (function () {
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.post("/"),
-        decorators_1.requestValidators("title", "items", "uploadType", "mediaType"),
+        decorators_1.requestValidators("title", "items", "mediaType"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "create", null);
     __decorate([
-        decorators_1.post("/user"),
+        decorators_1.get("/me"),
         decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

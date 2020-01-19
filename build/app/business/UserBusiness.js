@@ -92,8 +92,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         criteria = {
-                            email: params.email.toLowerCase(),
-                            isEmailConfirmed: true
+                            email: params.email.toLowerCase()
                         };
                         return [4 /*yield*/, this.findUserByEmail(criteria)];
                     case 1:
@@ -181,14 +180,13 @@ var UserBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(400, unverifiedUser.email + " has already been verified.")];
                         publicKey = lib_1.getPublicKey(this._currentVerifyKey);
                         verifyOptions = {
-                            kid: this._currentVerifyKey,
                             issuer: config.VERIFICATION_URI,
+                            algorithms: [this._currentRsaAlgType],
                             email: request.userEmail,
                             type: GlobalEnum_1.TokenType.VERIFY,
                             audience: request.audience,
                             keyid: this._currentVerifyKey,
-                            ignoreExpiration: false,
-                            maxAge: this._mailExpiratation
+                            expiresIn: this._mailExpiratation
                         };
                         return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
                     case 2:
@@ -384,14 +382,12 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, isUserTypeValid, userType, defaultRole, newUser, data;
+            var user, isUserTypeValid, userType, defaultRole, newUser, data, token, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, recievers;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("got here");
-                        return [4 /*yield*/, this._userRepository.findByCriteria({
-                                email: item.email
-                            })];
+                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
+                            email: item.email
+                        })];
                     case 1:
                         user = _a.sent();
                         if (user) {
@@ -423,17 +419,34 @@ var UserBusiness = /** @class */ (function () {
                         data = {
                             user: newUser,
                             audience: item.audience,
-                            confirmationUrl: item.confirmationUrl
+                            tokenExpiresIn: this._mailExpiratation,
+                            tokenType: GlobalEnum_1.TokenType.VERIFY,
+                            redirectUrl: item.confirmationUrl
                         };
-                        this.generateTokenAndSendToMail(data);
-                        return [2 /*return*/, Result_1.Result.ok(201, true)];
+                        return [4 /*yield*/, this.generateToken(data)];
+                    case 5:
+                        token = _a.sent();
+                        if (!token.data) return [3 /*break*/, 7];
+                        welcomeEmailKeyValues = this.TokenEmailKeyValue(newUser.fullName, item.audience, item.confirmationUrl + "?email=" + newUser.email + "&token=" + token.data);
+                        welcomeTemplateString = emailtemplates_1.WelcomeEmail.template;
+                        welcomeEmailPlaceHolder = {
+                            template: welcomeTemplateString,
+                            placeholders: welcomeEmailKeyValues
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
+                        recievers = [newUser.email];
+                        return [4 /*yield*/, this.sendMail(recievers, "SignUp Welcome Email", emailBody)];
+                    case 6:
+                        _a.sent();
+                        _a.label = 7;
+                    case 7: return [2 /*return*/, Result_1.Result.ok(201, true)];
                 }
             });
         });
     };
-    UserBusiness.prototype.forgotPassword = function (email, audience, verificationUrl) {
+    UserBusiness.prototype.forgotPassword = function (email, audience, redirectUrl) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, request;
+            var user, request, token, forgorPasswordEmailKeyValues, forgoPasswordTemplateString, forgotPasswordEmailPlaceHolder, emailBody, recievers;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
@@ -441,20 +454,121 @@ var UserBusiness = /** @class */ (function () {
                         })];
                     case 1:
                         user = _a.sent();
-                        if (user) {
-                            request = {
-                                user: user,
-                                audience: audience,
-                                confirmationUrl: verificationUrl
-                            };
-                            this.generateTokenAndSendToMail(request);
-                        }
-                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                        if (!user) return [3 /*break*/, 4];
+                        request = {
+                            user: user,
+                            audience: audience,
+                            tokenExpiresIn: this._mailExpiratation,
+                            tokenType: GlobalEnum_1.TokenType.VERIFY,
+                            redirectUrl: redirectUrl
+                        };
+                        return [4 /*yield*/, this.generateToken(request)];
+                    case 2:
+                        token = _a.sent();
+                        if (!token.data) return [3 /*break*/, 4];
+                        console.log(token.data);
+                        forgorPasswordEmailKeyValues = this.TokenEmailKeyValue(user.fullName, audience, redirectUrl + "?email=" + user.email + "&token=" + token.data);
+                        forgoPasswordTemplateString = emailtemplates_1.ForgotPasswordEmail.template;
+                        forgotPasswordEmailPlaceHolder = {
+                            template: forgoPasswordTemplateString,
+                            placeholders: forgorPasswordEmailKeyValues
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(forgotPasswordEmailPlaceHolder);
+                        recievers = [user.email];
+                        return [4 /*yield*/, this.sendMail(recievers, "Reset Your Password", emailBody)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        user.passwordResetRequested = true;
+                        user.save();
+                        return [2 /*return*/, Result_1.Result.ok(200, "Reset password link has been sent successfully.")];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.sendMail = function (receivers, subject, mailBody) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mailParams;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        mailParams = {
+                            receivers: receivers.slice(),
+                            subject: subject,
+                            mail: mailBody,
+                            senderEmail: "talents@untappedpool.com",
+                            senderName: "Untapped Pool"
+                        };
+                        return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.EmailStateMachine, new Date(), mailParams)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.verifyPasswordResetLink = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var criteria, unverifiedUser, publicKey, verifyOptions, decoded;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        criteria = {
+                            email: request.email.toLowerCase()
+                        };
+                        return [4 /*yield*/, this.findUserByEmail(criteria)];
+                    case 1:
+                        unverifiedUser = _a.sent();
+                        if (!unverifiedUser)
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found.")];
+                        if (!unverifiedUser.isEmailConfirmed)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please verify email.")];
+                        publicKey = lib_1.getPublicKey(this._currentVerifyKey);
+                        verifyOptions = {
+                            issuer: config.VERIFICATION_URI,
+                            algorithms: [this._currentRsaAlgType],
+                            email: request.email,
+                            type: GlobalEnum_1.TokenType.VERIFY,
+                            audience: request.audience,
+                            keyid: this._currentVerifyKey,
+                            expiresIn: this._mailExpiratation
+                        };
+                        return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
+                    case 2:
+                        decoded = _a.sent();
+                        if (decoded.error)
+                            return [2 /*return*/, Result_1.Result.fail(400, "" + decoded.error.split(".")[0])];
+                        return [2 /*return*/, Result_1.Result.ok(200, "Forgot password request has been verified")];
                 }
             });
         });
     };
     UserBusiness.prototype.resetPassword = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
+                            email: data.email,
+                            isEmailConfirmed: true
+                        })];
+                    case 1:
+                        user = _a.sent();
+                        if (!user)
+                            return [2 /*return*/, Result_1.Result.fail(400, "User not found")];
+                        if (!user.passwordResetRequested) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid request, you have not requested password reset.")];
+                        }
+                        user.password = data.newPassword;
+                        user.passwordResetRequested = false;
+                        user.save();
+                        return [2 /*return*/, Result_1.Result.ok(200, "Password successfully reset")];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.changePassword = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var user, passwordMatched;
             return __generator(this, function (_a) {
@@ -467,11 +581,13 @@ var UserBusiness = /** @class */ (function () {
                         user = _a.sent();
                         if (!user)
                             return [2 /*return*/, Result_1.Result.fail(400, "User not found")];
+                        if (user._id !== data.userId)
+                            Result_1.Result.fail(403, "You are not authourized to make this request.");
                         return [4 /*yield*/, user.comparePassword(data.oldPassword)];
                     case 2:
                         passwordMatched = _a.sent();
                         if (!passwordMatched)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid credentials")];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Password is incorrect.")];
                         user.password = data.newPassword;
                         user.save();
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
@@ -497,58 +613,37 @@ var UserBusiness = /** @class */ (function () {
                         data = {
                             user: user,
                             audience: audience,
-                            confirmationUrl: verificationUrl
+                            tokenExpiresIn: this._mailExpiratation,
+                            tokenType: GlobalEnum_1.TokenType.VERIFY,
+                            redirectUrl: verificationUrl
                         };
-                        this.generateTokenAndSendToMail(data);
+                        this.generateToken(data);
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
         });
     };
-    UserBusiness.prototype.generateTokenAndSendToMail = function (data) {
+    UserBusiness.prototype.generateToken = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var tokenOptions, payload, privateKey, generated, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, mailParams;
+            var tokenOptions, payload, privateKey;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         tokenOptions = {
                             issuer: config.VERIFICATION_URI,
                             audience: data.audience,
-                            expiresIn: this._mailExpiratation,
+                            expiresIn: data.tokenExpiresIn,
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentVerifyKey,
                             subject: ""
                         };
                         payload = {
-                            type: GlobalEnum_1.TokenType.VERIFY,
+                            type: data.tokenType,
                             email: data.user.email
                         };
                         privateKey = lib_1.getSecretByKey(this._currentVerifyKey);
-                        if (privateKey == "")
-                            return [2 /*return*/, Result_1.Result.fail(400, "Private Key is missing for " + this._currentVerifyKey)];
                         return [4 /*yield*/, data.user.generateToken(privateKey, tokenOptions, payload)];
-                    case 1:
-                        generated = _a.sent();
-                        if (!generated.data) return [3 /*break*/, 3];
-                        welcomeEmailKeyValues = this.welcomeEmailKeyValue(data.user.fullName, data.audience, data.confirmationUrl + "?email=" + data.user.email + "&token=" + generated.data);
-                        welcomeTemplateString = emailtemplates_1.WelcomeEmail.template;
-                        welcomeEmailPlaceHolder = {
-                            template: welcomeTemplateString,
-                            placeholders: welcomeEmailKeyValues
-                        };
-                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
-                        mailParams = {
-                            receivers: [data.user.email],
-                            subject: "Signup Welcome Email",
-                            mail: emailBody,
-                            senderEmail: "talents@untappedpool.com",
-                            senderName: "Untapped Pool"
-                        };
-                        return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.EmailStateMachine, new Date(), mailParams)];
-                    case 2:
-                        _a.sent();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -605,10 +700,7 @@ var UserBusiness = /** @class */ (function () {
             var user, updateObj, refinedUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log(item);
-                        console.log(id);
-                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
                         if (!user)
@@ -651,7 +743,7 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
-    UserBusiness.prototype.welcomeEmailKeyValue = function (userName, audience, verificationUrl) {
+    UserBusiness.prototype.TokenEmailKeyValue = function (userName, audience, verificationUrl) {
         return [
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.Facebook,

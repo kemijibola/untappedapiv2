@@ -1,9 +1,9 @@
 import { Environment } from "../app/models/interfaces/custom/Environment";
 import * as development from "./development.json";
-import * as production from "./production.json";
 import * as ci from "./ci.json";
+import * as production from "./production.json";
 
-let environment: string = Environment.PRODUCTION || "";
+let environment: string = process.env.NODE_ENV || "";
 
 switch (environment) {
   case Environment.CI:

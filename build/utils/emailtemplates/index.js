@@ -4,4 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./welcomeEmail"));
+__export(require("./forgotPasswordMail"));
 //# sourceMappingURL=index.js.map

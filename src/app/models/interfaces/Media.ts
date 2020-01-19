@@ -46,7 +46,7 @@ export enum MediaType {
   image = "image"
 }
 export interface IMediaItem {
-  id: string;
+  _id?: string;
   path: string;
   likedBy?: IUser["fullName"][];
   uploadDate?: Date;

@@ -48,12 +48,13 @@ var userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     password: { type: String, required: true },
-    userType: { type: mongoose_1.Schema.Types.ObjectId, ref: 'UserType', required: true },
+    userType: { type: mongoose_1.Schema.Types.ObjectId, ref: "UserType", required: true },
     profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
     generalNotification: { type: Boolean, default: true },
+    passwordResetRequested: { type: Boolean, default: false },
     tapNotification: { type: Boolean, default: true },
     emailNotification: { type: Boolean, default: true },
     profileVisibility: { type: Boolean, default: false },
@@ -63,14 +64,14 @@ var userSchema = new mongoose_1.Schema({
     roles: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Role',
+            ref: "Role",
             required: true
         }
     ],
     lastLogin: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application'
+        ref: "Application"
     }
 }, { timestamps: true });
 userSchema.methods.comparePassword = function (candidatePassword) {
@@ -110,9 +111,9 @@ userSchema.methods.verifyToken = function (encodedJwt, publicKey, verifyOptions)
         });
     });
 };
-userSchema.pre('save', function (next) {
+userSchema.pre("save", function (next) {
     var user = this;
-    if (!user.isModified('password')) {
+    if (!user.isModified("password")) {
         return next();
     }
     bcryptjs_1.default.genSalt(10, function (err, salt) {
@@ -128,12 +129,12 @@ userSchema.pre('save', function (next) {
         });
     });
 });
-userSchema.pre('save', function (next) {
+userSchema.pre("save", function (next) {
     var now = new Date();
     if (!this.createdAt) {
         this.createdAt = now;
     }
     next();
 });
-exports.UserSchema = mongooseConnection.model('User', userSchema);
+exports.UserSchema = mongooseConnection.model("User", userSchema);
 //# sourceMappingURL=User.js.map

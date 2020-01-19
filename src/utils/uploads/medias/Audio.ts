@@ -10,7 +10,7 @@ import request from "request";
 import { AppConfig } from "../../../app/models/interfaces/custom/AppConfig";
 import { SignedUrl } from "../../uploadservice/Helper/Upload";
 import { Result } from "../../Result";
-import { ObjectKeyString, AcceptedMedias } from "../../lib";
+import { ObjectKeyString, AcceptedAudioExt } from "../../lib";
 import uuid = require("uuid");
 import { ImageEditRequest } from "../../../app/models/interfaces";
 const config: AppConfig = module.require("../../../config/keys");
@@ -44,7 +44,7 @@ export class Audio extends AbstractMedia {
         (theMap: any, item: IFileMetaData) => {
           let fileExtension = item.file.split(".").pop() || "";
           fileExtension = fileExtension.toLowerCase();
-          if (!AcceptedMedias[fileExtension]) {
+          if (!AcceptedAudioExt[fileExtension]) {
             return Result.fail<PresignedUrl[]>(
               400,
               `${fileExtension} is not allowed.`

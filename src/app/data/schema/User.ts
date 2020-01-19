@@ -1,11 +1,11 @@
-import MongodataAccess from '../MongodataAccess';
-import { Schema } from 'mongoose';
-import { IUserModel, AccountStatus } from '../../models/interfaces';
-import bcrypt from 'bcryptjs';
+import MongodataAccess from "../MongodataAccess";
+import { Schema } from "mongoose";
+import { IUserModel, AccountStatus } from "../../models/interfaces";
+import bcrypt from "bcryptjs";
 // import {JW } from '../../../utils/wrappers/JwtHelper';
-import { SignInOptions } from '../../models/interfaces/custom/Global';
-import { TokenResult } from '../../models/interfaces/custom/Account';
-import JwtHelper from '../../../utils/wrappers/JwtHelper';
+import { SignInOptions } from "../../models/interfaces/custom/Global";
+import { TokenResult } from "../../models/interfaces/custom/Account";
+import JwtHelper from "../../../utils/wrappers/JwtHelper";
 const mongooseConnection = MongodataAccess.mongooseConnection;
 
 const userSchema: Schema = new Schema(
@@ -13,12 +13,13 @@ const userSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     password: { type: String, required: true },
-    userType: { type: Schema.Types.ObjectId, ref: 'UserType', required: true },
+    userType: { type: Schema.Types.ObjectId, ref: "UserType", required: true },
     profileImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
     generalNotification: { type: Boolean, default: true },
+    passwordResetRequested: { type: Boolean, default: false },
     tapNotification: { type: Boolean, default: true },
     emailNotification: { type: Boolean, default: true },
     profileVisibility: { type: Boolean, default: false },
@@ -28,14 +29,14 @@ const userSchema: Schema = new Schema(
     roles: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Role',
+        ref: "Role",
         required: true
       }
     ],
     lastLogin: { type: Date },
     application: {
       type: Schema.Types.ObjectId,
-      ref: 'Application'
+      ref: "Application"
     }
   },
   { timestamps: true }
@@ -76,9 +77,9 @@ userSchema.methods.verifyToken = async function(
   );
 };
 
-userSchema.pre<IUserModel>('save', function(next) {
+userSchema.pre<IUserModel>("save", function(next) {
   const user = this;
-  if (!user.isModified('password')) {
+  if (!user.isModified("password")) {
     return next();
   }
   bcrypt.genSalt(10, (err, salt) => {
@@ -95,7 +96,7 @@ userSchema.pre<IUserModel>('save', function(next) {
   });
 });
 
-userSchema.pre<IUserModel>('save', function(next) {
+userSchema.pre<IUserModel>("save", function(next) {
   let now = new Date();
   if (!this.createdAt) {
     this.createdAt = now;
@@ -104,6 +105,6 @@ userSchema.pre<IUserModel>('save', function(next) {
 });
 
 export const UserSchema = mongooseConnection.model<IUserModel>(
-  'User',
+  "User",
   userSchema
 );
