@@ -1,0 +1,718 @@
+FORMAT: 1A
+HOST: http://ec2-3-137-49-212.us-east-2.compute.amazonaws.com:8900/v1
+
+# untapped-pool-api
+
+An online platform for showcasing talents and participating in online competitions
+
+## User Types [/user-types]
+
+### List All User-Types [GET]
+
++ Response 200 (application/json)
+
+        {
+            "message": "Operation successful",
+            "data": [
+                {
+                    "isActive": false,
+                    "_id": "5dcb6f8a272bd56cf0fb7f97",
+                    "name": "Audience",
+                    "isAdmin": false,
+                    "description": "Register to support your favourite talents",
+                    "createdAt": "2019-11-13T02:50:50.756Z",
+                    "updatedAt": "2019-11-13T02:50:50.756Z",
+                    "__v": 0
+                },
+                {
+                    "isActive": false,
+                    "_id": "5dcb6ff6625f0d6058704eef",
+                    "name": "Professional",
+                    "isAdmin": false,
+                    "description": "As a professional you will be able to search pool of talents and view talent’s personalised page. A professional can vote for a talent during competition and comment on a Talent’s act in the portfolio. A professional can set appointment to see a talent he/she is interested in.",
+                    "createdAt": "2019-11-13T02:52:38.839Z",
+                    "updatedAt": "2019-11-13T02:52:38.839Z",
+                    "__v": 0
+                },
+                {
+                    "isActive": false,
+                    "_id": "5dcb700d625f0d6058704ef0",
+                    "name": "Talent",
+                    "isAdmin": false,
+                    "description": "Register as a talents to be able to create personalised page, upload items (image, audio, video) to portfolio, receive mail from professionals, enter contest and send portfolio to a professional.",
+                    "createdAt": "2019-11-13T02:53:01.037Z",
+                    "updatedAt": "2019-11-13T02:53:01.037Z",
+                    "__v": 0
+                }
+            ]
+        }
+        
+
+## Account Management  [/account]
+
+### SignUp [POST /account/signup]
+
+Users can sign up on the platform as a Talent, Professional or Audience
+
++ Request (application/json)
+
+        {
+            "email": "ajibola@mailinator.com",
+            "password": "password",
+            "audience": "http://localhost:4200",
+            "fullName": "Oluwakemi",
+            "userType": "5dcb6ff6625f0d6058704eef",
+            "confirmationUrl": "http://localhost:4200/account/confirmation"
+        }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "message": "Operation successful",
+              "data": true
+            }
+            
+
+
+### SignIn [POST /authentication]
+
+Users can sign in on the platform as a Talent, Professional or Audience
+
++ Request (application/json)
+
+        {
+            "email": "ajibola@mailinator.com",
+            "password": "password",
+            "audience": "http://localhost:4200"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": {
+               "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQyIn0.eyJ0eXBlIjoiQVVUSCIsImlhdCI6MTU3OTM2MzQxOCwiZXhwIjoxNTc5NDA2NjE4LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojg5MDAiLCJzdWIiOiI1ZGNjMjcyYzVjNjMzZWUyM2MzMGE3NzMifQ.YmTGVSQe3nq3V4tbNKRuaollbNdFADM5sAK_AtBV_qDBq18Km2i8bhXx8EcZ0R9vhaVYcigeP2vXhdwlL0S_0A",
+               "permissions": [
+                   {
+                      "_id": "5dcc177aca26b13974695d2f",
+                      "name": "CanUploadGigs",
+                      "role": "5dcbb998fad6f3448023a2c9",
+                      "createdAt": "2019-11-13T14:47:22.726Z",
+                      "updatedAt": "2019-11-13T14:47:22.726Z",
+                      "__v": 0
+                   },
+                   {
+                      "_id": "5dcc17a2ca26b13974695d30",
+                      "name": "CanEditProfile",
+                      "role": "5dcbb998fad6f3448023a2c9",
+                      "createdAt": "2019-11-13T14:48:02.159Z",
+                      "updatedAt": "2019-11-13T14:48:02.159Z",
+                      "__v": 0
+                   },
+                  {
+                      "_id": "5dcc17e6ca26b13974695d31",
+                      "name": "CanCreateContest",
+                      "role": "5dcbb998fad6f3448023a2c9",
+                      "createdAt": "2019-11-13T14:49:10.692Z",
+                      "updatedAt": "2019-11-13T14:49:10.692Z",
+                      "__v": 0
+                  },
+                  {
+                     "_id": "5dcc17eeca26b13974695d32",
+                     "name": "CanEnterContest",
+                     "role": "5dcbb998fad6f3448023a2c9",
+                     "createdAt": "2019-11-13T14:49:18.727Z",
+                     "updatedAt": "2019-11-13T14:49:18.727Z",
+                    "__v": 0
+                  }
+                 ],
+                "user_data": {
+                "_id": "5dcc272c5c633ee23c30a773",
+                "full_name": "kemijibola",
+                "email": "kemijibola@yahoo.com",
+                "profile_is_completed": false,
+                "profile_image_path": "5dcc272c5c633ee23c30a773/images/ProfileImage/10344ebf-39e4-4906-be99-943b73c45948.jpg",
+                "userType": {
+                    "_id": "5dcb700d625f0d6058704ef0",
+                    "name": "Talent"
+                }
+              }
+             }
+            }
+
+### Verify Email [POST /account/verify]
+
+New signed up user can verify email address
+
++ Request (application/json)
+
+        {
+            "email": "ajibola@mailinator.com",
+            "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzcwMjEwLCJleHAiOjE1Nzk0NTY2MTAsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.VZlqZ7WCwsVdubA3bDbV2ZHpC94AefRmNFvKCQE4DkLK30kZTmbNHXLXlFDoN1w5gcgQxXhYGbb-vbZz5hbC6g",
+            "audience": "http://localhost:4200"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Email successfully verified"
+            }
+            
+
+### Change Password [POST /account/password/change]
+
+Already logged in user can change password.
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+           "oldPassword": "password",
+           "newPassword": "password1"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": true
+            }
+            
+### Forgot Password Request [POST /account/password/reset/request]
+
+User can request for password reset link
+
++ Request (application/json)
+
+        {
+          "email": "kemijibola@mailinator.com",
+          "audience": "http://localhost:4200",
+          "redirectUrl": "http://localhost:4200/account/password/reset"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Reset password link has been sent successfully."
+            }
+            
+### Password Reset Verification [POST /account/password/reset/verify]
+
+User can verify password reset link
+
++ Request (application/json)
+
+        {
+          "email": "ajibola@mailinator.com",
+          "audience": "http://localhost:4200",
+          "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzczOTIyLCJleHAiOjE1Nzk0NjAzMjIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.bYvErNIKC3DfL16rM9BH21ZUyw7JumBUCBO8hOiQ-rR6rPPZSYncJZtjyvwMdPcH9RQQvXjWbLK-56vcTcES_Q"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Forgot password request has been verified"
+            }
+            
+
+### Reset Password [POST /account/password/reset]
+
+User can reset password
+
++ Request (application/json)
+
+        {
+          "email": "kemijibola@mailinator.com",
+          "newPassword": "password20"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": "Password successfully reset"
+            }
+            
+            
+## Media [/uploads]
+
+### Get PresignedUrl For File Upload [POST]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+           "action": "ProfileImage",
+        "files": [
+             {
+                "file": "oluwakemi.jpg",
+                "file_type": "jpg"
+            },
+           {
+                "file": "test2.jpg",
+                "file_type": "png"
+           }
+        ],
+        "mediaType": "image"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": {
+               "presignedUrl": [
+                   {
+                      "file": "oluwakemi.jpg",
+                      "url": "https://untapped-pool-image-bucket.s3-accelerate.amazonaws.com/5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg?Content-Type=jpg&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUHX2MMXUCQYU43KN%2F20200118%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20200118T162534Z&X-Amz-Expires=1800&X-Amz-Signature=f7a33a4ee94f24729c0db46fe823d76c6650b8d69491c2df3af934030ca64e16&X-Amz-SignedHeaders=host",
+                      "key": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg"
+                },
+                {
+                     "file": "test2.jpg",
+                     "url": "https://untapped-pool-image-bucket.s3-accelerate.amazonaws.com/5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg?Content-Type=png&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUHX2MMXUCQYU43KN%2F20200118%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20200118T162534Z&X-Amz-Expires=1800&X-Amz-Signature=90b26d7aa4c5748e92c2c5433f68520ae652fd5724d7c62ef7717f5820458d5a&X-Amz-SignedHeaders=host",
+                     "key": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
+                }
+              ],
+              "action": "ProfileImage"
+              }
+            }
+            
+### Upload User Media [POST /media]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+          "title": "Mr & Mrs Abayomi Photoshoot",
+          "shortDescription": "The photoshoot for the newest couple in town",
+          "items": [
+              "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+              "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
+           ],
+         "mediaType": "image"
+        }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+               "message": "Operation successful",
+               "data": {
+               "activityCount": 0,
+               "isApproved": false,
+               "isDeleted": false,
+               "_id": "5e237284c95e2806a4636cc1",
+               "title": "Mr & Mrs Abayomi Photoshoot",
+               "shortDescription": "The photoshoot for the newest couple in town",
+               "items": [
+                    {
+                      "likedBy": [],
+                      "_id": "5e237284c95e2806a4636cc3",
+                      "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+                      "createdAt": "2020-01-18T21:03:00.648Z",
+                      "updatedAt": "2020-01-18T21:03:00.648Z"
+                    },
+                    {
+                      "likedBy": [],
+                      "_id": "5e237284c95e2806a4636cc2",
+                      "path": "5dcc272c5c633ee23c30a7qa73/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                      "createdAt": "2020-01-18T21:03:00.648Z",
+                      "updatedAt": "2020-01-18T21:03:00.648Z"
+                   }
+               ],
+               "uploadType": "multiple",
+               "mediaType": "image",
+               "user": "5dcc272c5c633ee23c30a773",
+               "createdAt": "2020-01-18T21:03:00.649Z",
+               "updatedAt": "2020-01-18T21:03:00.649Z",
+               "__v": 0
+             }
+            }
+            
+### Update User Media (Update existing Media) [POST /media/:id]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+          "title": "Mr & Mrs Abayomi Wedding 2019",
+          "shortDescription": "The photoshoot for the newest couple in town in 2019",
+          "items": [
+              {
+                        "likedBy": [
+                        "ajibola",
+                        "funsho",
+                        "oyebola"
+                       ],
+           "_id": "5e237284c95e2806a4636cc3",
+           "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+           "createdAt": "2020-01-19T08:18:56.850Z",
+           "updatedAt": "2020-01-19T08:18:56.850Z"
+             }
+         ],
+         "mediaType": "image"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "message": "Operation successful",
+              "data": {
+              "activityCount": 0,
+              "isApproved": false,
+              "isDeleted": false,
+              "_id": "5e2451467960cb5ba0dbb348",
+              "title": "Mr & Mrs Abayomi Wedding 2019",
+              "shortDescription": "The photoshoot for the newest couple in town in 2019",
+              "items": [
+                  {
+                     "likedBy": [
+                     "ajibola",
+                     "funsho",
+                     "oyebola"
+                    ],
+              "_id": "5e237284c95e2806a4636cc3",
+              "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+              "updatedAt": "2020-01-18T21:03:00.648Z",
+              "createdAt": "2020-01-18T21:03:00.648Z"
+              }
+              ],
+            "mediaType": "image",
+            "uploadType": "single",
+            "user": "5dcc272c5c633ee23c30a773",
+            "createdAt": "2020-01-19T12:53:26.369Z",
+            "updatedAt": "2020-01-19T13:00:57.268Z",
+            "__v": 0
+              }
+            }
+            
+### Update User Media (Add new media item to existing Media) [POST /media/5e2451467960cb5ba0dbb348]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+          "title": "Mr & Mrs Abayomi Wedding 2019",
+          "shortDescription": "The photoshoot for the newest couple in town in 2019",
+          "items": [
+              {
+                    "likedBy": [
+                    "ajibola",
+                    "funsho",
+                    "oyebola"
+                    ],
+                    "_id": "5e237284c95e2806a4636cc3",
+                    "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+                    "createdAt": "2020-01-19T08:18:56.850Z",
+                    "updatedAt": "2020-01-19T08:18:56.850Z"
+             },
+             {
+                   "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
+             }
+         ],
+         "mediaType": "image"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "message": "Operation successful",
+              "data": {
+              "activityCount": 0,
+              "isApproved": false,
+              "isDeleted": false,
+              "_id": "5e2451467960cb5ba0dbb348",
+              "title": "Mr & Mrs Abayomi Wedding 2019",
+              "shortDescription": "The photoshoot for the newest couple in town in 2019",
+              "items": [
+                  {
+                     "likedBy": [
+                     "ajibola",
+                     "funsho",
+                     "oyebola"
+                    ],
+              "_id": "5e237284c95e2806a4636cc3",
+              "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+              "updatedAt": "2020-01-18T21:03:00.648Z",
+              "createdAt": "2020-01-18T21:03:00.648Z"
+              },
+              {
+                "likedBy": [],
+                "_id": "5e245a2d7960cb5ba0dbb34f",
+                "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                "updatedAt": "2020-01-19T13:31:25.160Z",
+                "createdAt": "2020-01-19T13:31:25.160Z"
+              }
+              ],
+            "mediaType": "image",
+            "uploadType": "single",
+            "user": "5dcc272c5c633ee23c30a773",
+            "createdAt": "2020-01-19T12:53:26.369Z",
+            "updatedAt": "2020-01-19T13:00:57.268Z",
+            "__v": 0
+              }
+            }
+            
+            
+### Fetch User Media List [GET /media/me?mediaType=all&uploadType=all]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "message": "Media Operation successful",
+              "data": [
+                   {
+                      "activityCount": 0,
+                      "isApproved": true,
+                      "isDeleted": false,
+                      "_id": "5e003034f2308607785ed2a1",
+                      "title": "ISW Gang",
+                      "items": [
+                        {
+                           "likedBy": [],
+                           "_id": "5e003034f2308607785ed2a5",
+                           "id": "b7adbe06-4d59-449a-a849-8de919028cf9",
+                           "path": "5dcc272c5c633ee23c30a773/images/Portfolio/b3698136-3cbd-4aff-8990-c84b91a62738.jpg",
+                           "createdAt": "2019-12-23T03:10:44.505Z",
+                           "updatedAt": "2019-12-23T03:10:44.505Z"
+                        },
+                       {
+                           "likedBy": [],
+                           "_id": "5e003034f2308607785ed2a4",
+                           "id": "236e178d-99d5-4202-900f-f458652c18dc",
+                           "path": "5dcc272c5c633ee23c30a773/images/Portfolio/78374974-6798-49d8-a6bd-8b6a9c517fb9.jpg",
+                           "createdAt": "2019-12-23T03:10:44.506Z",
+                           "updatedAt": "2019-12-23T03:10:44.506Z"
+                       },
+                      {
+                         "likedBy": [],
+                         "_id": "5e003034f2308607785ed2a3",
+                         "id": "68c1522a-2e5f-4708-af84-efa2e6605981",
+                         "path": "5dcc272c5c633ee23c30a773/images/Portfolio/6cafd02e-85c6-47b9-a9da-f74b85a4542f.jpg",
+                         "createdAt": "2019-12-23T03:10:44.506Z",
+                         "updatedAt": "2019-12-23T03:10:44.506Z"
+                      },
+                      {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a2",
+                        "id": "5a4a92ce-f017-4ae1-b175-9a468b2d2cb4",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/4b9791fc-87e0-4072-bead-1355528c00b8.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                      }
+                   ],
+                    "uploadType": "multiple",
+                    "mediaType": "image",
+                    "shortDescription": "I met cool people on my first day at the SWITCH",
+                    "user": "5dcc272c5c633ee23c30a773",
+                    "createdAt": "2019-12-23T03:10:44.506Z",
+                    "updatedAt": "2019-12-23T03:10:44.506Z",
+                    "__v": 0
+               }
+             ]
+            }
+            
+### Fetch Media List [GET /media?mediaType=all&uploadType=all]
+
++ Payload Header
+
+            Content-Type: application.json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Media Operation successful",
+               "data": [
+                  {
+                    "activityCount": 0,
+                    "isApproved": true,
+                    "isDeleted": false,
+                    "_id": "5e003034f2308607785ed2a1",
+                    "title": "ISW Gang",
+                    "items": [
+                      {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a5",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/b3698136-3cbd-4aff-8990-c84b91a62738.jpg",
+                        "createdAt": "2019-12-23T03:10:44.505Z",
+                        "updatedAt": "2019-12-23T03:10:44.505Z"
+                      },
+                     {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a4",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/78374974-6798-49d8-a6bd-8b6a9c517fb9.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                     },
+                     {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a3",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/6cafd02e-85c6-47b9-a9da-f74b85a4542f.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                     },
+                     {
+                        "likedBy": [],
+                        "_id": "5e003034f2308607785ed2a2",
+                        "path": "5dcc272c5c633ee23c30a773/images/Portfolio/4b9791fc-87e0-4072-bead-1355528c00b8.jpg",
+                        "createdAt": "2019-12-23T03:10:44.506Z",
+                        "updatedAt": "2019-12-23T03:10:44.506Z"
+                     }
+                    ],
+                  "uploadType": "multiple",
+                  "mediaType": "image",
+                  "shortDescription": "I met cool people on my first day at the SWITCH",
+                  "user": "5dcc272c5c633ee23c30a773",
+                  "createdAt": "2019-12-23T03:10:44.506Z",
+                  "updatedAt": "2019-12-23T03:10:44.506Z",
+                  "__v": 0
+               },
+               {
+                   "activityCount": 0,
+                   "isApproved": true,
+                   "isDeleted": false,
+                   "_id": "5e2451467960cb5ba0dbb348",
+                   "title": "Mr & Mrs Abayomi Wedding 2019",
+                   "shortDescription": "The photoshoot for the newest couple in town in 2019",
+                   "items": [
+                         {
+                            "likedBy": [
+                               "ajibola",
+                               "funsho",
+                               "oyebola"
+                           ],
+                    "_id": "5e2451467960cb5ba0dbb34a",
+                    "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+                    "updatedAt": "2020-01-19T13:31:25.160Z",
+                    "createdAt": "2020-01-19T13:31:25.160Z"
+                },
+                {
+                    "likedBy": [],
+                    "_id": "5e245a2d7960cb5ba0dbb34f",
+                    "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                    "updatedAt": "2020-01-19T13:31:25.160Z",
+                    "createdAt": "2020-01-19T13:31:25.160Z"
+                }
+            ],
+                "mediaType": "image",
+                "uploadType": "multiple",
+                "user": "5dcc272c5c633ee23c30a773",
+                "createdAt": "2020-01-19T12:53:26.369Z",
+                "updatedAt": "2020-01-19T13:31:25.160Z",
+                "__v": 0
+                 }
+               ]
+            }
+            
+            
+### Fetch Media [GET /media/:id]
+
++ Payload Header
+
+            Content-Type: application.json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+               "message": "Media Operation successful",
+               "data": {
+               "activityCount": 0,
+               "isApproved": true,
+               "isDeleted": false,
+               "_id": "5e003034f2308607785ed2a1",
+               "title": "ISW Gang",
+               "items": [
+                  {
+                    "likedBy": [],
+                    "_id": "5e003034f2308607785ed2a5",
+                    "path": "5dcc272c5c633ee23c30a773/images/Portfolio/b3698136-3cbd-4aff-8990-c84b91a62738.jpg",
+                    "createdAt": "2019-12-23T03:10:44.505Z",
+                    "updatedAt": "2019-12-23T03:10:44.505Z"
+                 },
+                {
+                   "likedBy": [],
+                   "_id": "5e003034f2308607785ed2a4",
+                   "path": "5dcc272c5c633ee23c30a773/images/Portfolio/78374974-6798-49d8-a6bd-8b6a9c517fb9.jpg",
+                   "createdAt": "2019-12-23T03:10:44.506Z",
+                   "updatedAt": "2019-12-23T03:10:44.506Z"
+                },
+                {
+                  "likedBy": [],
+                  "_id": "5e003034f2308607785ed2a3",
+                  "path": "5dcc272c5c633ee23c30a773/images/Portfolio/6cafd02e-85c6-47b9-a9da-f74b85a4542f.jpg",
+                  "createdAt": "2019-12-23T03:10:44.506Z",
+                  "updatedAt": "2019-12-23T03:10:44.506Z"
+                },
+                {
+                  "likedBy": [],
+                  "_id": "5e003034f2308607785ed2a2",
+                  "path": "5dcc272c5c633ee23c30a773/images/Portfolio/4b9791fc-87e0-4072-bead-1355528c00b8.jpg",
+                  "createdAt": "2019-12-23T03:10:44.506Z",
+                  "updatedAt": "2019-12-23T03:10:44.506Z"
+                }
+               ],
+              "uploadType": "multiple",
+              "mediaType": "image",
+              "shortDescription": "I met cool people on my first day at the SWITCH",
+              "user": "5dcc272c5c633ee23c30a773",
+              "createdAt": "2019-12-23T03:10:44.506Z",
+              "updatedAt": "2019-12-23T03:10:44.506Z",
+              "__v": 0
+             }
+            }
