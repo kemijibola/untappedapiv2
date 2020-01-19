@@ -257,7 +257,7 @@ User can reset password
             
 ## Media [/uploads]
 
-### Get Presigned For File Upload [POST]
+### Get PresignedUrl For File Upload [POST]
 
 + Payload Header
 
@@ -320,7 +320,6 @@ User can reset password
               "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
               "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
            ],
-         "uploadType": "multiple",
          "mediaType": "image"
         }
 
@@ -348,7 +347,7 @@ User can reset password
                     {
                       "likedBy": [],
                       "_id": "5e237284c95e2806a4636cc2",
-                      "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                      "path": "5dcc272c5c633ee23c30a7qa73/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
                       "createdAt": "2020-01-18T21:03:00.648Z",
                       "updatedAt": "2020-01-18T21:03:00.648Z"
                    }
@@ -360,4 +359,140 @@ User can reset password
                "updatedAt": "2020-01-18T21:03:00.649Z",
                "__v": 0
              }
+            }
+            
+### Update User Media (Update existing Media) [POST /media/:id]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+          "title": "Mr & Mrs Abayomi Wedding 2019",
+          "shortDescription": "The photoshoot for the newest couple in town in 2019",
+          "items": [
+              {
+                        "likedBy": [
+                        "ajibola",
+                        "funsho",
+                        "oyebola"
+                       ],
+           "_id": "5e237284c95e2806a4636cc3",
+           "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+           "createdAt": "2020-01-19T08:18:56.850Z",
+           "updatedAt": "2020-01-19T08:18:56.850Z"
+             }
+         ],
+         "mediaType": "image"
+        }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "message": "Operation successful",
+              "data": {
+              "activityCount": 0,
+              "isApproved": false,
+              "isDeleted": false,
+              "_id": "5e2451467960cb5ba0dbb348",
+              "title": "Mr & Mrs Abayomi Wedding 2019",
+              "shortDescription": "The photoshoot for the newest couple in town in 2019",
+              "items": [
+                  {
+                     "likedBy": [
+                     "ajibola",
+                     "funsho",
+                     "oyebola"
+                    ],
+              "_id": "5e237284c95e2806a4636cc3",
+              "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+              "updatedAt": "2020-01-18T21:03:00.648Z",
+              "createdAt": "2020-01-18T21:03:00.648Z"
+              }
+              ],
+            "mediaType": "image",
+            "uploadType": "single",
+            "user": "5dcc272c5c633ee23c30a773",
+            "createdAt": "2020-01-19T12:53:26.369Z",
+            "updatedAt": "2020-01-19T13:00:57.268Z",
+            "__v": 0
+              }
+            }
+            
+### Update User Media (Add new media item to existing Media) [POST /media/5e2451467960cb5ba0dbb348]
+
++ Payload Header
+
+            Content-Type: application.json
+            Authorization: Bearer JWT
+
++ Request (application/json)
+
+        {
+          "title": "Mr & Mrs Abayomi Wedding 2019",
+          "shortDescription": "The photoshoot for the newest couple in town in 2019",
+          "items": [
+              {
+                    "likedBy": [
+                    "ajibola",
+                    "funsho",
+                    "oyebola"
+                    ],
+                    "_id": "5e237284c95e2806a4636cc3",
+                    "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+                    "createdAt": "2020-01-19T08:18:56.850Z",
+                    "updatedAt": "2020-01-19T08:18:56.850Z"
+             },
+             {
+                   "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg"
+             }
+         ],
+         "mediaType": "image"
+        }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "message": "Operation successful",
+              "data": {
+              "activityCount": 0,
+              "isApproved": false,
+              "isDeleted": false,
+              "_id": "5e2451467960cb5ba0dbb348",
+              "title": "Mr & Mrs Abayomi Wedding 2019",
+              "shortDescription": "The photoshoot for the newest couple in town in 2019",
+              "items": [
+                  {
+                     "likedBy": [
+                     "ajibola",
+                     "funsho",
+                     "oyebola"
+                    ],
+              "_id": "5e237284c95e2806a4636cc3",
+              "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/d8b0887a-6a23-47c6-867e-09bfd62c0c81.jpg",
+              "updatedAt": "2020-01-18T21:03:00.648Z",
+              "createdAt": "2020-01-18T21:03:00.648Z"
+              },
+              {
+                "likedBy": [],
+                "_id": "5e245a2d7960cb5ba0dbb34f",
+                "path": "5dcc272c5c633ee23c30a773/images/ProfileImage/c377ed9f-89ae-4839-b77a-17ff7e1bf43c.jpg",
+                "updatedAt": "2020-01-19T13:31:25.160Z",
+                "createdAt": "2020-01-19T13:31:25.160Z"
+              }
+              ],
+            "mediaType": "image",
+            "uploadType": "single",
+            "user": "5dcc272c5c633ee23c30a773",
+            "createdAt": "2020-01-19T12:53:26.369Z",
+            "updatedAt": "2020-01-19T13:00:57.268Z",
+            "__v": 0
+              }
             }
