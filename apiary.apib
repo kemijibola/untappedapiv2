@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://ec2-3-137-49-212.us-east-2.compute.amazonaws.com:8900/v1
+HOST: https://untapped-api.herokuapp.com/v1
 
 # untapped-pool-api
 
@@ -8,6 +8,10 @@ An online platform for showcasing talents and participating in online competitio
 ## User Types [/user-types]
 
 ### List All User-Types [GET]
+
++ Payload Header
+
+            ClientId: Valid Client Id
 
 + Response 200 (application/json)
 
@@ -54,15 +58,17 @@ An online platform for showcasing talents and participating in online competitio
 
 Users can sign up on the platform as a Talent, Professional or Audience
 
++ Payload Header
+
+            ClientId: Valid Client Id
+
 + Request (application/json)
 
         {
             "email": "ajibola@mailinator.com",
             "password": "password",
-            "audience": "http://localhost:4200",
             "fullName": "Oluwakemi",
-            "userType": "5dcb6ff6625f0d6058704eef",
-            "confirmationUrl": "http://localhost:4200/account/confirmation"
+            "userType": "5dcb6ff6625f0d6058704eef"
         }
 
 + Response 201 (application/json)
@@ -80,12 +86,15 @@ Users can sign up on the platform as a Talent, Professional or Audience
 
 Users can sign in on the platform as a Talent, Professional or Audience
 
++ Payload Header
+
+            ClientId: Valid Client Id
+
 + Request (application/json)
 
         {
             "email": "ajibola@mailinator.com",
-            "password": "password",
-            "audience": "http://localhost:4200"
+            "password": "password"
         }
 
 + Response 200 (application/json)
@@ -148,12 +157,15 @@ Users can sign in on the platform as a Talent, Professional or Audience
 
 New signed up user can verify email address
 
++ Payload Header
+
+            ClientId: Valid Client Id
+
 + Request (application/json)
 
         {
             "email": "ajibola@mailinator.com",
-            "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzcwMjEwLCJleHAiOjE1Nzk0NTY2MTAsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.VZlqZ7WCwsVdubA3bDbV2ZHpC94AefRmNFvKCQE4DkLK30kZTmbNHXLXlFDoN1w5gcgQxXhYGbb-vbZz5hbC6g",
-            "audience": "http://localhost:4200"
+            "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzcwMjEwLCJleHAiOjE1Nzk0NTY2MTAsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.VZlqZ7WCwsVdubA3bDbV2ZHpC94AefRmNFvKCQE4DkLK30kZTmbNHXLXlFDoN1w5gcgQxXhYGbb-vbZz5hbC6g"
         }
 
 + Response 200 (application/json)
@@ -174,6 +186,7 @@ Already logged in user can change password.
 
             Content-Type: application.json
             Authorization: Bearer JWT
+            ClientId: Valid Client Id
 
 + Request (application/json)
 
@@ -195,12 +208,14 @@ Already logged in user can change password.
 
 User can request for password reset link
 
++ Payload Header
+
+            ClientId: Valid Client Id
+
 + Request (application/json)
 
         {
-          "email": "kemijibola@mailinator.com",
-          "audience": "http://localhost:4200",
-          "redirectUrl": "http://localhost:4200/account/password/reset"
+          "email": "kemijibola@mailinator.com"
         }
 
 + Response 200 (application/json)
@@ -216,11 +231,14 @@ User can request for password reset link
 
 User can verify password reset link
 
++ Payload Header
+
+            ClientId: Valid Client Id
+
 + Request (application/json)
 
         {
           "email": "ajibola@mailinator.com",
-          "audience": "http://localhost:4200",
           "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJhamlib2xhQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNTc5MzczOTIyLCJleHAiOjE1Nzk0NjAzMjIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODkwMC92MS9hY2NvdW50L3ZlcmlmeSIsInN1YiI6IjVlMjM0NmUyNWQ1Y2I0NWQ2YzUwYjhkZSJ9.bYvErNIKC3DfL16rM9BH21ZUyw7JumBUCBO8hOiQ-rR6rPPZSYncJZtjyvwMdPcH9RQQvXjWbLK-56vcTcES_Q"
         }
 
@@ -237,6 +255,10 @@ User can verify password reset link
 ### Reset Password [POST /account/password/reset]
 
 User can reset password
+
++ Payload Header
+
+            clientId: Valid Client Id
 
 + Request (application/json)
 
@@ -263,6 +285,7 @@ User can reset password
 
             Content-Type: application.json
             Authorization: Bearer JWT
+            ClientId: "Valid Client Id"
 
 + Request (application/json)
 
@@ -310,6 +333,7 @@ User can reset password
 
             Content-Type: application.json
             Authorization: Bearer JWT
+            ClientId: Valid Client Id
 
 + Request (application/json)
 
@@ -367,6 +391,7 @@ User can reset password
 
             Content-Type: application.json
             Authorization: Bearer JWT
+            ClientId: Valid Client Id
 
 + Request (application/json)
 
@@ -430,6 +455,7 @@ User can reset password
 
             Content-Type: application.json
             Authorization: Bearer JWT
+            ClientId: Valid Client Id
 
 + Request (application/json)
 
@@ -504,6 +530,7 @@ User can reset password
 
             Content-Type: application.json
             Authorization: Bearer JWT
+            ClientId: Valid Client Id
 
 
 + Response 200 (application/json)
@@ -569,6 +596,7 @@ User can reset password
 + Payload Header
 
             Content-Type: application.json
+            ClientId: Valid Client Id
 
 + Response 200 (application/json)
 
@@ -664,6 +692,7 @@ User can reset password
 + Payload Header
 
             Content-Type: application.json
+            ClientId: Valid Client Id
 
 + Response 200 (application/json)
 
