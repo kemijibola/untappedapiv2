@@ -4,14 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-ts": "tsc",
     "start:build": "tsc -w",
     "start:run": "nodemon build/index.js",
     "start": "concurrently npm:start:*",
+    "postinstall": "npm run build-ts",
     "deploy": "sls deploy -v",
     "invoke": "sls invoke -f ScheduleTask -l -p ./data/task-request.json",
     "deployinvoke": "npm run deploy && npm run invoke",
     "lint": "eslint . || true",
     "logs": "sls logs -f SendEmail"
+  },
+  "engines": {
+    "node": "10.0.0"
   },
   "repository": {
     "type": "git",
