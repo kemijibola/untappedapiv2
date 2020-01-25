@@ -14,7 +14,6 @@ var production = __importStar(require("./production.json"));
 var dotenv = __importStar(require("dotenv"));
 dotenv.config();
 var environment = process.env.NODE_ENV || "";
-console.log(environment);
 switch (environment) {
     case Environment_1.Environment.CI:
         Object.seal(ci);

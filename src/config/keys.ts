@@ -8,8 +8,6 @@ dotenv.config();
 
 let environment: string = process.env.NODE_ENV || "";
 
-console.log(environment);
-
 switch (environment) {
   case Environment.CI:
     Object.seal(ci);
