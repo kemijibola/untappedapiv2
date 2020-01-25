@@ -1,12 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { controller, post, requestValidators, get } from "../decorators";
+import {
+  controller,
+  post,
+  requestValidators,
+  get,
+  use,
+  authorize
+} from "../decorators";
 import { ICategory } from "../app/models/interfaces";
 import CategoryBusiness from "../app/business/CategoryBusiness";
 import { PlatformError } from "../utils/error";
+import { requestValidator } from "../middlewares/ValidateRequest";
+import { requireAuth } from "../middlewares/auth";
+import { canCreateCategory } from "../utils/lib/PermissionConstant";
 
 @controller("/v1/categories")
 export class CategoryController {
   @get("/")
+  @use(requestValidator)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       const categoryBusiness = new CategoryBusiness();
@@ -34,6 +45,9 @@ export class CategoryController {
   }
 
   @post("/")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canCreateCategory)
   @requestValidators("name")
   async create(req: Request, res: Response, next: NextFunction) {
     try {

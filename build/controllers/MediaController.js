@@ -49,6 +49,7 @@ var MediaBusiness = require("../app/business/MediaBusiness");
 var interfaces_1 = require("../app/models/interfaces");
 var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
 // SAMPLE GET ROUTE:: http://localhost:9000?medias?type=videos&upload=single
@@ -339,6 +340,7 @@ var MediaController = /** @class */ (function () {
     };
     __decorate([
         decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.put("/:id"),
         decorators_1.requestValidators("mediaType"),
         __metadata("design:type", Function),
@@ -348,6 +350,7 @@ var MediaController = /** @class */ (function () {
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.requestValidators("title", "items", "mediaType"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
@@ -355,6 +358,7 @@ var MediaController = /** @class */ (function () {
     ], MediaController.prototype, "create", null);
     __decorate([
         decorators_1.get("/me"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
@@ -362,11 +366,13 @@ var MediaController = /** @class */ (function () {
     ], MediaController.prototype, "fetchUserList", null);
     __decorate([
         decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "fetchList", null);
     __decorate([
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.get("/:id"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

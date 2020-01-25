@@ -45,7 +45,7 @@ var config = require("../config/keys");
 var JwtHelper_1 = __importDefault(require("../utils/wrappers/JwtHelper"));
 function requireAuth(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var authorization, encodedJWT, verifyOptions, publicKey, decoded, err_1;
+        var authorization, encodedJWT, appAudience, verifyOptions, publicKey, decoded, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -58,9 +58,11 @@ function requireAuth(req, res, next) {
                                 message: "You must be logged in to perform operation."
                             }))];
                     }
+                    appAudience = req.appUser ? req.appUser.audience : "";
+                    console.log(appAudience);
                     verifyOptions = {
                         issuer: config.AUTH_ISSUER_SERVER,
-                        audience: req.body.audience,
+                        audience: appAudience,
                         type: GlobalEnum_1.TokenType.AUTH,
                         expiresIn: lib_1.authExpiration,
                         algorithms: [lib_1.currentRsaAlgType],

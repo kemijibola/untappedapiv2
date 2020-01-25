@@ -1,22 +1,24 @@
-import { Request, Response, NextFunction } from 'express';
-import { controller, post, requestValidators } from '../decorators';
-import { IContest } from '../app/models/interfaces';
-import ContestBusiness = require('../app/business/ContestBusiness');
-import { PlatformError } from '../utils/error';
+import { Request, Response, NextFunction } from "express";
+import { controller, post, requestValidators, use } from "../decorators";
+import { IContest } from "../app/models/interfaces";
+import ContestBusiness = require("../app/business/ContestBusiness");
+import { PlatformError } from "../utils/error";
+import { requestValidator } from "../middlewares/ValidateRequest";
 
-@controller('/v1/contests')
+@controller("/v1/contests")
 export class ContestController {
-  @post('/')
+  @post("/")
+  @use(requestValidator)
   @requestValidators(
-    'title',
-    'information',
-    'eligibleCategories',
-    'eligibilityInfo',
-    'submissionRules',
-    'startDate',
-    'contestType',
-    'duration',
-    'redeemable'
+    "title",
+    "information",
+    "eligibleCategories",
+    "eligibilityInfo",
+    "submissionRules",
+    "startDate",
+    "contestType",
+    "duration",
+    "redeemable"
   )
   async create(req: Request, res: Response, next: NextFunction) {
     try {
@@ -32,14 +34,14 @@ export class ContestController {
         );
       }
       return res.status(201).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }

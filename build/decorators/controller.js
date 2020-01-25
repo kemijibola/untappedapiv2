@@ -18,10 +18,10 @@ function controller(routePrefix) {
                 [];
             var validator = requestValidator_1.requestValidators(requiredProps);
             var permissions = Reflect.getMetadata(MetadataKeys_1.MetadataKeys.authorization, target.prototype, key) || [];
-            var authorize = authorizePermission_1.authorizePermission(permissions);
+            var authorization = authorizePermission_1.authorizePermission(permissions);
             if (path) {
                 router[method].apply(router, ["" + routePrefix + path].concat(middlewares, [validator,
-                    authorize,
+                    authorization,
                     routeHandler]));
             }
         }

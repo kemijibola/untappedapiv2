@@ -38,27 +38,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var config = require('../../config/keys');
+var config = require("../../config/keys");
 var ApplicationBusiness_1 = __importDefault(require("../../app/business/ApplicationBusiness"));
 var Result_1 = require("../Result");
 var chunkedUserPermissons = {};
 exports.getSecretByKey = function (keyId) {
     var secret = config.RSA_PRIVATE.filter(function (x) { return x.key === keyId; })[0];
     if (!secret) {
-        return '';
+        return "";
     }
-    return secret.Secret.replace(/\\n/g, '\n');
+    return secret.Secret.replace(/\\n/g, "\n");
 };
 exports.validateObjectId = function (id) {
-    var hexReg = new RegExp('^[0-9a-fA-F]{24}$');
+    var hexReg = new RegExp("^[0-9a-fA-F]{24}$");
     return hexReg.test(id);
 };
 exports.getPublicKey = function (keyId) {
     var secret = config.RSA_PUBLIC.filter(function (x) { return x.key === keyId; })[0];
     if (!secret) {
-        return '';
+        return "";
     }
-    return secret.Secret.replace(/\\n/g, '\n');
+    return secret.Secret.replace(/\\n/g, "\n");
 };
 function isValidIdentity(audience) {
     return __awaiter(this, void 0, void 0, function () {
@@ -114,22 +114,22 @@ function escapeJSON(json) {
     var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
     var meta = {
         // table of character substitutions
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
+        "\b": "\\b",
+        "\t": "\\t",
+        "\n": "\\n",
+        "\f": "\\f",
+        "\r": "\\r",
         '"': '\\"',
-        '\\': '\\\\'
+        "\\": "\\\\"
     };
     escapable.lastIndex = 0;
     return escapable.test(json)
         ? '"' +
             json.replace(escapable, function (a) {
                 var c = meta[a];
-                return typeof c === 'string'
+                return typeof c === "string"
                     ? c
-                    : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                    : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
             }) +
             '"'
         : '"' + json + '"';

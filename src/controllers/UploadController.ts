@@ -1,5 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { controller, post, requestValidators, get, use } from "../decorators";
+import {
+  controller,
+  post,
+  requestValidators,
+  get,
+  use,
+  authorize
+} from "../decorators";
 import { PlatformError } from "../utils/error";
 import {
   IUploadFileRequest,
@@ -11,12 +18,19 @@ import { S3Storage } from "../utils/uploadservice/storage/S3Storage";
 import { requireAuth } from "../middlewares/auth";
 import { Uploader, AbstractMedia } from "../utils/uploads/Uploader";
 import { MediaMakerFactory } from "../utils/uploads/MediaMakerFactory";
+import { requestValidator } from "../middlewares/ValidateRequest";
+import {
+  canUploadMedia,
+  canUploadProfileImage
+} from "../utils/lib/PermissionConstant";
 
 @controller("/v1/uploads")
 export class UploadController {
   @post("/")
+  @use(requestValidator)
   @requestValidators("action", "files", "mediaType")
   @use(requireAuth)
+  @authorize(canUploadMedia, canUploadProfileImage)
   async getPresignedUrl(
     req: RequestWithUser,
     res: Response,

@@ -1,14 +1,16 @@
-import { controller, post, requestValidators } from '../decorators';
-import { Request, Response, NextFunction } from 'express';
-import { IComment } from '../app/models/interfaces';
-import CommentBusiness = require('../app/business/CommentBusiness');
-import { PlatformError } from '../utils/error';
-import { RequestWithUser } from '../app/models/interfaces/custom/RequestHandler';
+import { controller, post, requestValidators, use } from "../decorators";
+import { Request, Response, NextFunction } from "express";
+import { IComment } from "../app/models/interfaces";
+import CommentBusiness = require("../app/business/CommentBusiness");
+import { PlatformError } from "../utils/error";
+import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
+import { requestValidator } from "../middlewares/ValidateRequest";
 
-@controller('/v1/comments')
+@controller("/v1/comments")
 export class CommentController {
-  @post('/')
-  @requestValidators('entityId, comment')
+  @post("/")
+  @use(requestValidator)
+  @requestValidators("entityId, comment")
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       // TODO:: get current user id
@@ -25,14 +27,14 @@ export class CommentController {
         );
       }
       return res.status(201).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }

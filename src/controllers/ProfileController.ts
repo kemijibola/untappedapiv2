@@ -17,11 +17,13 @@ import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler"
 import ProfileBusiness = require("../app/business/ProfileBusiness");
 import { PlatformError } from "../utils/error";
 import { requireAuth } from "../middlewares/auth";
+import { requestValidator } from "../middlewares/ValidateRequest";
 
 @controller("/v1/profiles")
 export class ProfileController {
   @use(requireAuth)
   @get("/")
+  @use(requestValidator)
   async fetch(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       let condition = {};
@@ -54,6 +56,7 @@ export class ProfileController {
 
   @use(requireAuth)
   @get("/user")
+  @use(requestValidator)
   async fetchUserProfile(
     req: RequestWithUser,
     res: Response,
@@ -85,6 +88,7 @@ export class ProfileController {
   }
 
   @get("/:id")
+  @use(requestValidator)
   async fetchProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const profileBusiness = new ProfileBusiness();

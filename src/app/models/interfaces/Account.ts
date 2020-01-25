@@ -1,11 +1,14 @@
 import { IPermission } from "./Permission";
 import { TokenType } from "./custom/GlobalEnum";
 import { IRole, IUserType } from ".";
+import { IRolePermission } from "./RolePermission";
 
 export interface IAuthData {
   access_token: string;
-  permissions: IPermission[];
+  refresh_token: string;
+  permissions: IRolePermission[];
   user_data: IUserData;
+  token_expires: number;
 }
 
 interface IUserData {

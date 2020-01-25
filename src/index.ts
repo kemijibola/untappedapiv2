@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import { AppRouter } from "./AppRouter";
 import "./controllers";
+
 import { AppConfig } from "./app/models/interfaces/custom/AppConfig";
 const config: AppConfig = module.require("./config/keys");
 // module.require("./utils/Cache");

@@ -49,6 +49,8 @@ var error_1 = require("../utils/error");
 var Upload_1 = require("../utils/uploadservice/Helper/Upload");
 var auth_1 = require("../middlewares/auth");
 var MediaMakerFactory_1 = require("../utils/uploads/MediaMakerFactory");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var UploadController = /** @class */ (function () {
     function UploadController() {
     }
@@ -111,8 +113,10 @@ var UploadController = /** @class */ (function () {
     UploadController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.requestValidators("action", "files", "mediaType"),
         decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canUploadMedia, PermissionConstant_1.canUploadProfileImage),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

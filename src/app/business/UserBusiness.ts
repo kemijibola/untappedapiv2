@@ -1,8 +1,9 @@
 import UserRepository from "../repository/UserRepository";
 import RoleRepository from "../repository/RoleRepository";
 import ScheduledEmailRepository from "../repository/ScheduledEmailRepository";
-import ResourceRepository from "../repository/ResourceRepository";
+import RolePermissionRepository from "../repository/RolePermissionRepository";
 import PermissionRepository from "../repository/PermissionRepository";
+import RefreshTokenRepository from "../repository/RefreshTokenRepository";
 import IUserBusiness = require("./interfaces/UserBusiness");
 import {
   IUserModel,
@@ -12,9 +13,11 @@ import {
   IScheduledEmail,
   MailType,
   AuthPayload,
-  IResource,
+  IRolePermission,
   IPermission,
-  ImageEditRequest
+  ImageEditRequest,
+  IRefreshToken,
+  IRefreshTokenViewModel
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import {
@@ -62,32 +65,30 @@ import {
   ResetPasswordRequest
 } from "../models/interfaces/custom/Account";
 import UserTypeRepository from "../repository/UserTypeRepository";
-import { AbstractMedia } from "../../utils/uploads/Uploader";
-import { MediaMakerFactory } from "../../utils/uploads/MediaMakerFactory";
-import { VerifyOptions } from "jsonwebtoken";
-import JwtHelper from "../../utils/wrappers/JwtHelper";
+import uuid from "uuid";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
   private _currentVerifyKey = "";
   private _currentRsaAlgType = "";
-  private _authExpiration = "";
-  private _mailExpiratation = "";
-  private _verifyExpiration = "";
+  private _authExpiration = 0;
+  private _mailExpiratation = 0;
+  private _verifyExpiration = 0;
   private _userRepository: UserRepository;
   private _userTypeRepository: UserTypeRepository;
   private _roleRepository: RoleRepository;
   private _scheduledEmailRepository: ScheduledEmailRepository;
-  private _resourceRepository: ResourceRepository;
+  private _rolePermissionRepository: RolePermissionRepository;
   private _permissionRepository: PermissionRepository;
-  private chunkedUserPermissons: IPermission[] = [];
+  private _refreshTokenRepository: RefreshTokenRepository;
+  private chunkedUserPermissons: IRolePermission[] = [];
 
   constructor() {
     this._userRepository = new UserRepository();
     this._roleRepository = new RoleRepository();
     this._userTypeRepository = new UserTypeRepository();
     this._scheduledEmailRepository = new ScheduledEmailRepository();
-    this._resourceRepository = new ResourceRepository();
+    this._rolePermissionRepository = new RolePermissionRepository();
     this._permissionRepository = new PermissionRepository();
     this._currentAuthKey = currentAuthKey;
     this._currentVerifyKey = currentVerifyKey;
@@ -95,13 +96,100 @@ class UserBusiness implements IUserBusiness {
     this._authExpiration = authExpiration;
     this._verifyExpiration = verifyTokenExpiration;
     this._mailExpiratation = mailExpiration;
+    this._refreshTokenRepository = new RefreshTokenRepository();
   }
 
   async findUserByEmail(criteria: any): Promise<IUserModel> {
     return await this._userRepository.findByCriteria(criteria);
   }
 
-  async login(params: ILogin): Promise<Result<IAuthData>> {
+  async refreshToken(
+    userId: string,
+    audience: string,
+    refreshTokenParams: IRefreshTokenViewModel
+  ): Promise<Result<IAuthData>> {
+    {
+      const user = await this.findById(userId);
+      const error = user.error ? user.error : "";
+      if (user.data) {
+        if (!user.data.isEmailConfirmed)
+          return Result.fail<IAuthData>(401, "Please verify your email.");
+
+        for (let role of user.data.roles) {
+          const permissions = await this.fetchPermissionsByRole(role);
+          if (permissions) {
+            this.chunkedUserPermissons.push(...permissions);
+          }
+        }
+
+        const signInOptions: SignInOptions = {
+          issuer: config.AUTH_ISSUER_SERVER,
+          audience,
+          expiresIn: this._authExpiration,
+          algorithm: this._currentRsaAlgType,
+          keyid: this._currentAuthKey,
+          subject: ""
+        };
+
+        const payload: AuthPayload = {
+          type: TokenType.AUTH
+        };
+
+        const privateKey: string = getSecretByKey(this._currentAuthKey);
+        if (privateKey === "") {
+          return Result.fail<IAuthData>(
+            401,
+            `Private Key is missing for ${this._currentAuthKey}`
+          );
+        }
+
+        const typeOfUser = await this._userTypeRepository.findById(
+          user.data.userType
+        );
+
+        const rfToken: IRefreshToken = Object.assign({
+          token: uuid(),
+          application: refreshTokenParams.application,
+          ownerId: user.data._id
+        });
+
+        const newUserRefreshToken = await this._refreshTokenRepository.create(
+          rfToken
+        );
+
+        const userToken: TokenResult = await user.data.generateToken(
+          privateKey,
+          signInOptions,
+          payload
+        );
+
+        if (userToken.error)
+          return Result.fail<IAuthData>(401, "Invalid token.");
+
+        const authData: IAuthData = {
+          access_token: userToken.data,
+          refresh_token: newUserRefreshToken.token,
+          permissions: this.chunkedUserPermissons,
+          token_expires: this._authExpiration,
+          user_data: {
+            _id: user.data._id,
+            full_name: user.data.fullName,
+            email: user.data.email,
+            profile_is_completed: user.data.isProfileCompleted,
+            profile_image_path: user.data.profileImagePath || "",
+            userType: { _id: typeOfUser._id, name: typeOfUser.name }
+          }
+        };
+        return Result.ok<IAuthData>(200, authData);
+      }
+      return Result.fail<IAuthData>(401, error);
+    }
+  }
+
+  async login(
+    params: ILogin,
+    refreshTokenParams: IRefreshTokenViewModel
+  ): Promise<Result<IAuthData>> {
     {
       const criteria = {
         email: params.email.toLowerCase()
@@ -115,7 +203,7 @@ class UserBusiness implements IUserBusiness {
         params.password
       );
       if (!passwordMatched)
-        return Result.fail<IAuthData>(401, "Invalid credentials");
+        return Result.fail<IAuthData>(401, "Invalid username/password");
 
       if (!user.isEmailConfirmed)
         return Result.fail<IAuthData>(401, "Please verify your email.");
@@ -145,6 +233,19 @@ class UserBusiness implements IUserBusiness {
           `Private Key is missing for ${this._currentAuthKey}`
         );
       }
+
+      const typeOfUser = await this._userTypeRepository.findById(user.userType);
+
+      const rfToken: IRefreshToken = Object.assign({
+        token: uuid(),
+        application: refreshTokenParams.application,
+        ownerId: user._id
+      });
+
+      const newUserRefreshToken = await this._refreshTokenRepository.create(
+        rfToken
+      );
+
       const userToken: TokenResult = await user.generateToken(
         privateKey,
         signInOptions,
@@ -152,11 +253,12 @@ class UserBusiness implements IUserBusiness {
       );
 
       if (userToken.error) return Result.fail<IAuthData>(401, "Invalid token.");
-      const typeOfUser = await this._userTypeRepository.findById(user.userType);
 
       const authData: IAuthData = {
         access_token: userToken.data,
+        refresh_token: newUserRefreshToken.token,
         permissions: this.chunkedUserPermissons,
+        token_expires: this._authExpiration,
         user_data: {
           _id: user._id,
           full_name: user.fullName,
@@ -241,30 +343,12 @@ class UserBusiness implements IUserBusiness {
     }
   }
 
-  async findById(id: string): Promise<Result<any>> {
-    if (!id) return Result.fail<IUserModel>(400, "Bad request");
+  async findById(id: string): Promise<Result<IUserModel>> {
     const user = await this._userRepository.findById(id);
     if (!user) {
-      return Result.fail<IUserModel>(404, `User not found`);
-    } else {
-      let refinedUser: UserViewModel = {
-        _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        isEmailConfirmed: user.isEmailConfirmed,
-        isPhoneConfirmed: user.isPhoneConfirmed,
-        isProfileCompleted: user.isProfileCompleted,
-        generalNotification: user.generalNotification,
-        emailNotification: user.emailNotification,
-        profileVisibility: user.profileVisibility,
-        loginCount: user.loginCount,
-        status: [user.status],
-        roles: user.roles,
-        lastLogin: user.lastLogin,
-        createdAt: user.createdAt
-      };
-      return Result.ok<UserViewModel>(200, refinedUser);
+      return Result.fail<IUserModel>(404, "User not found");
     }
+    return Result.ok<IUserModel>(200, user);
   }
 
   async findOne(condition: any): Promise<Result<any>> {
@@ -586,22 +670,14 @@ class UserBusiness implements IUserBusiness {
 
   async update(id: string, item: IUserModel): Promise<Result<IUserModel>> {
     const user = await this._userRepository.findById(id);
-    if (!user)
-      return Result.fail<IUserModel>(
-        404,
-        `Could not update user.User of Id ${id} not found`
-      );
+    if (!user) return Result.fail<IUserModel>(404, "User not found");
     const updateObj = await this._userRepository.update(user._id, item);
     return Result.ok<IUserModel>(200, updateObj);
   }
 
   async patch(id: string, item: any): Promise<Result<UserViewModel>> {
     const user = await this._userRepository.findById(id);
-    if (!user)
-      return Result.fail<UserViewModel>(
-        404,
-        `Could not update user.User with Id ${id} not found`
-      );
+    if (!user) return Result.fail<UserViewModel>(404, "User not found");
     const updateObj = await this._userRepository.update(user._id, item);
     // console.log(updateObj.);
     let refinedUser: UserViewModel = {
@@ -667,14 +743,16 @@ class UserBusiness implements IUserBusiness {
     ];
   }
 
-  async fetchResourceByName(destinationUrl: string): Promise<IResource> {
-    return await this._resourceRepository.findByCriteria({
-      name: destinationUrl
-    });
-  }
+  // async fetchResourceByName(destinationUrl: string): Promise<IResource> {
+  //   return await this._resourceRepository.findByCriteria({
+  //     name: destinationUrl
+  //   });
+  // }
 
-  async fetchPermissionsByRole(role: string): Promise<any> {
-    return await this._permissionRepository.fetch({ role });
+  async fetchPermissionsByRole(role: string): Promise<IRolePermission[]> {
+    return await this._rolePermissionRepository.populateFetch("permission", {
+      role
+    });
   }
 }
 

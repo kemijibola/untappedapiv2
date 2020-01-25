@@ -1,8 +1,14 @@
+import { authExpiration } from "./../utils/lib/Constant";
 import { Request, Response, NextFunction } from "express";
 import { controller, get, post, requestValidators, use } from "../decorators";
 import UserBusiness from "../app/business/UserBusiness";
+import RefreshTokenBusiness from "../app/business/RefreshTokenBusiness";
 import { PlatformError } from "../utils/error";
-import { ILogin, IRegister } from "../app/models/interfaces";
+import {
+  ILogin,
+  IRegister,
+  IRefreshTokenViewModel
+} from "../app/models/interfaces";
 import {
   ConfirmEmailRequest,
   ChangePasswordData,
@@ -11,6 +17,9 @@ import {
 } from "../app/models/interfaces/custom/Account";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { requireAuth } from "../middlewares/auth";
+import { requestValidator } from "../middlewares/ValidateRequest";
+import uuid = require("uuid");
+import { addSeconds, isPast } from "date-fns";
 
 // export const kemi = ['email', 'password'];
 // function logger(req: Request, res: Response, next: NextFunction) {
@@ -20,19 +29,108 @@ import { requireAuth } from "../middlewares/auth";
 
 @controller("/v1")
 export class AuthController {
-  @post("/authentication")
-  @requestValidators("email", "password", "audience")
-  async postLogin(req: Request, res: Response, next: NextFunction) {
+  @post("/refresh-token")
+  @use(requestValidator)
+  @requestValidators("refreshToken", "userId")
+  async postRefreshToken(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
+      var refreshTokenBusiness = new RefreshTokenBusiness();
+      var refreshToken = await refreshTokenBusiness.findByCriteria({
+        token: req.body.refreshToken
+      });
+      if (refreshToken.error)
+        return next(
+          new PlatformError({
+            code: refreshToken.responseCode,
+            message: refreshToken.error
+          })
+        );
+
+      if (refreshToken.data) {
+        if (refreshToken.data.isExpired)
+          return next(
+            new PlatformError({
+              code: 401,
+              message: "Refresh token is invalid."
+            })
+          );
+        if (refreshToken.data.ownerId !== req.body.userId)
+          return next(
+            new PlatformError({
+              code: 403,
+              message: "You are not authorized to make this request."
+            })
+          );
+
+        // check if refresh token has expired
+        var rfTGeneratedDate = addSeconds(
+          refreshToken.data.createdAt,
+          req.appUser ? req.appUser.refreshTokenExpiration : 0
+        );
+
+        if (isPast(rfTGeneratedDate)) {
+          return next(
+            new PlatformError({
+              code: 401,
+              message:
+                "Refresh token has expired. Please generate another token."
+            })
+          );
+        }
+        var userBusiness = new UserBusiness();
+        const audience = req.appUser ? req.appUser.audience : "";
+        const refreshTokenData: IRefreshTokenViewModel = {
+          application: req.appUser ? req.appUser.clientId : ""
+        };
+        var result = await userBusiness.refreshToken(
+          req.body.userId,
+          audience,
+          refreshTokenData
+        );
+        if (result.error)
+          return next(
+            new PlatformError({
+              code: result.responseCode,
+              message: result.error
+            })
+          );
+        return res.status(result.responseCode).json({
+          message: "Operation successful",
+          data: result.data
+        });
+      }
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later."
+        })
+      );
+    }
+  }
+
+  @post("/authentication")
+  @use(requestValidator)
+  @requestValidators("email", "password")
+  async postLogin(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
       const loginParams: ILogin = {
         email: req.body.email.toLowerCase(),
         password: req.body.password,
-        audience: req.body.audience.toLowerCase(),
+        audience: audience,
         issuer: ""
       };
 
+      const refreshTokenData: IRefreshTokenViewModel = {
+        application: req.appUser ? req.appUser._id : ""
+      };
       const userBusiness = new UserBusiness();
-      const result = await userBusiness.login(loginParams);
+      const result = await userBusiness.login(loginParams, refreshTokenData);
       if (result.error)
         return next(
           new PlatformError({
@@ -45,8 +143,7 @@ export class AuthController {
         data: result.data
       });
     } catch (err) {
-      console.log(err);
-      // console.log(err.message);
+      console.log(err.message);
       // log err.message to a logger with name of action
       return next(
         new PlatformError({
@@ -58,6 +155,7 @@ export class AuthController {
   }
 
   @post("/account/password/reset")
+  @use(requestValidator)
   @requestValidators("email", "newPassword")
   async postResetPassword(req: Request, res: Response, next: NextFunction) {
     try {
@@ -89,18 +187,20 @@ export class AuthController {
   }
 
   @post("/account/password/reset/verify")
-  @requestValidators("email", "token", "audience")
+  @use(requestValidator)
+  @requestValidators("email", "token")
   async postVerifyResetPassword(
-    req: Request,
+    req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
       const userBusiness = new UserBusiness();
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
       const item: VerifyResetPasswordRequest = {
         email: req.body.email.toLowerCase(),
         token: req.body.token,
-        audience: req.body.audience.toLowerCase()
+        audience: audience
       };
       const result = await userBusiness.verifyPasswordResetLink(item);
       if (result.error)
@@ -125,14 +225,23 @@ export class AuthController {
   }
 
   @post("/account/password/reset/request")
-  @requestValidators("email", "audience", "redirectUrl")
-  async postforgotPassword(req: Request, res: Response, next: NextFunction) {
+  @use(requestValidator)
+  @requestValidators("email")
+  async postforgotPassword(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+      const redirectBaseUrl = req.appUser
+        ? req.appUser.redirectBaseUrl.toLowerCase()
+        : "";
       const userBusiness = new UserBusiness();
       const result = await userBusiness.forgotPassword(
         req.body.email.toLowerCase(),
-        req.body.audience.toLowerCase(),
-        req.body.redirectUrl.toLowerCase()
+        audience,
+        redirectBaseUrl
       );
       if (result.error)
         return next(
@@ -156,6 +265,7 @@ export class AuthController {
   }
 
   @post("/account/password/change")
+  @use(requestValidator)
   @use(requireAuth)
   @requestValidators("oldPassword", "newPassword")
   async postChangePassword(
@@ -194,19 +304,23 @@ export class AuthController {
   }
 
   @post("/account/resend-link")
-  @requestValidators("email", "audience", "confirmationUrl")
+  @use(requestValidator)
+  @requestValidators("email")
   async postResendVerificationLink(
-    req: Request,
+    req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
       const userBusiness = new UserBusiness();
-
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+      const redirectConfirmation = req.appUser
+        ? req.appUser.emailConfirmationRedirectUrl.toLowerCase()
+        : "";
       const result = await userBusiness.resendVerificationLink(
         req.body.email.toLowerCase(),
-        req.body.audience.toLowerCase(),
-        req.body.confirmationUrl.toLowerCase()
+        audience,
+        redirectConfirmation
       );
       if (result.error)
         return next(
@@ -230,13 +344,20 @@ export class AuthController {
   }
 
   @post("/account/verify")
-  @requestValidators("email", "audience", "token")
-  async postVerifyEmail(req: Request, res: Response, next: NextFunction) {
+  @use(requestValidator)
+  @requestValidators("email", "token")
+  async postVerifyEmail(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+
       const request: ConfirmEmailRequest = {
         userEmail: req.body.email.toLowerCase(),
         token: req.body.token,
-        audience: req.body.audience.toLowerCase()
+        audience
       };
 
       const userBusiness = new UserBusiness();
@@ -263,25 +384,23 @@ export class AuthController {
   }
 
   @post("/account/signup")
-  @requestValidators(
-    "email",
-    "password",
-    "audience",
-    "fullName",
-    "userType",
-    "confirmationUrl"
-  )
-  async postSignup(req: Request, res: Response, next: NextFunction) {
+  @use(requestValidator)
+  @requestValidators("email", "password", "fullName", "userType")
+  async postSignup(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      console.log("got here");
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+      const redirectConfirmation = req.appUser
+        ? req.appUser.emailConfirmationRedirectUrl.toLowerCase()
+        : "";
+
       // const destinationIssuer = `${issuer}${req.originalUrl}`;
       const signUpParams: IRegister = {
         fullName: req.body.fullName,
         email: req.body.email,
         password: req.body.password,
         userType: req.body.userType,
-        audience: req.body.audience,
-        confirmationUrl: req.body.confirmationUrl,
+        audience,
+        confirmationUrl: redirectConfirmation,
         roles: []
       };
       const userBusiness = new UserBusiness();

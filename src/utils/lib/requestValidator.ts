@@ -20,6 +20,6 @@ export function requestValidators(keys: string[]): RequestHandler {
         })
       );
     }
-    next();
+    return next();
   };
 }

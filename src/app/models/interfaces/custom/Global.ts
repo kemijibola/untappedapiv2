@@ -1,13 +1,13 @@
-import { IPermission } from '../Permission';
+import { IPermission } from "../Permission";
 
 export interface UserPermissions {
-  permissions: IPermission['name'][];
+  permissions: IPermission["name"][];
 }
 
 export interface SignInOptions {
   issuer: string;
   audience: string;
-  expiresIn: string;
+  expiresIn: number;
   algorithm: string;
   keyid: string;
   subject: string;

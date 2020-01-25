@@ -70,10 +70,10 @@ function getIssuer() {
     return config.ISSUER.toLowerCase() || "http://localhost:8900";
 }
 function getAuthExpiration() {
-    return config.AUTH_EXPIRESIN || "12h";
+    return config.AUTH_EXPIRESIN || 43200;
 }
 function getMailExpiration() {
-    return config.MAIL_EXPIRESIN || "2h";
+    return config.MAIL_EXPIRESIN || 86400;
 }
 exports.currentAuthKey = "42";
 exports.currentVerifyKey = "43";

@@ -74,18 +74,18 @@ function getIssuer(): string {
   return config.ISSUER.toLowerCase() || "http://localhost:8900";
 }
 
-function getAuthExpiration(): string {
-  return config.AUTH_EXPIRESIN || "12h";
+function getAuthExpiration(): number {
+  return config.AUTH_EXPIRESIN || 43200;
 }
 
-function getMailExpiration(): string {
-  return config.MAIL_EXPIRESIN || "2h";
+function getMailExpiration(): number {
+  return config.MAIL_EXPIRESIN || 86400;
 }
 
 export const currentAuthKey: string = "42";
 export const currentVerifyKey: string = "43";
 export const currentRsaAlgType: string = "RS256";
 export const issuer: string = getIssuer();
-export const authExpiration: string = getAuthExpiration();
-export const mailExpiration: string = getMailExpiration();
-export const verifyTokenExpiration: string = getMailExpiration();
+export const authExpiration: number = getAuthExpiration();
+export const mailExpiration: number = getMailExpiration();
+export const verifyTokenExpiration: number = getMailExpiration();

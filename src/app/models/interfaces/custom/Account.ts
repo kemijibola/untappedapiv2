@@ -26,7 +26,7 @@ export interface TokenGenerationRequest {
   audience: string;
   redirectUrl: string;
   tokenType: TokenType;
-  tokenExpiresIn: string;
+  tokenExpiresIn: number;
 }
 
 export interface TokenResult {

@@ -1,5 +1,5 @@
-import { IApplication } from './Application';
+import { IApplication } from "./Application";
 
 export interface IAppSpec {
-  application: IApplication['_id'];
+  application?: IApplication["_id"];
 }

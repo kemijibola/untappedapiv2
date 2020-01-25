@@ -40,8 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var ScheduledEmailRepository_1 = __importDefault(require("../repository/ScheduledEmailRepository"));
-var ResourceRepository_1 = __importDefault(require("../repository/ResourceRepository"));
+var RolePermissionRepository_1 = __importDefault(require("../repository/RolePermissionRepository"));
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
+var RefreshTokenRepository_1 = __importDefault(require("../repository/RefreshTokenRepository"));
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
 var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
@@ -52,20 +53,21 @@ var config = require("../../config/keys");
 var ScheduleTask_1 = require("../../handlers/ScheduleTask");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
+var uuid_1 = __importDefault(require("uuid"));
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentAuthKey = "";
         this._currentVerifyKey = "";
         this._currentRsaAlgType = "";
-        this._authExpiration = "";
-        this._mailExpiratation = "";
-        this._verifyExpiration = "";
+        this._authExpiration = 0;
+        this._mailExpiratation = 0;
+        this._verifyExpiration = 0;
         this.chunkedUserPermissons = [];
         this._userRepository = new UserRepository_1.default();
         this._roleRepository = new RoleRepository_1.default();
         this._userTypeRepository = new UserTypeRepository_1.default();
         this._scheduledEmailRepository = new ScheduledEmailRepository_1.default();
-        this._resourceRepository = new ResourceRepository_1.default();
+        this._rolePermissionRepository = new RolePermissionRepository_1.default();
         this._permissionRepository = new PermissionRepository_1.default();
         this._currentAuthKey = lib_1.currentAuthKey;
         this._currentVerifyKey = lib_1.currentVerifyKey;
@@ -73,6 +75,7 @@ var UserBusiness = /** @class */ (function () {
         this._authExpiration = lib_1.authExpiration;
         this._verifyExpiration = lib_1.verifyTokenExpiration;
         this._mailExpiratation = lib_1.mailExpiration;
+        this._refreshTokenRepository = new RefreshTokenRepository_1.default();
     }
     UserBusiness.prototype.findUserByEmail = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
@@ -84,9 +87,89 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
-    UserBusiness.prototype.login = function (params) {
+    UserBusiness.prototype.refreshToken = function (userId, audience, refreshTokenParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, userToken, typeOfUser, authData;
+            var user, error, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, authData;
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, this.findById(userId)];
+                    case 1:
+                        user = _c.sent();
+                        error = user.error ? user.error : "";
+                        if (!user.data) return [3 /*break*/, 9];
+                        if (!user.data.isEmailConfirmed)
+                            return [2 /*return*/, Result_1.Result.fail(401, "Please verify your email.")];
+                        _i = 0, _a = user.data.roles;
+                        _c.label = 2;
+                    case 2:
+                        if (!(_i < _a.length)) return [3 /*break*/, 5];
+                        role = _a[_i];
+                        return [4 /*yield*/, this.fetchPermissionsByRole(role)];
+                    case 3:
+                        permissions = _c.sent();
+                        if (permissions) {
+                            (_b = this.chunkedUserPermissons).push.apply(_b, permissions);
+                        }
+                        _c.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5:
+                        signInOptions = {
+                            issuer: config.AUTH_ISSUER_SERVER,
+                            audience: audience,
+                            expiresIn: this._authExpiration,
+                            algorithm: this._currentRsaAlgType,
+                            keyid: this._currentAuthKey,
+                            subject: ""
+                        };
+                        payload = {
+                            type: GlobalEnum_1.TokenType.AUTH
+                        };
+                        privateKey = lib_1.getSecretByKey(this._currentAuthKey);
+                        if (privateKey === "") {
+                            return [2 /*return*/, Result_1.Result.fail(401, "Private Key is missing for " + this._currentAuthKey)];
+                        }
+                        return [4 /*yield*/, this._userTypeRepository.findById(user.data.userType)];
+                    case 6:
+                        typeOfUser = _c.sent();
+                        rfToken = Object.assign({
+                            token: uuid_1.default(),
+                            application: refreshTokenParams.application,
+                            ownerId: user.data._id
+                        });
+                        return [4 /*yield*/, this._refreshTokenRepository.create(rfToken)];
+                    case 7:
+                        newUserRefreshToken = _c.sent();
+                        return [4 /*yield*/, user.data.generateToken(privateKey, signInOptions, payload)];
+                    case 8:
+                        userToken = _c.sent();
+                        if (userToken.error)
+                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
+                        authData = {
+                            access_token: userToken.data,
+                            refresh_token: newUserRefreshToken.token,
+                            permissions: this.chunkedUserPermissons,
+                            token_expires: this._authExpiration,
+                            user_data: {
+                                _id: user.data._id,
+                                full_name: user.data.fullName,
+                                email: user.data.email,
+                                profile_is_completed: user.data.isProfileCompleted,
+                                profile_image_path: user.data.profileImagePath || "",
+                                userType: { _id: typeOfUser._id, name: typeOfUser.name }
+                            }
+                        };
+                        return [2 /*return*/, Result_1.Result.ok(200, authData)];
+                    case 9: return [2 /*return*/, Result_1.Result.fail(401, error)];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.login = function (params, refreshTokenParams) {
+        return __awaiter(this, void 0, void 0, function () {
+            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, authData;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -103,7 +186,7 @@ var UserBusiness = /** @class */ (function () {
                     case 2:
                         passwordMatched = _c.sent();
                         if (!passwordMatched)
-                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid credentials")];
+                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid username/password")];
                         if (!user.isEmailConfirmed)
                             return [2 /*return*/, Result_1.Result.fail(401, "Please verify your email.")];
                         _i = 0, _a = user.roles;
@@ -137,17 +220,27 @@ var UserBusiness = /** @class */ (function () {
                         if (privateKey === "") {
                             return [2 /*return*/, Result_1.Result.fail(401, "Private Key is missing for " + this._currentAuthKey)];
                         }
-                        return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
+                        return [4 /*yield*/, this._userTypeRepository.findById(user.userType)];
                     case 7:
+                        typeOfUser = _c.sent();
+                        rfToken = Object.assign({
+                            token: uuid_1.default(),
+                            application: refreshTokenParams.application,
+                            ownerId: user._id
+                        });
+                        return [4 /*yield*/, this._refreshTokenRepository.create(rfToken)];
+                    case 8:
+                        newUserRefreshToken = _c.sent();
+                        return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
+                    case 9:
                         userToken = _c.sent();
                         if (userToken.error)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
-                        return [4 /*yield*/, this._userTypeRepository.findById(user.userType)];
-                    case 8:
-                        typeOfUser = _c.sent();
                         authData = {
                             access_token: userToken.data,
+                            refresh_token: newUserRefreshToken.token,
                             permissions: this.chunkedUserPermissons,
+                            token_expires: this._authExpiration,
                             user_data: {
                                 _id: user._id,
                                 full_name: user.fullName,
@@ -271,38 +364,16 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
-                        return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
                     case 1:
                         user = _a.sent();
                         if (!user) {
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         }
-                        else {
-                            refinedUser = {
-                                _id: user._id,
-                                email: user.email,
-                                fullName: user.fullName,
-                                isEmailConfirmed: user.isEmailConfirmed,
-                                isPhoneConfirmed: user.isPhoneConfirmed,
-                                isProfileCompleted: user.isProfileCompleted,
-                                generalNotification: user.generalNotification,
-                                emailNotification: user.emailNotification,
-                                profileVisibility: user.profileVisibility,
-                                loginCount: user.loginCount,
-                                status: [user.status],
-                                roles: user.roles,
-                                lastLogin: user.lastLogin,
-                                createdAt: user.createdAt
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
-                        }
-                        return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, user)];
                 }
             });
         });
@@ -686,7 +757,7 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update user.User of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
                     case 2:
                         updateObj = _a.sent();
@@ -704,7 +775,7 @@ var UserBusiness = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update user.User with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
                     case 2:
                         updateObj = _a.sent();
@@ -775,23 +846,18 @@ var UserBusiness = /** @class */ (function () {
             }
         ];
     };
-    UserBusiness.prototype.fetchResourceByName = function (destinationUrl) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._resourceRepository.findByCriteria({
-                            name: destinationUrl
-                        })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
+    // async fetchResourceByName(destinationUrl: string): Promise<IResource> {
+    //   return await this._resourceRepository.findByCriteria({
+    //     name: destinationUrl
+    //   });
+    // }
     UserBusiness.prototype.fetchPermissionsByRole = function (role) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._permissionRepository.fetch({ role: role })];
+                    case 0: return [4 /*yield*/, this._rolePermissionRepository.populateFetch("permission", {
+                            role: role
+                        })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

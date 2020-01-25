@@ -31,6 +31,7 @@ class JwtHelper {
       let result: TokenResult = { data: "", error: "" };
       jwt.verify(token, publicKey, options, function(err, decoded) {
         if (err) {
+          console.log(err);
           result = { error: err.message, data: "" };
           resolve(result);
         }

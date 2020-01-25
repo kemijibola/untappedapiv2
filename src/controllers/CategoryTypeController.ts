@@ -1,16 +1,27 @@
 import { Request, Response, NextFunction } from "express";
-import { controller, post, requestValidators, get } from "../decorators";
+import {
+  controller,
+  post,
+  requestValidators,
+  get,
+  use,
+  authorize
+} from "../decorators";
 import { ICategoryType } from "../app/models/interfaces";
 import CategoryTypeBusiness from "../app/business/CategoryTypeBusiness";
 import { PlatformError } from "../utils/error";
+import { requestValidator } from "../middlewares/ValidateRequest";
+import { requireAuth } from "../middlewares/auth";
+import { canCreateCategoryType } from "../utils/lib/PermissionConstant";
 
 @controller("/v1/categories-types")
 export class CategoryTypeController {
   @get("/")
+  @use(requestValidator)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       const categoryTypeBusiness = new CategoryTypeBusiness();
-      const result = await categoryTypeBusiness.fetch({});
+      const result = await categoryTypeBusiness.fetchWithCategory({});
       if (result.error) {
         return next(
           new PlatformError({
@@ -34,6 +45,9 @@ export class CategoryTypeController {
   }
 
   @post("/")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canCreateCategoryType)
   @requestValidators("name", "category")
   async create(req: Request, res: Response, next: NextFunction) {
     try {

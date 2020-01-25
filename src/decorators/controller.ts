@@ -1,9 +1,9 @@
-import 'reflect-metadata';
-import { AppRouter } from '../AppRouter';
-import { Methods } from '../app/models/interfaces/custom/Methods';
-import { MetadataKeys } from '../app/models/interfaces/custom/MetadataKeys';
-import { requestValidators } from '../utils/lib/requestValidator';
-import { authorizePermission } from '../utils/lib/authorizePermission';
+import "reflect-metadata";
+import { AppRouter } from "../AppRouter";
+import { Methods } from "../app/models/interfaces/custom/Methods";
+import { MetadataKeys } from "../app/models/interfaces/custom/MetadataKeys";
+import { requestValidators } from "../utils/lib/requestValidator";
+import { authorizePermission } from "../utils/lib/authorizePermission";
 
 export function controller(routePrefix: string) {
   return function(target: Function) {
@@ -39,14 +39,14 @@ export function controller(routePrefix: string) {
           target.prototype,
           key
         ) || [];
-      const authorize = authorizePermission(permissions);
+      const authorization = authorizePermission(permissions);
 
       if (path) {
         router[method](
           `${routePrefix}${path}`,
           ...middlewares,
           validator,
-          authorize,
+          authorization,
           routeHandler
         );
       }

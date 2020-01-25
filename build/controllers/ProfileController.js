@@ -48,6 +48,7 @@ var decorators_1 = require("../decorators");
 var ProfileBusiness = require("../app/business/ProfileBusiness");
 var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
@@ -227,6 +228,7 @@ var ProfileController = /** @class */ (function () {
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
@@ -234,12 +236,14 @@ var ProfileController = /** @class */ (function () {
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.get("/user"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "fetchUserProfile", null);
     __decorate([
         decorators_1.get("/:id"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

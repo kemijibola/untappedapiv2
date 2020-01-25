@@ -13,10 +13,12 @@ import { PlatformError } from "../utils/error";
 import UserBusiness = require("../app/business/UserBusiness");
 import { ObjectKeyString } from "../utils/lib";
 import { requireAuth } from "../middlewares/auth";
+import { requestValidator } from "../middlewares/ValidateRequest";
 
 @controller("/v1/users")
 export class UserController {
   @get("/")
+  @use(requestValidator)
   // @use(requireAuth)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
@@ -49,6 +51,7 @@ export class UserController {
   }
 
   @patch("/")
+  @use(requestValidator)
   @use(requireAuth)
   async patch(req: RequestWithUser, res: Response, next: NextFunction) {
     try {

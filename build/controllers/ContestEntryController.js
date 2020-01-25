@@ -46,6 +46,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var ContestEntryEpository = require("../app/repository/ContestEntryRepository");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var auth_1 = require("../middlewares/auth");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ContestEntryController = /** @class */ (function () {
     function ContestEntryController() {
     }
@@ -79,12 +82,12 @@ var ContestEntryController = /** @class */ (function () {
                         // const scheduler = SqsScheduler.setup(sqsParams);
                         // scheduler.create<SqsSendMessage>('comment-entity', sendMessageParams);
                         return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: contestEntry
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        return [2 /*return*/, next('hello')];
+                        return [2 /*return*/, next("hello")];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -95,14 +98,17 @@ var ContestEntryController = /** @class */ (function () {
     ContestEntryController.prototype.fetch = function () { };
     ContestEntryController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('contest', 'submissionPath'),
+        decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateContest),
+        decorators_1.requestValidators("contest", "submissionPath"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
     ContestEntryController = __decorate([
-        decorators_1.controller('/v1/contest-entries')
+        decorators_1.controller("/v1/contest-entries")
     ], ContestEntryController);
     return ContestEntryController;
 }());

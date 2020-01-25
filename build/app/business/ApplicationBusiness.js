@@ -39,13 +39,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var ApplicationRepository_1 = __importDefault(require("../repository/ApplicationRepository"));
 var Result_1 = require("../../utils/Result");
+var btoa_1 = __importDefault(require("btoa"));
 var ApplicationBusiness = /** @class */ (function () {
     function ApplicationBusiness() {
         this._applicationRepository = new ApplicationRepository_1.default();
     }
     ApplicationBusiness.prototype.fetch = function (condidtion) {
         return __awaiter(this, void 0, void 0, function () {
-            var refinedApplications, applications, _i, applications_1, application, applicationViewModel;
+            var refinedApplications, applications;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -53,26 +54,14 @@ var ApplicationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._applicationRepository.fetch(condidtion)];
                     case 1:
                         applications = _a.sent();
-                        for (_i = 0, applications_1 = applications; _i < applications_1.length; _i++) {
-                            application = applications_1[_i];
-                            applicationViewModel = {
-                                _id: application._id,
-                                name: application.name,
-                                dbUri: application.dbUri,
-                                identity: application.identity,
-                                secret: application.secret,
-                                domain: application.domain
-                            };
-                            refinedApplications = refinedApplications.concat([applicationViewModel]);
-                        }
-                        return [2 /*return*/, Result_1.Result.ok(200, refinedApplications)];
+                        return [2 /*return*/, Result_1.Result.ok(200, applications)];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, refinedApplication;
+            var application;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -82,100 +71,69 @@ var ApplicationBusiness = /** @class */ (function () {
                     case 1:
                         application = _a.sent();
                         if (!application) {
-                            return [2 /*return*/, Result_1.Result.fail(404, "Application of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Application not found")];
                         }
-                        else {
-                            refinedApplication = {
-                                _id: application._id,
-                                name: application.name,
-                                dbUri: application.dbUri,
-                                identity: application.identity,
-                                secret: application.secret,
-                                domain: application.domain
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
-                        }
-                        return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, application)];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, refinedApplication;
+            var application;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please include at least one filter condition in your request.")];
                         return [4 /*yield*/, this._applicationRepository.findByOne(condition)];
                     case 1:
                         application = _a.sent();
                         if (!application) {
-                            return [2 /*return*/, Result_1.Result.fail(404, "Application not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Client not found")];
                         }
-                        else {
-                            refinedApplication = {
-                                _id: application._id,
-                                name: application.name,
-                                dbUri: application.dbUri,
-                                identity: application.identity,
-                                secret: application.secret,
-                                domain: application.domain
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
-                        }
-                        return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, application)];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var application, refinedApplication;
+            var application;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        criteria.isActive = true;
-                        return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
                     case 1:
                         application = _a.sent();
                         if (!application) {
-                            return [2 /*return*/, Result_1.Result.fail(404, "Application not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Client not found")];
                         }
-                        else {
-                            refinedApplication = {
-                                _id: application._id,
-                                name: application.name,
-                                dbUri: application.dbUri,
-                                identity: application.identity,
-                                secret: application.secret,
-                                domain: application.domain
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedApplication)];
-                        }
-                        return [2 /*return*/];
+                        return [2 /*return*/, Result_1.Result.ok(200, application)];
                 }
             });
         });
     };
     ApplicationBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newApplication, refinedApplication;
+            var application, newApplication;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._applicationRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._applicationRepository.findByCriteria({
+                            clientId: item.clientId
+                        })];
                     case 1:
+                        application = _a.sent();
+                        if (application)
+                            return [2 /*return*/, Result_1.Result.fail(409, "Client " + item.clientId + " already exist")];
+                        item.isActive = false;
+                        item.audience.toLowerCase();
+                        item.redirectBaseUrl.toLowerCase();
+                        item.emailConfirmationRedirectUrl.toLowerCase();
+                        item.clientSecret = btoa_1.default(item.name + "{item.clientId}");
+                        return [4 /*yield*/, this._applicationRepository.create(item)];
+                    case 2:
                         newApplication = _a.sent();
-                        refinedApplication = {
-                            _id: newApplication._id,
-                            name: newApplication.name,
-                            dbUri: newApplication.dbUri,
-                            identity: newApplication.identity,
-                            secret: newApplication.secret,
-                            domain: newApplication.domain
-                        };
-                        return [2 /*return*/, Result_1.Result.ok(201, refinedApplication)];
+                        return [2 /*return*/, Result_1.Result.ok(201, newApplication)];
                 }
             });
         });
@@ -189,7 +147,12 @@ var ApplicationBusiness = /** @class */ (function () {
                     case 1:
                         application = _a.sent();
                         if (!application)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update Application.Application with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Client not found")];
+                        item.clientId = application.clientId;
+                        item.clientSecret = application.clientSecret;
+                        item.audience.toLowerCase();
+                        item.redirectBaseUrl.toLowerCase();
+                        item.emailConfirmationRedirectUrl.toLowerCase();
                         return [4 /*yield*/, this._applicationRepository.update(application._id, item)];
                     case 2:
                         updateObj = _a.sent();

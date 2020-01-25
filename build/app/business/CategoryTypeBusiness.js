@@ -58,6 +58,19 @@ var CategoryTypeBusiness = /** @class */ (function () {
             });
         });
     };
+    CategoryTypeBusiness.prototype.fetchWithCategory = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var categoryTypes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._categoryTypeRepository.populateFetch("category", condition)];
+                    case 1:
+                        categoryTypes = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, categoryTypes)];
+                }
+            });
+        });
+    };
     CategoryTypeBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var categoryType;

@@ -1,12 +1,24 @@
-import { Request, Response, NextFunction } from 'express';
-import { controller, post, requestValidators } from '../decorators';
-import { IContestEntry } from '../app/models/interfaces';
-import ContestEntryEpository = require('../app/repository/ContestEntryRepository');
+import { Request, Response, NextFunction } from "express";
+import {
+  controller,
+  post,
+  requestValidators,
+  use,
+  authorize
+} from "../decorators";
+import { IContestEntry } from "../app/models/interfaces";
+import ContestEntryEpository = require("../app/repository/ContestEntryRepository");
+import { requestValidator } from "../middlewares/ValidateRequest";
+import { requireAuth } from "../middlewares/auth";
+import { canCreateContest } from "../utils/lib/PermissionConstant";
 
-@controller('/v1/contest-entries')
+@controller("/v1/contest-entries")
 export class ContestEntryController {
-  @post('/')
-  @requestValidators('contest', 'submissionPath')
+  @post("/")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canCreateContest)
+  @requestValidators("contest", "submissionPath")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const item: IContestEntry = req.body;
@@ -33,11 +45,11 @@ export class ContestEntryController {
       // scheduler.create<SqsSendMessage>('comment-entity', sendMessageParams);
 
       return res.status(201).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: contestEntry
       });
     } catch (err) {
-      return next('hello');
+      return next("hello");
     }
   }
   update(): void {}

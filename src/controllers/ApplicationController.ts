@@ -1,13 +1,27 @@
-import { PlatformError } from '../utils/error/ApplicationError';
-import { Request, Response, NextFunction } from 'express';
-import { get, controller, requestValidators, post } from '../decorators';
-import { IApplication } from '../app/models/interfaces';
-import ApplicationBusiness = require('../app/business/ApplicationBusiness');
-import { ObjectKeyString } from '../utils/lib';
+import { PlatformError } from "../utils/error/ApplicationError";
+import { Request, Response, NextFunction } from "express";
+import {
+  get,
+  controller,
+  requestValidators,
+  post,
+  use,
+  authorize
+} from "../decorators";
+import { IApplication } from "../app/models/interfaces";
+import ApplicationBusiness = require("../app/business/ApplicationBusiness");
+import { ObjectKeyString } from "../utils/lib";
+import { requestValidator } from "../middlewares/ValidateRequest";
+import { requireAuth } from "../middlewares/auth";
+import {
+  canCreatePermission,
+  canCreateApplication
+} from "../utils/lib/PermissionConstant";
 
-@controller('/applications')
+@controller("/v1/application")
 export class ApplicationController {
-  @get('/')
+  @get("/")
+  @use(requestValidator)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       let condition: ObjectKeyString = {};
@@ -25,7 +39,7 @@ export class ApplicationController {
         );
       }
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
@@ -38,11 +52,36 @@ export class ApplicationController {
     }
   }
 
-  @post('/')
-  @requestValidators('name', 'dbUri', 'country', 'identity')
+  @post("/")
+  @use(requestValidator)
+  @use(requireAuth)
+  @requestValidators(
+    "name",
+    "audience",
+    "clientId",
+    "emailConfirmationRedirectUrl",
+    "refreshTokenExpiration"
+  )
+  @authorize(canCreateApplication)
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const item: IApplication = req.body;
+      if (item.refreshTokenExpiration < 1)
+        return next(
+          new PlatformError({
+            code: 400,
+            message:
+              "refreshTokenExpiration is invalid, expects a value in seconds."
+          })
+        );
+      if (item.refreshTokenExpiration > 604800) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "refreshTokenExpiration can not be more than 7 days"
+          })
+        );
+      }
       const applicationBusiness = new ApplicationBusiness();
       const result = await applicationBusiness.create(item);
       if (result.error) {
@@ -54,7 +93,7 @@ export class ApplicationController {
         );
       }
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
@@ -66,7 +105,4 @@ export class ApplicationController {
       );
     }
   }
-  update(): void {}
-  delete(): void {}
-  findById(): void {}
 }

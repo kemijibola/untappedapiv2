@@ -50,6 +50,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var CategoryBusiness_1 = __importDefault(require("../app/business/CategoryBusiness"));
 var error_1 = require("../utils/error");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var auth_1 = require("../middlewares/auth");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var CategoryController = /** @class */ (function () {
     function CategoryController() {
     }
@@ -123,12 +126,16 @@ var CategoryController = /** @class */ (function () {
     CategoryController.prototype.findById = function () { };
     __decorate([
         decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], CategoryController.prototype, "fetch", null);
     __decorate([
         decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateCategory),
         decorators_1.requestValidators("name"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

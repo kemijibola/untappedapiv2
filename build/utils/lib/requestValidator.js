@@ -18,7 +18,7 @@ function requestValidators(keys) {
                 message: "Invalid request.Missing property '" + missingProps + "'"
             }));
         }
-        next();
+        return next();
     };
 }
 exports.requestValidators = requestValidators;

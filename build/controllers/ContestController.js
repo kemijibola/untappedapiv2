@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var ContestBusiness = require("../app/business/ContestBusiness");
 var error_1 = require("../utils/error");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var ContestController = /** @class */ (function () {
     function ContestController() {
     }
@@ -69,14 +70,14 @@ var ContestController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -88,14 +89,15 @@ var ContestController = /** @class */ (function () {
     ContestController.prototype.fetch = function () { };
     ContestController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('title', 'information', 'eligibleCategories', 'eligibilityInfo', 'submissionRules', 'startDate', 'contestType', 'duration', 'redeemable'),
+        decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("title", "information", "eligibleCategories", "eligibilityInfo", "submissionRules", "startDate", "contestType", "duration", "redeemable"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "create", null);
     ContestController = __decorate([
-        decorators_1.controller('/v1/contests')
+        decorators_1.controller("/v1/contests")
     ], ContestController);
     return ContestController;
 }());

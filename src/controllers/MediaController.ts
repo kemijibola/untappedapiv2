@@ -27,6 +27,7 @@ import { PlatformError } from "../utils/error";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { requireAuth } from "../middlewares/auth";
 import uuid = require("uuid");
+import { requestValidator } from "../middlewares/ValidateRequest";
 
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
 // SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
@@ -39,6 +40,7 @@ import uuid = require("uuid");
 @controller("/v1/media")
 export class MediaController {
   @use(requireAuth)
+  @use(requestValidator)
   @put("/:id")
   @requestValidators("mediaType")
   async update(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -91,6 +93,7 @@ export class MediaController {
 
   @use(requireAuth)
   @post("/")
+  @use(requestValidator)
   @requestValidators("title", "items", "mediaType")
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
@@ -156,6 +159,7 @@ export class MediaController {
 
   // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
   @get("/me")
+  @use(requestValidator)
   @use(requireAuth)
   async fetchUserList(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
@@ -235,6 +239,7 @@ export class MediaController {
 
   // SAMPLE GET ALL LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
   @get("/")
+  @use(requestValidator)
   async fetchList(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.query.mediaType) {
@@ -310,6 +315,7 @@ export class MediaController {
   }
 
   // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
+  @use(requestValidator)
   @get("/:id")
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {

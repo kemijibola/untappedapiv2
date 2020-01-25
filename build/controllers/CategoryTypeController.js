@@ -50,6 +50,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var CategoryTypeBusiness_1 = __importDefault(require("../app/business/CategoryTypeBusiness"));
 var error_1 = require("../utils/error");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var auth_1 = require("../middlewares/auth");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var CategoryTypeController = /** @class */ (function () {
     function CategoryTypeController() {
     }
@@ -61,7 +64,7 @@ var CategoryTypeController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         categoryTypeBusiness = new CategoryTypeBusiness_1.default();
-                        return [4 /*yield*/, categoryTypeBusiness.fetch({})];
+                        return [4 /*yield*/, categoryTypeBusiness.fetchWithCategory({})];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -123,12 +126,16 @@ var CategoryTypeController = /** @class */ (function () {
     CategoryTypeController.prototype.findById = function () { };
     __decorate([
         decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], CategoryTypeController.prototype, "fetch", null);
     __decorate([
         decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateCategoryType),
         decorators_1.requestValidators("name", "category"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

@@ -1,12 +1,14 @@
-import { PlatformError } from '../utils/error/ApplicationError';
-import { Request, Response, NextFunction } from 'express';
-import { get, controller, requestValidators, post } from '../decorators';
-import { IRole, ITalentFilterCategory } from '../app/models/interfaces';
-import TalentFilterCategoryBusiness = require('../app/business/TalentFilterCategoryBusiness');
+import { PlatformError } from "../utils/error/ApplicationError";
+import { Request, Response, NextFunction } from "express";
+import { get, controller, requestValidators, post, use } from "../decorators";
+import { IRole, ITalentFilterCategory } from "../app/models/interfaces";
+import TalentFilterCategoryBusiness = require("../app/business/TalentFilterCategoryBusiness");
+import { requestValidator } from "../middlewares/ValidateRequest";
 
-@controller('/v1/talent-categories')
+@controller("/v1/talent-categories")
 export class TalentFilterCategoryController {
-  @get('/')
+  @get("/")
+  @use(requestValidator)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       const talentFilterCategoryBusiness = new TalentFilterCategoryBusiness();
@@ -20,14 +22,14 @@ export class TalentFilterCategoryController {
         );
       }
       return res.status(result.responseCode).json({
-        message: 'Operation successful',
+        message: "Operation successful",
         data: result.data
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: 'Internal Server error occured. Please try again later.'
+          message: "Internal Server error occured. Please try again later."
         })
       );
     }

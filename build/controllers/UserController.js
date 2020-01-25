@@ -48,6 +48,7 @@ var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
 var UserBusiness = require("../app/business/UserBusiness");
 var auth_1 = require("../middlewares/auth");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -122,12 +123,14 @@ var UserController = /** @class */ (function () {
     };
     __decorate([
         decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
     __decorate([
         decorators_1.patch("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

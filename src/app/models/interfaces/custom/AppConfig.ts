@@ -4,6 +4,7 @@ export interface SecretKey {
 }
 
 export interface AppConfig {
+  NODE_ENV: string;
   PORT: number;
   REDIS_HOST: string;
   REDIS_PORT: number;
@@ -12,10 +13,12 @@ export interface AppConfig {
   DATABASE_HOST: string;
   DATABASE_NAME: string;
   DATABASE_USER: string;
+  DATABASE_PORT: number;
   DATABASE_PASSWORD: string;
   ISSUER: string;
-  AUTH_EXPIRESIN: string;
-  MAIL_EXPIRESIN: string;
+  AUTH_EXPIRESIN: number;
+  MAIL_EXPIRESIN: number;
+  JUDGE_EVALUATION_EXP: number;
   APP_BUCKET: AppBucket;
   IMAGE_BUCKET: Bucket;
   VIDEO_BUCKET: Bucket;

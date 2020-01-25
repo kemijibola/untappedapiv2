@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var CommentBusiness = require("../app/business/CommentBusiness");
 var error_1 = require("../utils/error");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var CommentController = /** @class */ (function () {
     function CommentController() {
     }
@@ -70,14 +71,14 @@ var CommentController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -89,14 +90,15 @@ var CommentController = /** @class */ (function () {
     CommentController.prototype.fetch = function () { };
     CommentController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('entityId, comment'),
+        decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("entityId, comment"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], CommentController.prototype, "create", null);
     CommentController = __decorate([
-        decorators_1.controller('/v1/comments')
+        decorators_1.controller("/v1/comments")
     ], CommentController);
     return CommentController;
 }());

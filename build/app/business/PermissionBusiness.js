@@ -40,7 +40,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var Result_1 = require("../../utils/Result");
-var lib_1 = require("../../utils/lib");
 var PermissionBusiness = /** @class */ (function () {
     function PermissionBusiness() {
         this._permissionRepository = new PermissionRepository_1.default();
@@ -112,30 +111,23 @@ var PermissionBusiness = /** @class */ (function () {
     };
     PermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var permission, isRoleValid, role, newPermission;
+            var permission, newPermission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._permissionRepository.findByCriteria({
-                            name: item.name
-                        })];
+                    case 0:
+                        console.log("here");
+                        return [4 /*yield*/, this._permissionRepository.findByCriteria({
+                                name: item.name
+                            })];
                     case 1:
                         permission = _a.sent();
-                        if (!(permission === null)) return [3 /*break*/, 4];
-                        isRoleValid = lib_1.validateObjectId(item.role);
-                        if (!isRoleValid) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Role is invalid")];
-                        }
-                        return [4 /*yield*/, this._roleRepository.findById(item.role)];
-                    case 2:
-                        role = _a.sent();
-                        if (role === null) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Role not found")];
-                        }
+                        if (!(permission === null)) return [3 /*break*/, 3];
+                        item.isActive = false;
                         return [4 /*yield*/, this._permissionRepository.create(item)];
-                    case 3:
+                    case 2:
                         newPermission = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newPermission)];
-                    case 4: return [2 /*return*/, Result_1.Result.fail(400, "Permission with name '" + permission.name + "' already exist.")];
+                    case 3: return [2 /*return*/, Result_1.Result.fail(400, permission.name + " already exist.")];
                 }
             });
         });
@@ -149,7 +141,7 @@ var PermissionBusiness = /** @class */ (function () {
                     case 1:
                         permission = _a.sent();
                         if (!permission)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update permission.Permission with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Permission not found")];
                         return [4 /*yield*/, this._permissionRepository.update(permission._id, item)];
                     case 2:
                         updateObj = _a.sent();

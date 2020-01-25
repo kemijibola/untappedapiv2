@@ -21,6 +21,14 @@ class CategoryTypeBusiness implements ICategoryTypeBusiness {
     return Result.ok<ICategoryType[]>(200, categoryTypes);
   }
 
+  async fetchWithCategory(condition: any): Promise<Result<ICategoryType[]>> {
+    const categoryTypes = await this._categoryTypeRepository.populateFetch(
+      "category",
+      condition
+    );
+    return Result.ok<ICategoryType[]>(200, categoryTypes);
+  }
+
   async findById(id: string): Promise<Result<ICategoryType>> {
     if (!id) return Result.fail<ICategoryType>(400, "Bad request.");
     const categoryType = await this._categoryTypeRepository.findById(id);

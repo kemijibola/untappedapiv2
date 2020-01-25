@@ -46,8 +46,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
-var ResourceBusiness = require("../app/business/ResourceBusiness");
-exports.roles = ['canViewProfessionals', 'canViewTalents'];
+var ResourceBusiness = require("../app/business/RolePermissionBusiness");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+exports.roles = ["canViewProfessionals", "canViewTalents"];
 var ResourceController = /** @class */ (function () {
     function ResourceController() {
     }
@@ -70,14 +71,14 @@ var ResourceController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -104,7 +105,7 @@ var ResourceController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(200).json({
-                                message: 'Operation successful',
+                                message: "Operation successful",
                                 data: result.data
                             })];
                     case 2:
@@ -120,23 +121,25 @@ var ResourceController = /** @class */ (function () {
     };
     ResourceController.prototype.findById = function () { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('name'),
+        decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("name"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ResourceController.prototype, "create", null);
     __decorate([
-        decorators_1.get('/')
+        decorators_1.get("/")
         // @use(requireAuth)
         ,
         decorators_1.authorize.apply(void 0, exports.roles),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ResourceController.prototype, "fetch", null);
     ResourceController = __decorate([
-        decorators_1.controller('/v1/resources')
+        decorators_1.controller("/v1/resources")
     ], ResourceController);
     return ResourceController;
 }());

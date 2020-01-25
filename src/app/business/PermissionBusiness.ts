@@ -45,34 +45,22 @@ class PermissionBusiness implements IPermissionBusiness {
   }
 
   async create(item: IPermission): Promise<Result<IPermission>> {
+    console.log("here");
     const permission = await this._permissionRepository.findByCriteria({
       name: item.name
     });
     if (permission === null) {
-      const isRoleValid = validateObjectId(item.role);
-      if (!isRoleValid) {
-        return Result.fail<IPermission>(400, "Role is invalid");
-      }
-      const role = await this._roleRepository.findById(item.role);
-      if (role === null) {
-        return Result.fail<IPermission>(400, "Role not found");
-      }
+      item.isActive = false;
       const newPermission = await this._permissionRepository.create(item);
       return Result.ok<IPermission>(201, newPermission);
     }
-    return Result.fail<IPermission>(
-      400,
-      `Permission with name '${permission.name}' already exist.`
-    );
+    return Result.fail<IPermission>(400, `${permission.name} already exist.`);
   }
 
   async update(id: string, item: IPermission): Promise<Result<IPermission>> {
     const permission = await this._permissionRepository.findById(id);
     if (!permission)
-      return Result.fail<IPermission>(
-        404,
-        `Could not update permission.Permission with Id ${id} not found`
-      );
+      return Result.fail<IPermission>(404, "Permission not found");
     const updateObj = await this._permissionRepository.update(
       permission._id,
       item

@@ -50,6 +50,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var ApprovalBusiness_1 = __importDefault(require("../app/business/ApprovalBusiness"));
 var error_1 = require("../utils/error");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var ApprovalController = /** @class */ (function () {
     function ApprovalController() {
     }
@@ -72,14 +73,14 @@ var ApprovalController = /** @class */ (function () {
                                 })];
                         }
                         return [2 /*return*/, res.status(200).json({
-                                message: 'Operation Successful',
+                                message: "Operation Successful",
                                 data: result.data
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: 'Internal Server error occured. Please try again later.'
+                                message: "Internal Server error occured. Please try again later."
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -91,14 +92,15 @@ var ApprovalController = /** @class */ (function () {
     ApprovalController.prototype.fetch = function (req, res, next) { };
     ApprovalController.prototype.findById = function (req, res, next) { };
     __decorate([
-        decorators_1.post('/'),
-        decorators_1.requestValidators('entity', 'operation', 'approved'),
+        decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("entity", "operation", "approved"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ApprovalController.prototype, "create", null);
     ApprovalController = __decorate([
-        decorators_1.controller('/v1/approvals')
+        decorators_1.controller("/v1/approvals")
     ], ApprovalController);
     return ApprovalController;
 }());
