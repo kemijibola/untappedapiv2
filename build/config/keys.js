@@ -8,20 +8,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Environment_1 = require("../app/models/interfaces/custom/Environment");
-var development = __importStar(require("./development.json"));
-var ci = __importStar(require("./ci.json"));
-var production = __importStar(require("./production.json"));
+// import * as development from "./development.json";
+// import * as ci from "./ci.json";
+// import * as production from "./production.json";
 var dotenv = __importStar(require("dotenv"));
 dotenv.config();
 var environment = process.env.NODE_ENV || "";
 switch (environment) {
     case Environment_1.Environment.CI:
-        Object.seal(ci);
-        module.exports = ci;
+        // Object.seal(ci);
+        // module.exports = ci;
         break;
     case Environment_1.Environment.PRODUCTION:
-        Object.seal(production);
-        module.exports = production;
+        // Object.seal(production);
+        // module.exports = production;
         break;
     case Environment_1.Environment.STAGING:
         module.exports = {
@@ -113,8 +113,8 @@ switch (environment) {
         };
         break;
     default:
-        Object.seal(development);
-        module.exports = development;
+        // Object.seal(development);
+        // module.exports = development;
         break;
 }
 //# sourceMappingURL=keys.js.map
