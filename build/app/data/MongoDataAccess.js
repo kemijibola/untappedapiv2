@@ -46,5 +46,6 @@ var MongodataAccess = /** @class */ (function () {
     return MongodataAccess;
 }());
 MongodataAccess.connect();
+Object.seal(MongodataAccess);
 module.exports = MongodataAccess;
 //# sourceMappingURL=MongodataAccess.js.map

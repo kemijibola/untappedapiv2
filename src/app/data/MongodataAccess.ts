@@ -52,4 +52,5 @@ class MongodataAccess {
 }
 
 MongodataAccess.connect();
+Object.seal(MongodataAccess);
 export = MongodataAccess;
