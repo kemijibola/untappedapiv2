@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var UserTypeBusiness = require("../app/business/UserTypeBusiness");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var UserTypeController = /** @class */ (function () {
     function UserTypeController() {
     }
@@ -119,6 +120,7 @@ var UserTypeController = /** @class */ (function () {
     UserTypeController.prototype.delete = function () { };
     UserTypeController.prototype.findById = function () { };
     __decorate([
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.get("/"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

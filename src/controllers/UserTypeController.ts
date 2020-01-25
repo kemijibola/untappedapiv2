@@ -1,11 +1,13 @@
 import { PlatformError } from "../utils/error/ApplicationError";
 import { Request, Response, NextFunction } from "express";
-import { get, controller, requestValidators, post } from "../decorators";
+import { get, controller, requestValidators, post, use } from "../decorators";
 import { IUserType } from "../app/models/interfaces";
 import UserTypeBusiness = require("../app/business/UserTypeBusiness");
+import { requestValidator } from "../middlewares/ValidateRequest";
 
 @controller("/v1/user-types")
 export class UserTypeController {
+  @use(requestValidator)
   @get("/")
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
