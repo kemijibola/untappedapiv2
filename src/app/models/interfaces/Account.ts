@@ -8,7 +8,7 @@ export interface IAuthData {
   refresh_token: string;
   permissions: IRolePermission[];
   user_data: IUserData;
-  token_expires: number;
+  token_expires: Date;
 }
 
 interface IUserData {

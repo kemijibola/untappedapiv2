@@ -54,9 +54,24 @@ export class ProfileController {
     }
   }
 
-  @use(requireAuth)
+  // http://localhost:8900/v1/talents?withDetails=true
+  @get("/talents")
+  @use(requestValidator)
+  async fetchTalents(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again."
+        })
+      );
+    }
+  }
+
   @get("/user")
   @use(requestValidator)
+  @use(requireAuth)
   async fetchUserProfile(
     req: RequestWithUser,
     res: Response,
@@ -116,13 +131,12 @@ export class ProfileController {
   }
 
   @use(requireAuth)
+  @use(requestValidator)
   @post("/")
-  @requestValidators()
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IProfile = req.body;
       item.user = req.user;
-      console.log("post operation");
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.create(item);
       if (result.error) {
@@ -148,6 +162,7 @@ export class ProfileController {
     }
   }
 
+  @use(requestValidator)
   @use(requireAuth)
   @put("/:id")
   async updateProfile(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -178,7 +193,4 @@ export class ProfileController {
       );
     }
   }
-
-  delete(): void {}
-  findById(): void {}
 }

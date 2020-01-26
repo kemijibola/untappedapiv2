@@ -66,6 +66,7 @@ import {
 } from "../models/interfaces/custom/Account";
 import UserTypeRepository from "../repository/UserTypeRepository";
 import uuid from "uuid";
+import { addSeconds } from "date-fns";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
@@ -163,6 +164,7 @@ class UserBusiness implements IUserBusiness {
           payload
         );
 
+        const tokenExpiration = addSeconds(new Date(), this._authExpiration);
         if (userToken.error)
           return Result.fail<IAuthData>(401, "Invalid token.");
 
@@ -170,7 +172,7 @@ class UserBusiness implements IUserBusiness {
           access_token: userToken.data,
           refresh_token: newUserRefreshToken.token,
           permissions: this.chunkedUserPermissons,
-          token_expires: this._authExpiration,
+          token_expires: tokenExpiration,
           user_data: {
             _id: user.data._id,
             full_name: user.data.fullName,
@@ -252,13 +254,14 @@ class UserBusiness implements IUserBusiness {
         payload
       );
 
+      const tokenExpiration = addSeconds(new Date(), this._authExpiration);
       if (userToken.error) return Result.fail<IAuthData>(401, "Invalid token.");
 
       const authData: IAuthData = {
         access_token: userToken.data,
         refresh_token: newUserRefreshToken.token,
         permissions: this.chunkedUserPermissons,
-        token_expires: this._authExpiration,
+        token_expires: tokenExpiration,
         user_data: {
           _id: user._id,
           full_name: user.fullName,

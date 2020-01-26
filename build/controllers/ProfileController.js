@@ -88,6 +88,22 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
+    // http://localhost:8900/v1/talents?withDetails=true
+    ProfileController.prototype.fetchTalents = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                try {
+                }
+                catch (err) {
+                    return [2 /*return*/, next(new error_1.PlatformError({
+                            code: 500,
+                            message: "Internal Server error occured. Please try again."
+                        }))];
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     ProfileController.prototype.fetchUserProfile = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var profileBusiness, result, err_2;
@@ -161,7 +177,6 @@ var ProfileController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
                         item.user = req.user;
-                        console.log("post operation");
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.create(item)];
                     case 1:
@@ -223,8 +238,6 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
-    ProfileController.prototype.delete = function () { };
-    ProfileController.prototype.findById = function () { };
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.get("/"),
@@ -234,9 +247,16 @@ var ProfileController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "fetch", null);
     __decorate([
-        decorators_1.use(auth_1.requireAuth),
+        decorators_1.get("/talents"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "fetchTalents", null);
+    __decorate([
         decorators_1.get("/user"),
         decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
@@ -250,13 +270,14 @@ var ProfileController = /** @class */ (function () {
     ], ProfileController.prototype, "fetchProfile", null);
     __decorate([
         decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.post("/"),
-        decorators_1.requestValidators(),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "create", null);
     __decorate([
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.put("/:id"),
         __metadata("design:type", Function),

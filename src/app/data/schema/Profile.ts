@@ -25,7 +25,7 @@ const profileSchema: Schema = new Schema(
       ref: "User",
       required: true
     },
-    shortBio: { type: String, required: true, minlength: 20, maxlength: 300 },
+    shortBio: { type: String, required: true, minlength: 50, maxlength: 300 },
     categories: [
       {
         type: Schema.Types.ObjectId,

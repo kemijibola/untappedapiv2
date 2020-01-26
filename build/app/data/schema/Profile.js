@@ -23,7 +23,7 @@ var profileSchema = new mongoose_1.Schema({
         ref: "User",
         required: true
     },
-    shortBio: { type: String, required: true, minlength: 20, maxlength: 300 },
+    shortBio: { type: String, required: true, minlength: 50, maxlength: 300 },
     categories: [
         {
             type: mongoose_1.Schema.Types.ObjectId,

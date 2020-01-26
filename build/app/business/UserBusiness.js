@@ -54,6 +54,7 @@ var ScheduleTask_1 = require("../../handlers/ScheduleTask");
 var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
 var uuid_1 = __importDefault(require("uuid"));
+var date_fns_1 = require("date-fns");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentAuthKey = "";
@@ -89,7 +90,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.refreshToken = function (userId, audience, refreshTokenParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, error, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, authData;
+            var user, error, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, tokenExpiration, authData;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -145,13 +146,14 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, user.data.generateToken(privateKey, signInOptions, payload)];
                     case 8:
                         userToken = _c.sent();
+                        tokenExpiration = date_fns_1.addSeconds(new Date(), this._authExpiration);
                         if (userToken.error)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
                         authData = {
                             access_token: userToken.data,
                             refresh_token: newUserRefreshToken.token,
                             permissions: this.chunkedUserPermissons,
-                            token_expires: this._authExpiration,
+                            token_expires: tokenExpiration,
                             user_data: {
                                 _id: user.data._id,
                                 full_name: user.data.fullName,
@@ -169,7 +171,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.login = function (params, refreshTokenParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, authData;
+            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, tokenExpiration, authData;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -234,13 +236,14 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
                     case 9:
                         userToken = _c.sent();
+                        tokenExpiration = date_fns_1.addSeconds(new Date(), this._authExpiration);
                         if (userToken.error)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
                         authData = {
                             access_token: userToken.data,
                             refresh_token: newUserRefreshToken.token,
                             permissions: this.chunkedUserPermissons,
-                            token_expires: this._authExpiration,
+                            token_expires: tokenExpiration,
                             user_data: {
                                 _id: user._id,
                                 full_name: user.fullName,
