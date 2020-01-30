@@ -16,7 +16,7 @@ var evaluationSchema = new mongoose_1.Schema({
 var redeemableSchema = new mongoose_1.Schema({
     prizeType: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'PrizeType',
+        ref: "PrizeType",
         required: true
     },
     prizes: [{ type: mongoose_1.Schema.Types.Mixed, required: true }]
@@ -33,7 +33,7 @@ var judgeSchema = new mongoose_1.Schema({
 var contestIssueSchema = new mongoose_1.Schema({
     complaintCategory: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'IssueCategory',
+        ref: "IssueCategory",
         required: true
     },
     complaint: { type: String, required: true, trim: true },
@@ -46,10 +46,11 @@ var contestSchema = new mongoose_1.Schema({
     code: { type: Number, default: 0 },
     information: { type: String, required: true },
     bannerImage: { type: String },
-    eligibleCategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Category' }],
+    eligibleCategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Category" }],
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
     entryMediaType: { type: interfaces_1.MediaType, required: true },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },
@@ -66,9 +67,9 @@ var contestSchema = new mongoose_1.Schema({
     issues: [{ type: contestIssueSchema }],
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
+        ref: "Application",
         required: true
     }
 }, { timestamps: true });
-exports.ContestSchema = mongooseConnection.model('Contest', contestSchema);
+exports.ContestSchema = mongooseConnection.model("Contest", contestSchema);
 //# sourceMappingURL=Contest.js.map

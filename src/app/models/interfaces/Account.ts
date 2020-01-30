@@ -6,7 +6,7 @@ import { IRolePermission } from "./RolePermission";
 export interface IAuthData {
   access_token: string;
   refresh_token: string;
-  permissions: IRolePermission[];
+  rolePermissions: IRolePermission[];
   user_data: IUserData;
   token_expires: Date;
 }

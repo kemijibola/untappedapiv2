@@ -1,45 +1,42 @@
 import ProfileRepository from "../repository/ProfileRepository";
+import UserRepository from "../repository/UserRepository";
 import IProfileBusiness = require("./interfaces/ProfileBusiness");
 import { IProfile } from "../models/interfaces";
 import { Result } from "../../utils/Result";
+import { Talent } from "../models/interfaces/custom/UserViewModel";
 
 class ProfileBusiness implements IProfileBusiness {
   private _profileRepository: ProfileRepository;
+  private _userRepository: UserRepository;
 
   constructor() {
     this._profileRepository = new ProfileRepository();
+    this._userRepository = new UserRepository();
   }
 
   async fetch(condition: any): Promise<Result<IProfile[]>> {
-    try {
-      const profiles = await this._profileRepository.fetch(condition);
-      return Result.ok<IProfile[]>(200, profiles);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    const profiles = await this._profileRepository.fetch(condition);
+    return Result.ok<IProfile[]>(200, profiles);
   }
 
+  // async fetchTalents(): Promise<Result<Talent[]>> {
+  //   var talentUsers = await this._userRepository.findByOne({});
+  //   return true;
+  // }
+
   async findById(id: string): Promise<Result<IProfile>> {
-    try {
-      if (!id) return Result.fail<IProfile>(400, "Bad request");
-      const profile = await this._profileRepository.findById(id);
-      if (!profile)
-        return Result.fail<IProfile>(404, `Profile of Id ${id} not found`);
-      else return Result.ok<IProfile>(200, profile);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    if (!id) return Result.fail<IProfile>(400, "Bad request");
+    const profile = await this._profileRepository.findById(id);
+    if (!profile)
+      return Result.fail<IProfile>(404, `Profile of Id ${id} not found`);
+    else return Result.ok<IProfile>(200, profile);
   }
 
   async findOne(condition: any): Promise<Result<IProfile>> {
-    try {
-      if (!condition) return Result.fail<IProfile>(400, "Bad request");
-      const profile = await this._profileRepository.findByOne(condition);
-      if (!profile) return Result.fail<IProfile>(404, `Talent not found`);
-      else return Result.ok<IProfile>(200, profile);
-    } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
-    }
+    if (!condition) return Result.fail<IProfile>(400, "Bad request");
+    const profile = await this._profileRepository.findByOne(condition);
+    if (!profile) return Result.fail<IProfile>(404, `Talent not found`);
+    else return Result.ok<IProfile>(200, profile);
   }
 
   async findByUser(id: string): Promise<Result<IProfile>> {

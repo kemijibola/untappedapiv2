@@ -17,6 +17,7 @@ export async function requestValidator(
       })
     );
   try {
+    clientId.toLowerCase();
     const applicationBusiness = new ApplicationBusiness();
     const result = await applicationBusiness.findByCriteria({
       clientId: clientId

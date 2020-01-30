@@ -1,17 +1,17 @@
-import MongodataAccess = require('../MongodataAccess');
-import { Schema } from 'mongoose';
+import MongodataAccess = require("../MongodataAccess");
+import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
 import {
   IContest,
   PaymentStatus,
   ComplaintStatus,
   MediaType
-} from '../../models/interfaces';
-import { socialMediaSchema } from './Profile';
+} from "../../models/interfaces";
+import { socialMediaSchema } from "./Profile";
 
 export enum ContestType {
-  Online = 'Online',
-  OnlineOffline = 'OnlineOffline'
+  Online = "Online",
+  OnlineOffline = "OnlineOffline"
 }
 const evaluationSchema: Schema = new Schema({
   name: { type: String }
@@ -20,7 +20,7 @@ const evaluationSchema: Schema = new Schema({
 const redeemableSchema: Schema = new Schema({
   prizeType: {
     type: Schema.Types.ObjectId,
-    ref: 'PrizeType',
+    ref: "PrizeType",
     required: true
   },
   prizes: [{ type: Schema.Types.Mixed, required: true }]
@@ -39,7 +39,7 @@ const judgeSchema: Schema = new Schema({
 const contestIssueSchema: Schema = new Schema({
   complaintCategory: {
     type: Schema.Types.ObjectId,
-    ref: 'IssueCategory',
+    ref: "IssueCategory",
     required: true
   },
   complaint: { type: String, required: true, trim: true },
@@ -54,10 +54,11 @@ const contestSchema: Schema = new Schema(
     code: { type: Number, default: 0 },
     information: { type: String, required: true },
     bannerImage: { type: String },
-    eligibleCategories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+    eligibleCategories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
     entryMediaType: { type: MediaType, required: true },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },
@@ -74,13 +75,13 @@ const contestSchema: Schema = new Schema(
     issues: [{ type: contestIssueSchema }],
     application: {
       type: Schema.Types.ObjectId,
-      ref: 'Application',
+      ref: "Application",
       required: true
     }
   },
   { timestamps: true }
 );
 export const ContestSchema = mongooseConnection.model<IContest>(
-  'Contest',
+  "Contest",
   contestSchema
 );

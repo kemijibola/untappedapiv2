@@ -82,6 +82,7 @@ export class ApplicationController {
           })
         );
       }
+      item.clientId.toLowerCase();
       const applicationBusiness = new ApplicationBusiness();
       const result = await applicationBusiness.create(item);
       if (result.error) {

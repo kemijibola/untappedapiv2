@@ -38,37 +38,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ProfileRepository_1 = __importDefault(require("../repository/ProfileRepository"));
+var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var Result_1 = require("../../utils/Result");
 var ProfileBusiness = /** @class */ (function () {
     function ProfileBusiness() {
         this._profileRepository = new ProfileRepository_1.default();
+        this._userRepository = new UserRepository_1.default();
     }
     ProfileBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var profiles, err_1;
+            var profiles;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this._profileRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._profileRepository.fetch(condition)];
                     case 1:
                         profiles = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, profiles)];
-                    case 2:
-                        err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
+    // async fetchTalents(): Promise<Result<Talent[]>> {
+    //   var talentUsers = await this._userRepository.findByOne({});
+    //   return true;
+    // }
     ProfileBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, err_2;
+            var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!id)
                             return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._profileRepository.findById(id)];
@@ -78,22 +77,17 @@ var ProfileBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "Profile of Id " + id + " not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, profile)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_2.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     ProfileBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, err_3;
+            var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
                         if (!condition)
                             return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._profileRepository.findByOne(condition)];
@@ -103,11 +97,7 @@ var ProfileBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "Talent not found")];
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, profile)];
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_3 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_3.message);
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });

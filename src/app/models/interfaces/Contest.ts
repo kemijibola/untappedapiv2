@@ -1,18 +1,18 @@
-import mongoose from 'mongoose';
-import { ICategory } from './Category';
-import { IPrizeType } from './PrizeType';
-import { IEvaluation } from './Evaluation';
-import { IUser } from './User';
-import { ITimeStamp } from './Timestamp';
-import { ContestType } from '../../data/schema/Contest';
-import { IUserSocialMedia } from './Profile';
-import { PaymentStatus } from './Payment';
-import { IAppSpec } from './AppSpec';
-import { IIssueCategory, ComplaintStatus } from './IssueCategory';
-import { MediaType } from './Media';
+import mongoose from "mongoose";
+import { ICategory } from "./Category";
+import { IPrizeType } from "./PrizeType";
+import { IEvaluation } from "./Evaluation";
+import { IUser } from "./User";
+import { ITimeStamp } from "./Timestamp";
+import { ContestType } from "../../data/schema/Contest";
+import { IUserSocialMedia } from "./Profile";
+import { PaymentStatus } from "./Payment";
+import { IAppSpec } from "./AppSpec";
+import { IIssueCategory, ComplaintStatus } from "./IssueCategory";
+import { MediaType } from "./Media";
 
 export interface IRedeemable {
-  prizeType: IPrizeType['_id'];
+  prizeType: IPrizeType["_id"];
   prizes: any[];
 }
 
@@ -50,16 +50,17 @@ export interface IContest
   startDate: Date;
   duration: number;
   views: number;
+  likes: number;
   redeemable: IRedeemable;
   endDate: Date;
   contestType: ContestType;
-  createdBy: IUser['_id'];
+  createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
 }
 
 interface IContestIssues {
-  complaintCategory: IIssueCategory['_id'];
+  complaintCategory: IIssueCategory["_id"];
   complaint: string;
   dateCreated: Date;
   complaintStatus: ComplaintStatus;

@@ -55,6 +55,7 @@ function requestValidator(req, res, next) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
+                    clientId.toLowerCase();
                     applicationBusiness = new ApplicationBusiness_1.default();
                     return [4 /*yield*/, applicationBusiness.findByCriteria({
                             clientId: clientId

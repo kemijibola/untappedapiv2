@@ -108,6 +108,7 @@ var ApplicationController = /** @class */ (function () {
                                     message: "refreshTokenExpiration can not be more than 7 days"
                                 }))];
                         }
+                        item.clientId.toLowerCase();
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.create(item)];
                     case 1:

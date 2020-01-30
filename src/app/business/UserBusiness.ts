@@ -171,7 +171,7 @@ class UserBusiness implements IUserBusiness {
         const authData: IAuthData = {
           access_token: userToken.data,
           refresh_token: newUserRefreshToken.token,
-          permissions: this.chunkedUserPermissons,
+          rolePermissions: this.chunkedUserPermissons,
           token_expires: tokenExpiration,
           user_data: {
             _id: user.data._id,
@@ -260,7 +260,7 @@ class UserBusiness implements IUserBusiness {
       const authData: IAuthData = {
         access_token: userToken.data,
         refresh_token: newUserRefreshToken.token,
-        permissions: this.chunkedUserPermissons,
+        rolePermissions: this.chunkedUserPermissons,
         token_expires: tokenExpiration,
         user_data: {
           _id: user._id,
