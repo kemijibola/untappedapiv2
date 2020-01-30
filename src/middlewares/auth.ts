@@ -45,7 +45,6 @@ export async function requireAuth(
     }
 
     const appAudience = req.appUser ? req.appUser.audience : "";
-    console.log(appAudience);
     const verifyOptions = {
       issuer: config.AUTH_ISSUER_SERVER,
       audience: appAudience,

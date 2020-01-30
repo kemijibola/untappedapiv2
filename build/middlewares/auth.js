@@ -59,7 +59,6 @@ function requireAuth(req, res, next) {
                             }))];
                     }
                     appAudience = req.appUser ? req.appUser.audience : "";
-                    console.log(appAudience);
                     verifyOptions = {
                         issuer: config.AUTH_ISSUER_SERVER,
                         audience: appAudience,

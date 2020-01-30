@@ -20,7 +20,7 @@ var MediaMakerFactory = /** @class */ (function () {
         else {
             throw new error_1.PlatformError({
                 code: 400,
-                message: "mediaType is an invalid media type."
+                message: "mediaType is invalid."
             });
         }
     };

@@ -17,7 +17,7 @@ export class MediaMakerFactory {
     } else {
       throw new PlatformError({
         code: 400,
-        message: "mediaType is an invalid media type."
+        message: "mediaType is invalid."
       });
     }
   }

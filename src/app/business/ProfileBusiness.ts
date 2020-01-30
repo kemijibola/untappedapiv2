@@ -20,8 +20,15 @@ class ProfileBusiness implements IProfileBusiness {
   }
 
   // async fetchTalents(): Promise<Result<Talent[]>> {
-  //   var talentUsers = await this._userRepository.findByOne({});
-  //   return true;
+  // user user-type to fetch Id
+  // use id to fetch all the userType fetch({ isProfileCompleted: true, status: STATUS.ACTIVATED})
+
+  // Get profile of each fetched user into IFactory
+
+  // return userTypeProfile
+
+  // var talentUsers = await this._userRepository.findByOne({});
+  // return true;
   // }
 
   async findById(id: string): Promise<Result<IProfile>> {

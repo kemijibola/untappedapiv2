@@ -28,7 +28,6 @@ var JwtHelper = /** @class */ (function () {
             var result = { data: "", error: "" };
             jsonwebtoken_1.default.verify(token, publicKey, options, function (err, decoded) {
                 if (err) {
-                    console.log(err);
                     result = { error: err.message, data: "" };
                     resolve(result);
                 }

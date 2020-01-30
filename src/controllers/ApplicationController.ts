@@ -17,6 +17,7 @@ import {
   canCreatePermission,
   canCreateApplication
 } from "../utils/lib/PermissionConstant";
+import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 
 @controller("/v1/application")
 export class ApplicationController {
@@ -63,7 +64,7 @@ export class ApplicationController {
     "refreshTokenExpiration"
   )
   @authorize(canCreateApplication)
-  async create(req: Request, res: Response, next: NextFunction) {
+  async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IApplication = req.body;
       if (item.refreshTokenExpiration < 1)
