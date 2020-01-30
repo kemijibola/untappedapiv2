@@ -8,7 +8,7 @@ export async function requestValidator(
   res: Response,
   next: NextFunction
 ) {
-  const clientId: any = req.headers["clientid"];
+  let clientId: any = req.headers["clientid"];
   if (!clientId)
     return next(
       new PlatformError({
@@ -17,7 +17,9 @@ export async function requestValidator(
       })
     );
   try {
-    clientId.toLowerCase();
+    clientId = clientId.toLowerCase();
+    console.log(clientId);
+
     const applicationBusiness = new ApplicationBusiness();
     const result = await applicationBusiness.findByCriteria({
       clientId: clientId
