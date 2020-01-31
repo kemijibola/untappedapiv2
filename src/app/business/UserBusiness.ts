@@ -126,7 +126,7 @@ class UserBusiness implements IUserBusiness {
         const signInOptions: SignInOptions = {
           issuer: config.AUTH_ISSUER_SERVER,
           audience,
-          expiresIn: `${this._authExpiration}hr`,
+          expiresIn: `${this._authExpiration}h`,
           algorithm: this._currentRsaAlgType,
           keyid: this._currentAuthKey,
           subject: ""
@@ -221,7 +221,7 @@ class UserBusiness implements IUserBusiness {
       const signInOptions: SignInOptions = {
         issuer: config.AUTH_ISSUER_SERVER,
         audience: params.audience,
-        expiresIn: `${this._authExpiration}hr`,
+        expiresIn: `${this._authExpiration}h`,
         algorithm: this._currentRsaAlgType,
         keyid: this._currentAuthKey,
         subject: ""
@@ -296,7 +296,7 @@ class UserBusiness implements IUserBusiness {
       type: TokenType.VERIFY,
       audience: request.audience,
       keyid: this._currentVerifyKey,
-      expiresIn: this._mailExpiratation
+      expiresIn: `${this._mailExpiratation}h`
     };
     const decoded: TokenResult = await unverifiedUser.verifyToken(
       request.token,
@@ -444,7 +444,7 @@ class UserBusiness implements IUserBusiness {
     const data: TokenGenerationRequest = {
       user: newUser,
       audience: item.audience,
-      tokenExpiresIn: `${this._mailExpiratation}hr`,
+      tokenExpiresIn: `${this._mailExpiratation}h`,
       tokenType: TokenType.VERIFY,
       redirectUrl: item.confirmationUrl
     };
@@ -483,7 +483,7 @@ class UserBusiness implements IUserBusiness {
       const request: TokenGenerationRequest = {
         user,
         audience,
-        tokenExpiresIn: `${this._mailExpiratation}hr`,
+        tokenExpiresIn: `${this._mailExpiratation}h`,
         tokenType: TokenType.VERIFY,
         redirectUrl
       };
@@ -549,7 +549,7 @@ class UserBusiness implements IUserBusiness {
       type: TokenType.VERIFY,
       audience: request.audience,
       keyid: this._currentVerifyKey,
-      expiresIn: this._mailExpiratation
+      expiresIn: `${this._mailExpiratation}h`
     };
 
     const decoded: TokenResult = await unverifiedUser.verifyToken(
@@ -624,7 +624,7 @@ class UserBusiness implements IUserBusiness {
     const data: TokenGenerationRequest = {
       user,
       audience,
-      tokenExpiresIn: `${this._mailExpiratation}hr`,
+      tokenExpiresIn: `${this._mailExpiratation}h`,
       tokenType: TokenType.VERIFY,
       redirectUrl: verificationUrl
     };

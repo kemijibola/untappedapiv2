@@ -120,7 +120,7 @@ var UserBusiness = /** @class */ (function () {
                         signInOptions = {
                             issuer: config.AUTH_ISSUER_SERVER,
                             audience: audience,
-                            expiresIn: this._authExpiration + "hr",
+                            expiresIn: this._authExpiration + "h",
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
                             subject: ""
@@ -210,7 +210,7 @@ var UserBusiness = /** @class */ (function () {
                         signInOptions = {
                             issuer: config.AUTH_ISSUER_SERVER,
                             audience: params.audience,
-                            expiresIn: this._authExpiration + "hr",
+                            expiresIn: this._authExpiration + "h",
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
                             subject: ""
@@ -282,7 +282,7 @@ var UserBusiness = /** @class */ (function () {
                             type: GlobalEnum_1.TokenType.VERIFY,
                             audience: request.audience,
                             keyid: this._currentVerifyKey,
-                            expiresIn: this._mailExpiratation
+                            expiresIn: this._mailExpiratation + "h"
                         };
                         return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
                     case 2:
@@ -493,7 +493,7 @@ var UserBusiness = /** @class */ (function () {
                         data = {
                             user: newUser,
                             audience: item.audience,
-                            tokenExpiresIn: this._mailExpiratation + "hr",
+                            tokenExpiresIn: this._mailExpiratation + "h",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
                             redirectUrl: item.confirmationUrl
                         };
@@ -532,7 +532,7 @@ var UserBusiness = /** @class */ (function () {
                         request = {
                             user: user,
                             audience: audience,
-                            tokenExpiresIn: this._mailExpiratation + "hr",
+                            tokenExpiresIn: this._mailExpiratation + "h",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
                             redirectUrl: redirectUrl
                         };
@@ -605,7 +605,7 @@ var UserBusiness = /** @class */ (function () {
                             type: GlobalEnum_1.TokenType.VERIFY,
                             audience: request.audience,
                             keyid: this._currentVerifyKey,
-                            expiresIn: this._mailExpiratation
+                            expiresIn: this._mailExpiratation + "h"
                         };
                         return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
                     case 2:
@@ -686,7 +686,7 @@ var UserBusiness = /** @class */ (function () {
                         data = {
                             user: user,
                             audience: audience,
-                            tokenExpiresIn: this._mailExpiratation + "hr",
+                            tokenExpiresIn: this._mailExpiratation + "h",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
                             redirectUrl: verificationUrl
                         };
