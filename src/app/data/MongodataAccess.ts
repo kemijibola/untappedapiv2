@@ -45,6 +45,7 @@ class MongodataAccess {
         dbUri = `mongodb://${config.DATABASE_USER}:${config.DATABASE_PASSWORD}@${config.DATABASE_HOST}:${config.DATABASE_PORT}/${config.DATABASE_NAME}`;
         break;
       default:
+        // dbUri = `mongodb://${config.DATABASE_USER}:${config.DATABASE_PASSWORD}@${config.DATABASE_HOST}:${config.DATABASE_PORT}/${config.DATABASE_NAME}`;
         dbUri = `${config.DATABASE_HOST}/${config.DATABASE_NAME}`;
     }
     return dbUri;

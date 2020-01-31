@@ -7,7 +7,7 @@ export interface UserPermissions {
 export interface SignInOptions {
   issuer: string;
   audience: string;
-  expiresIn: number;
+  expiresIn: string;
   algorithm: string;
   keyid: string;
   subject: string;

@@ -18,6 +18,7 @@ import {
   canCreateApplication
 } from "../utils/lib/PermissionConstant";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
+import { isValid, addDays } from "date-fns";
 
 @controller("/v1/application")
 export class ApplicationController {
@@ -61,25 +62,30 @@ export class ApplicationController {
     "audience",
     "clientId",
     "emailConfirmationRedirectUrl",
-    "refreshTokenExpiration"
+    "refreshTokenExpiresIn"
   )
   @authorize(canCreateApplication)
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IApplication = req.body;
-      if (item.refreshTokenExpiration < 1)
+      // refreshTokenExpiresIn is expressed in days 1,2,3,4
+      console.log(item.refreshTokenExpiresIn);
+      const newDate = addDays(new Date(), item.refreshTokenExpiresIn);
+
+      if (!isValid(newDate))
         return next(
           new PlatformError({
             code: 400,
             message:
-              "refreshTokenExpiration is invalid, expects a value in seconds."
+              "refreshTokenExpiresIn is invalid, expects a numeric value."
           })
         );
-      if (item.refreshTokenExpiration > 604800) {
+      if (item.refreshTokenExpiresIn > 7) {
         return next(
           new PlatformError({
             code: 400,
-            message: "refreshTokenExpiration can not be more than 7 days"
+            message:
+              "refreshTokenExpiresIn can not be valid for more than 7 days"
           })
         );
       }

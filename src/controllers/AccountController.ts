@@ -69,7 +69,7 @@ export class AuthController {
         // check if refresh token has expired
         var rfTGeneratedDate = addSeconds(
           refreshToken.data.createdAt,
-          req.appUser ? req.appUser.refreshTokenExpiration : 0
+          req.appUser ? req.appUser.refreshTokenExpiresIn : 0
         );
 
         if (isPast(rfTGeneratedDate)) {

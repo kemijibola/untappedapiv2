@@ -50,6 +50,7 @@ var ApplicationBusiness = require("../app/business/ApplicationBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
+var date_fns_1 = require("date-fns");
 var ApplicationController = /** @class */ (function () {
     function ApplicationController() {
     }
@@ -91,21 +92,24 @@ var ApplicationController = /** @class */ (function () {
     };
     ApplicationController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, applicationBusiness, result, err_2;
+            var item, newDate, applicationBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        if (item.refreshTokenExpiration < 1)
+                        // refreshTokenExpiresIn is expressed in days 1,2,3,4
+                        console.log(item.refreshTokenExpiresIn);
+                        newDate = date_fns_1.addDays(new Date(), item.refreshTokenExpiresIn);
+                        if (!date_fns_1.isValid(newDate))
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
-                                    message: "refreshTokenExpiration is invalid, expects a value in seconds."
+                                    message: "refreshTokenExpiresIn is invalid, expects a numeric value."
                                 }))];
-                        if (item.refreshTokenExpiration > 604800) {
+                        if (item.refreshTokenExpiresIn > 7) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
-                                    message: "refreshTokenExpiration can not be more than 7 days"
+                                    message: "refreshTokenExpiresIn can not be valid for more than 7 days"
                                 }))];
                         }
                         item.clientId = item.clientId.toLowerCase();
@@ -145,7 +149,7 @@ var ApplicationController = /** @class */ (function () {
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
-        decorators_1.requestValidators("name", "audience", "clientId", "emailConfirmationRedirectUrl", "refreshTokenExpiration"),
+        decorators_1.requestValidators("name", "audience", "clientId", "emailConfirmationRedirectUrl", "refreshTokenExpiresIn"),
         decorators_1.authorize(PermissionConstant_1.canCreateApplication),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

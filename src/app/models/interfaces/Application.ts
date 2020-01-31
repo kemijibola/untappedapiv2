@@ -9,7 +9,7 @@ export interface IApplication extends ITimeStamp, mongoose.Document {
   audience: string;
   clientId: string;
   emailConfirmationRedirectUrl: string;
-  refreshTokenExpiration: number;
+  refreshTokenExpiresIn: number;
   redirectBaseUrl: string;
   clientSecret: string;
   isActive: boolean;

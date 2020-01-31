@@ -8,6 +8,7 @@ var applicationSchema = new mongoose_1.Schema({
     dbUri: { type: String },
     audience: { type: String, required: true },
     clientId: { type: String, required: true },
+    refreshTokenExpiresIn: { type: Number, default: 0 },
     emailConfirmationRedirectUrl: { type: String, required: true },
     redirectBaseUrl: { type: String },
     clientSecret: { type: String, required: true },

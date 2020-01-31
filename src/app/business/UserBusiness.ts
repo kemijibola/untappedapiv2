@@ -66,7 +66,7 @@ import {
 } from "../models/interfaces/custom/Account";
 import UserTypeRepository from "../repository/UserTypeRepository";
 import uuid from "uuid";
-import { addSeconds } from "date-fns";
+import { addSeconds, getDate, addHours } from "date-fns";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
@@ -126,7 +126,7 @@ class UserBusiness implements IUserBusiness {
         const signInOptions: SignInOptions = {
           issuer: config.AUTH_ISSUER_SERVER,
           audience,
-          expiresIn: this._authExpiration,
+          expiresIn: `${this._authExpiration}hr`,
           algorithm: this._currentRsaAlgType,
           keyid: this._currentAuthKey,
           subject: ""
@@ -164,7 +164,8 @@ class UserBusiness implements IUserBusiness {
           payload
         );
 
-        const tokenExpiration = addSeconds(new Date(), this._authExpiration);
+        const tokenExpiration = addHours(new Date(), this._authExpiration);
+
         if (userToken.error)
           return Result.fail<IAuthData>(401, "Invalid token.");
 
@@ -220,7 +221,7 @@ class UserBusiness implements IUserBusiness {
       const signInOptions: SignInOptions = {
         issuer: config.AUTH_ISSUER_SERVER,
         audience: params.audience,
-        expiresIn: this._authExpiration,
+        expiresIn: `${this._authExpiration}hr`,
         algorithm: this._currentRsaAlgType,
         keyid: this._currentAuthKey,
         subject: ""
@@ -254,7 +255,8 @@ class UserBusiness implements IUserBusiness {
         payload
       );
 
-      const tokenExpiration = addSeconds(new Date(), this._authExpiration);
+      const tokenExpiration = addHours(new Date(), this._authExpiration);
+
       if (userToken.error) return Result.fail<IAuthData>(401, "Invalid token.");
 
       const authData: IAuthData = {
@@ -442,7 +444,7 @@ class UserBusiness implements IUserBusiness {
     const data: TokenGenerationRequest = {
       user: newUser,
       audience: item.audience,
-      tokenExpiresIn: this._mailExpiratation,
+      tokenExpiresIn: `${this._mailExpiratation}hr`,
       tokenType: TokenType.VERIFY,
       redirectUrl: item.confirmationUrl
     };
@@ -481,13 +483,12 @@ class UserBusiness implements IUserBusiness {
       const request: TokenGenerationRequest = {
         user,
         audience,
-        tokenExpiresIn: this._mailExpiratation,
+        tokenExpiresIn: `${this._mailExpiratation}hr`,
         tokenType: TokenType.VERIFY,
         redirectUrl
       };
       var token = await this.generateToken(request);
       if (token.data) {
-        console.log(token.data);
         const forgorPasswordEmailKeyValues: TemplateKeyValue[] = this.TokenEmailKeyValue(
           user.fullName,
           audience,
@@ -623,7 +624,7 @@ class UserBusiness implements IUserBusiness {
     const data: TokenGenerationRequest = {
       user,
       audience,
-      tokenExpiresIn: this._mailExpiratation,
+      tokenExpiresIn: `${this._mailExpiratation}hr`,
       tokenType: TokenType.VERIFY,
       redirectUrl: verificationUrl
     };

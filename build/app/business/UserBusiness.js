@@ -120,7 +120,7 @@ var UserBusiness = /** @class */ (function () {
                         signInOptions = {
                             issuer: config.AUTH_ISSUER_SERVER,
                             audience: audience,
-                            expiresIn: this._authExpiration,
+                            expiresIn: this._authExpiration + "hr",
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
                             subject: ""
@@ -146,7 +146,7 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, user.data.generateToken(privateKey, signInOptions, payload)];
                     case 8:
                         userToken = _c.sent();
-                        tokenExpiration = date_fns_1.addSeconds(new Date(), this._authExpiration);
+                        tokenExpiration = date_fns_1.addHours(new Date(), this._authExpiration);
                         if (userToken.error)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
                         authData = {
@@ -210,7 +210,7 @@ var UserBusiness = /** @class */ (function () {
                         signInOptions = {
                             issuer: config.AUTH_ISSUER_SERVER,
                             audience: params.audience,
-                            expiresIn: this._authExpiration,
+                            expiresIn: this._authExpiration + "hr",
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
                             subject: ""
@@ -236,7 +236,7 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
                     case 9:
                         userToken = _c.sent();
-                        tokenExpiration = date_fns_1.addSeconds(new Date(), this._authExpiration);
+                        tokenExpiration = date_fns_1.addHours(new Date(), this._authExpiration);
                         if (userToken.error)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
                         authData = {
@@ -493,7 +493,7 @@ var UserBusiness = /** @class */ (function () {
                         data = {
                             user: newUser,
                             audience: item.audience,
-                            tokenExpiresIn: this._mailExpiratation,
+                            tokenExpiresIn: this._mailExpiratation + "hr",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
                             redirectUrl: item.confirmationUrl
                         };
@@ -532,7 +532,7 @@ var UserBusiness = /** @class */ (function () {
                         request = {
                             user: user,
                             audience: audience,
-                            tokenExpiresIn: this._mailExpiratation,
+                            tokenExpiresIn: this._mailExpiratation + "hr",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
                             redirectUrl: redirectUrl
                         };
@@ -540,7 +540,6 @@ var UserBusiness = /** @class */ (function () {
                     case 2:
                         token = _a.sent();
                         if (!token.data) return [3 /*break*/, 4];
-                        console.log(token.data);
                         forgorPasswordEmailKeyValues = this.TokenEmailKeyValue(user.fullName, audience, redirectUrl + "?email=" + user.email + "&token=" + token.data);
                         forgoPasswordTemplateString = emailtemplates_1.ForgotPasswordEmail.template;
                         forgotPasswordEmailPlaceHolder = {
@@ -687,7 +686,7 @@ var UserBusiness = /** @class */ (function () {
                         data = {
                             user: user,
                             audience: audience,
-                            tokenExpiresIn: this._mailExpiratation,
+                            tokenExpiresIn: this._mailExpiratation + "hr",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
                             redirectUrl: verificationUrl
                         };

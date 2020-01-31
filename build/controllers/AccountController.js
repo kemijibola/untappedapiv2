@@ -91,7 +91,7 @@ var AuthController = /** @class */ (function () {
                                     code: 403,
                                     message: "You are not authorized to make this request."
                                 }))];
-                        rfTGeneratedDate = date_fns_1.addSeconds(refreshToken.data.createdAt, req.appUser ? req.appUser.refreshTokenExpiration : 0);
+                        rfTGeneratedDate = date_fns_1.addSeconds(refreshToken.data.createdAt, req.appUser ? req.appUser.refreshTokenExpiresIn : 0);
                         if (date_fns_1.isPast(rfTGeneratedDate)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 401,
