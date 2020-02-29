@@ -1,9 +1,17 @@
 import { PlatformError } from "../utils/error/ApplicationError";
 import { Request, Response, NextFunction } from "express";
-import { get, controller, requestValidators, post, use } from "../decorators";
+import {
+  get,
+  controller,
+  requestValidators,
+  post,
+  use,
+  authorize
+} from "../decorators";
 import { IUserType } from "../app/models/interfaces";
 import UserTypeBusiness = require("../app/business/UserTypeBusiness");
 import { requestValidator } from "../middlewares/ValidateRequest";
+import { canCreateUserType } from "../utils/lib/PermissionConstant";
 
 @controller("/v1/user-types")
 export class UserTypeController {
@@ -12,7 +20,10 @@ export class UserTypeController {
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       const userTypeBusiness = new UserTypeBusiness();
-      const result = await userTypeBusiness.fetch({});
+      const result = await userTypeBusiness.fetch({
+        isActive: true,
+        isAdmin: false
+      });
       if (result.error) {
         return next(
           new PlatformError({
@@ -36,6 +47,7 @@ export class UserTypeController {
   }
 
   @post("/")
+  @authorize(canCreateUserType)
   @requestValidators("name", "isAdmin", "description")
   async create(req: Request, res: Response, next: NextFunction) {
     try {

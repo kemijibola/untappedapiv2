@@ -48,6 +48,7 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var UserTypeBusiness = require("../app/business/UserTypeBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var UserTypeController = /** @class */ (function () {
     function UserTypeController() {
     }
@@ -59,7 +60,10 @@ var UserTypeController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         userTypeBusiness = new UserTypeBusiness();
-                        return [4 /*yield*/, userTypeBusiness.fetch({})];
+                        return [4 /*yield*/, userTypeBusiness.fetch({
+                                isActive: true,
+                                isAdmin: false
+                            })];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -128,6 +132,7 @@ var UserTypeController = /** @class */ (function () {
     ], UserTypeController.prototype, "fetch", null);
     __decorate([
         decorators_1.post("/"),
+        decorators_1.authorize(PermissionConstant_1.canCreateUserType),
         decorators_1.requestValidators("name", "isAdmin", "description"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

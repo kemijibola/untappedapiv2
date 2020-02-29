@@ -52,6 +52,7 @@ var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
+    // http://localhost:8900/v1/profile?userType=id&withdetails=true
     ProfileController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var condition, profileBusiness, result, err_1;
@@ -88,7 +89,7 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
-    // http://localhost:8900/v1/talents?withDetails=true
+    // http://localhost:8900/v1/profile?userType=id&withdetails=true
     ProfileController.prototype.fetchTalents = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -247,7 +248,7 @@ var ProfileController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "fetch", null);
     __decorate([
-        decorators_1.get("/talents"),
+        decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

@@ -57,6 +57,7 @@ export interface IContest
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
+  isApproved: boolean;
 }
 
 interface IContestIssues {

@@ -21,6 +21,7 @@ import { requestValidator } from "../middlewares/ValidateRequest";
 
 @controller("/v1/profiles")
 export class ProfileController {
+  // http://localhost:8900/v1/profile?userType=id&withdetails=true
   @use(requireAuth)
   @get("/")
   @use(requestValidator)
@@ -54,8 +55,8 @@ export class ProfileController {
     }
   }
 
-  // http://localhost:8900/v1/talents?withDetails=true
-  @get("/talents")
+  // http://localhost:8900/v1/profile?userType=id&withdetails=true
+  @get("/")
   @use(requestValidator)
   async fetchTalents(req: RequestWithUser, res: Response, next: NextFunction) {
     try {

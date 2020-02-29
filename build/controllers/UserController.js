@@ -49,6 +49,7 @@ var error_1 = require("../utils/error");
 var UserBusiness = require("../app/business/UserBusiness");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -88,7 +89,7 @@ var UserController = /** @class */ (function () {
             });
         });
     };
-    UserController.prototype.patch = function (req, res, next) {
+    UserController.prototype.postUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var userBusiness, user, result, err_2;
             return __generator(this, function (_a) {
@@ -121,6 +122,39 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.patch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, user, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness();
+                        user = req.user;
+                        return [4 /*yield*/, userBusiness.patch(user, req.body)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later."
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -128,6 +162,15 @@ var UserController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.post("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateUser),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "postUser", null);
     __decorate([
         decorators_1.patch("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

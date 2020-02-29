@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess = require("../MongodataAccess");
 var mongoose_1 = require("mongoose");
-var TalentFilterCategory_1 = require("../../models/interfaces/TalentFilterCategory");
+var UserFilterCategory_1 = require("../../models/interfaces/UserFilterCategory");
 var mongooseConnection = MongodataAccess.mongooseConnection;
 var filterCategorySchema = new mongoose_1.Schema({
     userId: { path: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -12,7 +12,7 @@ var filterCategorySchema = new mongoose_1.Schema({
 });
 var talentFilterCategorySchema = new mongoose_1.Schema({
     result: [{ type: filterCategorySchema, required: true }],
-    categoryType: { type: TalentFilterCategory_1.ReportType, required: true },
+    categoryType: { type: UserFilterCategory_1.ReportType, required: true },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Application',

@@ -51,12 +51,13 @@ var auth_1 = require("../middlewares/auth");
 var MediaMakerFactory_1 = require("../utils/uploads/MediaMakerFactory");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
+var interfaces_1 = require("../app/models/interfaces");
 var UploadController = /** @class */ (function () {
     function UploadController() {
     }
     UploadController.prototype.getPresignedUrl = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var action, item, mediaFactory, result, err_1;
+            var action, mediaType, systemMediaTypes, item, mediaFactory, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -66,6 +67,14 @@ var UploadController = /** @class */ (function () {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "action is invalid."
+                                }))];
+                        }
+                        mediaType = req.body.mediaType.toLowerCase();
+                        systemMediaTypes = Object.values(interfaces_1.MediaType);
+                        if (!systemMediaTypes.includes(mediaType) || mediaType === "all") {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Invalid mediaType"
                                 }))];
                         }
                         if (req.body.files.length < 1) {
@@ -116,7 +125,7 @@ var UploadController = /** @class */ (function () {
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.requestValidators("action", "files", "mediaType"),
         decorators_1.use(auth_1.requireAuth),
-        decorators_1.authorize(PermissionConstant_1.canUploadMedia, PermissionConstant_1.canUploadProfileImage),
+        decorators_1.authorize(PermissionConstant_1.canUploadGigs, PermissionConstant_1.canUploadProfileImage),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

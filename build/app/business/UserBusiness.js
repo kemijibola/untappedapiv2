@@ -313,7 +313,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var refinedUsers, users, _i, users_1, user, userViewModel;
+            var refinedUsers, users;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -321,27 +321,7 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._userRepository.fetch(condition)];
                     case 1:
                         users = _a.sent();
-                        for (_i = 0, users_1 = users; _i < users_1.length; _i++) {
-                            user = users_1[_i];
-                            userViewModel = {
-                                _id: user._id,
-                                email: user.email,
-                                fullName: user.fullName,
-                                isEmailConfirmed: user.isEmailConfirmed,
-                                isPhoneConfirmed: user.isPhoneConfirmed,
-                                isProfileCompleted: user.isProfileCompleted,
-                                generalNotification: user.generalNotification,
-                                emailNotification: user.emailNotification,
-                                profileVisibility: user.profileVisibility,
-                                loginCount: user.loginCount,
-                                status: [user.status],
-                                roles: user.roles,
-                                lastLogin: user.lastLogin,
-                                createdAt: user.createdAt
-                            };
-                            refinedUsers = refinedUsers.concat([userViewModel]);
-                        }
-                        return [2 /*return*/, Result_1.Result.ok(200, refinedUsers)];
+                        return [2 /*return*/, Result_1.Result.ok(200, users)];
                 }
             });
         });
@@ -383,7 +363,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -396,23 +376,7 @@ var UserBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         }
                         else {
-                            refinedUser = {
-                                _id: user._id,
-                                email: user.email,
-                                fullName: user.fullName,
-                                isEmailConfirmed: user.isEmailConfirmed,
-                                isPhoneConfirmed: user.isPhoneConfirmed,
-                                isProfileCompleted: user.isProfileCompleted,
-                                generalNotification: user.generalNotification,
-                                emailNotification: user.emailNotification,
-                                profileVisibility: user.profileVisibility,
-                                loginCount: user.loginCount,
-                                status: [user.status],
-                                roles: user.roles,
-                                lastLogin: user.lastLogin,
-                                createdAt: user.createdAt
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
+                            return [2 /*return*/, Result_1.Result.ok(200, user)];
                         }
                         return [2 /*return*/];
                 }
@@ -421,7 +385,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, refinedUser;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria(criteria)];
@@ -431,23 +395,7 @@ var UserBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         }
                         else {
-                            refinedUser = {
-                                _id: user._id,
-                                email: user.email,
-                                fullName: user.fullName,
-                                isEmailConfirmed: user.isEmailConfirmed,
-                                isPhoneConfirmed: user.isPhoneConfirmed,
-                                isProfileCompleted: user.isProfileCompleted,
-                                generalNotification: user.generalNotification,
-                                emailNotification: user.emailNotification,
-                                profileVisibility: user.profileVisibility,
-                                loginCount: user.loginCount,
-                                status: [user.status],
-                                roles: user.roles,
-                                lastLogin: user.lastLogin,
-                                createdAt: user.createdAt
-                            };
-                            return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
+                            return [2 /*return*/, Result_1.Result.ok(200, user)];
                         }
                         return [2 /*return*/];
                 }
@@ -723,29 +671,13 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser, refinedUser;
+            var newUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.create(item)];
                     case 1:
                         newUser = _a.sent();
-                        refinedUser = {
-                            _id: newUser._id,
-                            email: newUser.email,
-                            fullName: newUser.fullName,
-                            isEmailConfirmed: newUser.isEmailConfirmed,
-                            isPhoneConfirmed: newUser.isPhoneConfirmed,
-                            isProfileCompleted: newUser.isProfileCompleted,
-                            generalNotification: newUser.generalNotification,
-                            emailNotification: newUser.emailNotification,
-                            profileVisibility: newUser.profileVisibility,
-                            loginCount: newUser.loginCount,
-                            status: [newUser.status],
-                            roles: newUser.roles,
-                            lastLogin: newUser.lastLogin,
-                            createdAt: newUser.createdAt
-                        };
-                        return [2 /*return*/, Result_1.Result.ok(201, refinedUser)];
+                        return [2 /*return*/, Result_1.Result.ok(201, newUser)];
                 }
             });
         });
@@ -760,6 +692,15 @@ var UserBusiness = /** @class */ (function () {
                         user = _a.sent();
                         if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
+                        item.isEmailConfirmed = user.isEmailConfirmed;
+                        item.status = user.status;
+                        item.userType = user.userType;
+                        item.email = user.email;
+                        item.isPhoneConfirmed = user.isPhoneConfirmed;
+                        item.lastLogin = user.lastLogin;
+                        item.createdAt = user.createdAt;
+                        item._id = user._id;
+                        item.password = user.password;
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
                     case 2:
                         updateObj = _a.sent();
@@ -770,7 +711,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.patch = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj, refinedUser;
+            var user, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findById(id)];
@@ -778,27 +719,19 @@ var UserBusiness = /** @class */ (function () {
                         user = _a.sent();
                         if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
+                        item.isEmailConfirmed = user.isEmailConfirmed;
+                        item.status = user.status;
+                        item.userType = user.userType;
+                        item.email = user.email;
+                        item.isPhoneConfirmed = user.isPhoneConfirmed;
+                        item.lastLogin = user.lastLogin;
+                        item.createdAt = user.createdAt;
+                        item._id = user._id;
+                        item.password = user.password;
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
                     case 2:
                         updateObj = _a.sent();
-                        refinedUser = {
-                            _id: updateObj._id,
-                            email: updateObj.email,
-                            fullName: updateObj.fullName,
-                            profileImagePath: updateObj.profileImagePath,
-                            isEmailConfirmed: updateObj.isEmailConfirmed,
-                            isPhoneConfirmed: updateObj.isPhoneConfirmed,
-                            isProfileCompleted: updateObj.isProfileCompleted,
-                            generalNotification: updateObj.generalNotification,
-                            emailNotification: updateObj.emailNotification,
-                            profileVisibility: updateObj.profileVisibility,
-                            loginCount: updateObj.loginCount,
-                            status: [updateObj.status],
-                            roles: updateObj.roles,
-                            lastLogin: updateObj.lastLogin,
-                            createdAt: updateObj.createdAt
-                        };
-                        return [2 /*return*/, Result_1.Result.ok(200, refinedUser)];
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                 }
             });
         });

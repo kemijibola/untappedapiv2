@@ -3,7 +3,6 @@ import UserRepository from "../repository/UserRepository";
 import IProfileBusiness = require("./interfaces/ProfileBusiness");
 import { IProfile } from "../models/interfaces";
 import { Result } from "../../utils/Result";
-import { Talent } from "../models/interfaces/custom/UserViewModel";
 
 class ProfileBusiness implements IProfileBusiness {
   private _profileRepository: ProfileRepository;
@@ -18,18 +17,6 @@ class ProfileBusiness implements IProfileBusiness {
     const profiles = await this._profileRepository.fetch(condition);
     return Result.ok<IProfile[]>(200, profiles);
   }
-
-  // async fetchTalents(): Promise<Result<Talent[]>> {
-  // user user-type to fetch Id
-  // use id to fetch all the userType fetch({ isProfileCompleted: true, status: STATUS.ACTIVATED})
-
-  // Get profile of each fetched user into IFactory
-
-  // return userTypeProfile
-
-  // var talentUsers = await this._userRepository.findByOne({});
-  // return true;
-  // }
 
   async findById(id: string): Promise<Result<IProfile>> {
     if (!id) return Result.fail<IProfile>(400, "Bad request");

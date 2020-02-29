@@ -46,7 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
-var TalentFilterCategoryBusiness = require("../app/business/TalentFilterCategoryBusiness");
+var TalentFilterCategoryBusiness = require("../app/business/UserFilterCategoryBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var TalentFilterCategoryController = /** @class */ (function () {
     function TalentFilterCategoryController() {

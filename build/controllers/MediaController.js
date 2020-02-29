@@ -133,7 +133,7 @@ var MediaController = /** @class */ (function () {
                         }
                         modifiedItems = req.body.items.reduce(function (theMap, theItem) {
                             var item = {
-                                path: theItem
+                                path: theItem.path
                             };
                             theMap = theMap.concat([item]);
                             return theMap;
@@ -159,6 +159,7 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 2:
                         err_2 = _a.sent();
+                        //       console.log(err);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later."
@@ -204,7 +205,10 @@ var MediaController = /** @class */ (function () {
                                     message: "Invalid mediaType"
                                 }))];
                         }
-                        condition = {};
+                        condition = {
+                            isApproved: true,
+                            isDeleted: false
+                        };
                         if (uploadType !== "all") {
                             condition.uploadType = uploadType;
                         }

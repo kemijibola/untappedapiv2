@@ -38,6 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var Contest_1 = require("../data/schema/Contest");
 var date_fns_1 = require("date-fns");
@@ -155,6 +156,8 @@ var ContestBusiness = /** @class */ (function () {
                                 return [2 /*return*/, Result_1.Result.fail(400, "Maximum number of contestants to be selected must be more than two")];
                             }
                         }
+                        item.isApproved = false;
+                        item.paymentStatus = interfaces_1.PaymentStatus.UnPaid;
                         return [4 /*yield*/, this._contestRepository.create(item)];
                     case 1:
                         newContest = _a.sent();
@@ -165,7 +168,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest;
+            var contest, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._contestRepository.findById(id)];
@@ -173,7 +176,10 @@ var ContestBusiness = /** @class */ (function () {
                         contest = _a.sent();
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
-                        return [2 /*return*/, Result_1.Result.ok(200, contest)];
+                        return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                 }
             });
         });
@@ -188,8 +194,6 @@ var ContestBusiness = /** @class */ (function () {
                         contest = _a.sent();
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
-                        // User will not be able to update Payment Status
-                        item.paymentStatus = contest.paymentStatus;
                         return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
                     case 2:
                         updateObj = _a.sent();

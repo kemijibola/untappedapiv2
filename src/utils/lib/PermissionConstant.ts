@@ -4,7 +4,7 @@ export const canUpdateApplication = "canUpdateApplication";
 export const canDeleteApplication = "canDeleteApplication";
 export const canApproveApplication = "canApproveApplication";
 
-export const canUploadMedia = "canUploadMedia";
+export const canUploadGigs = "canUploadGigs";
 export const canUploadProfileImage = "canUploadProfileImage";
 
 export const canCreateCategory = "canCreateCategory";
@@ -53,6 +53,8 @@ export const canUpdateRole = "canUpdateRole";
 export const canDeleteRole = "canDeleteRole";
 
 export const canUpdateUser = "canUpdateUser";
+
+export const canCreateUser = "canCreateUser";
 
 export const canCreateUserType = "canCreateUserType";
 export const canUpdateUserType = "canUpdateUserType";

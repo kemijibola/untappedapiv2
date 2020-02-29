@@ -1,6 +1,6 @@
 import ContestRepository from "../repository/ContestRepository";
 import IContestBusiness = require("./interfaces/ContestBusiness");
-import { IContest } from "../models/interfaces";
+import { IContest, PaymentStatus } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { ContestType } from "../data/schema/Contest";
 import { isAfter, addDays } from "date-fns";
@@ -85,6 +85,8 @@ class ContestBusiness implements IContestBusiness {
         );
       }
     }
+    item.isApproved = false;
+    item.paymentStatus = PaymentStatus.UnPaid;
     const newContest = await this._contestRepository.create(item);
     return Result.ok<IContest>(201, newContest);
   }
@@ -96,8 +98,8 @@ class ContestBusiness implements IContestBusiness {
         404,
         `Could not update contest.Contest with Id ${id} not found`
       );
-
-    return Result.ok<IContest>(200, contest);
+    const updateObj = await this._contestRepository.update(contest._id, item);
+    return Result.ok<IContest>(200, updateObj);
   }
 
   async patch(id: string, item: any): Promise<Result<IContest>> {
@@ -107,8 +109,6 @@ class ContestBusiness implements IContestBusiness {
         404,
         `Could not update contest.Contest with Id ${id} not found`
       );
-    // User will not be able to update Payment Status
-    item.paymentStatus = contest.paymentStatus;
     const updateObj = await this._contestRepository.update(contest._id, item);
     // console.log(updateObj.);
     return Result.ok<IContest>(200, updateObj);

@@ -36,21 +36,95 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+var MatchData_1 = require("./Helper/MatchData");
+var viewmodels_1 = require("../../app/models/viewmodels");
+var interfaces_1 = require("../../app/models/interfaces");
+var UserBusiness = require("../../app/business/UserBusiness");
+var UserTypeBusiness = require("../../app/business/UserTypeBusiness");
+var ProfileBusiness = require("../../app/business/ProfileBusiness");
 exports.fetchTalentsByCategory = function (event, context, cb) {
     if (event === void 0) { event = {}; }
     return __awaiter(_this, void 0, void 0, function () {
+        var userTypeBusiness, talentsResult, talents, professionalResult, professionals, err_1;
         return __generator(this, function (_a) {
-            try {
-                // fetch talents for processing
-                // const talentPortfolio = TalentPortfolio.setUp("");
-                // const talents = await talentPortfolio.fetchTalents({});
-                // generateTalentReport(talents);
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 7, , 8]);
+                    userTypeBusiness = new UserTypeBusiness();
+                    return [4 /*yield*/, userTypeBusiness.findByCriteria({
+                            name: viewmodels_1.AppUsers.Talent
+                        })];
+                case 1:
+                    talentsResult = _a.sent();
+                    if (!talentsResult.data) return [3 /*break*/, 3];
+                    return [4 /*yield*/, exports.fetchUsers({ userType: talentsResult.data._id })];
+                case 2:
+                    talents = _a.sent();
+                    MatchData_1.generateTalentReport(talents);
+                    _a.label = 3;
+                case 3: return [4 /*yield*/, userTypeBusiness.findByCriteria({
+                        name: viewmodels_1.AppUsers.Professional
+                    })];
+                case 4:
+                    professionalResult = _a.sent();
+                    if (!professionalResult.data) return [3 /*break*/, 6];
+                    return [4 /*yield*/, exports.fetchUsers({
+                            userType: professionalResult.data._id
+                        })];
+                case 5:
+                    professionals = _a.sent();
+                    MatchData_1.generateTalentReport(professionals);
+                    _a.label = 6;
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    err_1 = _a.sent();
+                    console.log(err_1);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
-            catch (err) {
-                console.log(err);
-            }
-            return [2 /*return*/];
         });
     });
 };
+exports.fetchUsers = function (condition) { return __awaiter(_this, void 0, void 0, function () {
+    var users, userBusiness, profileBusiness, usersModel, _i, _a, x, userProfile, user;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                condition.isEmailConfirmed = true;
+                condition.isProfileCompleted = true;
+                condition.status = interfaces_1.AccountStatus.ACTIVATED;
+                users = [];
+                userBusiness = new UserBusiness();
+                profileBusiness = new ProfileBusiness();
+                return [4 /*yield*/, userBusiness.fetch(condition)];
+            case 1:
+                usersModel = _b.sent();
+                if (!usersModel.data) return [3 /*break*/, 5];
+                _i = 0, _a = usersModel.data;
+                _b.label = 2;
+            case 2:
+                if (!(_i < _a.length)) return [3 /*break*/, 5];
+                x = _a[_i];
+                return [4 /*yield*/, profileBusiness.findByUser(x._id)];
+            case 3:
+                userProfile = _b.sent();
+                user = {
+                    user: x._id,
+                    userType: x.userType,
+                    displayPhoto: x.profileImagePath || "",
+                    displayName: x.fullName,
+                    categories: userProfile.data ? userProfile.data.categories : [],
+                    tapCount: userProfile.data ? userProfile.data.tapCount : 0,
+                    shortDescription: userProfile.data ? userProfile.data.shortBio : "",
+                    createdAt: x.createdAt
+                };
+                users = users.concat([user]);
+                _b.label = 4;
+            case 4:
+                _i++;
+                return [3 /*break*/, 2];
+            case 5: return [2 /*return*/, users];
+        }
+    });
+}); };
 //# sourceMappingURL=Handler.js.map

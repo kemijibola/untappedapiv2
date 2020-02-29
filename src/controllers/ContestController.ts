@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { controller, post, requestValidators, use } from "../decorators";
+import {
+  controller,
+  post,
+  requestValidators,
+  use,
+  authorize
+} from "../decorators";
 import { IContest } from "../app/models/interfaces";
 import ContestBusiness = require("../app/business/ContestBusiness");
 import { PlatformError } from "../utils/error";
@@ -46,7 +52,12 @@ export class ContestController {
       );
     }
   }
-  update(): void {}
+
+  @authorize("ADMIN")
+  async updateContest(req: Request, res: Response, next: NextFunction) {}
+
+  @authorize("ADMIN")
+  async pathContest(req: Request, res: Response, next: NextFunction) {}
   delete(): void {}
   fetch(): void {}
   findById(): void {}

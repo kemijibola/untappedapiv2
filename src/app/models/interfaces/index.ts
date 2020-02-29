@@ -20,7 +20,7 @@ export * from "./Approval";
 export * from "./Media";
 export * from "./Account";
 export * from "./Application";
-export * from "./TalentFilterCategory";
+export * from "./UserFilterCategory";
 export * from "./Domain";
 export * from "./Order";
 export * from "./Payment";

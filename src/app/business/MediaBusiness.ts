@@ -15,8 +15,6 @@ class MediaBusiness implements IMediaBusiness {
 
   // TODO:: ensure soft delete on all media items: Audio, Image and Video
   async fetch(condition: any): Promise<Result<IMedia[]>> {
-    condition.isApproved = true;
-    condition.isDeleted = false;
     const medias = await this._mediaRepository.fetch(condition);
     return Result.ok<IMedia[]>(200, medias);
   }

@@ -84,7 +84,16 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
-    ContestController.prototype.update = function () { };
+    ContestController.prototype.updateContest = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); });
+    };
+    ContestController.prototype.pathContest = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); });
+    };
     ContestController.prototype.delete = function () { };
     ContestController.prototype.fetch = function () { };
     ContestController.prototype.findById = function () { };
@@ -96,6 +105,18 @@ var ContestController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "create", null);
+    __decorate([
+        decorators_1.authorize("ADMIN"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "updateContest", null);
+    __decorate([
+        decorators_1.authorize("ADMIN"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "pathContest", null);
     ContestController = __decorate([
         decorators_1.controller("/v1/contests")
     ], ContestController);

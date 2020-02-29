@@ -71,8 +71,9 @@ const contestSchema: Schema = new Schema(
     evaluations: [{ type: String }],
     judges: [{ type: judgeSchema }],
     paymentStatus: { type: PaymentStatus, default: PaymentStatus.UnPaid },
-    createdBy: { type: Schema.Types.ObjectId, required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     issues: [{ type: contestIssueSchema }],
+    isApproved: { type: Boolean, default: false },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",

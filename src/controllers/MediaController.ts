@@ -119,9 +119,9 @@ export class MediaController {
       }
 
       const modifiedItems = req.body.items.reduce(
-        (theMap: IMediaItem[], theItem: string) => {
+        (theMap: IMediaItem[], theItem: any) => {
           const item: IMediaItem = {
-            path: theItem
+            path: theItem.path
           };
           theMap = [...theMap, item];
           return theMap;
@@ -148,6 +148,7 @@ export class MediaController {
         data: result.data
       });
     } catch (err) {
+      //       console.log(err);
       return next(
         new PlatformError({
           code: 500,
@@ -202,7 +203,10 @@ export class MediaController {
         );
       }
 
-      let condition: ObjectKeyString = {};
+      let condition: any = {
+        isApproved: true,
+        isDeleted: false
+      };
       if (uploadType !== "all") {
         condition.uploadType = uploadType;
       }

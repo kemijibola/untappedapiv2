@@ -314,29 +314,10 @@ class UserBusiness implements IUserBusiness {
     await this._userRepository.patch(id, { isEmailConfirmed: true });
   }
 
-  async fetch(condition: any): Promise<Result<any[]>> {
+  async fetch(condition: any): Promise<Result<IUserModel[]>> {
     let refinedUsers: UserViewModel[] = [];
     const users: IUserModel[] = await this._userRepository.fetch(condition);
-    for (let user of users) {
-      const userViewModel: UserViewModel = {
-        _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        isEmailConfirmed: user.isEmailConfirmed,
-        isPhoneConfirmed: user.isPhoneConfirmed,
-        isProfileCompleted: user.isProfileCompleted,
-        generalNotification: user.generalNotification,
-        emailNotification: user.emailNotification,
-        profileVisibility: user.profileVisibility,
-        loginCount: user.loginCount,
-        status: [user.status],
-        roles: user.roles,
-        lastLogin: user.lastLogin,
-        createdAt: user.createdAt
-      };
-      refinedUsers = [...refinedUsers, userViewModel];
-    }
-    return Result.ok<UserViewModel[]>(200, refinedUsers);
+    return Result.ok<IUserModel[]>(200, users);
   }
 
   async findUserForExchange(id: string): Promise<Result<IUserModel>> {
@@ -362,48 +343,16 @@ class UserBusiness implements IUserBusiness {
     if (!user) {
       return Result.fail<IUserModel>(404, `User not found`);
     } else {
-      let refinedUser: UserViewModel = {
-        _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        isEmailConfirmed: user.isEmailConfirmed,
-        isPhoneConfirmed: user.isPhoneConfirmed,
-        isProfileCompleted: user.isProfileCompleted,
-        generalNotification: user.generalNotification,
-        emailNotification: user.emailNotification,
-        profileVisibility: user.profileVisibility,
-        loginCount: user.loginCount,
-        status: [user.status],
-        roles: user.roles,
-        lastLogin: user.lastLogin,
-        createdAt: user.createdAt
-      };
-      return Result.ok<UserViewModel>(200, refinedUser);
+      return Result.ok<IUserModel>(200, user);
     }
   }
 
-  async findByCriteria(criteria: any): Promise<Result<any>> {
+  async findByCriteria(criteria: any): Promise<Result<IUserModel>> {
     const user = await this._userRepository.findByCriteria(criteria);
     if (!user) {
       return Result.fail<IUserModel>(404, `User not found`);
     } else {
-      let refinedUser: UserViewModel = {
-        _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        isEmailConfirmed: user.isEmailConfirmed,
-        isPhoneConfirmed: user.isPhoneConfirmed,
-        isProfileCompleted: user.isProfileCompleted,
-        generalNotification: user.generalNotification,
-        emailNotification: user.emailNotification,
-        profileVisibility: user.profileVisibility,
-        loginCount: user.loginCount,
-        status: [user.status],
-        roles: user.roles,
-        lastLogin: user.lastLogin,
-        createdAt: user.createdAt
-      };
-      return Result.ok<UserViewModel>(200, refinedUser);
+      return Result.ok<IUserModel>(200, user);
     }
   }
 
@@ -651,58 +600,45 @@ class UserBusiness implements IUserBusiness {
     return await data.user.generateToken(privateKey, tokenOptions, payload);
   }
 
-  async create(item: IUserModel): Promise<Result<any>> {
+  async create(item: IUserModel): Promise<Result<IUserModel>> {
     const newUser = await this._userRepository.create(item);
-    let refinedUser: UserViewModel = {
-      _id: newUser._id,
-      email: newUser.email,
-      fullName: newUser.fullName,
-      isEmailConfirmed: newUser.isEmailConfirmed,
-      isPhoneConfirmed: newUser.isPhoneConfirmed,
-      isProfileCompleted: newUser.isProfileCompleted,
-      generalNotification: newUser.generalNotification,
-      emailNotification: newUser.emailNotification,
-      profileVisibility: newUser.profileVisibility,
-      loginCount: newUser.loginCount,
-      status: [newUser.status],
-      roles: newUser.roles,
-      lastLogin: newUser.lastLogin,
-      createdAt: newUser.createdAt
-    };
-    return Result.ok<UserViewModel>(201, refinedUser);
+    return Result.ok<IUserModel>(201, newUser);
   }
 
   async update(id: string, item: IUserModel): Promise<Result<IUserModel>> {
     const user = await this._userRepository.findById(id);
     if (!user) return Result.fail<IUserModel>(404, "User not found");
+
+    item.isEmailConfirmed = user.isEmailConfirmed;
+    item.status = user.status;
+    item.userType = user.userType;
+    item.email = user.email;
+    item.isPhoneConfirmed = user.isPhoneConfirmed;
+    item.lastLogin = user.lastLogin;
+    item.createdAt = user.createdAt;
+    item._id = user._id;
+    item.password = user.password;
+
     const updateObj = await this._userRepository.update(user._id, item);
     return Result.ok<IUserModel>(200, updateObj);
   }
 
-  async patch(id: string, item: any): Promise<Result<UserViewModel>> {
+  async patch(id: string, item: any): Promise<Result<IUserModel>> {
     const user = await this._userRepository.findById(id);
-    if (!user) return Result.fail<UserViewModel>(404, "User not found");
-    const updateObj = await this._userRepository.update(user._id, item);
-    // console.log(updateObj.);
-    let refinedUser: UserViewModel = {
-      _id: updateObj._id,
-      email: updateObj.email,
-      fullName: updateObj.fullName,
-      profileImagePath: updateObj.profileImagePath,
-      isEmailConfirmed: updateObj.isEmailConfirmed,
-      isPhoneConfirmed: updateObj.isPhoneConfirmed,
-      isProfileCompleted: updateObj.isProfileCompleted,
-      generalNotification: updateObj.generalNotification,
-      emailNotification: updateObj.emailNotification,
-      profileVisibility: updateObj.profileVisibility,
-      loginCount: updateObj.loginCount,
-      status: [updateObj.status],
-      roles: updateObj.roles,
-      lastLogin: updateObj.lastLogin,
-      createdAt: updateObj.createdAt
-    };
+    if (!user) return Result.fail<IUserModel>(404, "User not found");
 
-    return Result.ok<UserViewModel>(200, refinedUser);
+    item.isEmailConfirmed = user.isEmailConfirmed;
+    item.status = user.status;
+    item.userType = user.userType;
+    item.email = user.email;
+    item.isPhoneConfirmed = user.isPhoneConfirmed;
+    item.lastLogin = user.lastLogin;
+    item.createdAt = user.createdAt;
+    item._id = user._id;
+    item.password = user.password;
+
+    const updateObj = await this._userRepository.update(user._id, item);
+    return Result.ok<IUserModel>(200, updateObj);
   }
 
   async delete(id: string): Promise<Result<boolean>> {

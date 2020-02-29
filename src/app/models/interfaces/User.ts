@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
-import { ITimeStamp } from './Timestamp';
-import { IRole } from './Role';
-import { SignInOptions } from './custom/Global';
-import { IAppSpec } from './AppSpec';
+import mongoose from "mongoose";
+import { ITimeStamp } from "./Timestamp";
+import { IRole } from "./Role";
+import { SignInOptions } from "./custom/Global";
+import { IAppSpec } from "./AppSpec";
 
 export enum AccountStatus {
-  ACTIVATED = 'ACTIVATED',
-  SUSPENDED = 'SUSPENDED',
-  DELETED = 'DELETED',
-  DEFAULT = 'DEFAULT'
+  ACTIVATED = "ACTIVATED",
+  SUSPENDED = "SUSPENDED",
+  DELETED = "DELETED",
+  DEFAULT = "DEFAULT"
 }
 export interface IUserAccountStatus {
   status: AccountStatus;
@@ -32,8 +32,8 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   passwordResetRequested: boolean;
   isBounced: boolean;
   loginCount: number;
-  status: IUserAccountStatus;
-  roles: IRole['_id'][];
+  status: AccountStatus;
+  roles: IRole["_id"][];
   lastLogin: Date;
 }
 

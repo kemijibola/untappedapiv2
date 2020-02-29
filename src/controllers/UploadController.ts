@@ -20,9 +20,10 @@ import { Uploader, AbstractMedia } from "../utils/uploads/Uploader";
 import { MediaMakerFactory } from "../utils/uploads/MediaMakerFactory";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import {
-  canUploadMedia,
-  canUploadProfileImage
+  canUploadProfileImage,
+  canUploadGigs
 } from "../utils/lib/PermissionConstant";
+import { MediaType } from "../app/models/interfaces";
 
 @controller("/v1/uploads")
 export class UploadController {
@@ -30,7 +31,7 @@ export class UploadController {
   @use(requestValidator)
   @requestValidators("action", "files", "mediaType")
   @use(requireAuth)
-  @authorize(canUploadMedia, canUploadProfileImage)
+  @authorize(canUploadGigs, canUploadProfileImage)
   async getPresignedUrl(
     req: RequestWithUser,
     res: Response,
@@ -43,6 +44,17 @@ export class UploadController {
           new PlatformError({
             code: 400,
             message: "action is invalid."
+          })
+        );
+      }
+
+      const mediaType: string = req.body.mediaType.toLowerCase();
+      const systemMediaTypes: string[] = Object.values(MediaType);
+      if (!systemMediaTypes.includes(mediaType) || mediaType === "all") {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Invalid mediaType"
           })
         );
       }

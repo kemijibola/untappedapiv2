@@ -49,10 +49,7 @@ var MediaBusiness = /** @class */ (function () {
             var medias;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        condition.isApproved = true;
-                        condition.isDeleted = false;
-                        return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
                     case 1:
                         medias = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, medias)];
