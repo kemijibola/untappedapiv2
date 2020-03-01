@@ -67,3 +67,17 @@ export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
 export interface IAudio extends IMedia {}
 export interface IVideo extends IMedia {}
 export interface IImage extends IMedia {}
+
+export interface AudioPreview extends MediaPreview {}
+export interface VideoPreview extends MediaPreview {}
+export interface ImagePreview extends MediaPreview {}
+
+export interface MediaPreview {
+  _id: string;
+  title: string;
+  mediaType: string;
+  uploadType: string;
+  defaultMediaPath: string;
+  shortDescription: string;
+  activityCount: number;
+}

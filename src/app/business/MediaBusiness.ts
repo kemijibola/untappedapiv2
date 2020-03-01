@@ -1,4 +1,4 @@
-import { IMediaItem } from "./../models/interfaces/Media";
+import { IMediaItem, MediaPreview } from "./../models/interfaces/Media";
 import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
 import { ApprovalOperations, IApproval, IMedia } from "../models/interfaces";
@@ -17,6 +17,29 @@ class MediaBusiness implements IMediaBusiness {
   async fetch(condition: any): Promise<Result<IMedia[]>> {
     const medias = await this._mediaRepository.fetch(condition);
     return Result.ok<IMedia[]>(200, medias);
+  }
+
+  async fetchPreview(condition: any): Promise<Result<MediaPreview[]>> {
+    const mediaPreviews = await this._mediaRepository.fetch(condition);
+    let modified: MediaPreview[] = [];
+    if (mediaPreviews) {
+      modified = mediaPreviews.reduce(
+        (theMap: MediaPreview[], theItem: IMedia) => {
+          theMap.push({
+            _id: theItem._id,
+            title: theItem.title,
+            mediaType: theItem.mediaType,
+            uploadType: theItem.uploadType,
+            defaultMediaPath: theItem.items[0].path,
+            shortDescription: theItem.shortDescription,
+            activityCount: theItem.activityCount
+          });
+          return theMap;
+        },
+        []
+      );
+    }
+    return Result.ok<MediaPreview[]>(200, modified);
   }
 
   async findById(id: string): Promise<Result<IMedia>> {

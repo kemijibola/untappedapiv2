@@ -57,6 +57,34 @@ var MediaBusiness = /** @class */ (function () {
             });
         });
     };
+    MediaBusiness.prototype.fetchPreview = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaPreviews, modified;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 1:
+                        mediaPreviews = _a.sent();
+                        modified = [];
+                        if (mediaPreviews) {
+                            modified = mediaPreviews.reduce(function (theMap, theItem) {
+                                theMap.push({
+                                    _id: theItem._id,
+                                    title: theItem.title,
+                                    mediaType: theItem.mediaType,
+                                    uploadType: theItem.uploadType,
+                                    defaultMediaPath: theItem.items[0].path,
+                                    shortDescription: theItem.shortDescription,
+                                    activityCount: theItem.activityCount
+                                });
+                                return theMap;
+                            }, []);
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, modified)];
+                }
+            });
+        });
+    };
     MediaBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var criteria, media;

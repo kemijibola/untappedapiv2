@@ -159,6 +159,94 @@ export class MediaController {
   }
 
   // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
+  @get("/me/preview")
+  @use(requestValidator)
+  @use(requireAuth)
+  async fetchUserPreviewList(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      if (!req.query.mediaType) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide mediaType in query param"
+          })
+        );
+      }
+      if (!req.query.uploadType) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide uploadType in query param"
+          })
+        );
+      }
+
+      const uploadType: string = req.query.uploadType.toLowerCase();
+      const systemUploadTypes: string[] = Object.values(MediaUploadType);
+      if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Invalid uploadType"
+          })
+        );
+      }
+
+      const mediaType: string = req.query.mediaType.toLowerCase();
+      const systemMediaTypes: string[] = Object.values(MediaType);
+      if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Invalid mediaType"
+          })
+        );
+      }
+
+      let condition: any = {
+        isApproved: true,
+        isDeleted: false
+      };
+      if (uploadType !== "all") {
+        condition.uploadType = uploadType;
+      }
+      if (mediaType !== "all") {
+        condition.mediaType = mediaType;
+      }
+
+      condition.user = req.user;
+
+      const mediaBusiness = new MediaBusiness();
+      const result = await mediaBusiness.fetchPreview(condition);
+
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: `Error occured, ${result.error}`
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Media Operation successful",
+        data: result.data
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later"
+        })
+      );
+    }
+  }
+
+  // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
   @get("/me")
   @use(requestValidator)
   @use(requireAuth)
@@ -232,6 +320,7 @@ export class MediaController {
         data: result.data
       });
     } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,
@@ -323,6 +412,7 @@ export class MediaController {
   @get("/:id")
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("params from request", req.params.id);
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.findById(req.params.id);
       if (result.error) {
