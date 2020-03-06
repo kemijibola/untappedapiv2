@@ -79,7 +79,6 @@ var Audio = /** @class */ (function (_super) {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        console.log("audio class is called");
                         signedUrls = {
                             presignedUrl: [],
                             action: data.action
@@ -154,9 +153,7 @@ var Audio = /** @class */ (function (_super) {
                     case 4:
                         _i++;
                         return [3 /*break*/, 2];
-                    case 5:
-                        console.log(signedUrls);
-                        return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
+                    case 5: return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
                     case 6:
                         err_1 = _c.sent();
                         throw new Error("Internal server error occured");

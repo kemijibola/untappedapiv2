@@ -188,7 +188,7 @@ var MediaBusiness = /** @class */ (function () {
                                         _id: found._id,
                                         likedBy: mediaItem.likedBy,
                                         path: found.path,
-                                        uploadDate: found.uploadDate
+                                        createdAt: found.createdAt
                                     };
                                     item.items = item.items.concat([imageItem]);
                                 }

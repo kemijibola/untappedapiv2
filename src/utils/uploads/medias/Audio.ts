@@ -28,7 +28,6 @@ export class Audio extends AbstractMedia {
   }
 
   async getPresignedUrl(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
-    console.log("audio class is called");
     let signedUrls: SignedUrl = {
       presignedUrl: [],
       action: data.action
@@ -88,7 +87,6 @@ export class Audio extends AbstractMedia {
           };
           signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
         }
-        console.log(signedUrls);
         return Result.ok<SignedUrl>(200, signedUrls);
       } catch (err) {
         throw new Error("Internal server error occured");

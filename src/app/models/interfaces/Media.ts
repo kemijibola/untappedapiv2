@@ -49,7 +49,9 @@ export interface IMediaItem {
   _id?: string;
   path: string;
   likedBy?: IUser["fullName"][];
-  uploadDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  isDeleted?: Date;
 }
 export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   title: string;

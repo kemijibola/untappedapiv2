@@ -412,7 +412,6 @@ export class MediaController {
   @get("/:id")
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("params from request", req.params.id);
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.findById(req.params.id);
       if (result.error) {

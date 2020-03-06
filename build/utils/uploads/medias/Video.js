@@ -95,7 +95,7 @@ var Video = /** @class */ (function (_super) {
                             if (!lib_1.AcceptedVideoExt[fileExtension]) {
                                 return Result_1.Result.fail(400, fileExtension + " is not allowed.");
                             }
-                            theMap[item.file] = data.uploader + "/audios/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;
+                            theMap[item.file] = data.uploader + "/videos/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;
                             return theMap;
                         }, {});
                         _c.label = 1;

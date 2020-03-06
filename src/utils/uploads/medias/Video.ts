@@ -49,7 +49,7 @@ export class Video extends AbstractMedia {
               `${fileExtension} is not allowed.`
             );
           }
-          theMap[item.file] = `${data.uploader}/audios/${
+          theMap[item.file] = `${data.uploader}/videos/${
             UPLOADOPERATIONS[data.action]
           }/${uuid()}.${fileExtension}`;
           return theMap;

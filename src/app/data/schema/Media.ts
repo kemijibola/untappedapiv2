@@ -10,7 +10,8 @@ import {
 const mediaItemSchema = new Schema(
   {
     path: { type: String, required: true },
-    likedBy: [{ type: String }]
+    likedBy: [{ type: String }],
+    isDeleted: { type: Date }
   },
   { timestamps: true }
 );
