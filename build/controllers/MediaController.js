@@ -299,6 +299,11 @@ var MediaController = /** @class */ (function () {
                                     message: "Error occured, " + result.error
                                 }))];
                         }
+                        if (result.data) {
+                            result.data.forEach(function (x) {
+                                x.items.filter(function (y) { return !y.isDeleted; });
+                            });
+                        }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
                                 data: result.data
@@ -368,6 +373,11 @@ var MediaController = /** @class */ (function () {
                                     message: "Error occured, " + result.error
                                 }))];
                         }
+                        if (result.data) {
+                            result.data.forEach(function (x) {
+                                x.items.filter(function (y) { return !y.isDeleted; });
+                            });
+                        }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
                                 data: result.data
@@ -401,6 +411,10 @@ var MediaController = /** @class */ (function () {
                                     message: result.error
                                 }))];
                         }
+                        if (result.data) {
+                            result.data.items = result.data.items.filter(function (x) { return !x.isDeleted; });
+                        }
+                        console.log(result.data);
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
                                 data: result.data
@@ -412,6 +426,113 @@ var MediaController = /** @class */ (function () {
                                 message: "Internal Server error occured." + err_6
                             }))];
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MediaController.prototype.deleteMedia = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, media, result, err_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.findById(req.params.id)];
+                    case 1:
+                        media = _a.sent();
+                        if (media.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: media.responseCode,
+                                    message: media.error
+                                }))];
+                        }
+                        if (!media.data) return [3 /*break*/, 3];
+                        if (media.data._id !== req.user) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 403,
+                                    message: "You are not authorized to perform this request."
+                                }))];
+                        }
+                        return [4 /*yield*/, mediaBusiness.delete(media.data._id)];
+                    case 2:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data
+                            })];
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        err_7 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_7
+                            }))];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MediaController.prototype.deleteMediaItem = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, media, mediaUser, currentUser, result, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.findById(req.params.id)];
+                    case 1:
+                        media = _a.sent();
+                        if (media.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: media.responseCode,
+                                    message: media.error
+                                }))];
+                        }
+                        if (media.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: media.responseCode,
+                                    message: media.error
+                                }))];
+                        }
+                        if (!media.data) return [3 /*break*/, 3];
+                        mediaUser = media.data.user;
+                        currentUser = req.user;
+                        if (mediaUser != currentUser) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 403,
+                                    message: "You are not authorized to perform this request."
+                                }))];
+                        }
+                        return [4 /*yield*/, mediaBusiness.deleteMediaItem(media.data._id, req.params.itemId)];
+                    case 2:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data
+                            })];
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        err_8 = _a.sent();
+                        console.log(err_8);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_8
+                            }))];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -464,6 +585,22 @@ var MediaController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.del("/:id"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "deleteMedia", null);
+    __decorate([
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.del("/:id/item/:itemId"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "deleteMediaItem", null);
     MediaController = __decorate([
         decorators_1.controller("/v1/media")
     ], MediaController);

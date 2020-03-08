@@ -7,7 +7,7 @@ var Media_1 = require("../../models/interfaces/Media");
 var mediaItemSchema = new mongoose_1.Schema({
     path: { type: String, required: true },
     likedBy: [{ type: String }],
-    isDeleted: { type: Date }
+    isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
 var mediaSchema = new mongoose_1.Schema({
     title: { type: String, required: true },

@@ -11,7 +11,7 @@ const mediaItemSchema = new Schema(
   {
     path: { type: String, required: true },
     likedBy: [{ type: String }],
-    isDeleted: { type: Date }
+    isDeleted: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

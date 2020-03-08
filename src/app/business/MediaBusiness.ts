@@ -5,6 +5,7 @@ import { ApprovalOperations, IApproval, IMedia } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { schedule } from "../../handlers/ScheduleTask";
 import { StateMachineArns } from "../models/interfaces/custom/StateMachineArns";
+import { threadId } from "worker_threads";
 
 class MediaBusiness implements IMediaBusiness {
   private _mediaRepository: MediaRepository;
@@ -102,7 +103,8 @@ class MediaBusiness implements IMediaBusiness {
             _id: found._id,
             likedBy: mediaItem.likedBy,
             path: found.path,
-            createdAt: found.createdAt
+            createdAt: found.createdAt,
+            isDeleted: found.isDeleted
           };
           item.items = [...item.items, imageItem];
         } else {
@@ -118,8 +120,34 @@ class MediaBusiness implements IMediaBusiness {
   }
 
   async delete(id: string): Promise<Result<boolean>> {
-    const isDeleted = await this._mediaRepository.delete(id);
-    return Result.ok<boolean>(200, isDeleted);
+    await this._mediaRepository.patch(id, {
+      isDeleted: true
+    });
+    return Result.ok<boolean>(200, true);
+  }
+
+  async deleteMediaItem(id: string, itemId: string): Promise<Result<boolean>> {
+    const media = await this._mediaRepository.findById(id);
+    const newMediaItems = media.items.reduce(
+      (theMap: IMediaItem[], theItem: IMediaItem) => {
+        if (theItem._id == itemId) {
+          theMap.push({
+            _id: theItem._id,
+            path: theItem.path,
+            likedBy: theItem.likedBy,
+            createdAt: theItem.createdAt,
+            updatedAt: theItem.updatedAt,
+            isDeleted: true
+          });
+        } else {
+          theMap.push(theItem);
+        }
+        return theMap;
+      },
+      []
+    );
+    await this._mediaRepository.patch(id, { items: newMediaItems });
+    return Result.ok<boolean>(200, true);
   }
 }
 

@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import { RequestHandler } from 'express';
-import { Methods } from '../app/models/interfaces/custom/Methods';
-import { MetadataKeys } from '../app/models/interfaces/custom/MetadataKeys';
+import "reflect-metadata";
+import { RequestHandler } from "express";
+import { Methods } from "../app/models/interfaces/custom/Methods";
+import { MetadataKeys } from "../app/models/interfaces/custom/MetadataKeys";
 
 interface RouteHandlerDescriptor extends PropertyDescriptor {
   value?: RequestHandler;

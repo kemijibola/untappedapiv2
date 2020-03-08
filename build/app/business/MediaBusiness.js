@@ -188,7 +188,8 @@ var MediaBusiness = /** @class */ (function () {
                                         _id: found._id,
                                         likedBy: mediaItem.likedBy,
                                         path: found.path,
-                                        createdAt: found.createdAt
+                                        createdAt: found.createdAt,
+                                        isDeleted: found.isDeleted
                                     };
                                     item.items = item.items.concat([imageItem]);
                                 }
@@ -216,13 +217,46 @@ var MediaBusiness = /** @class */ (function () {
     };
     MediaBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var isDeleted;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._mediaRepository.delete(id)];
+                    case 0: return [4 /*yield*/, this._mediaRepository.patch(id, {
+                            isDeleted: true
+                        })];
                     case 1:
-                        isDeleted = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
+    MediaBusiness.prototype.deleteMediaItem = function (id, itemId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var media, newMediaItems;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.findById(id)];
+                    case 1:
+                        media = _a.sent();
+                        newMediaItems = media.items.reduce(function (theMap, theItem) {
+                            if (theItem._id == itemId) {
+                                theMap.push({
+                                    _id: theItem._id,
+                                    path: theItem.path,
+                                    likedBy: theItem.likedBy,
+                                    createdAt: theItem.createdAt,
+                                    updatedAt: theItem.updatedAt,
+                                    isDeleted: true
+                                });
+                            }
+                            else {
+                                theMap.push(theItem);
+                            }
+                            return theMap;
+                        }, []);
+                        return [4 /*yield*/, this._mediaRepository.patch(id, { items: newMediaItems })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
         });
