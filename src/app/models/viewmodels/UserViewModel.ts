@@ -43,7 +43,7 @@ export interface Professional extends UserListViewModel {
 }
 
 export interface UserListViewModel {
-  user: IUser["_id"];
+  user: string;
   userType: IUserType["_id"];
   displayPhoto: string;
   categories?: ICategory["_id"][];

@@ -53,6 +53,10 @@ export interface IMediaItem {
   updatedAt?: Date;
   isDeleted?: boolean;
 }
+export interface TalentMedia {
+  user: string;
+  medias: IMedia[];
+}
 export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   title: string;
   shortDescription: string;

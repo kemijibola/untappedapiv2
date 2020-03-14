@@ -6,7 +6,7 @@ import {
 import { MatchData } from "../Helper/MatchData";
 
 export class AllTalentsAnalysis implements Analyzer {
-  run(users: MatchData[]): IUserFilterCategory[] {
+  async run(users: MatchData[]): Promise<IUserFilterCategory[]> {
     var filteredCategories: IUserFilterCategory[] = [];
 
     users = users.sort((a, b) => {
@@ -17,7 +17,7 @@ export class AllTalentsAnalysis implements Analyzer {
       const filtered: IUserFilterCategory = Object.assign({
         user: user.user,
         displayName: user.displayName,
-        displayPhoto: user.displayPhoto,
+        displayPhoto: user.displayPhoto || "",
         shortDescription: user.shortDescription || "",
         categories: user.categories || [],
         reportType: ReportType.AllTalents,

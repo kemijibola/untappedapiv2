@@ -160,7 +160,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-untappd-admin/dev/1580702752039-2020-02-03T04:05:52.039Z/ScheduleEmail.zip"
+                "S3Key": "serverless/serverless-untappd-admin/dev/1583913597484-2020-03-11T07:59:57.484Z/ScheduleEmail.zip"
               },
               "FunctionName": "serverless-untappd-admin-dev-ScheduleEmail",
               "Handler": "src/handlers/ScheduleTask.schedule",
@@ -203,7 +203,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-untappd-admin/dev/1580702752039-2020-02-03T04:05:52.039Z/SendEmail.zip"
+                "S3Key": "serverless/serverless-untappd-admin/dev/1583913597484-2020-03-11T07:59:57.484Z/SendEmail.zip"
               },
               "FunctionName": "serverless-untappd-admin-dev-SendEmail",
               "Handler": "src/handlers/SendEmail.handle",
@@ -244,10 +244,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-untappd-admin/dev/1580702752039-2020-02-03T04:05:52.039Z/ScheduleFunction.zip"
+                "S3Key": "serverless/serverless-untappd-admin/dev/1583913597484-2020-03-11T07:59:57.484Z/ScheduleFunction.zip"
               },
               "FunctionName": "serverless-untappd-admin-dev-ScheduleFunction",
-              "Handler": "src/utils/filtercategory/Handler.fetchTalentsByCategory",
+              "Handler": "src/handlers/Handler.fetchTalentsByCategory",
               "MemorySize": 1024,
               "Role": {
                 "Fn::GetAtt": [
@@ -264,14 +264,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "ScheduleFunctionLambdaVersionfPfMPooFrCaF57ycEG55vzipjHxNc7WnCbiiRMP25wM": {
+          "ScheduleFunctionLambdaVersionJ7YrHPAuGGcjqbWNSn1pYbUzGirFrvWFNMMHmQETLQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ScheduleFunctionLambdaFunction"
               },
-              "CodeSha256": "iodAmKPvhEHCWZgUWrLOwvxrQdHFlr+ZIEzjUef91Os=",
+              "CodeSha256": "o3zPaxsFvbMvCMQYwmo04dzzUQaMO3rLkNt0kJ5xH2U=",
               "Description": "The cron job generates filter category and saves to db"
             }
           },
@@ -391,7 +391,7 @@
           "ScheduleFunctionLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ScheduleFunctionLambdaVersionfPfMPooFrCaF57ycEG55vzipjHxNc7WnCbiiRMP25wM"
+              "Ref": "ScheduleFunctionLambdaVersionJ7YrHPAuGGcjqbWNSn1pYbUzGirFrvWFNMMHmQETLQ"
             }
           },
           "EmailSchedulingStateMachineArn": {
@@ -481,7 +481,7 @@
       },
       "ScheduleFunction": {
         "description": "The cron job generates filter category and saves to db",
-        "handler": "src/utils/filtercategory/Handler.fetchTalentsByCategory",
+        "handler": "src/handlers/Handler.fetchTalentsByCategory",
         "events": [
           {
             "schedule": "cron(0/15 * * * ? *)"
@@ -537,7 +537,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/serverless-untappd-admin/dev/1580702752039-2020-02-03T04:05:52.039Z",
+    "artifactDirectoryName": "serverless/serverless-untappd-admin/dev/1583913597484-2020-03-11T07:59:57.484Z",
     "artifact": ""
   }
 }

@@ -120,6 +120,19 @@ var UserFilterCategoryBusiness = /** @class */ (function () {
             });
         });
     };
+    UserFilterCategoryBusiness.prototype.createMany = function (items) {
+        return __awaiter(this, void 0, void 0, function () {
+            var newUserFilters;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userFilterCategoryRepository.insertMany(items)];
+                    case 1:
+                        newUserFilters = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newUserFilters)];
+                }
+            });
+        });
+    };
     UserFilterCategoryBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
             var userFilterCategory, updateObj;

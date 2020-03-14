@@ -436,7 +436,6 @@ export class MediaController {
       if (result.data) {
         result.data.items = result.data.items.filter(x => !x.isDeleted);
       }
-      console.log(result.data);
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
         data: result.data

@@ -64,6 +64,13 @@ class UserFilterCategoryBusiness implements IUserFilterCategoryBusiness {
     return Result.ok<IUserFilterCategory>(201, newUserFilterCategory);
   }
 
+  async createMany(items: IUserFilterCategory[]): Promise<Result<any>> {
+    const newUserFilters = await this._userFilterCategoryRepository.insertMany(
+      items
+    );
+    return Result.ok<IUserFilterCategory>(201, newUserFilters);
+  }
+
   async update(
     id: string,
     item: IUserFilterCategory

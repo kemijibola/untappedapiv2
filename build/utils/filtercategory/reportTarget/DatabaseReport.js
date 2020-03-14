@@ -39,20 +39,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var UserFilterCategoryBusiness_1 = __importDefault(require("../../../app/business/UserFilterCategoryBusiness"));
+var error_1 = require("../../error");
 var DatabaseReport = /** @class */ (function () {
     function DatabaseReport() {
     }
-    DatabaseReport.prototype.process = function (report) {
+    DatabaseReport.prototype.save = function (report) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategoryBusiness;
+            var userFilterBusiness, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        talentFilterCategoryBusiness = new UserFilterCategoryBusiness_1.default();
-                        return [4 /*yield*/, talentFilterCategoryBusiness.create(report)];
+                        _a.trys.push([0, 2, , 3]);
+                        userFilterBusiness = new UserFilterCategoryBusiness_1.default();
+                        return [4 /*yield*/, userFilterBusiness.createMany(report)];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        throw new error_1.PlatformError({
+                            code: 500,
+                            message: err_1
+                        });
+                    case 3: return [2 /*return*/];
                 }
             });
         });

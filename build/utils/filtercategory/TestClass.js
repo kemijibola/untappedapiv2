@@ -35,45 +35,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var HighestCommentAnalysis_1 = require("../analyzers/HighestCommentAnalysis");
-var DatabaseReport_1 = require("../reportTarget/DatabaseReport");
-var Summary = /** @class */ (function () {
-    function Summary(analyzer, output) {
-        this.analyzer = analyzer;
-        this.output = output;
-        this.analyzed = [];
+var UserTypeBusiness = require("../../app/business/UserTypeBusiness");
+var viewmodels_1 = require("../../app/models/viewmodels");
+var TestClass = /** @class */ (function () {
+    function TestClass() {
     }
-    Summary.allTalentsAnalysisReport = function () {
-        return new Summary(new HighestCommentAnalysis_1.HighestCommentAnalysis(), new DatabaseReport_1.DatabaseReport());
-    };
-    Summary.prototype.buildReport = function (data) {
+    TestClass.prototype.fetchTalents = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.analyzer.run(data)];
-                    case 1:
-                        _a.analyzed = _b.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Summary.prototype.saveReport = function () {
-        return __awaiter(this, void 0, void 0, function () {
+            var userTypeBusiness, talentsResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.output.save(this.analyzed)];
+                    case 0:
+                        userTypeBusiness = new UserTypeBusiness();
+                        return [4 /*yield*/, userTypeBusiness.findByCriteria({
+                                name: viewmodels_1.AppUsers.Talent
+                            })];
                     case 1:
-                        _a.sent();
+                        talentsResult = _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    return Summary;
+    return TestClass;
 }());
-exports.Summary = Summary;
-//# sourceMappingURL=Summary.js.map
+exports.TestClass = TestClass;
+//# sourceMappingURL=TestClass.js.map

@@ -1,7 +1,7 @@
-import MongodataAccess = require('../MongodataAccess');
-import { Schema } from 'mongoose';
+import MongodataAccess = require("../MongodataAccess");
+import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IContestEntry } from '../../models/interfaces';
+import { IContestEntry } from "../../models/interfaces";
 
 const evaluationRatingSchema: Schema = new Schema({
   evaluation: { type: String, required: true },
@@ -13,19 +13,19 @@ const judgeEvaluationSchema: Schema = new Schema({
   judgeEmail: { type: String, required: true },
   evaluations: [{ type: evaluationRatingSchema, required: true }],
   comment: { type: String, required: true },
-  dateAdded: { type: DataCue, default: Date.now }
+  dateAdded: { type: Date, default: Date.now }
 });
 
 const contestEntrySchema: Schema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true
     },
     contest: {
       type: Schema.Types.ObjectId,
-      ref: 'Contest',
+      ref: "Contest",
       required: true
     },
     submissionPath: { type: String, required: true },
@@ -34,7 +34,7 @@ const contestEntrySchema: Schema = new Schema(
     judgeEvaluations: [{ type: judgeEvaluationSchema }],
     application: {
       type: Schema.Types.ObjectId,
-      ref: 'Application',
+      ref: "Application",
       required: true
     }
   },
@@ -42,6 +42,6 @@ const contestEntrySchema: Schema = new Schema(
 );
 
 export const ContestEntrySchema = mongooseConnection.model<IContestEntry>(
-  'ContestEntry',
+  "ContestEntry",
   contestEntrySchema
 );

@@ -1,5 +1,5 @@
 import { AppConfig } from "../../app/models/interfaces/custom/AppConfig";
-import { IPermission, IApplication } from "../../app/models/interfaces";
+import { IPermission, IApplication, IMedia } from "../../app/models/interfaces";
 const config: AppConfig = require("../../config/keys");
 import ResourceBusiness from "../../app/business/RolePermissionBusiness";
 import PermissionBusiness from "../../app/business/PermissionBusiness";

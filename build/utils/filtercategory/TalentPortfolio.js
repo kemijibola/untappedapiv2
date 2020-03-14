@@ -46,9 +46,9 @@ var TalentPortfolio = /** @class */ (function () {
     TalentPortfolio.setUp = function (userId) {
         return new TalentPortfolio(userId);
     };
-    TalentPortfolio.prototype.fetchTalentVideos = function () {
+    TalentPortfolio.prototype.fetchTalentMedia = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var videos, videoBusiness, talentVideos;
+            var videos, videoBusiness, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -60,54 +60,8 @@ var TalentPortfolio = /** @class */ (function () {
                                 isDeleted: false
                             })];
                     case 1:
-                        talentVideos = _a.sent();
-                        if (talentVideos.data)
-                            videos = videos.concat(talentVideos.data);
-                        return [2 /*return*/, videos];
-                }
-            });
-        });
-    };
-    TalentPortfolio.prototype.fetchTalentAudios = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var audios, audioBusiness, talentAudios;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        audios = [];
-                        audioBusiness = new MediaBusiness_1.default();
-                        return [4 /*yield*/, audioBusiness.fetch({
-                                user: this.userId,
-                                isApproved: true,
-                                isDeleted: false
-                            })];
-                    case 1:
-                        talentAudios = _a.sent();
-                        if (talentAudios.data)
-                            audios = audios.concat(talentAudios.data);
-                        return [2 /*return*/, audios];
-                }
-            });
-        });
-    };
-    TalentPortfolio.prototype.fetchTalentImages = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var images, imageBusiness, talentImages;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        images = [];
-                        imageBusiness = new MediaBusiness_1.default();
-                        return [4 /*yield*/, imageBusiness.fetch({
-                                user: this.userId,
-                                isApproved: true,
-                                isDeleted: false
-                            })];
-                    case 1:
-                        talentImages = _a.sent();
-                        if (talentImages.data)
-                            images = images.concat(talentImages.data);
-                        return [2 /*return*/, images];
+                        result = _a.sent();
+                        return [2 /*return*/, result.data ? result.data : []];
                 }
             });
         });

@@ -6,7 +6,7 @@ import {
 import { MatchData } from "../Helper/MatchData";
 
 export class AllProfessionalAnalysis implements Analyzer {
-  run(users: MatchData[]): IUserFilterCategory[] {
+  async run(users: MatchData[]): Promise<IUserFilterCategory[]> {
     var filteredCategories: IUserFilterCategory[] = [];
 
     users = users.sort((a, b) => {

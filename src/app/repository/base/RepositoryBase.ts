@@ -73,14 +73,14 @@ class RepositoryBase<T extends mongoose.Document>
       );
     });
   }
-  // updateMany(_ids: string[], item: T): Promise<T> {
-  //   return new Promise((resolve, reject) => {
-  //     this._model.updateMany({ _id: this.toObjectId(_ids) }, item, (error: any, result: any) => {
-  //       if (error) reject(error);
-  //       else resolve(result);
-  //     });
-  //   });
-  // }
+  insertMany(item: T[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model.insertMany(item, (error: any, result: any) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+    });
+  }
 
   delete(_id: string): Promise<boolean> {
     return new Promise((resolve, reject) => {

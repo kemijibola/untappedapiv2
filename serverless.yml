@@ -23,6 +23,7 @@ custom:
 
 package:
   individually: true
+  excludeDevDependencies: false
 functions:
   ScheduleEmail:
     handler: src/handlers/ScheduleTask.schedule
@@ -32,11 +33,6 @@ functions:
     handler: src/handlers/SendEmail.handle
     environment:
       EMAIL_SENDER_ADDRESS: ${self:custom.EMAIL_SENDER_ADDRESS}
-  ScheduleFunction:
-    description: The cron job generates filter category and saves to db
-    handler: src/utils/filtercategory/Handler.fetchTalentsByCategory
-    events:
-      - schedule: cron(0/15 * * * ? *)
 
 stepFunctions:
   stateMachines:

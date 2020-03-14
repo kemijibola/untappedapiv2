@@ -71,14 +71,17 @@ var RepositoryBase = /** @class */ (function () {
             });
         });
     };
-    // updateMany(_ids: string[], item: T): Promise<T> {
-    //   return new Promise((resolve, reject) => {
-    //     this._model.updateMany({ _id: this.toObjectId(_ids) }, item, (error: any, result: any) => {
-    //       if (error) reject(error);
-    //       else resolve(result);
-    //     });
-    //   });
-    // }
+    RepositoryBase.prototype.insertMany = function (item) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.insertMany(item, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     RepositoryBase.prototype.delete = function (_id) {
         var _this = this;
         return new Promise(function (resolve, reject) {

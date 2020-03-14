@@ -6,7 +6,8 @@ import {
 import { MatchData } from "../Helper/MatchData";
 
 export class MostTapAnalysis implements Analyzer {
-  run(users: MatchData[]): IUserFilterCategory[] {
+  async run(users: MatchData[]): Promise<IUserFilterCategory[]> {
+    // console.log("most tap", users);
     var filteredCategories: IUserFilterCategory[] = [];
 
     users = users.sort((a, b) => {
@@ -16,7 +17,7 @@ export class MostTapAnalysis implements Analyzer {
       const filtered: IUserFilterCategory = Object.assign({
         user: user.user,
         displayName: user.displayName,
-        displayPhoto: user.displayPhoto,
+        displayPhoto: user.displayPhoto || "hello",
         shortDescription: user.shortDescription || "",
         categories: user.categories || [],
         reportType: ReportType.MostTap,

@@ -34,46 +34,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var HighestCommentAnalysis_1 = require("../analyzers/HighestCommentAnalysis");
-var DatabaseReport_1 = require("../reportTarget/DatabaseReport");
-var Summary = /** @class */ (function () {
-    function Summary(analyzer, output) {
-        this.analyzer = analyzer;
-        this.output = output;
-        this.analyzed = [];
-    }
-    Summary.allTalentsAnalysisReport = function () {
-        return new Summary(new HighestCommentAnalysis_1.HighestCommentAnalysis(), new DatabaseReport_1.DatabaseReport());
-    };
-    Summary.prototype.buildReport = function (data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.analyzer.run(data)];
-                    case 1:
-                        _a.analyzed = _b.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Summary.prototype.saveReport = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.output.save(this.analyzed)];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return Summary;
-}());
-exports.Summary = Summary;
-//# sourceMappingURL=Summary.js.map
+var viewmodels_1 = require("../app/models/viewmodels");
+var UserTypeBusiness = require("../app/business/UserTypeBusiness");
+exports.fetchTalentsByCategory = function (event, context, cb) { return __awaiter(_this, void 0, void 0, function () {
+    var userTypeBusiness, talentsResult, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                userTypeBusiness = new UserTypeBusiness();
+                return [4 /*yield*/, userTypeBusiness.findByCriteria({
+                        name: viewmodels_1.AppUsers.Talent
+                    })];
+            case 1:
+                talentsResult = _a.sent();
+                console.log("users from handler");
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                // do nothing
+                console.log(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+// export const fetchUsers: any = async (
+//   condition: UserListRequest
+// ): Promise<UserListViewModel[]> => {
+//   condition.isEmailConfirmed = true;
+//   condition.isProfileCompleted = true;
+//   condition.status = AccountStatus.ACTIVATED;
+//   let users: UserListViewModel[] = [];
+//   const userBusiness = new UserBusiness();
+//   const profileBusiness = new ProfileBusiness();
+//   const usersModel = await userBusiness.fetch(condition);
+//   console.log("users from handler", usersModel);
+//   if (usersModel.data) {
+//     for (let x of usersModel.data) {
+//       var userProfile = await profileBusiness.findByUser(x._id);
+//       var professionalSetUp = ProfessionalPortfolio.setUp(x._id);
+//       var userContest = await professionalSetUp.fetchProfessionalContests();
+//       var user: UserListViewModel = {
+//         user: x._id,
+//         userType: x.userType,
+//         displayPhoto: x.profileImagePath || "",
+//         displayName: x.fullName,
+//         categories: userProfile.data ? userProfile.data.categories : [],
+//         tapCount: userProfile.data ? userProfile.data.tapCount : 0,
+//         shortDescription: userProfile.data ? userProfile.data.shortBio : "",
+//         createdAt: x.createdAt,
+//         contestCount: userContest.length
+//       };
+//       users = [...users, user];
+//     }
+//   }
+//   return users;
+// };
+//# sourceMappingURL=Handler.js.map

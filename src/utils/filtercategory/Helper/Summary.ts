@@ -12,36 +12,26 @@ import { AllTalentsAnalysis } from "../analyzers/AllTalentsAnalysis";
 import { AllProfessionalAnalysis } from "../analyzers/AllProfessionalAnalysis";
 
 export interface Analyzer {
-  run(users: UserListViewModel[]): IUserFilterCategory[];
+  run(users: UserListViewModel[]): Promise<IUserFilterCategory[]>;
 }
 
 export interface OutputTarget {
-  process(filtered: IUserFilterCategory): void;
+  save(filtered: IUserFilterCategory[]): Promise<any>;
 }
 
 export class Summary {
+  private analyzed: IUserFilterCategory[] = [];
   constructor(public analyzer: Analyzer, public output: OutputTarget) {}
 
-  static mostTapAnalysisReport(): Summary {
-    return new Summary(new MostTapAnalysis(), new DatabaseReport());
-  }
-
-  static highestCommentAnalysisReport(): Summary {
+  static allTalentsAnalysisReport(): Summary {
     return new Summary(new HighestCommentAnalysis(), new DatabaseReport());
   }
 
-  static allTalentsAnalysisReport(): Summary {
-    return new Summary(new AllTalentsAnalysis(), new DatabaseReport());
+  async buildReport(data: MatchData[]) {
+    this.analyzed = await this.analyzer.run(data);
   }
 
-  static allProfessionalAnalysisReport(): Summary {
-    return new Summary(new AllProfessionalAnalysis(), new DatabaseReport());
-  }
-
-  buildAndProcessReport(data: MatchData[]) {
-    const sorted = this.analyzer.run(data);
-    sorted.forEach(x => {
-      this.output.process(x);
-    });
+  async saveReport() {
+    await this.output.save(this.analyzed);
   }
 }

@@ -12,17 +12,17 @@ var judgeEvaluationSchema = new mongoose_1.Schema({
     judgeEmail: { type: String, required: true },
     evaluations: [{ type: evaluationRatingSchema, required: true }],
     comment: { type: String, required: true },
-    dateAdded: { type: DataCue, default: Date.now }
+    dateAdded: { type: Date, default: Date.now }
 });
 var contestEntrySchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
         required: true
     },
     contest: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Contest',
+        ref: "Contest",
         required: true
     },
     submissionPath: { type: String, required: true },
@@ -31,9 +31,9 @@ var contestEntrySchema = new mongoose_1.Schema({
     judgeEvaluations: [{ type: judgeEvaluationSchema }],
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
+        ref: "Application",
         required: true
     }
 }, { timestamps: true });
-exports.ContestEntrySchema = mongooseConnection.model('ContestEntry', contestEntrySchema);
+exports.ContestEntrySchema = mongooseConnection.model("ContestEntry", contestEntrySchema);
 //# sourceMappingURL=ContestEntry.js.map

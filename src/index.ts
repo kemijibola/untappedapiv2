@@ -6,11 +6,14 @@ import "./controllers";
 import { AppConfig } from "./app/models/interfaces/custom/AppConfig";
 const config: AppConfig = module.require("./config/keys");
 // module.require("./utils/Cache");
+// module.require("./utils/filtercategory/UserFilter");
+import * as cron from "node-cron";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
 import { IError } from "./utils/error/GlobalError";
 import cors from "cors";
 // import SocketIo = require('./socket/SocketIo');
 import { SocketIo } from "./socket/SocketIo";
+import { talentFilterJob } from "./utils/CronJob";
 
 const app = express();
 
@@ -39,6 +42,8 @@ app.use(function(
 
 const port = config.PORT || 5000;
 app.set("port", port);
+
+talentFilterJob();
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);

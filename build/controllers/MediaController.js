@@ -414,7 +414,6 @@ var MediaController = /** @class */ (function () {
                         if (result.data) {
                             result.data.items = result.data.items.filter(function (x) { return !x.isDeleted; });
                         }
-                        console.log(result.data);
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
                                 data: result.data
