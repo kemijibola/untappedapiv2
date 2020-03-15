@@ -13,11 +13,15 @@ const mongooseConnection = MongodataAccess.mongooseConnection;
 //   shortBio: { type: String, required: true }
 // });
 
+const categoryTypeWithCategorySchema = new Schema({
+  categoryTypeId: { type: String },
+  category: { type: String }
+});
 const userFilterCategorySchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   displayPhoto: { type: String, required: true },
   displayName: { type: String, required: true },
-  categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
+  categoryTypes: [{ type: categoryTypeWithCategorySchema, required: true }],
   shortDescription: { type: String, required: true },
   tapCount: { type: Number, default: 0 },
   contestCount: { type: Number, default: 0 },

@@ -31,7 +31,7 @@ app.use(function (error, req, res, next) {
 });
 var port = config.PORT || 5000;
 app.set("port", port);
-CronJob_1.talentFilterJob();
+CronJob_1.userFilterJob();
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
     SocketIo_1.SocketIo.setUpApp(app);

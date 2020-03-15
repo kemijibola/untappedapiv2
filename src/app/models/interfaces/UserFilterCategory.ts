@@ -4,6 +4,7 @@ import { IUser } from "./User";
 import { IAppSpec } from "./AppSpec";
 import { IUserType } from "./UserType";
 import { ICategory } from "./Category";
+import { ICategoryType } from "./CategoryType";
 
 export enum ReportType {
   alltalents = "alltalents",
@@ -15,6 +16,10 @@ export enum ReportType {
   mostlikedphoto = "mostlikedphoto"
 }
 
+export interface CategoryTypeWithCategory {
+  categoryTypeId: ICategoryType["_id"];
+  category: ICategory["_id"];
+}
 export interface IUserFilterCategory
   extends ITimeStamp,
     IAppSpec,
@@ -22,7 +27,7 @@ export interface IUserFilterCategory
   user: IUser["_id"];
   displayName: string;
   displayPhoto: string;
-  categories: ICategory["_id"][];
+  categoryTypes: CategoryTypeWithCategory[];
   shortDescription: string;
   tapCount: number;
   contestCount: number;

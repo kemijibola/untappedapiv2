@@ -23,7 +23,7 @@ export class MostTapAnalysis implements Analyzer {
         dateJoined: user.dateJoined,
         displayPhoto: user.displayPhoto,
         shortDescription: user.shortDescription,
-        categories: user.categories || [],
+        categoryTypes: user.categoryTypes || [],
         reportType: ReportType.mosttap,
         userType: user.userType
       });

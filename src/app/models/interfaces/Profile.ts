@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IUser, IUserModel } from "./User";
-import { ICategory } from "./Category";
+import { ICategoryType } from "./CategoryType";
 import { ITimeStamp } from "./Timestamp";
 import { IAppSpec } from "./AppSpec";
 
@@ -31,7 +31,7 @@ export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
   tapCount: number;
   user?: IUserModel["_id"];
   shortBio?: string;
-  categories?: ICategory["_id"][];
+  categoryTypes?: ICategoryType["_id"][];
   twitter?: string;
   facebook?: string;
   instagram?: string;

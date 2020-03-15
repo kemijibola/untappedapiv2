@@ -1,11 +1,12 @@
+import { CategoryTypeWithCategory } from "./../interfaces/UserFilterCategory";
 import {
   IUserAccountStatus,
   IMedia,
   IUser,
   AccountStatus,
   IUserType,
-  ICategory,
-  ReportType
+  ReportType,
+  ICategoryType
 } from "../interfaces";
 
 export interface UserViewModel {
@@ -48,7 +49,7 @@ export interface UserListViewModel {
   user: string;
   userType: IUserType["_id"];
   displayPhoto: string;
-  categories?: ICategory["_id"][];
+  categoryTypes?: CategoryTypeWithCategory[];
   displayName: string;
   shortDescription?: string;
   dateJoined?: Date;

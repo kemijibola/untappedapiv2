@@ -10,11 +10,15 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 //   profileImage: { type: String },
 //   shortBio: { type: String, required: true }
 // });
+var categoryTypeWithCategorySchema = new mongoose_1.Schema({
+    categoryTypeId: { type: String },
+    category: { type: String }
+});
 var userFilterCategorySchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     displayPhoto: { type: String, required: true },
     displayName: { type: String, required: true },
-    categories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Category" }],
+    categoryTypes: [{ type: categoryTypeWithCategorySchema, required: true }],
     shortDescription: { type: String, required: true },
     tapCount: { type: Number, default: 0 },
     contestCount: { type: Number, default: 0 },

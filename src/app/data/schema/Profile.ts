@@ -26,10 +26,10 @@ const profileSchema: Schema = new Schema(
       required: true
     },
     shortBio: { type: String, required: true, minlength: 50, maxlength: 300 },
-    categories: [
+    categoryTypes: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Category",
+        ref: "CategoryType",
         required: true
       }
     ],

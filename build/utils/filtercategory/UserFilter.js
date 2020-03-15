@@ -40,47 +40,58 @@ var MatchData_1 = require("./Helper/MatchData");
 var UserTypeBusiness = require("../../app/business/UserTypeBusiness");
 var interfaces_1 = require("../../app/models/interfaces");
 var UserBusiness = require("../../app/business/UserBusiness");
+var CategoryTypeBusiness = require("../../app/business/CategoryTypeBusiness");
 var ProfileBusiness = require("../../app/business/ProfileBusiness");
 var ProfessionalPortfolio_1 = require("../../utils/filtercategory/ProfessionalPortfolio");
 var UserFilter = /** @class */ (function () {
     function UserFilter() {
         var _this = this;
         this.fetchTalents = function (condition) { return __awaiter(_this, void 0, void 0, function () {
-            var userTypeBusiness, result, talents, users, profileBusiness, _i, talents_1, x, userProfile, user, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var userTypeBusiness, result, talents, users, profileBusiness, _i, talents_1, x, userProfile, categoryTypes, _a, user, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 8, , 9]);
+                        _b.trys.push([0, 11, , 12]);
                         userTypeBusiness = new UserTypeBusiness();
                         return [4 /*yield*/, userTypeBusiness.findByCriteria({
                                 name: viewmodels_1.AppUsers.Talent
                             })];
                     case 1:
-                        result = _a.sent();
-                        if (!result.data) return [3 /*break*/, 7];
+                        result = _b.sent();
+                        if (!result.data) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.fetchUsers({
                                 userType: result.data._id
                             })];
                     case 2:
-                        talents = _a.sent();
+                        talents = _b.sent();
                         users = [];
-                        if (!(talents.length > 0)) return [3 /*break*/, 6];
+                        if (!(talents.length > 0)) return [3 /*break*/, 9];
                         profileBusiness = new ProfileBusiness();
                         _i = 0, talents_1 = talents;
-                        _a.label = 3;
+                        _b.label = 3;
                     case 3:
-                        if (!(_i < talents_1.length)) return [3 /*break*/, 6];
+                        if (!(_i < talents_1.length)) return [3 /*break*/, 9];
                         x = talents_1[_i];
                         return [4 /*yield*/, profileBusiness.findByUser(x._id)];
                     case 4:
-                        userProfile = _a.sent();
+                        userProfile = _b.sent();
+                        if (!userProfile.data) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.transformCategoryType(userProfile.data.categoryTypes)];
+                    case 5:
+                        _a = _b.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
+                        _a = [];
+                        _b.label = 7;
+                    case 7:
+                        categoryTypes = _a;
                         user = {
                             user: x._id,
                             userType: x.userType,
                             stageName: userProfile.data ? userProfile.data.name : "",
                             displayPhoto: x.profileImagePath || "",
                             displayName: x.fullName,
-                            categories: userProfile.data ? userProfile.data.categories : [],
+                            categoryTypes: categoryTypes,
                             tapCount: userProfile.data ? userProfile.data.tapCount : 0,
                             shortDescription: userProfile.data
                                 ? userProfile.data.shortBio
@@ -88,19 +99,47 @@ var UserFilter = /** @class */ (function () {
                             dateJoined: x.createdAt
                         };
                         users = users.concat([user]);
-                        _a.label = 5;
-                    case 5:
+                        _b.label = 8;
+                    case 8:
                         _i++;
                         return [3 /*break*/, 3];
-                    case 6:
+                    case 9:
                         MatchData_1.generateTalentReport(users);
-                        _a.label = 7;
-                    case 7: return [3 /*break*/, 9];
-                    case 8:
-                        err_1 = _a.sent();
+                        _b.label = 10;
+                    case 10: return [3 /*break*/, 12];
+                    case 11:
+                        err_1 = _b.sent();
                         console.log(err_1);
-                        return [3 /*break*/, 9];
-                    case 9: return [2 /*return*/];
+                        return [3 /*break*/, 12];
+                    case 12: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.transformCategoryType = function (categories) { return __awaiter(_this, void 0, void 0, function () {
+            var categoryTypeBusiness, transformed, _i, categories_1, item, found;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        categoryTypeBusiness = new CategoryTypeBusiness();
+                        transformed = [];
+                        _i = 0, categories_1 = categories;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < categories_1.length)) return [3 /*break*/, 4];
+                        item = categories_1[_i];
+                        return [4 /*yield*/, categoryTypeBusiness.findById(item)];
+                    case 2:
+                        found = _a.sent();
+                        if (found.data)
+                            transformed.push({
+                                categoryTypeId: found.data._id,
+                                category: found.data.category
+                            });
+                        _a.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, transformed];
                 }
             });
         }); };
@@ -143,7 +182,9 @@ var UserFilter = /** @class */ (function () {
                             businessName: userProfile.data ? userProfile.data.name : "",
                             displayPhoto: x.profileImagePath || "",
                             displayName: x.fullName,
-                            categories: userProfile.data ? userProfile.data.categories : [],
+                            categoryTypes: userProfile.data
+                                ? userProfile.data.categoryTypes
+                                : [],
                             shortDescription: userProfile.data
                                 ? userProfile.data.shortBio
                                 : "",

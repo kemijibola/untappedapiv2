@@ -24,10 +24,10 @@ var profileSchema = new mongoose_1.Schema({
         required: true
     },
     shortBio: { type: String, required: true, minlength: 50, maxlength: 300 },
-    categories: [
+    categoryTypes: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: "Category",
+            ref: "CategoryType",
             required: true
         }
     ],

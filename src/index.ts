@@ -13,7 +13,7 @@ import { IError } from "./utils/error/GlobalError";
 import cors from "cors";
 // import SocketIo = require('./socket/SocketIo');
 import { SocketIo } from "./socket/SocketIo";
-import { talentFilterJob } from "./utils/CronJob";
+import { userFilterJob } from "./utils/CronJob";
 
 const app = express();
 
@@ -43,7 +43,7 @@ app.use(function(
 const port = config.PORT || 5000;
 app.set("port", port);
 
-talentFilterJob();
+userFilterJob();
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);

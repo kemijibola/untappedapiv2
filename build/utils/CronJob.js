@@ -45,7 +45,7 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var cron = __importStar(require("node-cron"));
 var UserFilter_1 = require("./filtercategory/UserFilter");
-exports.talentFilterJob = function () {
+exports.userFilterJob = function () {
     cron.schedule("* * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
         var report;
         return __generator(this, function (_a) {

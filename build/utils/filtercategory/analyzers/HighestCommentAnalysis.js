@@ -132,7 +132,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
                                 dateJoined: talentMediaComment.talent.dateJoined,
                                 displayPhoto: talentMediaComment.talent.displayPhoto,
                                 shortDescription: talentMediaComment.talent.shortDescription || "",
-                                categories: talentMediaComment.talent.categories || [],
+                                categoryTypes: talentMediaComment.talent.categoryTypes || [],
                                 reportType: interfaces_1.ReportType.highestcomment,
                                 userType: talentMediaComment.talent.userType
                             });

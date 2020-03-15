@@ -10,8 +10,13 @@ import {
   generateTalentReport
 } from "./Helper/MatchData";
 import UserTypeBusiness = require("../../app/business/UserTypeBusiness");
-import { AccountStatus, IUserModel } from "../../app/models/interfaces";
+import {
+  AccountStatus,
+  IUserModel,
+  CategoryTypeWithCategory
+} from "../../app/models/interfaces";
 import UserBusiness = require("../../app/business/UserBusiness");
+import CategoryTypeBusiness = require("../../app/business/CategoryTypeBusiness");
 import ProfileBusiness = require("../../app/business/ProfileBusiness");
 import { ProfessionalPortfolio } from "../../utils/filtercategory/ProfessionalPortfolio";
 
@@ -49,13 +54,16 @@ export class UserFilter {
           const profileBusiness = new ProfileBusiness();
           for (let x of talents) {
             var userProfile = await profileBusiness.findByUser(x._id);
+            const categoryTypes: any = userProfile.data
+              ? await this.transformCategoryType(userProfile.data.categoryTypes)
+              : [];
             var user: Talent = {
               user: x._id,
               userType: x.userType,
               stageName: userProfile.data ? userProfile.data.name : "",
               displayPhoto: x.profileImagePath || "",
               displayName: x.fullName,
-              categories: userProfile.data ? userProfile.data.categories : [],
+              categoryTypes: categoryTypes,
               tapCount: userProfile.data ? userProfile.data.tapCount : 0,
               shortDescription: userProfile.data
                 ? userProfile.data.shortBio
@@ -72,6 +80,36 @@ export class UserFilter {
     }
   };
 
+  private transformCategoryType = async (
+    categories: any
+  ): Promise<CategoryTypeWithCategory[]> => {
+    const categoryTypeBusiness = new CategoryTypeBusiness();
+    let transformed: CategoryTypeWithCategory[] = [];
+    for (let item of categories) {
+      const found = await categoryTypeBusiness.findById(item);
+      if (found.data)
+        transformed.push({
+          categoryTypeId: found.data._id,
+          category: found.data.category
+        });
+    }
+    return transformed;
+
+    // const transformed: any = categories.reduce(
+    //   async (theMap: CategoryTypeWithCategory[], theItem: string) => {
+    //     const result = await categoryTypeBusiness.findById(theItem);
+    //     if (result.data) {
+    //       theMap.push({
+    //         categoryTypeId: result.data._id,
+    //         category: result.data.category
+    //       });
+    //     }
+    //     return theMap;
+    //   },
+    //   Promise.resolve([])
+    // );
+    // return transformed;
+  };
   private fetchProfessionals = async (
     condition: UserListRequest
   ): Promise<void> => {
@@ -101,7 +139,9 @@ export class UserFilter {
               businessName: userProfile.data ? userProfile.data.name : "",
               displayPhoto: x.profileImagePath || "",
               displayName: x.fullName,
-              categories: userProfile.data ? userProfile.data.categories : [],
+              categoryTypes: userProfile.data
+                ? userProfile.data.categoryTypes
+                : [],
               shortDescription: userProfile.data
                 ? userProfile.data.shortBio
                 : "",

@@ -57,7 +57,7 @@ var AllProfessionalAnalysis = /** @class */ (function () {
                         dateJoined: user.dateJoined,
                         displayPhoto: user.displayPhoto,
                         shortDescription: user.shortDescription || "",
-                        categories: user.categories || [],
+                        categoryTypes: user.categoryTypes || [],
                         reportType: interfaces_1.ReportType.allprofessionals,
                         userType: user.userType
                     });

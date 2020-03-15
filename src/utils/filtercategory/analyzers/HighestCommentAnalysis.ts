@@ -64,7 +64,7 @@ export class HighestCommentAnalysis implements Analyzer {
         dateJoined: talentMediaComment.talent.dateJoined,
         displayPhoto: talentMediaComment.talent.displayPhoto,
         shortDescription: talentMediaComment.talent.shortDescription || "",
-        categories: talentMediaComment.talent.categories || [],
+        categoryTypes: talentMediaComment.talent.categoryTypes || [],
         reportType: ReportType.highestcomment,
         userType: talentMediaComment.talent.userType
       });

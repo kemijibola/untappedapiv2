@@ -1,7 +1,7 @@
 import * as cron from "node-cron";
 import { UserFilter } from "./filtercategory/UserFilter";
 
-export const talentFilterJob = () => {
+export const userFilterJob = () => {
   cron.schedule("* * * * *", async () => {
     var report = UserFilter.initReport();
     await report.generateReport();
