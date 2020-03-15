@@ -93,7 +93,6 @@ var HighestCommentAnalysis = /** @class */ (function () {
                                         _i++;
                                         return [3 /*break*/, 1];
                                     case 4:
-                                        // user key to fetch user from users and push to this.talentMediaComment
                                         talent = users.filter(function (x) { return x.user == key; })[0];
                                         this_1.talentMediaComment.push({
                                             count: mediaCounter,
@@ -123,16 +122,18 @@ var HighestCommentAnalysis = /** @class */ (function () {
                         this.talentMediaComment = this.talentMediaComment.sort(function (a, b) {
                             return b.count - a.count;
                         });
-                        console.log(this.talentMediaComment);
                         for (_d = 0, _e = this.talentMediaComment; _d < _e.length; _d++) {
                             talentMediaComment = _e[_d];
                             filtered = Object.assign({
                                 user: talentMediaComment.talent.user,
                                 displayName: talentMediaComment.talent.displayName,
+                                tapCount: talentMediaComment.talent.tapCount,
+                                aliasName: talentMediaComment.talent.stageName,
+                                dateJoined: talentMediaComment.talent.dateJoined,
                                 displayPhoto: talentMediaComment.talent.displayPhoto,
                                 shortDescription: talentMediaComment.talent.shortDescription || "",
                                 categories: talentMediaComment.talent.categories || [],
-                                reportType: interfaces_1.ReportType.HighestComment,
+                                reportType: interfaces_1.ReportType.highestcomment,
                                 userType: talentMediaComment.talent.userType
                             });
                             filteredCategories = filteredCategories.concat([filtered]);

@@ -1,6 +1,6 @@
 import { IVideo, IAudio, IImage, IMedia } from "../../app/models/interfaces";
 import MediaBusiness from "../../app/business/MediaBusiness";
-import { UserListViewModel } from "../../app/models/viewmodels";
+import { UserListViewModel, Talent } from "../../app/models/viewmodels";
 
 export interface ITalentPortfolio {
   medias: IMedia[];
@@ -8,7 +8,7 @@ export interface ITalentPortfolio {
 }
 export interface TalentMediaComment {
   count: number;
-  talent: UserListViewModel;
+  talent: Talent;
 }
 
 export class TalentPortfolio {

@@ -2,19 +2,17 @@ import mongoose from "mongoose";
 import { ITimeStamp } from "./Timestamp";
 import { IUser } from "./User";
 import { IAppSpec } from "./AppSpec";
-import { IMedia } from "./Media";
-import { CreatedContest } from "../viewmodels/UserViewModel";
 import { IUserType } from "./UserType";
 import { ICategory } from "./Category";
 
 export enum ReportType {
-  AllTalents = "AllTalents",
-  AllProfessionals = "AllProfessionals",
-  MostTap = "MostTap",
-  HighestComment = "HighestComment",
-  MostWatchedVideo = "MostWatchedVideo",
-  MostPlayedSong = "MostPlayedSong",
-  MostLikedPhoto = "MostLikedPhoto"
+  alltalents = "alltalents",
+  allprofessionals = "allprofessionals",
+  mosttap = "mosttap",
+  highestcomment = "highestcomment",
+  mostwatchedvideo = "mostwatchedvideo",
+  mostplayedsong = "mostplayedsong",
+  mostlikedphoto = "mostlikedphoto"
 }
 
 export interface IUserFilterCategory
@@ -26,6 +24,11 @@ export interface IUserFilterCategory
   displayPhoto: string;
   categories: ICategory["_id"][];
   shortDescription: string;
+  tapCount: number;
+  contestCount: number;
   reportType: ReportType;
   userType: IUserType["_id"];
+  createdAt: Date;
+  aliasName: string;
+  dateJoined: Date;
 }

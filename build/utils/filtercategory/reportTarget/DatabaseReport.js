@@ -49,19 +49,22 @@ var DatabaseReport = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
                         userFilterBusiness = new UserFilterCategoryBusiness_1.default();
-                        return [4 /*yield*/, userFilterBusiness.createMany(report)];
+                        return [4 /*yield*/, userFilterBusiness.deleteMany({ reportType: report[0].reportType })];
                     case 1:
                         _a.sent();
-                        return [3 /*break*/, 3];
+                        return [4 /*yield*/, userFilterBusiness.createMany(report)];
                     case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
                         err_1 = _a.sent();
                         throw new error_1.PlatformError({
                             code: 500,
                             message: err_1
                         });
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

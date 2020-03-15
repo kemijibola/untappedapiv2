@@ -19,8 +19,13 @@ const userFilterCategorySchema = new Schema({
   displayName: { type: String, required: true },
   categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
   shortDescription: { type: String, required: true },
+  tapCount: { type: Number, default: 0 },
+  contestCount: { type: Number, default: 0 },
   reportType: { type: ReportType, required: true },
-  userType: { type: String, required: true }
+  aliasName: { type: String, required: true },
+  userType: { type: String, required: true },
+  dateJoined: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
 export const UserFilterCategorySchema = mongooseConnection.model<

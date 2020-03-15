@@ -45,50 +45,141 @@ var ProfessionalPortfolio_1 = require("../../utils/filtercategory/ProfessionalPo
 var UserFilter = /** @class */ (function () {
     function UserFilter() {
         var _this = this;
-        this.fetchUsers = function (condition) { return __awaiter(_this, void 0, void 0, function () {
-            var users, userBusiness, profileBusiness, usersModel, _i, _a, x, userProfile, professionalSetUp, userContest, user;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+        this.fetchTalents = function (condition) { return __awaiter(_this, void 0, void 0, function () {
+            var userTypeBusiness, result, talents, users, profileBusiness, _i, talents_1, x, userProfile, user, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        condition.isEmailConfirmed = true;
-                        condition.isProfileCompleted = true;
-                        condition.status = interfaces_1.AccountStatus.ACTIVATED;
-                        users = [];
-                        userBusiness = new UserBusiness();
-                        profileBusiness = new ProfileBusiness();
-                        return [4 /*yield*/, userBusiness.fetch(condition)];
+                        _a.trys.push([0, 8, , 9]);
+                        userTypeBusiness = new UserTypeBusiness();
+                        return [4 /*yield*/, userTypeBusiness.findByCriteria({
+                                name: viewmodels_1.AppUsers.Talent
+                            })];
                     case 1:
-                        usersModel = _b.sent();
-                        if (!usersModel.data) return [3 /*break*/, 6];
-                        _i = 0, _a = usersModel.data;
-                        _b.label = 2;
+                        result = _a.sent();
+                        if (!result.data) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.fetchUsers({
+                                userType: result.data._id
+                            })];
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 6];
-                        x = _a[_i];
-                        return [4 /*yield*/, profileBusiness.findByUser(x._id)];
+                        talents = _a.sent();
+                        users = [];
+                        if (!(talents.length > 0)) return [3 /*break*/, 6];
+                        profileBusiness = new ProfileBusiness();
+                        _i = 0, talents_1 = talents;
+                        _a.label = 3;
                     case 3:
-                        userProfile = _b.sent();
-                        professionalSetUp = ProfessionalPortfolio_1.ProfessionalPortfolio.setUp(x._id);
-                        return [4 /*yield*/, professionalSetUp.fetchProfessionalContests()];
+                        if (!(_i < talents_1.length)) return [3 /*break*/, 6];
+                        x = talents_1[_i];
+                        return [4 /*yield*/, profileBusiness.findByUser(x._id)];
                     case 4:
-                        userContest = _b.sent();
+                        userProfile = _a.sent();
                         user = {
                             user: x._id,
                             userType: x.userType,
+                            stageName: userProfile.data ? userProfile.data.name : "",
                             displayPhoto: x.profileImagePath || "",
                             displayName: x.fullName,
                             categories: userProfile.data ? userProfile.data.categories : [],
                             tapCount: userProfile.data ? userProfile.data.tapCount : 0,
-                            shortDescription: userProfile.data ? userProfile.data.shortBio : "",
-                            createdAt: x.createdAt,
+                            shortDescription: userProfile.data
+                                ? userProfile.data.shortBio
+                                : "",
+                            dateJoined: x.createdAt
+                        };
+                        users = users.concat([user]);
+                        _a.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6:
+                        MatchData_1.generateTalentReport(users);
+                        _a.label = 7;
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 9];
+                    case 9: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.fetchProfessionals = function (condition) { return __awaiter(_this, void 0, void 0, function () {
+            var userTypeBusiness, result, professionals, users, profileBusiness, _i, professionals_1, x, userProfile, professionalSetUp, userContest, user, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 9, , 10]);
+                        userTypeBusiness = new UserTypeBusiness();
+                        return [4 /*yield*/, userTypeBusiness.findByCriteria({
+                                name: viewmodels_1.AppUsers.Professional
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        if (!result.data) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.fetchUsers({
+                                userType: result.data._id
+                            })];
+                    case 2:
+                        professionals = _a.sent();
+                        users = [];
+                        if (!(professionals.length > 0)) return [3 /*break*/, 7];
+                        profileBusiness = new ProfileBusiness();
+                        _i = 0, professionals_1 = professionals;
+                        _a.label = 3;
+                    case 3:
+                        if (!(_i < professionals_1.length)) return [3 /*break*/, 7];
+                        x = professionals_1[_i];
+                        return [4 /*yield*/, profileBusiness.findByUser(x._id)];
+                    case 4:
+                        userProfile = _a.sent();
+                        professionalSetUp = ProfessionalPortfolio_1.ProfessionalPortfolio.setUp(x._id);
+                        return [4 /*yield*/, professionalSetUp.fetchProfessionalContests()];
+                    case 5:
+                        userContest = _a.sent();
+                        user = {
+                            user: x._id,
+                            userType: x.userType,
+                            businessName: userProfile.data ? userProfile.data.name : "",
+                            displayPhoto: x.profileImagePath || "",
+                            displayName: x.fullName,
+                            categories: userProfile.data ? userProfile.data.categories : [],
+                            shortDescription: userProfile.data
+                                ? userProfile.data.shortBio
+                                : "",
+                            dateJoined: x.createdAt,
                             contestCount: userContest.length
                         };
                         users = users.concat([user]);
-                        _b.label = 5;
-                    case 5:
+                        _a.label = 6;
+                    case 6:
                         _i++;
-                        return [3 /*break*/, 2];
-                    case 6: return [2 /*return*/, users];
+                        return [3 /*break*/, 3];
+                    case 7:
+                        MatchData_1.generateProfessionalReport(users);
+                        _a.label = 8;
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [3 /*break*/, 10];
+                    case 10: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.fetchUsers = function (condition) { return __awaiter(_this, void 0, void 0, function () {
+            var userBusiness, usersModel;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        condition.isEmailConfirmed = true;
+                        condition.isProfileCompleted = true;
+                        condition.status = interfaces_1.AccountStatus.ACTIVATED;
+                        userBusiness = new UserBusiness();
+                        return [4 /*yield*/, userBusiness.fetch(condition)];
+                    case 1:
+                        usersModel = _a.sent();
+                        return [2 /*return*/, usersModel.data ? usersModel.data : []];
                 }
             });
         }); };
@@ -96,34 +187,26 @@ var UserFilter = /** @class */ (function () {
     UserFilter.initReport = function () {
         return new UserFilter();
     };
-    UserFilter.prototype.fetchAllTalents = function () {
+    UserFilter.prototype.generateReport = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var userTypeBusiness, talentsResult, talents, err_1;
+            var err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
-                        userTypeBusiness = new UserTypeBusiness();
-                        return [4 /*yield*/, userTypeBusiness.findByCriteria({
-                                name: viewmodels_1.AppUsers.Talent
-                            })];
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.fetchTalents({})];
                     case 1:
-                        talentsResult = _a.sent();
-                        if (!talentsResult.data) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.fetchUsers({
-                                userType: talentsResult.data._id
-                            })];
+                        _a.sent();
+                        return [4 /*yield*/, this.fetchProfessionals({})];
                     case 2:
-                        talents = _a.sent();
-                        MatchData_1.generateTalentReport(talents);
-                        _a.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
-                        err_1 = _a.sent();
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_3 = _a.sent();
                         // log error
-                        console.log(err_1);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        console.log(err_3);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

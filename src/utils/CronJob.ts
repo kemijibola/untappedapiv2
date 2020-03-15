@@ -4,7 +4,7 @@ import { UserFilter } from "./filtercategory/UserFilter";
 export const talentFilterJob = () => {
   cron.schedule("* * * * *", async () => {
     var report = UserFilter.initReport();
-    await report.fetchAllTalents();
+    await report.generateReport();
   });
 };
 

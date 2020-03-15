@@ -37,35 +37,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var HighestCommentAnalysis_1 = require("../analyzers/HighestCommentAnalysis");
 var DatabaseReport_1 = require("../reportTarget/DatabaseReport");
+var AllTalentsAnalysis_1 = require("../analyzers/AllTalentsAnalysis");
 var Summary = /** @class */ (function () {
     function Summary(analyzer, output) {
         this.analyzer = analyzer;
         this.output = output;
-        this.analyzed = [];
     }
     Summary.allTalentsAnalysisReport = function () {
+        return new Summary(new AllTalentsAnalysis_1.AllTalentsAnalysis(), new DatabaseReport_1.DatabaseReport());
+    };
+    Summary.highestCommentAnalysis = function () {
         return new Summary(new HighestCommentAnalysis_1.HighestCommentAnalysis(), new DatabaseReport_1.DatabaseReport());
     };
     Summary.prototype.buildReport = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.analyzer.run(data)];
+            var analyzed;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.analyzer.run(data)];
                     case 1:
-                        _a.analyzed = _b.sent();
+                        analyzed = _a.sent();
+                        return [4 /*yield*/, this.saveReport(analyzed)];
+                    case 2:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    Summary.prototype.saveReport = function () {
+    Summary.prototype.saveReport = function (report) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.output.save(this.analyzed)];
+                    case 0: return [4 /*yield*/, this.output.save(report)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

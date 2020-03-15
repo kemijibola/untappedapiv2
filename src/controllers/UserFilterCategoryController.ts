@@ -5,14 +5,24 @@ import { IRole, IUserFilterCategory } from "../app/models/interfaces";
 import TalentFilterCategoryBusiness = require("../app/business/UserFilterCategoryBusiness");
 import { requestValidator } from "../middlewares/ValidateRequest";
 
-@controller("/v1/talent-categories")
-export class TalentFilterCategoryController {
+@controller("/v1/user-categories")
+export class UserFilterCategoryController {
   @get("/")
   @use(requestValidator)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.query.reportType) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide reportType in query param"
+          })
+        );
+      }
       const talentFilterCategoryBusiness = new TalentFilterCategoryBusiness();
-      const result = await talentFilterCategoryBusiness.fetch({});
+      const result = await talentFilterCategoryBusiness.fetch({
+        reportType: req.query.reportType.toLowerCase()
+      });
       if (result.error) {
         return next(
           new PlatformError({

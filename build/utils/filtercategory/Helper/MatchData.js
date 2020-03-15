@@ -6,12 +6,11 @@ function generateTalentReport(data) {
     // const mostTapSummary = Summary.mostTapAnalysisReport();
     // mostTapSummary.buildAndProcessReport(data);
     // generate and save highest comment analysis
-    // const highestCommentSummary = Summary.highestCommentAnalysisReport();
-    // highestCommentSummary.buildAndProWcessReport(data);
+    var highestCommentSummary = Summary_1.Summary.highestCommentAnalysis();
+    highestCommentSummary.buildReport(data);
     // generate and save all talents videos
-    var allTalentsSummary = Summary_1.Summary.allTalentsAnalysisReport();
-    allTalentsSummary.buildReport(data);
-    allTalentsSummary.saveReport();
+    // const allTalentsSummary = Summary.allTalentsAnalysisReport();
+    // allTalentsSummary.buildReport(data);
 }
 exports.generateTalentReport = generateTalentReport;
 function generateProfessionalReport(data) {

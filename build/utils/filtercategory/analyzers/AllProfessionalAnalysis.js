@@ -52,10 +52,13 @@ var AllProfessionalAnalysis = /** @class */ (function () {
                     filtered = Object.assign({
                         user: user.user,
                         displayName: user.displayName,
+                        contestCount: user.contestCount,
+                        aliasName: user.businessName,
+                        dateJoined: user.dateJoined,
                         displayPhoto: user.displayPhoto,
                         shortDescription: user.shortDescription || "",
                         categories: user.categories || [],
-                        reportType: interfaces_1.ReportType.AllProfessionals,
+                        reportType: interfaces_1.ReportType.allprofessionals,
                         userType: user.userType
                     });
                     filteredCategories = filteredCategories.concat([filtered]);

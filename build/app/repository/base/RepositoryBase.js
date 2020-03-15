@@ -85,7 +85,7 @@ var RepositoryBase = /** @class */ (function () {
     RepositoryBase.prototype.delete = function (_id) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this._model.remove({ _id: _this.toObjectId(_id) }, function (err) {
+            _this._model.deleteOne({ _id: _this.toObjectId(_id) }, function (err) {
                 if (err)
                     reject(err);
                 else
@@ -147,6 +147,17 @@ var RepositoryBase = /** @class */ (function () {
     };
     RepositoryBase.prototype.toObjectId = function (_id) {
         return mongoose_1.default.Types.ObjectId.createFromHexString(_id);
+    };
+    RepositoryBase.prototype.deleteMany = function (criteria) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.deleteMany(criteria, function (error) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(true);
+            });
+        });
     };
     return RepositoryBase;
 }());

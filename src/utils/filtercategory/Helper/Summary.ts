@@ -20,18 +20,22 @@ export interface OutputTarget {
 }
 
 export class Summary {
-  private analyzed: IUserFilterCategory[] = [];
   constructor(public analyzer: Analyzer, public output: OutputTarget) {}
 
   static allTalentsAnalysisReport(): Summary {
+    return new Summary(new AllTalentsAnalysis(), new DatabaseReport());
+  }
+
+  static highestCommentAnalysis(): Summary {
     return new Summary(new HighestCommentAnalysis(), new DatabaseReport());
   }
 
   async buildReport(data: MatchData[]) {
-    this.analyzed = await this.analyzer.run(data);
+    const analyzed = await this.analyzer.run(data);
+    await this.saveReport(analyzed);
   }
 
-  async saveReport() {
-    await this.output.save(this.analyzed);
+  async saveReport(report: IUserFilterCategory[]) {
+    await this.output.save(report);
   }
 }

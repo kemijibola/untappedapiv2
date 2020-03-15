@@ -164,6 +164,19 @@ var UserFilterCategoryBusiness = /** @class */ (function () {
             });
         });
     };
+    UserFilterCategoryBusiness.prototype.deleteMany = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var deleted;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userFilterCategoryRepository.deleteMany(criteria)];
+                    case 1:
+                        deleted = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, deleted)];
+                }
+            });
+        });
+    };
     return UserFilterCategoryBusiness;
 }());
 Object.seal(UserFilterCategoryBusiness);

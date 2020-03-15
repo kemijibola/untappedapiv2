@@ -4,9 +4,10 @@ import {
   IUserFilterCategory
 } from "../../../app/models/interfaces";
 import { MatchData } from "../Helper/MatchData";
+import { Professional } from "../../../app/models/viewmodels";
 
 export class AllProfessionalAnalysis implements Analyzer {
-  async run(users: MatchData[]): Promise<IUserFilterCategory[]> {
+  async run(users: Professional[]): Promise<IUserFilterCategory[]> {
     var filteredCategories: IUserFilterCategory[] = [];
 
     users = users.sort((a, b) => {
@@ -16,10 +17,13 @@ export class AllProfessionalAnalysis implements Analyzer {
       const filtered: IUserFilterCategory = Object.assign({
         user: user.user,
         displayName: user.displayName,
+        contestCount: user.contestCount,
+        aliasName: user.businessName,
+        dateJoined: user.dateJoined,
         displayPhoto: user.displayPhoto,
         shortDescription: user.shortDescription || "",
         categories: user.categories || [],
-        reportType: ReportType.AllProfessionals,
+        reportType: ReportType.allprofessionals,
         userType: user.userType
       });
       filteredCategories = [...filteredCategories, filtered];

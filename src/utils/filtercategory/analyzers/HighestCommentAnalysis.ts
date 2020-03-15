@@ -13,6 +13,7 @@ import { TalentMediaComment, ITalentPortfolio } from "../TalentPortfolio";
 import { TalentPortfolio } from "../TalentPortfolio";
 import { ObjectKeyString } from "../../lib/Helper";
 import { FORMERR } from "dns";
+import { Talent } from "../../../app/models/viewmodels";
 
 interface TalentMedia {
   user: string;
@@ -21,7 +22,7 @@ interface TalentMedia {
 export class HighestCommentAnalysis implements Analyzer {
   talentPortfolio: ITalentPortfolio[] = [];
   talentMediaComment: TalentMediaComment[] = [];
-  async run(users: MatchData[]): Promise<IUserFilterCategory[]> {
+  async run(users: Talent[]): Promise<IUserFilterCategory[]> {
     var filteredCategories: IUserFilterCategory[] = [];
 
     let talentMediaCommentMap: any = {};
@@ -42,7 +43,6 @@ export class HighestCommentAnalysis implements Analyzer {
         const mediaCount = mediaComment.length > 0 ? mediaComment.length : 0;
         mediaCounter = mediaCounter + mediaCount;
       }
-      // user key to fetch user from users and push to this.talentMediaComment
 
       var talent = users.filter(x => x.user == key)[0];
       this.talentMediaComment.push({
@@ -55,17 +55,20 @@ export class HighestCommentAnalysis implements Analyzer {
       return b.count - a.count;
     });
 
-    console.log(this.talentMediaComment);
     for (let talentMediaComment of this.talentMediaComment) {
       const filtered: IUserFilterCategory = Object.assign({
         user: talentMediaComment.talent.user,
         displayName: talentMediaComment.talent.displayName,
+        tapCount: talentMediaComment.talent.tapCount,
+        aliasName: talentMediaComment.talent.stageName,
+        dateJoined: talentMediaComment.talent.dateJoined,
         displayPhoto: talentMediaComment.talent.displayPhoto,
         shortDescription: talentMediaComment.talent.shortDescription || "",
         categories: talentMediaComment.talent.categories || [],
-        reportType: ReportType.HighestComment,
+        reportType: ReportType.highestcomment,
         userType: talentMediaComment.talent.userType
       });
+
       filteredCategories = [...filteredCategories, filtered];
     }
     return filteredCategories;

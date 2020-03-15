@@ -52,7 +52,7 @@ exports.talentFilterJob = function () {
             switch (_a.label) {
                 case 0:
                     report = UserFilter_1.UserFilter.initReport();
-                    return [4 /*yield*/, report.fetchAllTalents()];
+                    return [4 /*yield*/, report.generateReport()];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

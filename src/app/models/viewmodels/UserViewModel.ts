@@ -4,7 +4,8 @@ import {
   IUser,
   AccountStatus,
   IUserType,
-  ICategory
+  ICategory,
+  ReportType
 } from "../interfaces";
 
 export interface UserViewModel {
@@ -25,21 +26,22 @@ export interface UserViewModel {
   createdAt: Date;
 }
 
-export interface Talent extends UserViewModel {
-  location: string;
-  stageName: string;
+export interface Talent extends UserListViewModel {
+  // location: string;
+  stageName?: string;
   tapCount: number;
-  audios: IMedia[];
-  videos: IMedia[];
-  images: IMedia[];
-  generalUploads: IMedia[];
+  // audios: IMedia[];
+  // videos: IMedia[];
+  // images: IMedia[];
+  // generalUploads: IMedia[];
 }
 
 export interface Professional extends UserListViewModel {
-  location: string;
-  businessName: string;
-  bannerPhoto: string;
-  contests: CreatedContest[];
+  // location: string;
+  businessName?: string;
+  contestCount: number;
+  // bannerPhoto: string;
+  // contests: CreatedContest[];
 }
 
 export interface UserListViewModel {
@@ -48,10 +50,8 @@ export interface UserListViewModel {
   displayPhoto: string;
   categories?: ICategory["_id"][];
   displayName: string;
-  tapCount: number;
   shortDescription?: string;
-  createdAt: Date;
-  contestCount: number;
+  dateJoined?: Date;
 }
 
 export enum AppUsers {
@@ -70,8 +70,8 @@ export interface CreatedContest {
 }
 
 export interface UserListRequest {
-  userType: string;
-  isEmailConfirmed: boolean;
-  isProfileCompleted: boolean;
-  status: AccountStatus;
+  userType?: string;
+  isEmailConfirmed?: boolean;
+  isProfileCompleted?: boolean;
+  status?: AccountStatus;
 }

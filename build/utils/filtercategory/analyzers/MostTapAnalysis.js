@@ -52,10 +52,13 @@ var MostTapAnalysis = /** @class */ (function () {
                     filtered = Object.assign({
                         user: user.user,
                         displayName: user.displayName,
-                        displayPhoto: user.displayPhoto || "hello",
-                        shortDescription: user.shortDescription || "",
+                        tapCount: user.tapCount,
+                        aliasName: user.stageName,
+                        dateJoined: user.dateJoined,
+                        displayPhoto: user.displayPhoto,
+                        shortDescription: user.shortDescription,
                         categories: user.categories || [],
-                        reportType: interfaces_1.ReportType.MostTap,
+                        reportType: interfaces_1.ReportType.mosttap,
                         userType: user.userType
                     });
                     filteredCategories = filteredCategories.concat([filtered]);

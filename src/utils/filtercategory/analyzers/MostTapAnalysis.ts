@@ -4,9 +4,10 @@ import {
   IUserFilterCategory
 } from "../../../app/models/interfaces";
 import { MatchData } from "../Helper/MatchData";
+import { Talent } from "../../../app/models/viewmodels";
 
 export class MostTapAnalysis implements Analyzer {
-  async run(users: MatchData[]): Promise<IUserFilterCategory[]> {
+  async run(users: Talent[]): Promise<IUserFilterCategory[]> {
     // console.log("most tap", users);
     var filteredCategories: IUserFilterCategory[] = [];
 
@@ -17,10 +18,13 @@ export class MostTapAnalysis implements Analyzer {
       const filtered: IUserFilterCategory = Object.assign({
         user: user.user,
         displayName: user.displayName,
-        displayPhoto: user.displayPhoto || "hello",
-        shortDescription: user.shortDescription || "",
+        tapCount: user.tapCount,
+        aliasName: user.stageName,
+        dateJoined: user.dateJoined,
+        displayPhoto: user.displayPhoto,
+        shortDescription: user.shortDescription,
         categories: user.categories || [],
-        reportType: ReportType.MostTap,
+        reportType: ReportType.mosttap,
         userType: user.userType
       });
       filteredCategories = [...filteredCategories, filtered];

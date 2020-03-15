@@ -46,17 +46,20 @@ var AllTalentsAnalysis = /** @class */ (function () {
             return __generator(this, function (_a) {
                 filteredCategories = [];
                 users = users.sort(function (a, b) {
-                    return _this.getTime(a.createdAt) - _this.getTime(b.createdAt);
+                    return _this.getTime(a.dateJoined) - _this.getTime(b.dateJoined);
                 });
                 for (_i = 0, users_1 = users; _i < users_1.length; _i++) {
                     user = users_1[_i];
                     filtered = Object.assign({
                         user: user.user,
                         displayName: user.displayName,
+                        tapCount: user.tapCount,
+                        aliasName: user.stageName,
+                        dateJoined: user.dateJoined,
                         displayPhoto: user.displayPhoto || "",
                         shortDescription: user.shortDescription || "",
                         categories: user.categories || [],
-                        reportType: interfaces_1.ReportType.AllTalents,
+                        reportType: interfaces_1.ReportType.alltalents,
                         userType: user.userType
                     });
                     filteredCategories = filteredCategories.concat([filtered]);

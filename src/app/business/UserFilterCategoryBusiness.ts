@@ -94,6 +94,13 @@ class UserFilterCategoryBusiness implements IUserFilterCategoryBusiness {
     const isDeleted = await this._userFilterCategoryRepository.delete(id);
     return Result.ok<boolean>(200, isDeleted);
   }
+
+  async deleteMany(criteria: any): Promise<Result<any>> {
+    const deleted = await this._userFilterCategoryRepository.deleteMany(
+      criteria
+    );
+    return Result.ok<boolean>(200, deleted);
+  }
 }
 
 Object.seal(UserFilterCategoryBusiness);

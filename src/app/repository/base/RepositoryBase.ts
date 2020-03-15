@@ -84,7 +84,7 @@ class RepositoryBase<T extends mongoose.Document>
 
   delete(_id: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this._model.remove({ _id: this.toObjectId(_id) }, err => {
+      this._model.deleteOne({ _id: this.toObjectId(_id) }, err => {
         if (err) reject(err);
         else resolve(true);
       });
@@ -134,6 +134,15 @@ class RepositoryBase<T extends mongoose.Document>
 
   private toObjectId(_id: string): mongoose.Types.ObjectId {
     return mongoose.Types.ObjectId.createFromHexString(_id);
+  }
+
+  deleteMany(criteria: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model.deleteMany(criteria, (error: any) => {
+        if (error) reject(error);
+        else resolve(true);
+      });
+    });
   }
 }
 
