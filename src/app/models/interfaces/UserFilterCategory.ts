@@ -18,6 +18,7 @@ export enum ReportType {
 
 export interface CategoryTypeWithCategory {
   categoryTypeId: ICategoryType["_id"];
+  categoryTypeName: string;
   category: ICategory["_id"];
 }
 export interface IUserFilterCategory

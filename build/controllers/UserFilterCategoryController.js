@@ -53,21 +53,24 @@ var UserFilterCategoryController = /** @class */ (function () {
     }
     UserFilterCategoryController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var talentFilterCategoryBusiness, result, err_1;
+            var condition, userFilterCategoryBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        condition = {};
                         if (!req.query.reportType) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
                                     message: "Please provide reportType in query param"
                                 }))];
                         }
-                        talentFilterCategoryBusiness = new TalentFilterCategoryBusiness();
-                        return [4 /*yield*/, talentFilterCategoryBusiness.fetch({
-                                reportType: req.query.reportType.toLowerCase()
-                            })];
+                        if (req.query.userType) {
+                            condition.userType = req.query.userType;
+                        }
+                        condition.reportType = req.query.reportType.toLowerCase();
+                        userFilterCategoryBusiness = new TalentFilterCategoryBusiness();
+                        return [4 /*yield*/, userFilterCategoryBusiness.fetch(condition)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {

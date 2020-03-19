@@ -12,6 +12,7 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 // });
 var categoryTypeWithCategorySchema = new mongoose_1.Schema({
     categoryTypeId: { type: String },
+    categoryTypeName: { type: String },
     category: { type: String }
 });
 var userFilterCategorySchema = new mongoose_1.Schema({

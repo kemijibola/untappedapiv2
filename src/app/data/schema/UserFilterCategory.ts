@@ -15,6 +15,7 @@ const mongooseConnection = MongodataAccess.mongooseConnection;
 
 const categoryTypeWithCategorySchema = new Schema({
   categoryTypeId: { type: String },
+  categoryTypeName: { type: String },
   category: { type: String }
 });
 const userFilterCategorySchema = new Schema({

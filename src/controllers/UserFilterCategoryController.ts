@@ -4,6 +4,7 @@ import { get, controller, requestValidators, post, use } from "../decorators";
 import { IRole, IUserFilterCategory } from "../app/models/interfaces";
 import TalentFilterCategoryBusiness = require("../app/business/UserFilterCategoryBusiness");
 import { requestValidator } from "../middlewares/ValidateRequest";
+import { ObjectKeyString } from "../utils/lib";
 
 @controller("/v1/user-categories")
 export class UserFilterCategoryController {
@@ -11,6 +12,7 @@ export class UserFilterCategoryController {
   @use(requestValidator)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
+      let condition: ObjectKeyString = {};
       if (!req.query.reportType) {
         return next(
           new PlatformError({
@@ -19,10 +21,15 @@ export class UserFilterCategoryController {
           })
         );
       }
-      const talentFilterCategoryBusiness = new TalentFilterCategoryBusiness();
-      const result = await talentFilterCategoryBusiness.fetch({
-        reportType: req.query.reportType.toLowerCase()
-      });
+
+      if (req.query.userType) {
+        condition.userType = req.query.userType;
+      }
+
+      condition.reportType = req.query.reportType.toLowerCase();
+      const userFilterCategoryBusiness = new TalentFilterCategoryBusiness();
+      const result = await userFilterCategoryBusiness.fetch(condition);
+
       if (result.error) {
         return next(
           new PlatformError({

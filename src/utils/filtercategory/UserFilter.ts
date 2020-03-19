@@ -90,6 +90,7 @@ export class UserFilter {
       if (found.data)
         transformed.push({
           categoryTypeId: found.data._id,
+          categoryTypeName: found.data.name,
           category: found.data.category
         });
     }
