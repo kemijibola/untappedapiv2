@@ -1,4 +1,8 @@
-import { IMediaItem, MediaPreview } from "./../models/interfaces/Media";
+import {
+  IMediaItem,
+  MediaPreview,
+  TalentPortfolioPreview
+} from "./../models/interfaces/Media";
 import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
 import { ApprovalOperations, IApproval, IMedia } from "../models/interfaces";
@@ -16,8 +20,44 @@ class MediaBusiness implements IMediaBusiness {
 
   // TODO:: ensure soft delete on all media items: Audio, Image and Video
   async fetch(condition: any): Promise<Result<IMedia[]>> {
-    const medias = await this._mediaRepository.fetch(condition);
+    const medias: IMedia[] = await this._mediaRepository.fetch(condition);
+    if (medias) {
+      medias.forEach(x => {
+        return x.items.filter(y => !y.isDeleted);
+      });
+    }
     return Result.ok<IMedia[]>(200, medias);
+  }
+
+  async fetchTalentPortfolioPreview(
+    condition: any
+  ): Promise<Result<TalentPortfolioPreview[]>> {
+    const portfolioPreviews = await this._mediaRepository.fetch(condition);
+    let modified: TalentPortfolioPreview[] = [];
+    if (portfolioPreviews) {
+      modified = portfolioPreviews.reduce(
+        (theMap: TalentPortfolioPreview[], theItem: IMedia) => {
+          theMap.push({
+            _id: theItem._id,
+            mediaType: theItem.mediaType,
+            talent: theItem.user,
+            uploadType: theItem.uploadType,
+            defaultImageKey: theItem.items[0].path,
+            mediaTitle: theItem.title,
+            mediaDescription: theItem.shortDescription,
+            items: [...theItem.items.filter(x => !x.isDeleted)],
+            itemsCount: theItem.items.filter(x => !x.isDeleted)
+              ? theItem.items.filter(x => !x.isDeleted).length
+              : 0,
+            dateCreated: theItem.createdAt
+          });
+          return theMap;
+        },
+        []
+      );
+    }
+    console.log(modified);
+    return Result.ok<TalentPortfolioPreview[]>(200, modified);
   }
 
   async fetchPreview(condition: any): Promise<Result<MediaPreview[]>> {

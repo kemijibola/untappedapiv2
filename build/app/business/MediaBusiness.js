@@ -52,7 +52,46 @@ var MediaBusiness = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
                     case 1:
                         medias = _a.sent();
+                        if (medias) {
+                            medias.forEach(function (x) {
+                                return x.items.filter(function (y) { return !y.isDeleted; });
+                            });
+                        }
                         return [2 /*return*/, Result_1.Result.ok(200, medias)];
+                }
+            });
+        });
+    };
+    MediaBusiness.prototype.fetchTalentPortfolioPreview = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var portfolioPreviews, modified;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 1:
+                        portfolioPreviews = _a.sent();
+                        modified = [];
+                        if (portfolioPreviews) {
+                            modified = portfolioPreviews.reduce(function (theMap, theItem) {
+                                theMap.push({
+                                    _id: theItem._id,
+                                    mediaType: theItem.mediaType,
+                                    talent: theItem.user,
+                                    uploadType: theItem.uploadType,
+                                    defaultImageKey: theItem.items[0].path,
+                                    mediaTitle: theItem.title,
+                                    mediaDescription: theItem.shortDescription,
+                                    items: theItem.items.filter(function (x) { return !x.isDeleted; }).slice(),
+                                    itemsCount: theItem.items.filter(function (x) { return !x.isDeleted; })
+                                        ? theItem.items.filter(function (x) { return !x.isDeleted; }).length
+                                        : 0,
+                                    dateCreated: theItem.createdAt
+                                });
+                                return theMap;
+                            }, []);
+                        }
+                        console.log(modified);
+                        return [2 /*return*/, Result_1.Result.ok(200, modified)];
                 }
             });
         });

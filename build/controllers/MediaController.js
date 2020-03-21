@@ -243,9 +243,82 @@ var MediaController = /** @class */ (function () {
         });
     };
     // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
-    MediaController.prototype.fetchUserList = function (req, res, next) {
+    MediaController.prototype.fetchPreviewList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (!req.query.mediaType) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide mediaType in query param"
+                                }))];
+                        }
+                        if (!req.query.uploadType) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide uploadType in query param"
+                                }))];
+                        }
+                        uploadType = req.query.uploadType.toLowerCase();
+                        systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
+                        if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Invalid uploadType"
+                                }))];
+                        }
+                        mediaType = req.query.mediaType.toLowerCase();
+                        systemMediaTypes = Object.values(interfaces_1.MediaType);
+                        if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Invalid mediaType"
+                                }))];
+                        }
+                        condition = {
+                            isApproved: true,
+                            isDeleted: false
+                        };
+                        if (uploadType !== "all") {
+                            condition.uploadType = uploadType;
+                        }
+                        if (mediaType !== "all") {
+                            condition.mediaType = mediaType;
+                        }
+                        condition.user = req.params.id;
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.fetchTalentPortfolioPreview(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: "Error occured, " + result.error
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data
+                            })];
+                    case 2:
+                        err_4 = _a.sent();
+                        console.log(err_4);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later"
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
+    MediaController.prototype.fetchUserList = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -299,18 +372,13 @@ var MediaController = /** @class */ (function () {
                                     message: "Error occured, " + result.error
                                 }))];
                         }
-                        if (result.data) {
-                            result.data.forEach(function (x) {
-                                x.items.filter(function (y) { return !y.isDeleted; });
-                            });
-                        }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
                                 data: result.data
                             })];
                     case 2:
-                        err_4 = _a.sent();
-                        console.log(err_4);
+                        err_5 = _a.sent();
+                        console.log(err_5);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later"
@@ -323,7 +391,7 @@ var MediaController = /** @class */ (function () {
     // SAMPLE GET ALL LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
     MediaController.prototype.fetchList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_5;
+            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -373,20 +441,15 @@ var MediaController = /** @class */ (function () {
                                     message: "Error occured, " + result.error
                                 }))];
                         }
-                        if (result.data) {
-                            result.data.forEach(function (x) {
-                                x.items.filter(function (y) { return !y.isDeleted; });
-                            });
-                        }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
                                 data: result.data
                             })];
                     case 2:
-                        err_5 = _a.sent();
+                        err_6 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_5
+                                message: "Internal Server error occured." + err_6
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -396,7 +459,7 @@ var MediaController = /** @class */ (function () {
     // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
     MediaController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, result, err_6;
+            var mediaBusiness, result, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -419,10 +482,10 @@ var MediaController = /** @class */ (function () {
                                 data: result.data
                             })];
                     case 2:
-                        err_6 = _a.sent();
+                        err_7 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_6
+                                message: "Internal Server error occured." + err_7
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -431,7 +494,7 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.deleteMedia = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, media, result, err_7;
+            var mediaBusiness, media, result, err_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -468,10 +531,10 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        err_7 = _a.sent();
+                        err_8 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_7
+                                message: "Internal Server error occured." + err_8
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -480,7 +543,7 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.deleteMediaItem = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, media, mediaUser, currentUser, result, err_8;
+            var mediaBusiness, media, mediaUser, currentUser, result, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -525,11 +588,11 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        err_8 = _a.sent();
-                        console.log(err_8);
+                        err_9 = _a.sent();
+                        console.log(err_9);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_8
+                                message: "Internal Server error occured." + err_9
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -562,6 +625,13 @@ var MediaController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "fetchUserPreviewList", null);
+    __decorate([
+        decorators_1.get("/talent/:id/portfolio"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "fetchPreviewList", null);
     __decorate([
         decorators_1.get("/me"),
         decorators_1.use(ValidateRequest_1.requestValidator),
