@@ -37,18 +37,17 @@ class MediaBusiness implements IMediaBusiness {
     if (portfolioPreviews) {
       modified = portfolioPreviews.reduce(
         (theMap: TalentPortfolioPreview[], theItem: IMedia) => {
+          const items = [...theItem.items.filter(x => !x.isDeleted)];
           theMap.push({
             _id: theItem._id,
             mediaType: theItem.mediaType,
             talent: theItem.user,
             uploadType: theItem.uploadType,
-            defaultImageKey: theItem.items[0].path,
+            defaultImageKey: items.length > 0 ? items[0].path : "",
             mediaTitle: theItem.title,
             mediaDescription: theItem.shortDescription,
-            items: [...theItem.items.filter(x => !x.isDeleted)],
-            itemsCount: theItem.items.filter(x => !x.isDeleted)
-              ? theItem.items.filter(x => !x.isDeleted).length
-              : 0,
+            items: items,
+            itemsCount: items.length,
             dateCreated: theItem.createdAt
           });
           return theMap;
@@ -66,12 +65,13 @@ class MediaBusiness implements IMediaBusiness {
     if (mediaPreviews) {
       modified = mediaPreviews.reduce(
         (theMap: MediaPreview[], theItem: IMedia) => {
+          const items = [...theItem.items.filter(x => !x.isDeleted)];
           theMap.push({
             _id: theItem._id,
             title: theItem.title,
             mediaType: theItem.mediaType,
             uploadType: theItem.uploadType,
-            defaultMediaPath: theItem.items[0].path,
+            defaultMediaPath: items.length > 0 ? items[0].path : "",
             shortDescription: theItem.shortDescription,
             activityCount: theItem.activityCount
           });

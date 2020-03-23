@@ -73,18 +73,17 @@ var MediaBusiness = /** @class */ (function () {
                         modified = [];
                         if (portfolioPreviews) {
                             modified = portfolioPreviews.reduce(function (theMap, theItem) {
+                                var items = theItem.items.filter(function (x) { return !x.isDeleted; }).slice();
                                 theMap.push({
                                     _id: theItem._id,
                                     mediaType: theItem.mediaType,
                                     talent: theItem.user,
                                     uploadType: theItem.uploadType,
-                                    defaultImageKey: theItem.items[0].path,
+                                    defaultImageKey: items.length > 0 ? items[0].path : "",
                                     mediaTitle: theItem.title,
                                     mediaDescription: theItem.shortDescription,
-                                    items: theItem.items.filter(function (x) { return !x.isDeleted; }).slice(),
-                                    itemsCount: theItem.items.filter(function (x) { return !x.isDeleted; })
-                                        ? theItem.items.filter(function (x) { return !x.isDeleted; }).length
-                                        : 0,
+                                    items: items,
+                                    itemsCount: items.length,
                                     dateCreated: theItem.createdAt
                                 });
                                 return theMap;
@@ -107,12 +106,13 @@ var MediaBusiness = /** @class */ (function () {
                         modified = [];
                         if (mediaPreviews) {
                             modified = mediaPreviews.reduce(function (theMap, theItem) {
+                                var items = theItem.items.filter(function (x) { return !x.isDeleted; }).slice();
                                 theMap.push({
                                     _id: theItem._id,
                                     title: theItem.title,
                                     mediaType: theItem.mediaType,
                                     uploadType: theItem.uploadType,
-                                    defaultMediaPath: theItem.items[0].path,
+                                    defaultMediaPath: items.length > 0 ? items[0].path : "",
                                     shortDescription: theItem.shortDescription,
                                     activityCount: theItem.activityCount
                                 });
