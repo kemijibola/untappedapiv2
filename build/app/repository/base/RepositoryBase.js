@@ -18,6 +18,17 @@ var RepositoryBase = /** @class */ (function () {
             });
         });
     };
+    RepositoryBase.prototype.createCommentWithUser = function (item) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model.create(item, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     RepositoryBase.prototype.populateFetch = function (path, condition) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -29,6 +40,21 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .populate(path, "_id name")
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
+        });
+    };
+    RepositoryBase.prototype.fetchWithUserDetails = function (condition) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .find(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            })
+                .populate("user", "_id fullName profileImagePath")
                 // .cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();
         });

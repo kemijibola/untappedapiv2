@@ -55,7 +55,6 @@ class MediaBusiness implements IMediaBusiness {
         []
       );
     }
-    console.log(modified);
     return Result.ok<TalentPortfolioPreview[]>(200, modified);
   }
 

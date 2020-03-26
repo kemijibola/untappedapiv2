@@ -89,7 +89,6 @@ var MediaBusiness = /** @class */ (function () {
                                 return theMap;
                             }, []);
                         }
-                        console.log(modified);
                         return [2 /*return*/, Result_1.Result.ok(200, modified)];
                 }
             });

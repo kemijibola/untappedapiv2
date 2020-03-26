@@ -19,6 +19,15 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  createCommentWithUser(item: T): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this._model.create(item, (error: any, result: any) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+    });
+  }
+
   populateFetch(path: string, condition: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model
@@ -27,6 +36,19 @@ class RepositoryBase<T extends mongoose.Document>
           else resolve(result);
         })
         .populate(path, "_id name")
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
+  fetchWithUserDetails(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate("user", "_id fullName profileImagePath")
         // .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
