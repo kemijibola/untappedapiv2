@@ -1,4 +1,4 @@
-import { controller, post, requestValidators, use, get } from "../decorators";
+import { controller, post, requestValidators, use, get, put } from "../decorators";
 import { Request, Response, NextFunction } from "express";
 import { IComment, IReply } from "../app/models/interfaces";
 import CommentBusiness = require("../app/business/CommentBusiness");
@@ -42,7 +42,7 @@ export class CommentController {
     }
   }
 
-  @post("/:id/reply")
+  @put("/:id/reply")
   @use(requestValidator)
   @requestValidators("reply")
   async postReply(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -88,7 +88,9 @@ export class CommentController {
     }
   }
 
-  @post("/:id/like")
+  // http://127.0.0.1:8900/v1/comments/5e7cc6214002a142f8a92ce3/like
+
+  @put("/:id/like")
   @use(requestValidator)
   async postCommentLike(
     req: RequestWithUser,

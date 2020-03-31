@@ -133,6 +133,7 @@ var CommentController = /** @class */ (function () {
             });
         });
     };
+    // http://127.0.0.1:8900/v1/comments/5e7cc6214002a142f8a92ce3/like
     CommentController.prototype.postCommentLike = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var commentBusiness, comment, result, err_3;
@@ -222,7 +223,7 @@ var CommentController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CommentController.prototype, "create", null);
     __decorate([
-        decorators_1.post("/:id/reply"),
+        decorators_1.put("/:id/reply"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.requestValidators("reply"),
         __metadata("design:type", Function),
@@ -230,7 +231,7 @@ var CommentController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CommentController.prototype, "postReply", null);
     __decorate([
-        decorators_1.post("/:id/like"),
+        decorators_1.put("/:id/like"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
