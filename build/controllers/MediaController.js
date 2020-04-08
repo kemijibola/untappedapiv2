@@ -76,7 +76,7 @@ var MediaController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         req.body.uploadType = uploadType;
@@ -90,19 +90,19 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         console.log(err_1);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -119,7 +119,7 @@ var MediaController = /** @class */ (function () {
                         if (req.body.items.length < 1) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide at least 1 media to upload in items"
+                                    message: "Please provide at least 1 media to upload in items",
                                 }))];
                         }
                         uploadType = req.body.items.length > 1 ? "multiple" : "single";
@@ -128,12 +128,12 @@ var MediaController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         modifiedItems = req.body.items.reduce(function (theMap, theItem) {
                             var item = {
-                                path: theItem.path
+                                path: theItem.path,
                             };
                             theMap = theMap.concat([item]);
                             return theMap;
@@ -150,19 +150,19 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_2 = _a.sent();
                         //       console.log(err);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -180,13 +180,13 @@ var MediaController = /** @class */ (function () {
                         if (!req.query.mediaType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide mediaType in query param"
+                                    message: "Please provide mediaType in query param",
                                 }))];
                         }
                         if (!req.query.uploadType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide uploadType in query param"
+                                    message: "Please provide uploadType in query param",
                                 }))];
                         }
                         uploadType = req.query.uploadType.toLowerCase();
@@ -194,7 +194,7 @@ var MediaController = /** @class */ (function () {
                         if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid uploadType"
+                                    message: "Invalid uploadType",
                                 }))];
                         }
                         mediaType = req.query.mediaType.toLowerCase();
@@ -202,12 +202,12 @@ var MediaController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         condition = {
                             isApproved: true,
-                            isDeleted: false
+                            isDeleted: false,
                         };
                         if (uploadType !== "all") {
                             condition.uploadType = uploadType;
@@ -223,19 +223,19 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured, " + result.error
+                                    message: "Error occured, " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_3 = _a.sent();
                         console.log(err_3);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later"
+                                message: "Internal Server error occured. Please try again later",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -253,13 +253,13 @@ var MediaController = /** @class */ (function () {
                         if (!req.query.mediaType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide mediaType in query param"
+                                    message: "Please provide mediaType in query param",
                                 }))];
                         }
                         if (!req.query.uploadType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide uploadType in query param"
+                                    message: "Please provide uploadType in query param",
                                 }))];
                         }
                         uploadType = req.query.uploadType.toLowerCase();
@@ -267,7 +267,7 @@ var MediaController = /** @class */ (function () {
                         if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid uploadType"
+                                    message: "Invalid uploadType",
                                 }))];
                         }
                         mediaType = req.query.mediaType.toLowerCase();
@@ -275,12 +275,12 @@ var MediaController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         condition = {
                             isApproved: true,
-                            isDeleted: false
+                            isDeleted: false,
                         };
                         if (uploadType !== "all") {
                             condition.uploadType = uploadType;
@@ -296,19 +296,19 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured, " + result.error
+                                    message: "Error occured, " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_4 = _a.sent();
                         console.log(err_4);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later"
+                                message: "Internal Server error occured. Please try again later",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -326,13 +326,13 @@ var MediaController = /** @class */ (function () {
                         if (!req.query.mediaType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide mediaType in query param"
+                                    message: "Please provide mediaType in query param",
                                 }))];
                         }
                         if (!req.query.uploadType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide uploadType in query param"
+                                    message: "Please provide uploadType in query param",
                                 }))];
                         }
                         uploadType = req.query.uploadType.toLowerCase();
@@ -340,7 +340,7 @@ var MediaController = /** @class */ (function () {
                         if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid uploadType"
+                                    message: "Invalid uploadType",
                                 }))];
                         }
                         mediaType = req.query.mediaType.toLowerCase();
@@ -348,12 +348,12 @@ var MediaController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         condition = {
                             isApproved: true,
-                            isDeleted: false
+                            isDeleted: false,
                         };
                         if (uploadType !== "all") {
                             condition.uploadType = uploadType;
@@ -369,19 +369,19 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured, " + result.error
+                                    message: "Error occured, " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_5 = _a.sent();
                         console.log(err_5);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later"
+                                message: "Internal Server error occured. Please try again later",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -399,13 +399,13 @@ var MediaController = /** @class */ (function () {
                         if (!req.query.mediaType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide mediaType in query param"
+                                    message: "Please provide mediaType in query param",
                                 }))];
                         }
                         if (!req.query.uploadType) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide uploadType in query param"
+                                    message: "Please provide uploadType in query param",
                                 }))];
                         }
                         uploadType = req.query.uploadType.toLowerCase();
@@ -413,7 +413,7 @@ var MediaController = /** @class */ (function () {
                         if (!systemUploadTypes.includes(uploadType)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid uploadType"
+                                    message: "Invalid uploadType",
                                 }))];
                         }
                         mediaType = req.query.mediaType.toLowerCase();
@@ -421,7 +421,7 @@ var MediaController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         condition = {};
@@ -438,18 +438,18 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured, " + result.error
+                                    message: "Error occured, " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_6 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_6
+                                message: "Internal Server error occured." + err_6,
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -471,7 +471,7 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         if (result.data) {
@@ -479,13 +479,13 @@ var MediaController = /** @class */ (function () {
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_7 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_7
+                                message: "Internal Server error occured." + err_7,
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -506,14 +506,15 @@ var MediaController = /** @class */ (function () {
                         if (media.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: media.responseCode,
-                                    message: media.error
+                                    message: media.error,
                                 }))];
                         }
                         if (!media.data) return [3 /*break*/, 3];
-                        if (media.data._id !== req.user) {
+                        console.log(req.user);
+                        if (media.data.user != req.user) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 403,
-                                    message: "You are not authorized to perform this request."
+                                    message: "You are not authorized to perform this request.",
                                 }))];
                         }
                         return [4 /*yield*/, mediaBusiness.delete(media.data._id)];
@@ -522,19 +523,19 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         err_8 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_8
+                                message: "Internal Server error occured." + err_8,
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -555,13 +556,13 @@ var MediaController = /** @class */ (function () {
                         if (media.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: media.responseCode,
-                                    message: media.error
+                                    message: media.error,
                                 }))];
                         }
                         if (media.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: media.responseCode,
-                                    message: media.error
+                                    message: media.error,
                                 }))];
                         }
                         if (!media.data) return [3 /*break*/, 3];
@@ -570,7 +571,7 @@ var MediaController = /** @class */ (function () {
                         if (mediaUser != currentUser) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 403,
-                                    message: "You are not authorized to perform this request."
+                                    message: "You are not authorized to perform this request.",
                                 }))];
                         }
                         return [4 /*yield*/, mediaBusiness.deleteMediaItem(media.data._id, req.params.itemId)];
@@ -579,12 +580,12 @@ var MediaController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
@@ -592,7 +593,7 @@ var MediaController = /** @class */ (function () {
                         console.log(err_9);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_9
+                                message: "Internal Server error occured." + err_9,
                             }))];
                     case 5: return [2 /*return*/];
                 }

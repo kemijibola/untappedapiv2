@@ -6,7 +6,7 @@ import {
   get,
   use,
   put,
-  del
+  del,
 } from "../decorators";
 import MediaBusiness = require("../app/business/MediaBusiness");
 import {
@@ -16,13 +16,13 @@ import {
   IAudio,
   IImage,
   IVideo,
-  IMediaItem
+  IMediaItem,
 } from "../app/models/interfaces";
 import {
   audioExtentions,
   videoExtensions,
   imageExtensions,
-  ObjectKeyString
+  ObjectKeyString,
 } from "../utils/lib";
 import { PlatformError } from "../utils/error";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
@@ -56,7 +56,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
@@ -73,20 +73,20 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -102,7 +102,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide at least 1 media to upload in items"
+            message: "Please provide at least 1 media to upload in items",
           })
         );
       }
@@ -114,7 +114,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
@@ -122,7 +122,7 @@ export class MediaController {
       const modifiedItems = req.body.items.reduce(
         (theMap: IMediaItem[], theItem: any) => {
           const item: IMediaItem = {
-            path: theItem.path
+            path: theItem.path,
           };
           theMap = [...theMap, item];
           return theMap;
@@ -140,20 +140,20 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       //       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -173,7 +173,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide mediaType in query param"
+            message: "Please provide mediaType in query param",
           })
         );
       }
@@ -181,7 +181,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide uploadType in query param"
+            message: "Please provide uploadType in query param",
           })
         );
       }
@@ -192,7 +192,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid uploadType"
+            message: "Invalid uploadType",
           })
         );
       }
@@ -203,14 +203,14 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
 
       let condition: any = {
         isApproved: true,
-        isDeleted: false
+        isDeleted: false,
       };
       if (uploadType !== "all") {
         condition.uploadType = uploadType;
@@ -228,20 +228,20 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured, ${result.error}`
+            message: `Error occured, ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later"
+          message: "Internal Server error occured. Please try again later",
         })
       );
     }
@@ -256,7 +256,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide mediaType in query param"
+            message: "Please provide mediaType in query param",
           })
         );
       }
@@ -264,7 +264,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide uploadType in query param"
+            message: "Please provide uploadType in query param",
           })
         );
       }
@@ -275,7 +275,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid uploadType"
+            message: "Invalid uploadType",
           })
         );
       }
@@ -286,14 +286,14 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
 
       let condition: any = {
         isApproved: true,
-        isDeleted: false
+        isDeleted: false,
       };
       if (uploadType !== "all") {
         condition.uploadType = uploadType;
@@ -310,20 +310,20 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured, ${result.error}`
+            message: `Error occured, ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later"
+          message: "Internal Server error occured. Please try again later",
         })
       );
     }
@@ -339,7 +339,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide mediaType in query param"
+            message: "Please provide mediaType in query param",
           })
         );
       }
@@ -347,7 +347,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide uploadType in query param"
+            message: "Please provide uploadType in query param",
           })
         );
       }
@@ -358,7 +358,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid uploadType"
+            message: "Invalid uploadType",
           })
         );
       }
@@ -369,14 +369,14 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
 
       let condition: any = {
         isApproved: true,
-        isDeleted: false
+        isDeleted: false,
       };
       if (uploadType !== "all") {
         condition.uploadType = uploadType;
@@ -394,20 +394,20 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured, ${result.error}`
+            message: `Error occured, ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later"
+          message: "Internal Server error occured. Please try again later",
         })
       );
     }
@@ -422,7 +422,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide mediaType in query param"
+            message: "Please provide mediaType in query param",
           })
         );
       }
@@ -430,7 +430,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide uploadType in query param"
+            message: "Please provide uploadType in query param",
           })
         );
       }
@@ -441,7 +441,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid uploadType"
+            message: "Invalid uploadType",
           })
         );
       }
@@ -452,7 +452,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
@@ -472,19 +472,19 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured, ${result.error}`
+            message: `Error occured, ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }
@@ -501,22 +501,22 @@ export class MediaController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       if (result.data) {
-        result.data.items = result.data.items.filter(x => !x.isDeleted);
+        result.data.items = result.data.items.filter((x) => !x.isDeleted);
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }
@@ -534,16 +534,16 @@ export class MediaController {
         return next(
           new PlatformError({
             code: media.responseCode,
-            message: media.error
+            message: media.error,
           })
         );
       }
       if (media.data) {
-        if (media.data._id !== req.user) {
+        if (media.data.user != req.user) {
           return next(
             new PlatformError({
               code: 403,
-              message: "You are not authorized to perform this request."
+              message: "You are not authorized to perform this request.",
             })
           );
         }
@@ -553,20 +553,20 @@ export class MediaController {
           return next(
             new PlatformError({
               code: result.responseCode,
-              message: result.error
+              message: result.error,
             })
           );
         }
         return res.status(result.responseCode).json({
           message: "Media Operation successful",
-          data: result.data
+          data: result.data,
         });
       }
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }
@@ -587,7 +587,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: media.responseCode,
-            message: media.error
+            message: media.error,
           })
         );
       }
@@ -595,7 +595,7 @@ export class MediaController {
         return next(
           new PlatformError({
             code: media.responseCode,
-            message: media.error
+            message: media.error,
           })
         );
       }
@@ -608,7 +608,7 @@ export class MediaController {
           return next(
             new PlatformError({
               code: 403,
-              message: "You are not authorized to perform this request."
+              message: "You are not authorized to perform this request.",
             })
           );
         }
@@ -621,13 +621,13 @@ export class MediaController {
           return next(
             new PlatformError({
               code: result.responseCode,
-              message: result.error
+              message: result.error,
             })
           );
         }
         return res.status(result.responseCode).json({
           message: "Media Operation successful",
-          data: result.data
+          data: result.data,
         });
       }
     } catch (err) {
@@ -635,7 +635,7 @@ export class MediaController {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }

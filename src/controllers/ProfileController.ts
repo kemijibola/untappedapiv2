@@ -6,7 +6,7 @@ import {
   requestValidators,
   get,
   use,
-  put
+  put,
 } from "../decorators";
 import IBaseController from "./interfaces/base/BaseController";
 import ProfileRepository = require("../app/repository/ProfileRepository");
@@ -37,19 +37,19 @@ export class ProfileController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }
@@ -64,7 +64,7 @@ export class ProfileController {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }
@@ -85,19 +85,19 @@ export class ProfileController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }
@@ -113,19 +113,19 @@ export class ProfileController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }
@@ -144,20 +144,20 @@ export class ProfileController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }
@@ -177,19 +177,19 @@ export class ProfileController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }

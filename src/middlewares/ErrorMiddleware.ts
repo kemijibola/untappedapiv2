@@ -12,6 +12,6 @@ export function errorHandler(
   const message = err.message || "Something went wrong";
   res.status(status).send({
     response_code: status,
-    response_message: message
+    response_message: message,
   });
 }
