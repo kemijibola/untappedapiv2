@@ -510,7 +510,6 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         if (!media.data) return [3 /*break*/, 3];
-                        console.log(req.user);
                         if (media.data.user != req.user) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 403,

@@ -7,7 +7,7 @@ import {
   CommentViewModel,
   ReplyViewModel,
   CommenterViewModel,
-  LikeViewModel
+  LikeViewModel,
 } from "../models/interfaces/custom/Comment";
 
 class CommentBusiness implements ICommentBusiness {
@@ -60,12 +60,12 @@ class CommentBusiness implements ICommentBusiness {
       user: {
         _id: userDetails._id,
         fullName: userDetails.fullName,
-        profileImagePath: userDetails.profileImagePath || ""
+        profileImagePath: userDetails.profileImagePath || "",
       },
       replies: newComment.replies,
       likedBy: [...likedBy],
       createdAt: newComment.createdAt,
-      updatedAt: newComment.updateAt
+      updatedAt: newComment.updateAt,
     };
     return Result.ok<any>(201, commentObj);
   }
@@ -85,8 +85,8 @@ class CommentBusiness implements ICommentBusiness {
     let likedBy = updateObj.likedBy.reduce(
       (theMap: LikeViewModel[], theItem: ILike) => {
         const newLikeObj: LikeViewModel = {
-          _id: theItem.user,
-          fullName: ""
+          _id: theItem._id,
+          user: theItem.user,
         };
         theMap = [...theMap, newLikeObj];
         return theMap;
@@ -101,9 +101,9 @@ class CommentBusiness implements ICommentBusiness {
           user: {
             _id: theItem.user,
             fullName: "",
-            profileImagePath: ""
+            profileImagePath: "",
           },
-          reply: theItem.reply
+          reply: theItem.reply,
         };
         theMap = [...theMap, newReplyObj];
         return theMap;
@@ -118,18 +118,7 @@ class CommentBusiness implements ICommentBusiness {
         reply.user = {
           _id: replyCommenter._id,
           fullName: replyCommenter.fullName,
-          profileImagePath: replyCommenter.profileImagePath || ""
-        };
-      }
-    }
-
-    if (likedBy.length > 0) {
-      for (let like of likedBy) {
-        const userId = like ? like._id : "";
-        const likedBy = await this._userRepository.findById(userId);
-        like = {
-          _id: likedBy._id,
-          fullName: likedBy.fullName
+          profileImagePath: replyCommenter.profileImagePath || "",
         };
       }
     }
@@ -141,12 +130,12 @@ class CommentBusiness implements ICommentBusiness {
       user: {
         _id: commenterDetails._id,
         fullName: commenterDetails.fullName,
-        profileImagePath: commenterDetails.profileImagePath || ""
+        profileImagePath: commenterDetails.profileImagePath || "",
       },
       replies: [...userReplies],
-      likedBy: [...likedBy],
+      likedBy: [...updateObj.likedBy],
       createdAt: updateObj.createdAt,
-      updatedAt: updateObj.updateAt
+      updatedAt: updateObj.updateAt,
     };
 
     return Result.ok<any>(200, commentObj);

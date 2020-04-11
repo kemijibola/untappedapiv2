@@ -1,4 +1,11 @@
-import { controller, post, requestValidators, use, get, put } from "../decorators";
+import {
+  controller,
+  post,
+  requestValidators,
+  use,
+  get,
+  put,
+} from "../decorators";
 import { Request, Response, NextFunction } from "express";
 import { IComment, IReply } from "../app/models/interfaces";
 import CommentBusiness = require("../app/business/CommentBusiness");
@@ -23,20 +30,20 @@ export class CommentController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(201).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -55,7 +62,7 @@ export class CommentController {
         return next(
           new PlatformError({
             code: comment.responseCode,
-            message: comment.error
+            message: comment.error,
           })
         );
       }
@@ -69,20 +76,20 @@ export class CommentController {
           return next(
             new PlatformError({
               code: result.responseCode,
-              message: result.error
+              message: result.error,
             })
           );
         }
         return res.status(200).json({
           message: "Operation successful",
-          data: result.data
+          data: result.data,
         });
       }
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -92,6 +99,7 @@ export class CommentController {
 
   @put("/:id/like")
   @use(requestValidator)
+  @use(requireAuth)
   async postCommentLike(
     req: RequestWithUser,
     res: Response,
@@ -104,12 +112,25 @@ export class CommentController {
         return next(
           new PlatformError({
             code: comment.responseCode,
-            message: comment.error
+            message: comment.error,
           })
         );
       }
       if (comment.data) {
-        comment.data.likedBy = [...comment.data.likedBy, req.user];
+        const userId: string = req.user;
+        const userHasLiked = comment.data.likedBy.filter(
+          (x) => x.user == req.user
+        )[0];
+        console.log(userHasLiked);
+        if (userHasLiked) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: "You have already performed this action.",
+            })
+          );
+        }
+        comment.data.likedBy.push(Object.assign({ user: userId }));
         const result = await commentBusiness.update(
           req.params.id,
           comment.data
@@ -118,20 +139,21 @@ export class CommentController {
           return next(
             new PlatformError({
               code: result.responseCode,
-              message: result.error
+              message: result.error,
             })
           );
         }
         return res.status(200).json({
           message: "Operation successful",
-          data: result.data
+          data: result.data,
         });
       }
     } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -150,20 +172,20 @@ export class CommentController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured, ${result.error}`
+            message: `Error occured, ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err);
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later"
+          message: "Internal Server error occured. Please try again later",
         })
       );
     }

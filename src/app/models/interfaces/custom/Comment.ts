@@ -17,7 +17,7 @@ export interface ReplyViewModel {
 
 export interface LikeViewModel {
   _id: string;
-  fullName: string;
+  user: string;
 }
 
 export interface CommenterViewModel {

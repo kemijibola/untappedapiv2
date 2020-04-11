@@ -68,19 +68,19 @@ var CommentController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         console.log(err_1);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -103,7 +103,7 @@ var CommentController = /** @class */ (function () {
                         if (comment.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: comment.responseCode,
-                                    message: comment.error
+                                    message: comment.error,
                                 }))];
                         }
                         if (!comment.data) return [3 /*break*/, 3];
@@ -114,19 +114,19 @@ var CommentController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(200).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -136,7 +136,7 @@ var CommentController = /** @class */ (function () {
     // http://127.0.0.1:8900/v1/comments/5e7cc6214002a142f8a92ce3/like
     CommentController.prototype.postCommentLike = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var commentBusiness, comment, result, err_3;
+            var commentBusiness, comment, userId, userHasLiked, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -148,30 +148,40 @@ var CommentController = /** @class */ (function () {
                         if (comment.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: comment.responseCode,
-                                    message: comment.error
+                                    message: comment.error,
                                 }))];
                         }
                         if (!comment.data) return [3 /*break*/, 3];
-                        comment.data.likedBy = comment.data.likedBy.concat([req.user]);
+                        userId = req.user;
+                        userHasLiked = comment.data.likedBy.filter(function (x) { return x.user == req.user; })[0];
+                        console.log(userHasLiked);
+                        if (userHasLiked) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "You have already performed this action.",
+                                }))];
+                        }
+                        comment.data.likedBy.push(Object.assign({ user: userId }));
                         return [4 /*yield*/, commentBusiness.update(req.params.id, comment.data)];
                     case 2:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(200).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         err_3 = _a.sent();
+                        console.log(err_3);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -194,19 +204,19 @@ var CommentController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured, " + result.error
+                                    message: "Error occured, " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Media Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_4 = _a.sent();
                         console.log(err_4);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later"
+                                message: "Internal Server error occured. Please try again later",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -233,6 +243,7 @@ var CommentController = /** @class */ (function () {
     __decorate([
         decorators_1.put("/:id/like"),
         decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

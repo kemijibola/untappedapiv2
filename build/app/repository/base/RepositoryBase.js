@@ -44,6 +44,18 @@ var RepositoryBase = /** @class */ (function () {
                 .exec();
         });
     };
+    // fetchWithDeepUserDetails(condition: any): Promise<any> {
+    //   return new Promise((resolve, reject) => {
+    //     this._model
+    //       .find(condition, (error: any, result: any) => {
+    //         if (error) reject(error);
+    //         else resolve(result);
+    //       })
+    //       .populate("user", "_id fullName profileImagePath")
+    //       // .cacheDocQueries({ collectionName: this._model.collection.name })
+    //       .exec();
+    //   });
+    // }
     RepositoryBase.prototype.fetchWithUserDetails = function (condition) {
         var _this = this;
         return new Promise(function (resolve, reject) {

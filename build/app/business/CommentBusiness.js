@@ -128,12 +128,12 @@ var CommentBusiness = /** @class */ (function () {
                             user: {
                                 _id: userDetails._id,
                                 fullName: userDetails.fullName,
-                                profileImagePath: userDetails.profileImagePath || ""
+                                profileImagePath: userDetails.profileImagePath || "",
                             },
                             replies: newComment.replies,
                             likedBy: likedBy.slice(),
                             createdAt: newComment.createdAt,
-                            updatedAt: newComment.updateAt
+                            updatedAt: newComment.updateAt,
                         };
                         return [2 /*return*/, Result_1.Result.ok(201, commentObj)];
                 }
@@ -142,24 +142,24 @@ var CommentBusiness = /** @class */ (function () {
     };
     CommentBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var comment, updateObj, commenterDetails, likedBy, userReplies, _i, userReplies_1, reply, userId, replyCommenter, _a, likedBy_1, like, userId, likedBy_2, commentObj;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var comment, updateObj, commenterDetails, likedBy, userReplies, _i, userReplies_1, reply, userId, replyCommenter, commentObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, this._commentRepository.findById(id)];
                     case 1:
-                        comment = _b.sent();
+                        comment = _a.sent();
                         if (!comment)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update comment.Comment with Id " + id + " not found")];
                         return [4 /*yield*/, this._commentRepository.update(comment._id, item)];
                     case 2:
-                        updateObj = _b.sent();
+                        updateObj = _a.sent();
                         return [4 /*yield*/, this._userRepository.findById(updateObj.user)];
                     case 3:
-                        commenterDetails = _b.sent();
+                        commenterDetails = _a.sent();
                         likedBy = updateObj.likedBy.reduce(function (theMap, theItem) {
                             var newLikeObj = {
-                                _id: theItem.user,
-                                fullName: ""
+                                _id: theItem._id,
+                                user: theItem.user,
                             };
                             theMap = theMap.concat([newLikeObj]);
                             return theMap;
@@ -170,52 +170,33 @@ var CommentBusiness = /** @class */ (function () {
                                 user: {
                                     _id: theItem.user,
                                     fullName: "",
-                                    profileImagePath: ""
+                                    profileImagePath: "",
                                 },
-                                reply: theItem.reply
+                                reply: theItem.reply,
                             };
                             theMap = theMap.concat([newReplyObj]);
                             return theMap;
                         }, []);
                         if (!(userReplies.length > 0)) return [3 /*break*/, 7];
                         _i = 0, userReplies_1 = userReplies;
-                        _b.label = 4;
+                        _a.label = 4;
                     case 4:
                         if (!(_i < userReplies_1.length)) return [3 /*break*/, 7];
                         reply = userReplies_1[_i];
                         userId = reply.user ? reply.user._id : "";
                         return [4 /*yield*/, this._userRepository.findById(userId)];
                     case 5:
-                        replyCommenter = _b.sent();
+                        replyCommenter = _a.sent();
                         reply.user = {
                             _id: replyCommenter._id,
                             fullName: replyCommenter.fullName,
-                            profileImagePath: replyCommenter.profileImagePath || ""
+                            profileImagePath: replyCommenter.profileImagePath || "",
                         };
-                        _b.label = 6;
+                        _a.label = 6;
                     case 6:
                         _i++;
                         return [3 /*break*/, 4];
                     case 7:
-                        if (!(likedBy.length > 0)) return [3 /*break*/, 11];
-                        _a = 0, likedBy_1 = likedBy;
-                        _b.label = 8;
-                    case 8:
-                        if (!(_a < likedBy_1.length)) return [3 /*break*/, 11];
-                        like = likedBy_1[_a];
-                        userId = like ? like._id : "";
-                        return [4 /*yield*/, this._userRepository.findById(userId)];
-                    case 9:
-                        likedBy_2 = _b.sent();
-                        like = {
-                            _id: likedBy_2._id,
-                            fullName: likedBy_2.fullName
-                        };
-                        _b.label = 10;
-                    case 10:
-                        _a++;
-                        return [3 /*break*/, 8];
-                    case 11:
                         commentObj = {
                             _id: updateObj._id,
                             media: updateObj.media,
@@ -223,12 +204,12 @@ var CommentBusiness = /** @class */ (function () {
                             user: {
                                 _id: commenterDetails._id,
                                 fullName: commenterDetails.fullName,
-                                profileImagePath: commenterDetails.profileImagePath || ""
+                                profileImagePath: commenterDetails.profileImagePath || "",
                             },
                             replies: userReplies.slice(),
-                            likedBy: likedBy.slice(),
+                            likedBy: updateObj.likedBy.slice(),
                             createdAt: updateObj.createdAt,
-                            updatedAt: updateObj.updateAt
+                            updatedAt: updateObj.updateAt,
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, commentObj)];
                 }
