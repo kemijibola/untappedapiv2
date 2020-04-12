@@ -1,6 +1,8 @@
 "use strict";
-// import mongoose from 'mongoose';
-var Mongoose = require("mongoose");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var mongoose_1 = __importDefault(require("mongoose"));
 var Environment_1 = require("../models/interfaces/custom/Environment");
 var config = module.require("../../config/keys");
 var MongodataAccess = /** @class */ (function () {
@@ -11,14 +13,16 @@ var MongodataAccess = /** @class */ (function () {
         if (this.mongooseInstance) {
             return this.mongooseInstance;
         }
-        this.mongooseConnection = Mongoose.connection;
+        this.mongooseConnection = mongoose_1.default.connection;
         this.mongooseConnection.once("open", function () {
             console.log("Connected to mongodb");
         });
-        Mongoose.Promise = global.Promise;
-        this.mongooseInstance = Mongoose.connect(this.dbUri, {
+        mongoose_1.default.Promise = global.Promise;
+        mongoose_1.default.set("useUnifiedTopology", true);
+        mongoose_1.default.set("useFindAndModify", false);
+        this.mongooseInstance = mongoose_1.default.connect(this.dbUri, {
             useNewUrlParser: true,
-            useCreateIndex: true
+            useCreateIndex: true,
         });
         return this.mongooseInstance;
     };

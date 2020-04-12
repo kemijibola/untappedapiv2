@@ -14,6 +14,7 @@ const userSchema: Schema = new Schema(
     password: { type: String, required: true },
     userType: { type: Schema.Types.ObjectId, ref: "UserType", required: true },
     profileImagePath: { type: String },
+    bannerImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
@@ -29,25 +30,25 @@ const userSchema: Schema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Role",
-        required: true
-      }
+        required: true,
+      },
     ],
     lastLogin: { type: Date },
     application: {
       type: Schema.Types.ObjectId,
-      ref: "Application"
-    }
+      ref: "Application",
+    },
   },
   { timestamps: true }
 );
 
-userSchema.methods.comparePassword = async function(
+userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.generateToken = async function(
+userSchema.methods.generateToken = async function (
   privateKey: string,
   signOptions: SignInOptions,
   payload: any
@@ -63,7 +64,7 @@ userSchema.methods.generateToken = async function(
   );
 };
 
-userSchema.methods.verifyToken = async function(
+userSchema.methods.verifyToken = async function (
   encodedJwt: string,
   publicKey: string,
   verifyOptions: any
@@ -76,7 +77,7 @@ userSchema.methods.verifyToken = async function(
   );
 };
 
-userSchema.pre<IUserModel>("save", function(next) {
+userSchema.pre<IUserModel>("save", function (next) {
   const user = this;
   if (!user.isModified("password")) {
     return next();
@@ -85,7 +86,7 @@ userSchema.pre<IUserModel>("save", function(next) {
     if (err) {
       return next(err);
     }
-    bcrypt.hash(user.password, salt, function(err, hash) {
+    bcrypt.hash(user.password, salt, function (err, hash) {
       if (err) {
         return next(err);
       }
@@ -95,7 +96,7 @@ userSchema.pre<IUserModel>("save", function(next) {
   });
 });
 
-userSchema.pre<IUserModel>("save", function(next) {
+userSchema.pre<IUserModel>("save", function (next) {
   let now = new Date();
   if (!this.createdAt) {
     this.createdAt = now;

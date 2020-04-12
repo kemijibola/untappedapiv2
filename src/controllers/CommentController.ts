@@ -97,6 +97,72 @@ export class CommentController {
 
   // http://127.0.0.1:8900/v1/comments/5e7cc6214002a142f8a92ce3/like
 
+  @put("/:id/unLike")
+  @use(requestValidator)
+  @use(requireAuth)
+  async postCommentUnLike(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const commentBusiness = new CommentBusiness();
+      const comment = await commentBusiness.findById(req.params.id);
+      if (comment.error) {
+        return next(
+          new PlatformError({
+            code: comment.responseCode,
+            message: comment.error,
+          })
+        );
+      }
+      if (comment.data) {
+        const userId: string = req.user;
+        const userHasLiked = comment.data.likedBy.filter(
+          (x) => x.user == req.user
+        )[0];
+        if (!userHasLiked) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: "You can't perform Unlike action.",
+            })
+          );
+        }
+
+        comment.data.likedBy = comment.data.likedBy.filter(
+          (x) => x.user != req.user
+        );
+
+        console.log(comment.data.likedBy);
+        const result = await commentBusiness.update(
+          req.params.id,
+          comment.data
+        );
+        if (result.error) {
+          return next(
+            new PlatformError({
+              code: result.responseCode,
+              message: result.error,
+            })
+          );
+        }
+        return res.status(200).json({
+          message: "Operation successful",
+          data: result.data,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
   @put("/:id/like")
   @use(requestValidator)
   @use(requireAuth)
@@ -126,7 +192,7 @@ export class CommentController {
           return next(
             new PlatformError({
               code: 400,
-              message: "You have already performed this action.",
+              message: "You have already performed Like operation.",
             })
           );
         }

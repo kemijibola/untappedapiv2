@@ -71,37 +71,37 @@ var AuthController = /** @class */ (function () {
                         _a.trys.push([0, 4, , 5]);
                         refreshTokenBusiness = new RefreshTokenBusiness_1.default();
                         return [4 /*yield*/, refreshTokenBusiness.findByCriteria({
-                                token: req.body.refreshToken
+                                token: req.body.refreshToken,
                             })];
                     case 1:
                         refreshToken = _a.sent();
                         if (refreshToken.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: refreshToken.responseCode,
-                                    message: refreshToken.error
+                                    message: refreshToken.error,
                                 }))];
                         if (!refreshToken.data) return [3 /*break*/, 3];
                         if (refreshToken.data.isExpired)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 401,
-                                    message: "Refresh token is invalid."
+                                    message: "Refresh token is invalid.",
                                 }))];
                         if (refreshToken.data.ownerId !== req.body.userId)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 403,
-                                    message: "You are not authorized to make this request."
+                                    message: "You are not authorized to make this request.",
                                 }))];
                         rfTGeneratedDate = date_fns_1.addSeconds(refreshToken.data.createdAt, req.appUser ? req.appUser.refreshTokenExpiresIn : 0);
                         if (date_fns_1.isPast(rfTGeneratedDate)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 401,
-                                    message: "Refresh token has expired. Please generate another token."
+                                    message: "Refresh token has expired. Please generate another token.",
                                 }))];
                         }
                         userBusiness = new UserBusiness_1.default();
                         audience = req.appUser ? req.appUser.audience : "";
                         refreshTokenData = {
-                            application: req.appUser ? req.appUser.clientId : ""
+                            application: req.appUser ? req.appUser.clientId : "",
                         };
                         return [4 /*yield*/, userBusiness.refreshToken(req.body.userId, audience, refreshTokenData)];
                     case 2:
@@ -109,18 +109,18 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -139,10 +139,10 @@ var AuthController = /** @class */ (function () {
                             email: req.body.email.toLowerCase(),
                             password: req.body.password,
                             audience: audience,
-                            issuer: ""
+                            issuer: "",
                         };
                         refreshTokenData = {
-                            application: req.appUser ? req.appUser._id : ""
+                            application: req.appUser ? req.appUser._id : "",
                         };
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.login(loginParams, refreshTokenData)];
@@ -151,11 +151,11 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_2 = _a.sent();
@@ -163,7 +163,7 @@ var AuthController = /** @class */ (function () {
                         // log err.message to a logger with name of action
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -180,7 +180,7 @@ var AuthController = /** @class */ (function () {
                         userBusiness = new UserBusiness_1.default();
                         item = {
                             email: req.body.email.toLowerCase(),
-                            newPassword: req.body.newPassword
+                            newPassword: req.body.newPassword,
                         };
                         return [4 /*yield*/, userBusiness.resetPassword(item)];
                     case 1:
@@ -188,17 +188,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -217,7 +217,7 @@ var AuthController = /** @class */ (function () {
                         item = {
                             email: req.body.email.toLowerCase(),
                             token: req.body.token,
-                            audience: audience
+                            audience: audience,
                         };
                         return [4 /*yield*/, userBusiness.verifyPasswordResetLink(item)];
                     case 1:
@@ -225,17 +225,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_4 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -260,17 +260,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_5 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -288,7 +288,7 @@ var AuthController = /** @class */ (function () {
                         data = {
                             userId: req.user,
                             oldPassword: req.body.oldPassword,
-                            newPassword: req.body.newPassword
+                            newPassword: req.body.newPassword,
                         };
                         return [4 /*yield*/, userBusiness.changePassword(data)];
                     case 1:
@@ -296,17 +296,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_6 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -331,17 +331,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_7 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -359,7 +359,7 @@ var AuthController = /** @class */ (function () {
                         request = {
                             userEmail: req.body.email.toLowerCase(),
                             token: req.body.token,
-                            audience: audience
+                            audience: audience,
                         };
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.confirmEmail(request)];
@@ -368,17 +368,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_8 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -403,7 +403,7 @@ var AuthController = /** @class */ (function () {
                             userType: req.body.userType,
                             audience: audience,
                             confirmationUrl: redirectConfirmation,
-                            roles: []
+                            roles: [],
                         };
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.register(signUpParams)];
@@ -412,17 +412,17 @@ var AuthController = /** @class */ (function () {
                         if (result.error)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_9 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }

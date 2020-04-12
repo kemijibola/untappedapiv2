@@ -1,5 +1,5 @@
-// import mongoose from 'mongoose';
-import Mongoose = require("mongoose");
+import mongoose from "mongoose";
+// import Mongoose = require("mongoose");
 import { Connection } from "../models/interfaces/custom/Connection";
 import { AppConfig } from "../models/interfaces/custom/AppConfig";
 import { Environment } from "../models/interfaces/custom/Environment";
@@ -7,26 +7,28 @@ const config: AppConfig = module.require("../../config/keys");
 
 class MongodataAccess {
   static mongooseInstance: any;
-  static mongooseConnection: Mongoose.Connection;
+  static mongooseConnection: mongoose.Connection;
 
   constructor() {
     MongodataAccess.connect();
   }
 
-  static connect(): Mongoose.Connection {
+  static connect(): mongoose.Connection {
     if (this.mongooseInstance) {
       return this.mongooseInstance;
     }
 
-    this.mongooseConnection = Mongoose.connection;
+    this.mongooseConnection = mongoose.connection;
     this.mongooseConnection.once("open", () => {
       console.log("Connected to mongodb");
     });
 
-    Mongoose.Promise = global.Promise;
-    this.mongooseInstance = Mongoose.connect(this.dbUri, {
+    mongoose.Promise = global.Promise;
+    mongoose.set("useUnifiedTopology", true);
+    mongoose.set("useFindAndModify", false);
+    this.mongooseInstance = mongoose.connect(this.dbUri, {
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
     });
     return this.mongooseInstance;
   }

@@ -8,7 +8,7 @@ export enum AccountStatus {
   ACTIVATED = "ACTIVATED",
   SUSPENDED = "SUSPENDED",
   DELETED = "DELETED",
-  DEFAULT = "DEFAULT"
+  DEFAULT = "DEFAULT",
 }
 export interface IUserAccountStatus {
   status: AccountStatus;
@@ -22,6 +22,7 @@ export interface IUser extends ITimeStamp, IAppSpec, mongoose.Document {
   password: string;
   userType: string;
   profileImagePath?: string;
+  bannerImagePath?: string;
   isEmailConfirmed: boolean;
   isPhoneConfirmed: boolean;
   isProfileCompleted: boolean;

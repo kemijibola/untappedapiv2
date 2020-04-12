@@ -49,12 +49,11 @@ var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
 var emailtemplates_1 = require("../../utils/emailtemplates");
 var TemplatePlaceHolder_1 = require("../../utils/lib/TemplatePlaceHolder");
 var config = require("../../config/keys");
-// import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
-var ScheduleTask_1 = require("../../handlers/ScheduleTask");
-var StateMachineArns_1 = require("../models/interfaces/custom/StateMachineArns");
+var EmailService_1 = require("../../utils/emailservice/EmailService");
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
 var uuid_1 = __importDefault(require("uuid"));
 var date_fns_1 = require("date-fns");
+var Sender_1 = require("../../utils/emailservice/aws/Sender");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentAuthKey = "";
@@ -123,10 +122,10 @@ var UserBusiness = /** @class */ (function () {
                             expiresIn: this._authExpiration + "h",
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
-                            subject: ""
+                            subject: "",
                         };
                         payload = {
-                            type: GlobalEnum_1.TokenType.AUTH
+                            type: GlobalEnum_1.TokenType.AUTH,
                         };
                         privateKey = lib_1.getSecretByKey(this._currentAuthKey);
                         if (privateKey === "") {
@@ -138,7 +137,7 @@ var UserBusiness = /** @class */ (function () {
                         rfToken = Object.assign({
                             token: uuid_1.default(),
                             application: refreshTokenParams.application,
-                            ownerId: user.data._id
+                            ownerId: user.data._id,
                         });
                         return [4 /*yield*/, this._refreshTokenRepository.create(rfToken)];
                     case 7:
@@ -160,8 +159,9 @@ var UserBusiness = /** @class */ (function () {
                                 email: user.data.email,
                                 profile_is_completed: user.data.isProfileCompleted,
                                 profile_image_path: user.data.profileImagePath || "",
-                                userType: { _id: typeOfUser._id, name: typeOfUser.name }
-                            }
+                                banner_image_path: user.data.bannerImagePath || "",
+                                userType: { _id: typeOfUser._id, name: typeOfUser.name },
+                            },
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, authData)];
                     case 9: return [2 /*return*/, Result_1.Result.fail(401, error)];
@@ -177,7 +177,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         criteria = {
-                            email: params.email.toLowerCase()
+                            email: params.email.toLowerCase(),
                         };
                         return [4 /*yield*/, this.findUserByEmail(criteria)];
                     case 1:
@@ -213,10 +213,10 @@ var UserBusiness = /** @class */ (function () {
                             expiresIn: this._authExpiration + "h",
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentAuthKey,
-                            subject: ""
+                            subject: "",
                         };
                         payload = {
-                            type: GlobalEnum_1.TokenType.AUTH
+                            type: GlobalEnum_1.TokenType.AUTH,
                         };
                         privateKey = lib_1.getSecretByKey(this._currentAuthKey);
                         if (privateKey === "") {
@@ -228,7 +228,7 @@ var UserBusiness = /** @class */ (function () {
                         rfToken = Object.assign({
                             token: uuid_1.default(),
                             application: refreshTokenParams.application,
-                            ownerId: user._id
+                            ownerId: user._id,
                         });
                         return [4 /*yield*/, this._refreshTokenRepository.create(rfToken)];
                     case 8:
@@ -250,8 +250,9 @@ var UserBusiness = /** @class */ (function () {
                                 email: user.email,
                                 profile_is_completed: user.isProfileCompleted,
                                 profile_image_path: user.profileImagePath || "",
-                                userType: { _id: typeOfUser._id, name: typeOfUser.name }
-                            }
+                                banner_image_path: user.bannerImagePath || "",
+                                userType: { _id: typeOfUser._id, name: typeOfUser.name },
+                            },
                         };
                         return [2 /*return*/, Result_1.Result.ok(200, authData)];
                 }
@@ -265,7 +266,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         criteria = {
-                            email: request.userEmail.toLowerCase()
+                            email: request.userEmail.toLowerCase(),
                         };
                         return [4 /*yield*/, this.findUserByEmail(criteria)];
                     case 1:
@@ -282,7 +283,7 @@ var UserBusiness = /** @class */ (function () {
                             type: GlobalEnum_1.TokenType.VERIFY,
                             audience: request.audience,
                             keyid: this._currentVerifyKey,
-                            expiresIn: this._mailExpiratation + "h"
+                            expiresIn: this._mailExpiratation + "h",
                         };
                         return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
                     case 2:
@@ -408,7 +409,7 @@ var UserBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
-                            email: item.email
+                            email: item.email,
                         })];
                     case 1:
                         user = _a.sent();
@@ -427,7 +428,7 @@ var UserBusiness = /** @class */ (function () {
                         }
                         return [4 /*yield*/, this._roleRepository.findByCriteria({
                                 isDefault: true,
-                                isActive: true
+                                isActive: true,
                             })];
                     case 3:
                         defaultRole = _a.sent();
@@ -443,17 +444,17 @@ var UserBusiness = /** @class */ (function () {
                             audience: item.audience,
                             tokenExpiresIn: this._mailExpiratation + "h",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
-                            redirectUrl: item.confirmationUrl
+                            redirectUrl: item.confirmationUrl,
                         };
                         return [4 /*yield*/, this.generateToken(data)];
                     case 5:
                         token = _a.sent();
                         if (!token.data) return [3 /*break*/, 7];
-                        welcomeEmailKeyValues = this.TokenEmailKeyValue(newUser.fullName, item.audience, item.confirmationUrl + "?email=" + newUser.email + "&token=" + token.data);
+                        welcomeEmailKeyValues = this.TokenEmailKeyValue(newUser.fullName, item.audience, item.confirmationUrl + "/" + newUser.email + "/" + token.data);
                         welcomeTemplateString = emailtemplates_1.WelcomeEmail.template;
                         welcomeEmailPlaceHolder = {
                             template: welcomeTemplateString,
-                            placeholders: welcomeEmailKeyValues
+                            placeholders: welcomeEmailKeyValues,
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
                         recievers = [newUser.email];
@@ -472,7 +473,7 @@ var UserBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
-                            email: email
+                            email: email,
                         })];
                     case 1:
                         user = _a.sent();
@@ -482,7 +483,7 @@ var UserBusiness = /** @class */ (function () {
                             audience: audience,
                             tokenExpiresIn: this._mailExpiratation + "h",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
-                            redirectUrl: redirectUrl
+                            redirectUrl: redirectUrl,
                         };
                         return [4 /*yield*/, this.generateToken(request)];
                     case 2:
@@ -492,7 +493,7 @@ var UserBusiness = /** @class */ (function () {
                         forgoPasswordTemplateString = emailtemplates_1.ForgotPasswordEmail.template;
                         forgotPasswordEmailPlaceHolder = {
                             template: forgoPasswordTemplateString,
-                            placeholders: forgorPasswordEmailKeyValues
+                            placeholders: forgorPasswordEmailKeyValues,
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(forgotPasswordEmailPlaceHolder);
                         recievers = [user.email];
@@ -510,7 +511,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.sendMail = function (receivers, subject, mailBody) {
         return __awaiter(this, void 0, void 0, function () {
-            var mailParams;
+            var mailParams, mailer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -519,9 +520,10 @@ var UserBusiness = /** @class */ (function () {
                             subject: subject,
                             mail: mailBody,
                             senderEmail: "talents@untappedpool.com",
-                            senderName: "Untapped Pool"
+                            senderName: "Untapped Pool",
                         };
-                        return [4 /*yield*/, ScheduleTask_1.schedule(StateMachineArns_1.StateMachineArns.EmailStateMachine, new Date(), mailParams)];
+                        mailer = EmailService_1.EmailService.mailer(mailParams);
+                        return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -536,7 +538,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         criteria = {
-                            email: request.email.toLowerCase()
+                            email: request.email.toLowerCase(),
                         };
                         return [4 /*yield*/, this.findUserByEmail(criteria)];
                     case 1:
@@ -553,7 +555,7 @@ var UserBusiness = /** @class */ (function () {
                             type: GlobalEnum_1.TokenType.VERIFY,
                             audience: request.audience,
                             keyid: this._currentVerifyKey,
-                            expiresIn: this._mailExpiratation + "h"
+                            expiresIn: this._mailExpiratation + "h",
                         };
                         return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
                     case 2:
@@ -572,7 +574,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
                             email: data.email,
-                            isEmailConfirmed: true
+                            isEmailConfirmed: true,
                         })];
                     case 1:
                         user = _a.sent();
@@ -596,7 +598,7 @@ var UserBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
                             _id: data.userId,
-                            isEmailConfirmed: true
+                            isEmailConfirmed: true,
                         })];
                     case 1:
                         user = _a.sent();
@@ -622,7 +624,7 @@ var UserBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
-                            email: email
+                            email: email,
                         })];
                     case 1:
                         user = _a.sent();
@@ -636,7 +638,7 @@ var UserBusiness = /** @class */ (function () {
                             audience: audience,
                             tokenExpiresIn: this._mailExpiratation + "h",
                             tokenType: GlobalEnum_1.TokenType.VERIFY,
-                            redirectUrl: verificationUrl
+                            redirectUrl: verificationUrl,
                         };
                         this.generateToken(data);
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
@@ -656,11 +658,11 @@ var UserBusiness = /** @class */ (function () {
                             expiresIn: data.tokenExpiresIn,
                             algorithm: this._currentRsaAlgType,
                             keyid: this._currentVerifyKey,
-                            subject: ""
+                            subject: "",
                         };
                         payload = {
                             type: data.tokenType,
-                            email: data.user.email
+                            email: data.user.email,
                         };
                         privateKey = lib_1.getSecretByKey(this._currentVerifyKey);
                         return [4 /*yield*/, data.user.generateToken(privateKey, tokenOptions, payload)];
@@ -753,32 +755,32 @@ var UserBusiness = /** @class */ (function () {
         return [
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.Facebook,
-                value: TemplatePlaceHolder_1.SocialMediaHandles.Facebook
+                value: TemplatePlaceHolder_1.SocialMediaHandles.Facebook,
             },
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.Instagram,
-                value: TemplatePlaceHolder_1.SocialMediaHandles.Instagram
+                value: TemplatePlaceHolder_1.SocialMediaHandles.Instagram,
             },
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.Twitter,
-                value: TemplatePlaceHolder_1.SocialMediaHandles.Twitter
+                value: TemplatePlaceHolder_1.SocialMediaHandles.Twitter,
             },
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.Name,
-                value: userName
+                value: userName,
             },
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.VerifyToken,
-                value: verificationUrl
+                value: verificationUrl,
             },
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.PlatformUrl,
-                value: audience
+                value: audience,
             },
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.FullVerifyToken,
-                value: verificationUrl
-            }
+                value: verificationUrl,
+            },
         ];
     };
     // async fetchResourceByName(destinationUrl: string): Promise<IResource> {
@@ -791,7 +793,7 @@ var UserBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._rolePermissionRepository.populateFetch("permission", {
-                            role: role
+                            role: role,
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }

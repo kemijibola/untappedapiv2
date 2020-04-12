@@ -17,6 +17,7 @@ interface IUserData {
   email: string;
   profile_is_completed: boolean;
   profile_image_path: string;
+  banner_image_path: string;
   userType: UserType;
 }
 

@@ -17,7 +17,7 @@ import {
   IPermission,
   ImageEditRequest,
   IRefreshToken,
-  IRefreshTokenViewModel
+  IRefreshTokenViewModel,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import {
@@ -33,7 +33,7 @@ import {
   mailExpiration,
   verifyTokenExpiration,
   getPublicKey,
-  validateObjectId
+  validateObjectId,
 } from "../../utils/lib";
 import { SignInOptions } from "../models/interfaces/custom/Global";
 import { AppConfig } from "../../app/models/interfaces/custom/AppConfig";
@@ -46,12 +46,12 @@ import {
   TemplateKeyValue,
   PlaceHolderKey,
   SocialMediaHandles,
-  replaceTemplateString
+  replaceTemplateString,
 } from "../../utils/lib/TemplatePlaceHolder";
 const config: AppConfig = require("../../config/keys");
 // import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
 import { schedule } from "../../handlers/ScheduleTask";
-import { IEmail } from "../../utils/emailservice/EmailService";
+import { IEmail, EmailService } from "../../utils/emailservice/EmailService";
 import { UserSchema } from "../data/schema/User";
 import { StateMachineArns } from "../models/interfaces/custom/StateMachineArns";
 import { PlatformError } from "../../utils/error";
@@ -62,11 +62,12 @@ import {
   TokenGenerationRequest,
   ChangePasswordData,
   VerifyResetPasswordRequest,
-  ResetPasswordRequest
+  ResetPasswordRequest,
 } from "../models/interfaces/custom/Account";
 import UserTypeRepository from "../repository/UserTypeRepository";
 import uuid from "uuid";
 import { addSeconds, getDate, addHours } from "date-fns";
+import { ses } from "../../utils/emailservice/aws/Sender";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
@@ -129,11 +130,11 @@ class UserBusiness implements IUserBusiness {
           expiresIn: `${this._authExpiration}h`,
           algorithm: this._currentRsaAlgType,
           keyid: this._currentAuthKey,
-          subject: ""
+          subject: "",
         };
 
         const payload: AuthPayload = {
-          type: TokenType.AUTH
+          type: TokenType.AUTH,
         };
 
         const privateKey: string = getSecretByKey(this._currentAuthKey);
@@ -151,7 +152,7 @@ class UserBusiness implements IUserBusiness {
         const rfToken: IRefreshToken = Object.assign({
           token: uuid(),
           application: refreshTokenParams.application,
-          ownerId: user.data._id
+          ownerId: user.data._id,
         });
 
         const newUserRefreshToken = await this._refreshTokenRepository.create(
@@ -180,8 +181,9 @@ class UserBusiness implements IUserBusiness {
             email: user.data.email,
             profile_is_completed: user.data.isProfileCompleted,
             profile_image_path: user.data.profileImagePath || "",
-            userType: { _id: typeOfUser._id, name: typeOfUser.name }
-          }
+            banner_image_path: user.data.bannerImagePath || "",
+            userType: { _id: typeOfUser._id, name: typeOfUser.name },
+          },
         };
         return Result.ok<IAuthData>(200, authData);
       }
@@ -195,7 +197,7 @@ class UserBusiness implements IUserBusiness {
   ): Promise<Result<IAuthData>> {
     {
       const criteria = {
-        email: params.email.toLowerCase()
+        email: params.email.toLowerCase(),
       };
       const user = await this.findUserByEmail(criteria);
 
@@ -224,10 +226,10 @@ class UserBusiness implements IUserBusiness {
         expiresIn: `${this._authExpiration}h`,
         algorithm: this._currentRsaAlgType,
         keyid: this._currentAuthKey,
-        subject: ""
+        subject: "",
       };
       const payload: AuthPayload = {
-        type: TokenType.AUTH
+        type: TokenType.AUTH,
       };
       const privateKey: string = getSecretByKey(this._currentAuthKey);
       if (privateKey === "") {
@@ -242,7 +244,7 @@ class UserBusiness implements IUserBusiness {
       const rfToken: IRefreshToken = Object.assign({
         token: uuid(),
         application: refreshTokenParams.application,
-        ownerId: user._id
+        ownerId: user._id,
       });
 
       const newUserRefreshToken = await this._refreshTokenRepository.create(
@@ -270,8 +272,9 @@ class UserBusiness implements IUserBusiness {
           email: user.email,
           profile_is_completed: user.isProfileCompleted,
           profile_image_path: user.profileImagePath || "",
-          userType: { _id: typeOfUser._id, name: typeOfUser.name }
-        }
+          banner_image_path: user.bannerImagePath || "",
+          userType: { _id: typeOfUser._id, name: typeOfUser.name },
+        },
       };
       return Result.ok<IAuthData>(200, authData);
     }
@@ -279,7 +282,7 @@ class UserBusiness implements IUserBusiness {
 
   async confirmEmail(request: ConfirmEmailRequest): Promise<Result<string>> {
     const criteria = {
-      email: request.userEmail.toLowerCase()
+      email: request.userEmail.toLowerCase(),
     };
     const unverifiedUser: IUserModel = await this.findUserByEmail(criteria);
     if (!unverifiedUser) return Result.fail<string>(404, "User not found.");
@@ -296,7 +299,7 @@ class UserBusiness implements IUserBusiness {
       type: TokenType.VERIFY,
       audience: request.audience,
       keyid: this._currentVerifyKey,
-      expiresIn: `${this._mailExpiratation}h`
+      expiresIn: `${this._mailExpiratation}h`,
     };
     const decoded: TokenResult = await unverifiedUser.verifyToken(
       request.token,
@@ -358,7 +361,7 @@ class UserBusiness implements IUserBusiness {
 
   async register(item: IRegister): Promise<Result<boolean>> {
     const user: IUserModel = await this._userRepository.findByCriteria({
-      email: item.email
+      email: item.email,
     });
     if (user) {
       return Result.fail<boolean>(
@@ -379,7 +382,7 @@ class UserBusiness implements IUserBusiness {
     // assign default role to user
     const defaultRole = await this._roleRepository.findByCriteria({
       isDefault: true,
-      isActive: true
+      isActive: true,
     });
 
     if (defaultRole === null) {
@@ -395,7 +398,7 @@ class UserBusiness implements IUserBusiness {
       audience: item.audience,
       tokenExpiresIn: `${this._mailExpiratation}h`,
       tokenType: TokenType.VERIFY,
-      redirectUrl: item.confirmationUrl
+      redirectUrl: item.confirmationUrl,
     };
 
     var token = await this.generateToken(data);
@@ -403,14 +406,14 @@ class UserBusiness implements IUserBusiness {
       const welcomeEmailKeyValues: TemplateKeyValue[] = this.TokenEmailKeyValue(
         newUser.fullName,
         item.audience,
-        `${item.confirmationUrl}?email=${newUser.email}&token=${token.data}`
+        `${item.confirmationUrl}/${newUser.email}/${token.data}`
       );
 
       const welcomeTemplateString: string = WelcomeEmail.template;
 
       const welcomeEmailPlaceHolder: TemplatePlaceHolder = {
         template: welcomeTemplateString,
-        placeholders: welcomeEmailKeyValues
+        placeholders: welcomeEmailKeyValues,
       };
 
       const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
@@ -426,7 +429,7 @@ class UserBusiness implements IUserBusiness {
     redirectUrl: string
   ): Promise<Result<string>> {
     const user: IUserModel = await this._userRepository.findByCriteria({
-      email
+      email,
     });
     if (user) {
       const request: TokenGenerationRequest = {
@@ -434,7 +437,7 @@ class UserBusiness implements IUserBusiness {
         audience,
         tokenExpiresIn: `${this._mailExpiratation}h`,
         tokenType: TokenType.VERIFY,
-        redirectUrl
+        redirectUrl,
       };
       var token = await this.generateToken(request);
       if (token.data) {
@@ -448,7 +451,7 @@ class UserBusiness implements IUserBusiness {
 
         const forgotPasswordEmailPlaceHolder: TemplatePlaceHolder = {
           template: forgoPasswordTemplateString,
-          placeholders: forgorPasswordEmailKeyValues
+          placeholders: forgorPasswordEmailKeyValues,
         };
         const emailBody: string = replaceTemplateString(
           forgotPasswordEmailPlaceHolder
@@ -474,16 +477,19 @@ class UserBusiness implements IUserBusiness {
       subject,
       mail: mailBody,
       senderEmail: "talents@untappedpool.com",
-      senderName: "Untapped Pool"
+      senderName: "Untapped Pool",
     };
 
-    await schedule(StateMachineArns.EmailStateMachine, new Date(), mailParams);
+    const mailer = EmailService.mailer(mailParams);
+    await mailer.sendMail(ses);
+
+    //     await schedule(StateMachineArns.EmailStateMachine, new Date(), mailParams);
   }
   async verifyPasswordResetLink(
     request: VerifyResetPasswordRequest
   ): Promise<Result<string>> {
     const criteria = {
-      email: request.email.toLowerCase()
+      email: request.email.toLowerCase(),
     };
     const unverifiedUser: IUserModel = await this.findUserByEmail(criteria);
     if (!unverifiedUser) return Result.fail<string>(404, "User not found.");
@@ -498,7 +504,7 @@ class UserBusiness implements IUserBusiness {
       type: TokenType.VERIFY,
       audience: request.audience,
       keyid: this._currentVerifyKey,
-      expiresIn: `${this._mailExpiratation}h`
+      expiresIn: `${this._mailExpiratation}h`,
     };
 
     const decoded: TokenResult = await unverifiedUser.verifyToken(
@@ -514,7 +520,7 @@ class UserBusiness implements IUserBusiness {
   async resetPassword(data: ResetPasswordRequest): Promise<Result<string>> {
     const user: IUserModel = await this._userRepository.findByCriteria({
       email: data.email,
-      isEmailConfirmed: true
+      isEmailConfirmed: true,
     });
     if (!user) return Result.fail<string>(400, "User not found");
 
@@ -533,7 +539,7 @@ class UserBusiness implements IUserBusiness {
     // fetch user by id
     const user: IUserModel = await this._userRepository.findByCriteria({
       _id: data.userId,
-      isEmailConfirmed: true
+      isEmailConfirmed: true,
     });
     if (!user) return Result.fail<boolean>(400, "User not found");
     if (user._id !== data.userId)
@@ -560,7 +566,7 @@ class UserBusiness implements IUserBusiness {
     verificationUrl: string
   ): Promise<Result<boolean>> {
     const user: IUserModel = await this._userRepository.findByCriteria({
-      email
+      email,
     });
     if (!user) {
       return Result.fail<boolean>(400, "Invalid username/password");
@@ -575,7 +581,7 @@ class UserBusiness implements IUserBusiness {
       audience,
       tokenExpiresIn: `${this._mailExpiratation}h`,
       tokenType: TokenType.VERIFY,
-      redirectUrl: verificationUrl
+      redirectUrl: verificationUrl,
     };
     this.generateToken(data);
     return Result.ok<bool>(200, true);
@@ -590,11 +596,11 @@ class UserBusiness implements IUserBusiness {
       expiresIn: data.tokenExpiresIn,
       algorithm: this._currentRsaAlgType,
       keyid: this._currentVerifyKey,
-      subject: ""
+      subject: "",
     };
     const payload: ObjectKeyString = {
       type: data.tokenType,
-      email: data.user.email
+      email: data.user.email,
     };
     const privateKey: string = getSecretByKey(this._currentVerifyKey);
     return await data.user.generateToken(privateKey, tokenOptions, payload);
@@ -654,32 +660,32 @@ class UserBusiness implements IUserBusiness {
     return [
       {
         key: PlaceHolderKey.Facebook,
-        value: SocialMediaHandles.Facebook
+        value: SocialMediaHandles.Facebook,
       },
       {
         key: PlaceHolderKey.Instagram,
-        value: SocialMediaHandles.Instagram
+        value: SocialMediaHandles.Instagram,
       },
       {
         key: PlaceHolderKey.Twitter,
-        value: SocialMediaHandles.Twitter
+        value: SocialMediaHandles.Twitter,
       },
       {
         key: PlaceHolderKey.Name,
-        value: userName
+        value: userName,
       },
       {
         key: PlaceHolderKey.VerifyToken,
-        value: verificationUrl
+        value: verificationUrl,
       },
       {
         key: PlaceHolderKey.PlatformUrl,
-        value: audience
+        value: audience,
       },
       {
         key: PlaceHolderKey.FullVerifyToken,
-        value: verificationUrl
-      }
+        value: verificationUrl,
+      },
     ];
   }
 
@@ -691,7 +697,7 @@ class UserBusiness implements IUserBusiness {
 
   async fetchPermissionsByRole(role: string): Promise<IRolePermission[]> {
     return await this._rolePermissionRepository.populateFetch("permission", {
-      role
+      role,
     });
   }
 }

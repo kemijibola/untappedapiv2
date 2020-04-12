@@ -5,13 +5,13 @@ import { IProfile, SocialMedia } from "../../models/interfaces";
 
 export const socialMediaSchema: Schema = new Schema({
   type: { type: SocialMedia },
-  handle: { type: String }
+  handle: { type: String },
 });
 
 const physicalStatisticsSchema: Schema = new Schema({
   height: { type: String },
   bodyType: { type: String },
-  color: { type: String }
+  color: { type: String },
 });
 
 const profileSchema: Schema = new Schema(
@@ -23,15 +23,15 @@ const profileSchema: Schema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     shortBio: { type: String, required: true, minlength: 50, maxlength: 300 },
     categoryTypes: [
       {
         type: Schema.Types.ObjectId,
         ref: "CategoryType",
-        required: true
-      }
+        required: true,
+      },
     ],
     twitter: { type: String },
     facebook: { type: String },
@@ -40,7 +40,6 @@ const profileSchema: Schema = new Schema(
     additionalSocial: [{ type: String }],
     physicalStats: { type: physicalStatisticsSchema },
     tapCount: { type: Number, default: 0 },
-    bannerImagePath: { type: String }
   },
   { timestamps: true }
 );

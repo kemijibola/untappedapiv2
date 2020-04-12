@@ -50,6 +50,7 @@ var userSchema = new mongoose_1.Schema({
     password: { type: String, required: true },
     userType: { type: mongoose_1.Schema.Types.ObjectId, ref: "UserType", required: true },
     profileImagePath: { type: String },
+    bannerImagePath: { type: String },
     isEmailConfirmed: { type: Boolean, default: false },
     isPhoneConfirmed: { type: Boolean, default: false },
     isProfileCompleted: { type: Boolean, default: false },
@@ -65,14 +66,14 @@ var userSchema = new mongoose_1.Schema({
         {
             type: mongoose_1.Schema.Types.ObjectId,
             ref: "Role",
-            required: true
-        }
+            required: true,
+        },
     ],
     lastLogin: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Application"
-    }
+        ref: "Application",
+    },
 }, { timestamps: true });
 userSchema.methods.comparePassword = function (candidatePassword) {
     return __awaiter(this, void 0, void 0, function () {

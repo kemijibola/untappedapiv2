@@ -7,13 +7,13 @@ import { PlatformError } from "../utils/error";
 import {
   ILogin,
   IRegister,
-  IRefreshTokenViewModel
+  IRefreshTokenViewModel,
 } from "../app/models/interfaces";
 import {
   ConfirmEmailRequest,
   ChangePasswordData,
   VerifyResetPasswordRequest,
-  ResetPasswordRequest
+  ResetPasswordRequest,
 } from "../app/models/interfaces/custom/Account";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { requireAuth } from "../middlewares/auth";
@@ -40,13 +40,13 @@ export class AuthController {
     try {
       var refreshTokenBusiness = new RefreshTokenBusiness();
       var refreshToken = await refreshTokenBusiness.findByCriteria({
-        token: req.body.refreshToken
+        token: req.body.refreshToken,
       });
       if (refreshToken.error)
         return next(
           new PlatformError({
             code: refreshToken.responseCode,
-            message: refreshToken.error
+            message: refreshToken.error,
           })
         );
 
@@ -55,14 +55,14 @@ export class AuthController {
           return next(
             new PlatformError({
               code: 401,
-              message: "Refresh token is invalid."
+              message: "Refresh token is invalid.",
             })
           );
         if (refreshToken.data.ownerId !== req.body.userId)
           return next(
             new PlatformError({
               code: 403,
-              message: "You are not authorized to make this request."
+              message: "You are not authorized to make this request.",
             })
           );
 
@@ -77,14 +77,14 @@ export class AuthController {
             new PlatformError({
               code: 401,
               message:
-                "Refresh token has expired. Please generate another token."
+                "Refresh token has expired. Please generate another token.",
             })
           );
         }
         var userBusiness = new UserBusiness();
         const audience = req.appUser ? req.appUser.audience : "";
         const refreshTokenData: IRefreshTokenViewModel = {
-          application: req.appUser ? req.appUser.clientId : ""
+          application: req.appUser ? req.appUser.clientId : "",
         };
         var result = await userBusiness.refreshToken(
           req.body.userId,
@@ -95,19 +95,19 @@ export class AuthController {
           return next(
             new PlatformError({
               code: result.responseCode,
-              message: result.error
+              message: result.error,
             })
           );
         return res.status(result.responseCode).json({
           message: "Operation successful",
-          data: result.data
+          data: result.data,
         });
       }
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -123,11 +123,11 @@ export class AuthController {
         email: req.body.email.toLowerCase(),
         password: req.body.password,
         audience: audience,
-        issuer: ""
+        issuer: "",
       };
 
       const refreshTokenData: IRefreshTokenViewModel = {
-        application: req.appUser ? req.appUser._id : ""
+        application: req.appUser ? req.appUser._id : "",
       };
       const userBusiness = new UserBusiness();
       const result = await userBusiness.login(loginParams, refreshTokenData);
@@ -135,12 +135,12 @@ export class AuthController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       console.log(err.message);
@@ -148,7 +148,7 @@ export class AuthController {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -162,25 +162,25 @@ export class AuthController {
       const userBusiness = new UserBusiness();
       const item: ResetPasswordRequest = {
         email: req.body.email.toLowerCase(),
-        newPassword: req.body.newPassword
+        newPassword: req.body.newPassword,
       };
       const result = await userBusiness.resetPassword(item);
       if (result.error)
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -200,25 +200,25 @@ export class AuthController {
       const item: VerifyResetPasswordRequest = {
         email: req.body.email.toLowerCase(),
         token: req.body.token,
-        audience: audience
+        audience: audience,
       };
       const result = await userBusiness.verifyPasswordResetLink(item);
       if (result.error)
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -247,18 +247,18 @@ export class AuthController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -279,25 +279,25 @@ export class AuthController {
       const data: ChangePasswordData = {
         userId: req.user,
         oldPassword: req.body.oldPassword,
-        newPassword: req.body.newPassword
+        newPassword: req.body.newPassword,
       };
       const result = await userBusiness.changePassword(data);
       if (result.error)
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -326,18 +326,18 @@ export class AuthController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -357,7 +357,7 @@ export class AuthController {
       const request: ConfirmEmailRequest = {
         userEmail: req.body.email.toLowerCase(),
         token: req.body.token,
-        audience
+        audience,
       };
 
       const userBusiness = new UserBusiness();
@@ -366,18 +366,18 @@ export class AuthController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -401,7 +401,7 @@ export class AuthController {
         userType: req.body.userType,
         audience,
         confirmationUrl: redirectConfirmation,
-        roles: []
+        roles: [],
       };
       const userBusiness = new UserBusiness();
       const result = await userBusiness.register(signUpParams);
@@ -409,18 +409,18 @@ export class AuthController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }

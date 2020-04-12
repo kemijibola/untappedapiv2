@@ -44,40 +44,40 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var AWS = __importStar(require("aws-sdk"));
-var config = module.require('../../../config/keys');
+var config = module.require("../../../config/keys");
 AWS.config.update({
     accessKeyId: config.SERVERLESS.access_key_id,
     secretAccessKey: config.SERVERLESS.secret_access_key,
-    region: 'us-east-1'
+    region: "us-east-1",
 });
-var awsSes = new AWS.SES({ region: 'us-east-1' });
+var awsSes = new AWS.SES({ region: "us-east-1" });
 exports.ses = function (receivers, subject, body, senderEmail, ccAddresses, bccAddresses) { return __awaiter(_this, void 0, void 0, function () {
     var charset, params;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                charset = 'UTF-8';
+                charset = "UTF-8";
                 params = {
                     Destination: {
                         ToAddresses: receivers,
                         CcAddresses: ccAddresses || [],
-                        BccAddresses: bccAddresses || []
+                        BccAddresses: bccAddresses || [],
                     },
                     Message: {
                         Body: {
                             Html: {
                                 Charset: charset,
-                                Data: body
+                                Data: body,
                             },
-                            Text: { Charset: charset, Data: body }
+                            Text: { Charset: charset, Data: body },
                         },
                         Subject: {
                             Charset: charset,
-                            Data: subject
-                        }
+                            Data: subject,
+                        },
                     },
                     ReplyToAddresses: [],
-                    Source: senderEmail
+                    Source: senderEmail,
                 };
                 return [4 /*yield*/, awsSes.sendEmail(params).promise()];
             case 1: return [2 /*return*/, _a.sent()];

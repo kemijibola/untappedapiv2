@@ -15,7 +15,7 @@ export enum SocialMedia {
   TWITTER = "TWITTER",
   INSTAGRAM = "INSTAGRAM",
   YOUTUBE = "YOUTUBE",
-  OTHER = "OTHER"
+  OTHER = "OTHER",
 }
 
 export interface IUserSocialMedia {
@@ -38,5 +38,4 @@ export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
   youtube?: string;
   additionalSocial?: string[];
   physicalStats?: IPhysicalStatistics;
-  bannerImagePath?: string;
 }
