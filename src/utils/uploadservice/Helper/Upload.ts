@@ -6,6 +6,7 @@ export enum UPLOADOPERATIONS {
   Portfolio = "Portfolio",
   Entries = "Entries",
   ContestBanner = "ContestBanner",
+  BannerImage = "BannerImage",
   Default = "Default"
 }
 export interface IFileMetaData {
