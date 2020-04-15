@@ -69,7 +69,7 @@ function isValidIdentity(audience) {
                     _a.trys.push([0, 2, , 3]);
                     applicationBusiness = new ApplicationBusiness_1.default();
                     return [4 /*yield*/, applicationBusiness.findByCriteria({
-                            identity: audience
+                            identity: audience,
                         })];
                 case 1:
                     app = _a.sent();
@@ -120,7 +120,7 @@ function escapeJSON(json) {
         "\f": "\\f",
         "\r": "\\r",
         '"': '\\"',
-        "\\": "\\\\"
+        "\\": "\\\\",
     };
     escapable.lastIndex = 0;
     return escapable.test(json)
@@ -135,4 +135,54 @@ function escapeJSON(json) {
         : '"' + json + '"';
 }
 exports.escapeJSON = escapeJSON;
+function generateInvoiceNo() {
+    var number = Math.floor(Math.random() * 9999) + 1;
+    var numberStr = "";
+    if (number.toString().length <= 4) {
+        numberStr = String("0000" + number).slice(-4);
+    }
+    var dt = new Date();
+    var day = dt.getDate();
+    var m = dt.getMonth() + 1;
+    var retVal = "IV" + "/" + day + "" + m + "/" + numberStr;
+    return retVal;
+}
+exports.generateInvoiceNo = generateInvoiceNo;
+function generateOtp() {
+    var otp = "";
+    var possible = "0123456789";
+    for (var i = 0; i <= 5; i++) {
+        otp += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return otp;
+}
+exports.generateOtp = generateOtp;
+function generateAutoPassword() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789abcdefghijklmnopqrstuvwxyz";
+    for (var i = 0; i < 8; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+}
+exports.generateAutoPassword = generateAutoPassword;
+function makeid() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (var i = 0; i < 2; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+}
+exports.makeid = makeid;
+function getRandomId() {
+    var number = Math.floor(Math.random() * 99999) + 1;
+    var numberStr = "";
+    if (number.toString().length <= 5) {
+        numberStr = String("00000" + number).slice(-5);
+    }
+    var retVal = makeid() + "-" + numberStr;
+    return retVal;
+}
+exports.getRandomId = getRandomId;
 //# sourceMappingURL=Helper.js.map

@@ -17,4 +17,5 @@ __export(require("./CategoryTypeController"));
 __export(require("./ProfileController"));
 __export(require("./UserFilterCategoryController"));
 __export(require("./CommentController"));
+__export(require("./ContestController"));
 //# sourceMappingURL=index.js.map

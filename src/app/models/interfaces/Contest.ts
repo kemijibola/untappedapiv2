@@ -12,8 +12,8 @@ import { IIssueCategory, ComplaintStatus } from "./IssueCategory";
 import { MediaType } from "./Media";
 
 export interface IRedeemable {
-  prizeType: IPrizeType["_id"];
-  prizes: any[];
+  name: string;
+  prizeCash: number;
 }
 
 export interface IJudge {
@@ -39,25 +39,21 @@ export interface IContest
     ITimeStamp,
     mongoose.Document {
   title: string;
-  // Contest code is generated after successful payment
-  code: number;
+  code: string;
   information: string;
   bannerImage: string;
-  eligibleCategories: ICategory[];
+  eligibleCategories: ICategory["_id"];
   eligibilityInfo: string;
   entryMediaType: MediaType;
   submissionRules: string;
   startDate: Date;
-  duration: number;
+  endDate: Date;
   views: number;
   likes: number;
-  redeemable: IRedeemable;
-  endDate: Date;
-  contestType: ContestType;
+  redeemable: IRedeemable[];
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
-  isApproved: boolean;
 }
 
 interface IContestIssues {

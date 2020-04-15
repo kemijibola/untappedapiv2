@@ -48,6 +48,8 @@ var decorators_1 = require("../decorators");
 var ContestBusiness = require("../app/business/ContestBusiness");
 var error_1 = require("../utils/error");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var auth_1 = require("../middlewares/auth");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ContestController = /** @class */ (function () {
     function ContestController() {
     }
@@ -59,6 +61,7 @@ var ContestController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
+                        item.createdBy = req.user;
                         contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, contestBusiness.create(item)];
                     case 1:
@@ -66,18 +69,54 @@ var ContestController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ContestController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var condition, contestBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        condition = {};
+                        if (req.query) {
+                            condition.title = req.query.title || "";
+                        }
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.fetch(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -95,16 +134,25 @@ var ContestController = /** @class */ (function () {
         }); });
     };
     ContestController.prototype.delete = function () { };
-    ContestController.prototype.fetch = function () { };
     ContestController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.requestValidators("title", "information", "eligibleCategories", "eligibilityInfo", "submissionRules", "startDate", "contestType", "duration", "redeemable"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.requestValidators("title", "information", "startDate", "endDate", "entryMediaType", "redeemable"),
+        decorators_1.authorize(PermissionConstant_1.canCreateContest),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "create", null);
+    __decorate([
+        decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "fetch", null);
     __decorate([
         decorators_1.authorize("ADMIN"),
         __metadata("design:type", Function),

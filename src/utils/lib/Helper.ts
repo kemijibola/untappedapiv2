@@ -19,7 +19,7 @@ let chunkedUserPermissons: ObjectKeyString = {};
 export const getSecretByKey: (keyId: string) => string = (
   keyId: string
 ): string => {
-  const secret = config.RSA_PRIVATE.filter(x => x.key === keyId)[0];
+  const secret = config.RSA_PRIVATE.filter((x) => x.key === keyId)[0];
   if (!secret) {
     return "";
   }
@@ -35,7 +35,7 @@ export const validateObjectId: (id: string) => boolean = (
 export const getPublicKey: (keyId: string) => string = (
   keyId: string
 ): string => {
-  const secret = config.RSA_PUBLIC.filter(x => x.key === keyId)[0];
+  const secret = config.RSA_PUBLIC.filter((x) => x.key === keyId)[0];
   if (!secret) {
     return "";
   }
@@ -48,7 +48,7 @@ export async function isValidIdentity(
   try {
     const applicationBusiness = new ApplicationBusiness();
     const app = await applicationBusiness.findByCriteria({
-      identity: audience
+      identity: audience,
     });
     if (!app)
       return Result.fail<boolean>(404, `Audience '${audience}' not found`);
@@ -57,7 +57,6 @@ export async function isValidIdentity(
     throw new Error(`InternalServer error occured.${err.message}`);
   }
 }
-
 
 export interface IStringDate {
   year: string;
@@ -104,13 +103,13 @@ export function escapeJSON(json: string) {
     "\f": "\\f",
     "\r": "\\r",
     '"': '\\"',
-    "\\": "\\\\"
+    "\\": "\\\\",
   };
 
   escapable.lastIndex = 0;
   return escapable.test(json)
     ? '"' +
-        json.replace(escapable, function(a: string) {
+        json.replace(escapable, function (a: string) {
           var c = meta[a];
           return typeof c === "string"
             ? c
@@ -118,4 +117,55 @@ export function escapeJSON(json: string) {
         }) +
         '"'
     : '"' + json + '"';
+}
+
+export function generateInvoiceNo(): string {
+  var number = Math.floor(Math.random() * 9999) + 1;
+  let numberStr = "";
+  if (number.toString().length <= 4) {
+    numberStr = String("0000" + number).slice(-4);
+  }
+  var dt = new Date();
+  let day = dt.getDate();
+  let m = dt.getMonth() + 1;
+  var retVal = "IV" + "/" + day + "" + m + "/" + numberStr;
+  return retVal;
+}
+
+export function generateOtp(): string {
+  var otp = "";
+  var possible = "0123456789";
+  for (var i = 0; i <= 5; i++) {
+    otp += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return otp;
+}
+
+export function generateAutoPassword(): string {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789abcdefghijklmnopqrstuvwxyz";
+
+  for (var i = 0; i < 8; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+export function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (var i = 0; i < 2; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+export function getRandomId(): string {
+  var number = Math.floor(Math.random() * 99999) + 1;
+  let numberStr = "";
+  if (number.toString().length <= 5) {
+    numberStr = String("00000" + number).slice(-5);
+  }
+  var retVal = makeid() + "-" + numberStr;
+  return retVal;
 }

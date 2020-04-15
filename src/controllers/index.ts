@@ -12,3 +12,4 @@ export * from "./CategoryTypeController";
 export * from "./ProfileController";
 export * from "./UserFilterCategoryController";
 export * from "./CommentController";
+export * from "./ContestController";

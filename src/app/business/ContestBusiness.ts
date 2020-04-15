@@ -1,12 +1,13 @@
 import ContestRepository from "../repository/ContestRepository";
 import IContestBusiness = require("./interfaces/ContestBusiness");
-import { IContest, PaymentStatus } from "../models/interfaces";
+import { IContest, PaymentStatus, MediaType } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { ContestType } from "../data/schema/Contest";
-import { isAfter, addDays } from "date-fns";
+import { isAfter, addDays, differenceInDays } from "date-fns";
 import { IContestList } from "../models/interfaces/custom/ContestList";
 import { ContestSummary } from "../../utils/contests/ContestSummary";
 import { ContestListAnalysis } from "../../utils/contests/analyzers/ContestListAnalysis";
+import { getRandomId } from "../../utils/lib";
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
@@ -51,42 +52,54 @@ class ContestBusiness implements IContestBusiness {
   }
 
   async create(item: IContest): Promise<Result<IContest>> {
-    // TODO:: end date
-    // TODO:: confirm categories sent by client
-    if (item.contestType === ContestType.OnlineOffline) {
-      if (!item.maxContestant || item.maxContestant < 3) {
-        const endDate: Date = addDays(item.startDate, item.duration);
-        if (item.grandFinaleDate) {
-          const isGrandFinaleDateAfter: boolean = isAfter(
-            item.grandFinaleDate,
-            endDate
-          );
-          if (!isGrandFinaleDateAfter)
-            return Result.fail<IContest>(
-              400,
-              "Grand finale date must be after end of contest."
-            );
-        } else {
-          return Result.fail<IContest>(
-            400,
-            "Please provide Grand finale date."
-          );
-        }
-        if (!item.evaluations) {
-          return Result.fail<IContest>(
-            400,
-            "Please provide criteria for evaluating contestants."
-          );
-        }
-      } else {
-        return Result.fail<IContest>(
-          400,
-          "Maximum number of contestants to be selected must be more than two"
-        );
-      }
+    if (isAfter(Date.now(), item.startDate)) {
+      return Result.fail<IContest>(
+        400,
+        "Contest start date must be today or a later date"
+      );
     }
-    item.isApproved = false;
+    if (differenceInDays(item.startDate, item.endDate) > 14) {
+      return Result.fail<IContest>(
+        400,
+        "Contest duration must not exceed 14 days from start date"
+      );
+    }
+    const mediaType = item.entryMediaType.toLowerCase();
+    const systemMediaTypes: string[] = Object.values(MediaType);
+    if (!systemMediaTypes.includes(mediaType)) {
+      return Result.fail<IContest>(400, "Contest entry media type is invalid");
+    }
+
+    if (item.redeemable.length < 1) {
+      return Result.fail<IContest>(
+        400,
+        "Please add at least one winner to contest"
+      );
+    }
+
+    if (item.redeemable.length > 3) {
+      return Result.fail<IContest>(
+        400,
+        "Contest can not have more than 3 winners"
+      );
+    }
+
+    const contest = await this._contestRepository.findByCriteria({
+      title: item.title,
+    });
+    if (contest) {
+      return Result.fail<IContest>(
+        400,
+        `Contest with title ${item.title} already exist`
+      );
+    }
+
+    item.views = 0;
+    item.likes = 0;
     item.paymentStatus = PaymentStatus.UnPaid;
+    item.issues = [];
+    item.code = getRandomId();
+
     const newContest = await this._contestRepository.create(item);
     return Result.ok<IContest>(201, newContest);
   }

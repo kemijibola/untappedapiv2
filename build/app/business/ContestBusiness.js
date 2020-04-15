@@ -40,10 +40,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
-var Contest_1 = require("../data/schema/Contest");
 var date_fns_1 = require("date-fns");
 var ContestSummary_1 = require("../../utils/contests/ContestSummary");
 var ContestListAnalysis_1 = require("../../utils/contests/analyzers/ContestListAnalysis");
+var lib_1 = require("../../utils/lib");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestRepository = new ContestRepository_1.default();
@@ -131,35 +131,42 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var endDate, isGrandFinaleDateAfter, newContest;
+            var mediaType, systemMediaTypes, contest, newContest;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        // TODO:: end date
-                        // TODO:: confirm categories sent by client
-                        if (item.contestType === Contest_1.ContestType.OnlineOffline) {
-                            if (!item.maxContestant || item.maxContestant < 3) {
-                                endDate = date_fns_1.addDays(item.startDate, item.duration);
-                                if (item.grandFinaleDate) {
-                                    isGrandFinaleDateAfter = date_fns_1.isAfter(item.grandFinaleDate, endDate);
-                                    if (!isGrandFinaleDateAfter)
-                                        return [2 /*return*/, Result_1.Result.fail(400, "Grand finale date must be after end of contest.")];
-                                }
-                                else {
-                                    return [2 /*return*/, Result_1.Result.fail(400, "Please provide Grand finale date.")];
-                                }
-                                if (!item.evaluations) {
-                                    return [2 /*return*/, Result_1.Result.fail(400, "Please provide criteria for evaluating contestants.")];
-                                }
-                            }
-                            else {
-                                return [2 /*return*/, Result_1.Result.fail(400, "Maximum number of contestants to be selected must be more than two")];
-                            }
+                        if (date_fns_1.isAfter(Date.now(), item.startDate)) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Contest start date must be today or a later date")];
                         }
-                        item.isApproved = false;
-                        item.paymentStatus = interfaces_1.PaymentStatus.UnPaid;
-                        return [4 /*yield*/, this._contestRepository.create(item)];
+                        if (date_fns_1.differenceInDays(item.startDate, item.endDate) > 14) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Contest duration must not exceed 14 days from start date")];
+                        }
+                        mediaType = item.entryMediaType.toLowerCase();
+                        systemMediaTypes = Object.values(interfaces_1.MediaType);
+                        if (!systemMediaTypes.includes(mediaType)) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Contest entry media type is invalid")];
+                        }
+                        if (item.redeemable.length < 1) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please add at least one winner to contest")];
+                        }
+                        if (item.redeemable.length > 3) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Contest can not have more than 3 winners")];
+                        }
+                        return [4 /*yield*/, this._contestRepository.findByCriteria({
+                                title: item.title,
+                            })];
                     case 1:
+                        contest = _a.sent();
+                        if (contest) {
+                            return [2 /*return*/, Result_1.Result.fail(400, "Contest with title " + item.title + " already exist")];
+                        }
+                        item.views = 0;
+                        item.likes = 0;
+                        item.paymentStatus = interfaces_1.PaymentStatus.UnPaid;
+                        item.issues = [];
+                        item.code = lib_1.getRandomId();
+                        return [4 /*yield*/, this._contestRepository.create(item)];
+                    case 2:
                         newContest = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newContest)];
                 }
