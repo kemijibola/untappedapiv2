@@ -13,6 +13,7 @@ import { PlatformError } from "../utils/error";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
+import { toObjectId } from "../utils/lib";
 
 @controller("/v1/comments")
 export class CommentController {
@@ -119,7 +120,7 @@ export class CommentController {
       if (comment.data) {
         const userId: string = req.user;
         const userHasLiked = comment.data.likedBy.filter(
-          (x) => x.user == req.user
+          (x) => x == req.user
         )[0];
         if (!userHasLiked) {
           return next(
@@ -131,7 +132,7 @@ export class CommentController {
         }
 
         comment.data.likedBy = comment.data.likedBy.filter(
-          (x) => x.user != req.user
+          (x) => x != req.user
         );
 
         console.log(comment.data.likedBy);
@@ -185,9 +186,8 @@ export class CommentController {
       if (comment.data) {
         const userId: string = req.user;
         const userHasLiked = comment.data.likedBy.filter(
-          (x) => x.user == req.user
+          (x) => x == req.user
         )[0];
-        console.log(userHasLiked);
         if (userHasLiked) {
           return next(
             new PlatformError({
@@ -196,7 +196,7 @@ export class CommentController {
             })
           );
         }
-        comment.data.likedBy.push(Object.assign({ user: userId }));
+        comment.data.likedBy = [...comment.data.likedBy, req.user];
         const result = await commentBusiness.update(
           req.params.id,
           comment.data

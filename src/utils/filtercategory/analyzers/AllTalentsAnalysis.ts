@@ -1,7 +1,7 @@
 import { Analyzer } from "../Helper/Summary";
 import {
   ReportType,
-  IUserFilterCategory
+  IUserFilterCategory,
 } from "../../../app/models/interfaces";
 import { MatchData } from "../Helper/MatchData";
 import { Talent } from "../../../app/models/viewmodels";
@@ -25,7 +25,7 @@ export class AllTalentsAnalysis implements Analyzer {
         shortDescription: user.shortDescription || "",
         categoryTypes: user.categoryTypes || [],
         reportType: ReportType.alltalents,
-        userType: user.userType
+        userType: user.userType,
       });
       filteredCategories = [...filteredCategories, filtered];
     }

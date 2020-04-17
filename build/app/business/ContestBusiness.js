@@ -38,15 +38,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
+var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
-var date_fns_1 = require("date-fns");
-var ContestSummary_1 = require("../../utils/contests/ContestSummary");
-var ContestListAnalysis_1 = require("../../utils/contests/analyzers/ContestListAnalysis");
 var lib_1 = require("../../utils/lib");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestRepository = new ContestRepository_1.default();
+        this._contestEntryRepository = new ContestEntryRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -63,17 +62,16 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.fetchContestList = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, contestSummary, contestList;
+            var contests, modified;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._contestRepository.fetch(condition)];
                     case 1:
-                        contest = _a.sent();
-                        contestSummary = new ContestSummary_1.ContestSummary(new ContestListAnalysis_1.ContestListAnalysis());
-                        return [4 /*yield*/, contestSummary.generateContestListReport(contest)];
+                        contests = _a.sent();
+                        return [4 /*yield*/, this.fetchRunningContest(contests)];
                     case 2:
-                        contestList = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, contestList)];
+                        modified = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, modified)];
                 }
             });
         });
@@ -131,30 +129,12 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaType, systemMediaTypes, contest, newContest;
+            var contest, newContest;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (date_fns_1.isAfter(Date.now(), item.startDate)) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest start date must be today or a later date")];
-                        }
-                        if (date_fns_1.differenceInDays(item.startDate, item.endDate) > 14) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest duration must not exceed 14 days from start date")];
-                        }
-                        mediaType = item.entryMediaType.toLowerCase();
-                        systemMediaTypes = Object.values(interfaces_1.MediaType);
-                        if (!systemMediaTypes.includes(mediaType)) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest entry media type is invalid")];
-                        }
-                        if (item.redeemable.length < 1) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Please add at least one winner to contest")];
-                        }
-                        if (item.redeemable.length > 3) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest can not have more than 3 winners")];
-                        }
-                        return [4 /*yield*/, this._contestRepository.findByCriteria({
-                                title: item.title,
-                            })];
+                    case 0: return [4 /*yield*/, this._contestRepository.findByCriteria({
+                            title: item.title,
+                        })];
                     case 1:
                         contest = _a.sent();
                         if (contest) {
@@ -219,6 +199,77 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         isDeleted = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, isDeleted)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.fetchRunningContest = function (contests) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestList, currentDate, currentContests, _i, currentContests_1, item, contestEntries, contestObj, earlierContests, _a, earlierContests_1, item, contestEntries, contestObj;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        contestList = [];
+                        currentDate = new Date();
+                        currentContests = contests
+                            .filter(function (x) { return x.startDate >= currentDate; })
+                            .sort(function (a, b) {
+                            return lib_1.getTime(a.createdAt) - lib_1.getTime(b.createdAt);
+                        });
+                        _i = 0, currentContests_1 = currentContests;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < currentContests_1.length)) return [3 /*break*/, 4];
+                        item = currentContests_1[_i];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch({
+                                contest: item._id,
+                            })];
+                    case 2:
+                        contestEntries = _b.sent();
+                        contestObj = {
+                            _id: item._id,
+                            title: item.title,
+                            entryCount: contestEntries.length || 0,
+                            viewCount: item.views,
+                            bannerImage: item.bannerImage,
+                        };
+                        contestList = contestList.concat([contestObj]);
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        contestList = contestList.sort(function (a, b) {
+                            return b.entryCount - a.entryCount;
+                        });
+                        earlierContests = contests
+                            .filter(function (x) { return x.startDate < currentDate; })
+                            .sort(function (a, b) {
+                            return lib_1.getTime(b.startDate) - lib_1.getTime(a.startDate);
+                        });
+                        _a = 0, earlierContests_1 = earlierContests;
+                        _b.label = 5;
+                    case 5:
+                        if (!(_a < earlierContests_1.length)) return [3 /*break*/, 8];
+                        item = earlierContests_1[_a];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch({
+                                contest: item._id,
+                            })];
+                    case 6:
+                        contestEntries = _b.sent();
+                        contestObj = {
+                            _id: item._id,
+                            title: item.title,
+                            entryCount: contestEntries.length || 0,
+                            viewCount: item.views,
+                            bannerImage: item.bannerImage,
+                        };
+                        contestList = contestList.concat([contestObj]);
+                        _b.label = 7;
+                    case 7:
+                        _a++;
+                        return [3 /*break*/, 5];
+                    case 8: return [2 /*return*/, contestList];
                 }
             });
         });

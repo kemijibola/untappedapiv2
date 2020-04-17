@@ -1,12 +1,11 @@
-import { IContest } from '../Contest';
+import { IContest } from "../Contest";
 
 export interface IContestList {
-  _id: IContest['_id'];
+  _id: IContest["_id"];
   title: string;
   entryCount: number;
   viewCount: number;
   bannerImage: string;
-  contestDateDistanceInWords: string;
 }
 
 export interface IUserContestList {

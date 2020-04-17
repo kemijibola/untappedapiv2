@@ -7,7 +7,7 @@ import {
   CommentViewModel,
   ReplyViewModel,
   CommenterViewModel,
-  LikeViewModel,
+  LikedByViewModel,
 } from "../models/interfaces/custom/Comment";
 
 class CommentBusiness implements ICommentBusiness {
@@ -51,7 +51,7 @@ class CommentBusiness implements ICommentBusiness {
     const newComment = await this._commentRepository.create(item);
     const userDetails = await this._userRepository.findById(newComment.user);
 
-    const likedBy: LikeViewModel[] = [];
+    const likedBy: LikedByViewModel[] = [];
 
     const commentObj: CommentViewModel = {
       _id: newComment._id,
@@ -77,16 +77,17 @@ class CommentBusiness implements ICommentBusiness {
         404,
         `Could not update comment.Comment with Id ${id} not found`
       );
+    // console.log(item.likedBy);
     const updateObj = await this._commentRepository.update(comment._id, item);
     const commenterDetails = await this._userRepository.findById(
       updateObj.user
     );
 
     let likedBy = updateObj.likedBy.reduce(
-      (theMap: LikeViewModel[], theItem: ILike) => {
-        const newLikeObj: LikeViewModel = {
-          _id: theItem._id,
-          user: theItem.user,
+      (theMap: LikedByViewModel[], theItem: string) => {
+        const newLikeObj: LikedByViewModel = {
+          _id: theItem,
+          fullName: "",
         };
         theMap = [...theMap, newLikeObj];
         return theMap;
@@ -123,6 +124,14 @@ class CommentBusiness implements ICommentBusiness {
       }
     }
 
+    if (likedBy.length > 0) {
+      for (let like of likedBy) {
+        const likedByUser = await this._userRepository.findById(like._id);
+        like._id = likedByUser._id._id;
+        like.fullName = likedByUser.fullName;
+      }
+    }
+
     const commentObj: CommentViewModel = {
       _id: updateObj._id,
       media: updateObj.media,
@@ -133,7 +142,7 @@ class CommentBusiness implements ICommentBusiness {
         profileImagePath: commenterDetails.profileImagePath || "",
       },
       replies: [...userReplies],
-      likedBy: [...updateObj.likedBy],
+      likedBy: [...likedBy],
       createdAt: updateObj.createdAt,
       updatedAt: updateObj.updateAt,
     };

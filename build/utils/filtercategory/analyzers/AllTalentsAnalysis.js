@@ -60,7 +60,7 @@ var AllTalentsAnalysis = /** @class */ (function () {
                         shortDescription: user.shortDescription || "",
                         categoryTypes: user.categoryTypes || [],
                         reportType: interfaces_1.ReportType.alltalents,
-                        userType: user.userType
+                        userType: user.userType,
                     });
                     filteredCategories = filteredCategories.concat([filtered]);
                 }

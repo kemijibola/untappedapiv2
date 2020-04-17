@@ -13,9 +13,9 @@ export interface IComment extends ITimeStamp, IAppSpec, mongoose.Document {
   comment: string;
   user: IUser["_id"];
   replies: IReply[];
-  likedBy: ILike[];
+  likedBy: string[];
 }
 
 export interface ILike extends mongoose.Document, ITimeStamp {
-  user: IUser["_id"];
+  user: string;
 }

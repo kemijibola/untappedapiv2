@@ -37,10 +37,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var config = require("../../config/keys");
 var ApplicationBusiness_1 = __importDefault(require("../../app/business/ApplicationBusiness"));
 var Result_1 = require("../Result");
+var mongoose = __importStar(require("mongoose"));
 var chunkedUserPermissons = {};
 exports.getSecretByKey = function (keyId) {
     var secret = config.RSA_PRIVATE.filter(function (x) { return x.key === keyId; })[0];
@@ -185,4 +193,12 @@ function getRandomId() {
     return retVal;
 }
 exports.getRandomId = getRandomId;
+function toObjectId(_id) {
+    return mongoose.Types.ObjectId.createFromHexString(_id);
+}
+exports.toObjectId = toObjectId;
+function getTime(date) {
+    return date != null ? new Date(date).getTime() : 0;
+}
+exports.getTime = getTime;
 //# sourceMappingURL=Helper.js.map

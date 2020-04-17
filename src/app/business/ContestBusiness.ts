@@ -1,19 +1,27 @@
 import ContestRepository from "../repository/ContestRepository";
+import ContestEntryRepository from "../repository/ContestEntryRepository";
 import IContestBusiness = require("./interfaces/ContestBusiness");
-import { IContest, PaymentStatus, MediaType } from "../models/interfaces";
+import {
+  IContest,
+  PaymentStatus,
+  MediaType,
+  IContestEntry,
+} from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { ContestType } from "../data/schema/Contest";
 import { isAfter, addDays, differenceInDays } from "date-fns";
 import { IContestList } from "../models/interfaces/custom/ContestList";
 import { ContestSummary } from "../../utils/contests/ContestSummary";
 import { ContestListAnalysis } from "../../utils/contests/analyzers/ContestListAnalysis";
-import { getRandomId } from "../../utils/lib";
+import { getRandomId, getTime } from "../../utils/lib";
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
+  private _contestEntryRepository: ContestEntryRepository;
 
   constructor() {
     this._contestRepository = new ContestRepository();
+    this._contestEntryRepository = new ContestEntryRepository();
   }
 
   async fetch(condition: any): Promise<Result<IContest[]>> {
@@ -22,12 +30,9 @@ class ContestBusiness implements IContestBusiness {
   }
 
   async fetchContestList(condition: any): Promise<Result<IContestList[]>> {
-    const contest = await this._contestRepository.fetch(condition);
-    const contestSummary = new ContestSummary<IContestList[]>(
-      new ContestListAnalysis()
-    );
-    const contestList = await contestSummary.generateContestListReport(contest);
-    return Result.ok<IContestList[]>(200, contestList);
+    const contests = await this._contestRepository.fetch(condition);
+    const modified = await this.fetchRunningContest(contests);
+    return Result.ok<IContestList[]>(200, modified);
   }
 
   async findById(id: string): Promise<Result<IContest>> {
@@ -52,38 +57,6 @@ class ContestBusiness implements IContestBusiness {
   }
 
   async create(item: IContest): Promise<Result<IContest>> {
-    if (isAfter(Date.now(), item.startDate)) {
-      return Result.fail<IContest>(
-        400,
-        "Contest start date must be today or a later date"
-      );
-    }
-    if (differenceInDays(item.startDate, item.endDate) > 14) {
-      return Result.fail<IContest>(
-        400,
-        "Contest duration must not exceed 14 days from start date"
-      );
-    }
-    const mediaType = item.entryMediaType.toLowerCase();
-    const systemMediaTypes: string[] = Object.values(MediaType);
-    if (!systemMediaTypes.includes(mediaType)) {
-      return Result.fail<IContest>(400, "Contest entry media type is invalid");
-    }
-
-    if (item.redeemable.length < 1) {
-      return Result.fail<IContest>(
-        400,
-        "Please add at least one winner to contest"
-      );
-    }
-
-    if (item.redeemable.length > 3) {
-      return Result.fail<IContest>(
-        400,
-        "Contest can not have more than 3 winners"
-      );
-    }
-
     const contest = await this._contestRepository.findByCriteria({
       title: item.title,
     });
@@ -130,6 +103,63 @@ class ContestBusiness implements IContestBusiness {
   async delete(id: string): Promise<Result<boolean>> {
     const isDeleted = await this._contestRepository.delete(id);
     return Result.ok<boolean>(200, isDeleted);
+  }
+
+  private async fetchRunningContest(
+    contests: IContest[]
+  ): Promise<IContestList[]> {
+    /**
+     * current contest = startDate  = today and above
+     */
+    let contestList: IContestList[] = [];
+    const currentDate = new Date();
+    let currentContests = contests
+      .filter((x) => x.startDate >= currentDate)
+      .sort((a, b) => {
+        return getTime(a.createdAt) - getTime(b.createdAt);
+      });
+
+    for (let item of currentContests) {
+      const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
+        {
+          contest: item._id,
+        }
+      );
+      const contestObj: IContestList = {
+        _id: item._id,
+        title: item.title,
+        entryCount: contestEntries.length || 0,
+        viewCount: item.views,
+        bannerImage: item.bannerImage,
+      };
+      contestList = [...contestList, contestObj];
+    }
+    contestList = contestList.sort((a, b) => {
+      return b.entryCount - a.entryCount;
+    });
+    // mergedContests = [...mergedContests, ...contestList];
+    let earlierContests = contests
+      .filter((x) => x.startDate < currentDate)
+      .sort((a, b) => {
+        return getTime(b.startDate) - getTime(a.startDate);
+      });
+
+    for (let item of earlierContests) {
+      const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
+        {
+          contest: item._id,
+        }
+      );
+      const contestObj: IContestList = {
+        _id: item._id,
+        title: item.title,
+        entryCount: contestEntries.length || 0,
+        viewCount: item.views,
+        bannerImage: item.bannerImage,
+      };
+      contestList = [...contestList, contestObj];
+    }
+    return contestList;
   }
 }
 

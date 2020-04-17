@@ -45,22 +45,56 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+var interfaces_1 = require("../app/models/interfaces");
 var ContestBusiness = require("../app/business/ContestBusiness");
 var error_1 = require("../utils/error");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
+var date_fns_1 = require("date-fns");
 var ContestController = /** @class */ (function () {
     function ContestController() {
     }
     ContestController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, contestBusiness, result, err_1;
+            var item, mediaType, systemMediaTypes, contestBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
+                        if (date_fns_1.isAfter(Date.now(), item.startDate)) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Contest start date must be today or a later date",
+                                }))];
+                        }
+                        if (date_fns_1.differenceInDays(item.startDate, item.endDate) > 14) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Contest duration must not exceed 14 days from start date",
+                                }))];
+                        }
+                        mediaType = item.entryMediaType.toLowerCase();
+                        systemMediaTypes = Object.values(interfaces_1.MediaType);
+                        if (!systemMediaTypes.includes(mediaType)) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Contest entry media type is invalid",
+                                }))];
+                        }
+                        if (item.redeemable.length < 1) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please add at least one winner to contest",
+                                }))];
+                        }
+                        if (item.redeemable.length > 3) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Contest can not have more than 3 winners",
+                                }))];
+                        }
                         item.createdBy = req.user;
                         contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, contestBusiness.create(item)];
@@ -87,9 +121,41 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
+    ContestController.prototype.fetchContestPreviewList = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.fetchContestList({})];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ContestController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var condition, contestBusiness, result, err_2;
+            var condition, contestBusiness, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -113,7 +179,7 @@ var ContestController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -145,6 +211,13 @@ var ContestController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "create", null);
+    __decorate([
+        decorators_1.get("/"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "fetchContestPreviewList", null);
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

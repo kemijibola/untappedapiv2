@@ -6,6 +6,7 @@ import PermissionBusiness from "../../app/business/PermissionBusiness";
 import ApplicationBusiness from "../../app/business/ApplicationBusiness";
 import { PlatformError } from "../error";
 import { Result } from "../Result";
+import * as mongoose from "mongoose";
 
 export type ObjectKeyString = { [x: string]: string };
 
@@ -168,4 +169,12 @@ export function getRandomId(): string {
   }
   var retVal = makeid() + "-" + numberStr;
   return retVal;
+}
+
+export function toObjectId(_id: string): mongoose.Types.ObjectId {
+  return mongoose.Types.ObjectId.createFromHexString(_id);
+}
+
+export function getTime(date?: Date) {
+  return date != null ? new Date(date).getTime() : 0;
 }

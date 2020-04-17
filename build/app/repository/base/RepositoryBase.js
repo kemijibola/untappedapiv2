@@ -67,6 +67,8 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .populate("user", "_id fullName profileImagePath")
+                .populate("likedBy", "_id fullName")
+                .populate("replies.user", "_id fullName profileImagePath")
                 // .cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();
         });

@@ -4,7 +4,7 @@ export interface CommentViewModel {
   comment: string;
   user?: CommenterViewModel;
   replies?: ReplyViewModel[];
-  likedBy?: LikeViewModel[];
+  likedBy?: LikedByViewModel[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -15,9 +15,9 @@ export interface ReplyViewModel {
   reply: string;
 }
 
-export interface LikeViewModel {
+export interface LikedByViewModel {
   _id: string;
-  user: string;
+  fullName: string;
 }
 
 export interface CommenterViewModel {

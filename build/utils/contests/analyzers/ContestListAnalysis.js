@@ -54,7 +54,6 @@ var ContestListAnalysis = /** @class */ (function () {
                                 entryCount: 0,
                                 viewCount: theItem.views,
                                 bannerImage: theItem.bannerImage,
-                                contestDateDistanceInWords: result
                             });
                             return acc;
                         }, []);
@@ -65,7 +64,7 @@ var ContestListAnalysis = /** @class */ (function () {
                         item = contestWithDistanceInWord_1[_i];
                         contestHelper = Contest_1.ContestHelper.setUp();
                         return [4 /*yield*/, contestHelper.fetchEntriesByCondition({
-                                contest: item._id
+                                contest: item._id,
                             })];
                     case 2:
                         entries = _a.sent();

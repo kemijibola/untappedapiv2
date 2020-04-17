@@ -153,14 +153,14 @@ var CommentController = /** @class */ (function () {
                         }
                         if (!comment.data) return [3 /*break*/, 3];
                         userId = req.user;
-                        userHasLiked = comment.data.likedBy.filter(function (x) { return x.user == req.user; })[0];
+                        userHasLiked = comment.data.likedBy.filter(function (x) { return x == req.user; })[0];
                         if (!userHasLiked) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "You can't perform Unlike action.",
                                 }))];
                         }
-                        comment.data.likedBy = comment.data.likedBy.filter(function (x) { return x.user != req.user; });
+                        comment.data.likedBy = comment.data.likedBy.filter(function (x) { return x != req.user; });
                         console.log(comment.data.likedBy);
                         return [4 /*yield*/, commentBusiness.update(req.params.id, comment.data)];
                     case 2:
@@ -207,15 +207,14 @@ var CommentController = /** @class */ (function () {
                         }
                         if (!comment.data) return [3 /*break*/, 3];
                         userId = req.user;
-                        userHasLiked = comment.data.likedBy.filter(function (x) { return x.user == req.user; })[0];
-                        console.log(userHasLiked);
+                        userHasLiked = comment.data.likedBy.filter(function (x) { return x == req.user; })[0];
                         if (userHasLiked) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
                                     message: "You have already performed Like operation.",
                                 }))];
                         }
-                        comment.data.likedBy.push(Object.assign({ user: userId }));
+                        comment.data.likedBy = comment.data.likedBy.concat([req.user]);
                         return [4 /*yield*/, commentBusiness.update(req.params.id, comment.data)];
                     case 2:
                         result = _a.sent();

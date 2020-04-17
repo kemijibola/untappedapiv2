@@ -5,7 +5,7 @@ import { IContestEntry } from "../../models/interfaces";
 
 const evaluationRatingSchema: Schema = new Schema({
   evaluation: { type: String, required: true },
-  rating: { type: Number, default: 0 }
+  rating: { type: Number, default: 0 },
 });
 
 const judgeEvaluationSchema: Schema = new Schema({
@@ -13,7 +13,7 @@ const judgeEvaluationSchema: Schema = new Schema({
   judgeEmail: { type: String, required: true },
   evaluations: [{ type: evaluationRatingSchema, required: true }],
   comment: { type: String, required: true },
-  dateAdded: { type: Date, default: Date.now }
+  dateAdded: { type: Date, default: Date.now },
 });
 
 const contestEntrySchema: Schema = new Schema(
@@ -21,12 +21,12 @@ const contestEntrySchema: Schema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     contest: {
       type: Schema.Types.ObjectId,
       ref: "Contest",
-      required: true
+      required: true,
     },
     submissionPath: { type: String, required: true },
     voteCount: { type: Number, default: 0 },
@@ -35,8 +35,8 @@ const contestEntrySchema: Schema = new Schema(
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",
-      required: true
-    }
+      required: true,
+    },
   },
   { timestamps: true }
 );

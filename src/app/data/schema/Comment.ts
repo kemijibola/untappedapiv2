@@ -4,13 +4,13 @@ const mongooseConnection = MongodataAccess.mongooseConnection;
 import { IComment } from "../../models/interfaces";
 
 const replySchema: Schema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  reply: { type: String, required: true }
+  user: { type: String },
+  reply: { type: String, required: true },
 });
 
-const likeSchema: Schema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true }
-});
+// const likeSchema: Schema = new Schema({
+//   user: { type: Schema.Types.ObjectId, ref: "User", required: true }
+// });
 
 // likedBy is the userId of the user that liked a comment
 
@@ -18,13 +18,13 @@ const commentSchema: Schema = new Schema(
   {
     media: { type: String, required: true },
     comment: { type: String, required: true },
-    likedBy: [{ type: likeSchema }],
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     replies: [{ type: replySchema }],
     application: {
       type: Schema.Types.ObjectId,
-      ref: "Application"
-    }
+      ref: "Application",
+    },
   },
   { timestamps: true }
 );
