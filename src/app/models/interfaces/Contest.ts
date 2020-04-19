@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ICategory } from "./Category";
+import { CategoryType } from "./Category";
 import { IPrizeType } from "./PrizeType";
 import { IEvaluation } from "./Evaluation";
 import { IUser } from "./User";
@@ -42,7 +42,7 @@ export interface IContest
   code: string;
   information: string;
   bannerImage: string;
-  eligibleCategories: ICategory["_id"];
+  eligibleCategories: CategoryType["_id"];
   eligibilityInfo: string;
   entryMediaType: MediaType;
   submissionRules: string;

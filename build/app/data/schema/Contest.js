@@ -41,7 +41,7 @@ var contestSchema = new mongoose_1.Schema({
     code: { type: String },
     information: { type: String, required: true },
     bannerImage: { type: String },
-    eligibleCategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Category" }],
+    eligibleCategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "CategoryType" }],
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },

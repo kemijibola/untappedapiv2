@@ -49,7 +49,7 @@ const contestSchema: Schema = new Schema(
     code: { type: String },
     information: { type: String, required: true },
     bannerImage: { type: String },
-    eligibleCategories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
+    eligibleCategories: [{ type: Schema.Types.ObjectId, ref: "CategoryType" }],
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },
