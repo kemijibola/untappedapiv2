@@ -68,7 +68,7 @@ class CategoryTypeBusiness implements ICategoryTypeBusiness {
       );
     }
     const categoryType = await this._categoryTypeRepository.findByCriteria({
-      name: item.name
+      name: item.name,
     });
     if (categoryType === null) {
       const newCategoryType = await this._categoryTypeRepository.create(item);

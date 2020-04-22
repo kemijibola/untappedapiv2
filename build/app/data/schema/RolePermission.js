@@ -8,12 +8,13 @@ var rolePermissionSchema = new mongoose_1.Schema({
     permission: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Permission",
-        required: true
+        required: true,
     },
+    userType: { type: mongoose_1.Schema.Types.ObjectId, ref: "UserType", required: true },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Application"
-    }
+        ref: "Application",
+    },
 }, { timestamps: true });
 exports.RolePermissionSchema = mongooseConnection.model("RolePermission", rolePermissionSchema);
 //# sourceMappingURL=RolePermission.js.map

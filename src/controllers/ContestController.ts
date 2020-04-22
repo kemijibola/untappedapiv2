@@ -39,6 +39,7 @@ export class ContestController {
        */
 
       const item: IContest = req.body;
+      console.log(item);
       if (isAfter(Date.now(), item.startDate)) {
         return next(
           new PlatformError({
@@ -100,6 +101,7 @@ export class ContestController {
         data: result.data,
       });
     } catch (err) {
+      // console.log(err);
       return next(
         new PlatformError({
           code: 500,
@@ -109,7 +111,7 @@ export class ContestController {
     }
   }
 
-  @get("/")
+  @get("/preview/list")
   @use(requestValidator)
   async fetchContestPreviewList(
     req: Request,
@@ -150,6 +152,8 @@ export class ContestController {
       if (req.query) {
         condition.title = req.query.title || "";
       }
+      console.log(condition);
+
       const contestBusiness = new ContestBusiness();
       const result = await contestBusiness.fetch(condition);
       if (result.error) {

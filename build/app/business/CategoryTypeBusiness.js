@@ -134,7 +134,7 @@ var CategoryTypeBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(400, "Invalid category id: " + item.category)];
                         }
                         return [4 /*yield*/, this._categoryTypeRepository.findByCriteria({
-                                name: item.name
+                                name: item.name,
                             })];
                     case 2:
                         categoryType = _a.sent();

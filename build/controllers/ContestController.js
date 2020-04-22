@@ -63,6 +63,7 @@ var ContestController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
+                        console.log(item);
                         if (date_fns_1.isAfter(Date.now(), item.startDate)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
@@ -112,6 +113,7 @@ var ContestController = /** @class */ (function () {
                             })];
                     case 2:
                         err_1 = _a.sent();
+                        // console.log(err);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -164,6 +166,7 @@ var ContestController = /** @class */ (function () {
                         if (req.query) {
                             condition.title = req.query.title || "";
                         }
+                        console.log(condition);
                         contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, contestBusiness.fetch(condition)];
                     case 1:
@@ -212,7 +215,7 @@ var ContestController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "create", null);
     __decorate([
-        decorators_1.get("/"),
+        decorators_1.get("/preview/list"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

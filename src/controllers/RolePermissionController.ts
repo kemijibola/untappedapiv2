@@ -6,7 +6,7 @@ import {
   requestValidators,
   get,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import IBaseControler from "./interfaces/base/BaseController";
 import { IRolePermission } from "../app/models/interfaces";
@@ -23,11 +23,10 @@ export class RolePermissionController {
   @post("/")
   @use(requestValidator)
   @use(requireAuth)
-  @authorize(canCreateRolePermission)
-  @requestValidators("role", "permission")
+  // @authorize(canCreateRolePermission)
+  @requestValidators("role", "permission", "userType")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.body);
       const item: IRolePermission = req.body;
       const rolePermissionBusiness = new RolePermissionBusiness();
       const result = await rolePermissionBusiness.create(item);
@@ -35,19 +34,19 @@ export class RolePermissionController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(201).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -66,19 +65,19 @@ export class RolePermissionController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: `Error occured. ${result.error}`,
           })
         );
       }
       return res.status(200).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }

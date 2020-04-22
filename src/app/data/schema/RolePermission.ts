@@ -9,12 +9,13 @@ const rolePermissionSchema: Schema = new Schema(
     permission: {
       type: Schema.Types.ObjectId,
       ref: "Permission",
-      required: true
+      required: true,
     },
+    userType: { type: Schema.Types.ObjectId, ref: "UserType", required: true },
     application: {
       type: Schema.Types.ObjectId,
-      ref: "Application"
-    }
+      ref: "Application",
+    },
   },
   { timestamps: true }
 );

@@ -105,7 +105,7 @@ var UserBusiness = /** @class */ (function () {
                     case 2:
                         if (!(_i < _a.length)) return [3 /*break*/, 5];
                         role = _a[_i];
-                        return [4 /*yield*/, this.fetchPermissionsByRole(role)];
+                        return [4 /*yield*/, this.fetchPermissionsByRole(role, user.data.userType)];
                     case 3:
                         permissions = _c.sent();
                         if (permissions) {
@@ -196,7 +196,7 @@ var UserBusiness = /** @class */ (function () {
                     case 3:
                         if (!(_i < _a.length)) return [3 /*break*/, 6];
                         role = _a[_i];
-                        return [4 /*yield*/, this.fetchPermissionsByRole(role)];
+                        return [4 /*yield*/, this.fetchPermissionsByRole(role, user.userType)];
                     case 4:
                         permissions = _c.sent();
                         if (permissions) {
@@ -788,12 +788,13 @@ var UserBusiness = /** @class */ (function () {
     //     name: destinationUrl
     //   });
     // }
-    UserBusiness.prototype.fetchPermissionsByRole = function (role) {
+    UserBusiness.prototype.fetchPermissionsByRole = function (role, userType) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._rolePermissionRepository.populateFetch("permission", {
                             role: role,
+                            userType: userType,
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }

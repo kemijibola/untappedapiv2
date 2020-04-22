@@ -40,12 +40,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var RolePermissionRepository_1 = __importDefault(require("../repository/RolePermissionRepository"));
 var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
+var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
 var Result_1 = require("../../utils/Result");
 var RolePermissionBusiness = /** @class */ (function () {
     function RolePermissionBusiness() {
         this._rolePermissionRepository = new RolePermissionRepository_1.default();
         this._roleRepository = new RoleRepository_1.default();
         this._permissionRepository = new PermissionRepository_1.default();
+        this._userTypeRepository = new UserTypeRepository_1.default();
     }
     RolePermissionBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -126,7 +128,7 @@ var RolePermissionBusiness = /** @class */ (function () {
     };
     RolePermissionBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, permission, rolePermission, newRolePermission;
+            var role, permission, userType, rolePermission, newRolePermission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._roleRepository.findById(item.role)];
@@ -147,19 +149,24 @@ var RolePermissionBusiness = /** @class */ (function () {
                         if (!permission.isActive) {
                             return [2 /*return*/, Result_1.Result.fail(400, "Permission has not been activated for use")];
                         }
+                        return [4 /*yield*/, this._userTypeRepository.findById(item.userType)];
+                    case 3:
+                        userType = _a.sent();
+                        if (!userType)
+                            return [2 /*return*/, Result_1.Result.fail(400, "UserType not found")];
                         return [4 /*yield*/, this._rolePermissionRepository.findByCriteria({
                                 role: item.role,
-                                permission: item.permission
+                                permission: item.permission,
+                                userType: item.userType,
                             })];
-                    case 3:
-                        rolePermission = _a.sent();
-                        if (!(rolePermission === null)) return [3 /*break*/, 5];
-                        console.log("got here");
-                        return [4 /*yield*/, this._rolePermissionRepository.create(item)];
                     case 4:
+                        rolePermission = _a.sent();
+                        if (!(rolePermission === null)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this._rolePermissionRepository.create(item)];
+                    case 5:
                         newRolePermission = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newRolePermission)];
-                    case 5: return [2 /*return*/, Result_1.Result.fail(409, "Role has already been mapped to permission")];
+                    case 6: return [2 /*return*/, Result_1.Result.fail(409, "Role has already been mapped to permission")];
                 }
             });
         });

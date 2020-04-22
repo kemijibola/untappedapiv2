@@ -48,7 +48,6 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var RolePermissionBusiness = require("../app/business/RolePermissionBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
-var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var auth_1 = require("../middlewares/auth");
 exports.roles = ["canViewProfessionals", "canViewTalents"];
 var RolePermissionController = /** @class */ (function () {
@@ -61,7 +60,6 @@ var RolePermissionController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        console.log(req.body);
                         item = req.body;
                         rolePermissionBusiness = new RolePermissionBusiness();
                         return [4 /*yield*/, rolePermissionBusiness.create(item)];
@@ -70,18 +68,18 @@ var RolePermissionController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(201).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -104,18 +102,18 @@ var RolePermissionController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: "Error occured. " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(200).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_2
+                                message: "Internal Server error occured." + err_2,
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -126,9 +124,10 @@ var RolePermissionController = /** @class */ (function () {
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.use(auth_1.requireAuth),
-        decorators_1.authorize(PermissionConstant_1.canCreateRolePermission),
-        decorators_1.requestValidators("role", "permission"),
+        decorators_1.use(auth_1.requireAuth)
+        // @authorize(canCreateRolePermission)
+        ,
+        decorators_1.requestValidators("role", "permission", "userType"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

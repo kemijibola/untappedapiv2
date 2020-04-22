@@ -1,6 +1,7 @@
 import RolePermissionRepository from "../repository/RolePermissionRepository";
 import RoleRepository from "../repository/RoleRepository";
 import PermissionRepository from "../repository/PermissionRepository";
+import UserTypeRepository from "../repository/UserTypeRepository";
 import IRolePermissionBusiness = require("./interfaces/RolePermissionBusiness");
 import { IRolePermission } from "../models/interfaces";
 import { Result } from "../../utils/Result";
@@ -9,11 +10,13 @@ class RolePermissionBusiness implements IRolePermissionBusiness {
   private _rolePermissionRepository: RolePermissionRepository;
   private _roleRepository: RoleRepository;
   private _permissionRepository: PermissionRepository;
+  private _userTypeRepository: UserTypeRepository;
 
   constructor() {
     this._rolePermissionRepository = new RolePermissionRepository();
     this._roleRepository = new RoleRepository();
     this._permissionRepository = new PermissionRepository();
+    this._userTypeRepository = new UserTypeRepository();
   }
 
   async fetch(condition: any): Promise<Result<IRolePermission[]>> {
@@ -85,13 +88,18 @@ class RolePermissionBusiness implements IRolePermissionBusiness {
         "Permission has not been activated for use"
       );
     }
+
+    const userType = await this._userTypeRepository.findById(item.userType);
+    if (!userType)
+      return Result.fail<IRolePermission>(400, "UserType not found");
+
     const rolePermission = await this._rolePermissionRepository.findByCriteria({
       role: item.role,
-      permission: item.permission
+      permission: item.permission,
+      userType: item.userType,
     });
 
     if (rolePermission === null) {
-      console.log("got here");
       const newRolePermission = await this._rolePermissionRepository.create(
         item
       );

@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import { CategoryType } from "./Category";
-import { IPrizeType } from "./PrizeType";
 import { IEvaluation } from "./Evaluation";
 import { IUser } from "./User";
 import { ITimeStamp } from "./Timestamp";
@@ -10,6 +8,7 @@ import { PaymentStatus } from "./Payment";
 import { IAppSpec } from "./AppSpec";
 import { IIssueCategory, ComplaintStatus } from "./IssueCategory";
 import { MediaType } from "./Media";
+import { ICategoryType } from "./CategoryType";
 
 export interface IRedeemable {
   name: string;
@@ -42,7 +41,7 @@ export interface IContest
   code: string;
   information: string;
   bannerImage: string;
-  eligibleCategories: CategoryType["_id"];
+  eligibleCategories: ICategoryType["_id"];
   eligibilityInfo: string;
   entryMediaType: MediaType;
   submissionRules: string;
@@ -50,6 +49,7 @@ export interface IContest
   endDate: Date;
   views: number;
   likes: number;
+  evaluations: string[];
   redeemable: IRedeemable[];
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;

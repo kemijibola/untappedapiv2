@@ -118,7 +118,10 @@ class UserBusiness implements IUserBusiness {
           return Result.fail<IAuthData>(401, "Please verify your email.");
 
         for (let role of user.data.roles) {
-          const permissions = await this.fetchPermissionsByRole(role);
+          const permissions = await this.fetchPermissionsByRole(
+            role,
+            user.data.userType
+          );
           if (permissions) {
             this.chunkedUserPermissons.push(...permissions);
           }
@@ -214,7 +217,10 @@ class UserBusiness implements IUserBusiness {
         return Result.fail<IAuthData>(401, "Please verify your email.");
 
       for (let role of user.roles) {
-        const permissions = await this.fetchPermissionsByRole(role);
+        const permissions = await this.fetchPermissionsByRole(
+          role,
+          user.userType
+        );
         if (permissions) {
           this.chunkedUserPermissons.push(...permissions);
         }
@@ -695,9 +701,13 @@ class UserBusiness implements IUserBusiness {
   //   });
   // }
 
-  async fetchPermissionsByRole(role: string): Promise<IRolePermission[]> {
+  async fetchPermissionsByRole(
+    role: string,
+    userType: string
+  ): Promise<IRolePermission[]> {
     return await this._rolePermissionRepository.populateFetch("permission", {
       role,
+      userType,
     });
   }
 }
