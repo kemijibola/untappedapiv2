@@ -1,26 +1,37 @@
+import { PaymentProcessor } from "./../../../utils/payments/PaymentFactory";
 import mongoose from "mongoose";
 import { ITimeStamp } from "./Timestamp";
 import { IService } from "./Service";
 import { IUser } from "./User";
-import { ServiceType } from "./Payment";
 import { IAppSpec } from "./AppSpec";
 
 export interface OrderDetails {
   amount: number;
+  orderNumber: string;
+  items: string[];
   isDiscountApplied: boolean;
+  isSurchargeApplied: boolean;
   discountAmountApplied: number;
+  surchargeAmountAplied: number;
   totalAmount: number;
   quantity: number;
-  // purchased by user
   user: IUser["_id"];
-  // the id of the item about to purchase. e.g contestId, talentId
-  items: string[];
-  dateCreated: Date;
+  orderStatus: OrderStatus;
+  paymentDate?: Date;
+  error?: string;
 }
 
 export interface IOrder extends ITimeStamp, IAppSpec, mongoose.Document {
-  // serviceType: ServiceType;
   service: IService["_id"];
-  referenceNumber: string;
+  referencenNo?: string;
+  processor: PaymentProcessor;
+  additionalInfo: string;
   order: OrderDetails;
+}
+
+export enum OrderStatus {
+  Created = "created",
+  Successful = "successful",
+  Failed = "failed",
+  Pending = "pending",
 }

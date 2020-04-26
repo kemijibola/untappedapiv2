@@ -4,7 +4,7 @@ import {
   post,
   requestValidators,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import { IPermission } from "../app/models/interfaces";
 import { PlatformError } from "../utils/error";
@@ -30,19 +30,19 @@ export class PermissionController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(201).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }

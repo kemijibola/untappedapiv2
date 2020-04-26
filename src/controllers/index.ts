@@ -13,3 +13,5 @@ export * from "./ProfileController";
 export * from "./UserFilterCategoryController";
 export * from "./CommentController";
 export * from "./ContestController";
+export * from "./ServiceController";
+export * from "./OrderController";

@@ -129,7 +129,7 @@ export function generateInvoiceNo(): string {
   var dt = new Date();
   let day = dt.getDate();
   let m = dt.getMonth() + 1;
-  var retVal = "IV" + "/" + day + "" + m + "/" + numberStr;
+  var retVal = "UP" + "/" + day + "" + m + "/" + numberStr;
   return retVal;
 }
 

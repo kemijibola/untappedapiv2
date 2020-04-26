@@ -18,4 +18,6 @@ __export(require("./ProfileController"));
 __export(require("./UserFilterCategoryController"));
 __export(require("./CommentController"));
 __export(require("./ContestController"));
+__export(require("./ServiceController"));
+__export(require("./OrderController"));
 //# sourceMappingURL=index.js.map

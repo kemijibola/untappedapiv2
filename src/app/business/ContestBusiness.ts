@@ -38,8 +38,7 @@ class ContestBusiness implements IContestBusiness {
   async findById(id: string): Promise<Result<IContest>> {
     if (!id) return Result.fail<IContest>(400, "Bad request.");
     const contest = await this._contestRepository.findById(id);
-    if (!contest)
-      return Result.fail<IContest>(404, `Contest of Id ${id} not found`);
+    if (!contest) return Result.fail<IContest>(404, "Contest not found");
     return Result.ok<IContest>(200, contest);
   }
 
@@ -79,24 +78,17 @@ class ContestBusiness implements IContestBusiness {
 
   async update(id: string, item: IContest): Promise<Result<IContest>> {
     const contest = await this._contestRepository.findById(id);
-    if (!contest)
-      return Result.fail<IContest>(
-        404,
-        `Could not update contest.Contest with Id ${id} not found`
-      );
+    if (!contest) return Result.fail<IContest>(404, "Contest not found");
+    item.paymentStatus = contest.paymentStatus;
     const updateObj = await this._contestRepository.update(contest._id, item);
     return Result.ok<IContest>(200, updateObj);
   }
 
   async patch(id: string, item: any): Promise<Result<IContest>> {
     const contest = await this._contestRepository.findById(id);
-    if (!contest)
-      return Result.fail<IContest>(
-        404,
-        `Could not update contest.Contest with Id ${id} not found`
-      );
+    if (!contest) return Result.fail<IContest>(404, "Contest not found");
+    item.paymentStatus = contest.paymentStatus;
     const updateObj = await this._contestRepository.update(contest._id, item);
-    // console.log(updateObj.);
     return Result.ok<IContest>(200, updateObj);
   }
 

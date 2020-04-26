@@ -88,7 +88,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contest)];
                 }
             });
@@ -162,7 +162,8 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                        item.paymentStatus = contest.paymentStatus;
                         return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
                     case 2:
                         updateObj = _a.sent();
@@ -180,11 +181,11 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest.Contest with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                        item.paymentStatus = contest.paymentStatus;
                         return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
                     case 2:
                         updateObj = _a.sent();
-                        // console.log(updateObj.);
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                 }
             });

@@ -9,7 +9,7 @@ import {
   getSecretByKey,
   getPublicKey,
   IExchangeToken,
-  ObjectKeyString
+  ObjectKeyString,
 } from "../utils/lib";
 import { TokenType } from "../app/models/interfaces/custom/GlobalEnum";
 import { SignInOptions } from "../app/models/interfaces/custom/Global";
@@ -39,7 +39,7 @@ export async function requireAuth(
       return next(
         new PlatformError({
           code: 401,
-          message: "You must be logged in to perform operation."
+          message: "You must be logged in to perform operation.",
         })
       );
     }
@@ -51,7 +51,7 @@ export async function requireAuth(
       type: TokenType.AUTH,
       expiresIn: authExpiration,
       algorithms: [currentRsaAlgType],
-      keyid: currentAuthKey
+      keyid: currentAuthKey,
     };
     const publicKey = getPublicKey(currentAuthKey);
     const decoded: TokenResult = await JwtHelper.JwtInitializer().verifyToken(
@@ -64,7 +64,7 @@ export async function requireAuth(
       return next(
         new PlatformError({
           code: 401,
-          message: "Invalid token."
+          message: "Invalid token.",
         })
       );
     }
@@ -74,7 +74,7 @@ export async function requireAuth(
     return next(
       new PlatformError({
         code: 500,
-        message: "Internal Server error occured. Please try again later."
+        message: "Internal Server error occured. Please try again later.",
       })
     );
   }

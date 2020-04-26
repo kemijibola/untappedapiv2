@@ -31,7 +31,7 @@ app.use(cors());
 
 app.use(AppRouter.getInstance);
 
-app.use(function(
+app.use(function (
   error: IError,
   req: Request,
   res: Response,

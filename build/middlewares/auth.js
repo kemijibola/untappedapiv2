@@ -55,7 +55,7 @@ function requireAuth(req, res, next) {
                     if (!encodedJWT) {
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 401,
-                                message: "You must be logged in to perform operation."
+                                message: "You must be logged in to perform operation.",
                             }))];
                     }
                     appAudience = req.appUser ? req.appUser.audience : "";
@@ -65,7 +65,7 @@ function requireAuth(req, res, next) {
                         type: GlobalEnum_1.TokenType.AUTH,
                         expiresIn: lib_1.authExpiration,
                         algorithms: [lib_1.currentRsaAlgType],
-                        keyid: lib_1.currentAuthKey
+                        keyid: lib_1.currentAuthKey,
                     };
                     publicKey = lib_1.getPublicKey(lib_1.currentAuthKey);
                     return [4 /*yield*/, JwtHelper_1.default.JwtInitializer().verifyToken(encodedJWT, publicKey, verifyOptions)];
@@ -74,7 +74,7 @@ function requireAuth(req, res, next) {
                     if (decoded.error) {
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 401,
-                                message: "Invalid token."
+                                message: "Invalid token.",
                             }))];
                     }
                     req.user = decoded.data.sub;
@@ -83,7 +83,7 @@ function requireAuth(req, res, next) {
                     err_1 = _a.sent();
                     return [2 /*return*/, next(new error_1.PlatformError({
                             code: 500,
-                            message: "Internal Server error occured. Please try again later."
+                            message: "Internal Server error occured. Please try again later.",
                         }))];
                 case 3: return [2 /*return*/];
             }

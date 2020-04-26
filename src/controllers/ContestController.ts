@@ -39,7 +39,6 @@ export class ContestController {
        */
 
       const item: IContest = req.body;
-      console.log(item);
       if (isAfter(Date.now(), item.startDate)) {
         return next(
           new PlatformError({
@@ -152,8 +151,6 @@ export class ContestController {
       if (req.query) {
         condition.title = req.query.title || "";
       }
-      console.log(condition);
-
       const contestBusiness = new ContestBusiness();
       const result = await contestBusiness.fetch(condition);
       if (result.error) {

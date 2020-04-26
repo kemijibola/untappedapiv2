@@ -38,10 +38,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var OrderRepository_1 = __importDefault(require("../repository/OrderRepository"));
+var ServiceRepository_1 = __importDefault(require("../repository/ServiceRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
+var Helper_1 = require("../../utils/lib/Helper");
+var PaymentFactory_1 = require("../../utils/payments/PaymentFactory");
+var settlementHandler_1 = require("../../utils/payments/settlementHandler");
+var date_fns_1 = require("date-fns");
 var OrderBusiness = /** @class */ (function () {
     function OrderBusiness() {
         this._orderRepository = new OrderRepository_1.default();
+        this._serviceRepository = new ServiceRepository_1.default();
     }
     OrderBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -109,14 +116,127 @@ var OrderBusiness = /** @class */ (function () {
     };
     OrderBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newOrder;
+            var service, processors, calculatedAmount, newOrder;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._orderRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._serviceRepository.findById(item.service)];
                     case 1:
+                        service = _a.sent();
+                        if (!service)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Service not found")];
+                        if (item.order.quantity < 1)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please provide at least 1 item in order")];
+                        processors = Object.values(PaymentFactory_1.PaymentProcessor);
+                        if (!processors.includes(item.processor))
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid Payment processor")];
+                        if (item.order.items.length < 1)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please provide at least 1 order item")];
+                        if (item.order.amount < 1)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please provide valid order amount")];
+                        calculatedAmount = service.price + item.order.amount * item.order.quantity;
+                        if (calculatedAmount !== item.order.totalAmount)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid totalAmount")];
+                        item.order.orderNumber = Helper_1.generateInvoiceNo();
+                        item.order.isDiscountApplied = false;
+                        item.order.isSurchargeApplied = false;
+                        item.order.discountAmountApplied = 0;
+                        item.order.surchargeAmountAplied = 0;
+                        item.order.orderStatus = interfaces_1.OrderStatus.Created;
+                        return [4 /*yield*/, this._orderRepository.create(item)];
+                    case 2:
                         newOrder = _a.sent();
-                        // TODO:: Create approval request
                         return [2 /*return*/, Result_1.Result.ok(201, newOrder)];
+                }
+            });
+        });
+    };
+    OrderBusiness.prototype.updatePayment = function (processorResponse, orderId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var orderObj, transactionDate, additionalInfo, updateObj, service, settlement, additionalInfo, additionalInfo, additionalInfo;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._orderRepository.findById(orderId)];
+                    case 1:
+                        orderObj = _a.sent();
+                        if (!orderObj)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Order not found")];
+                        if (orderObj.order.orderStatus === interfaces_1.OrderStatus.Successful)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Order has already been completed")];
+                        transactionDate = processorResponse !== null
+                            ? new Date(processorResponse.gatewayReponse).getTime()
+                            : 0;
+                        if (date_fns_1.isPast(transactionDate))
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid transaction")];
+                        orderObj.referencenNo = processorResponse.reference;
+                        if (!processorResponse.requestStatus) return [3 /*break*/, 10];
+                        if (!(PaymentFactory_1.PaymentProcessorStatus[processorResponse.status] ===
+                            PaymentFactory_1.PaymentProcessorStatus.success)) return [3 /*break*/, 7];
+                        if (!(processorResponse.amount === orderObj.order.totalAmount)) return [3 /*break*/, 4];
+                        additionalInfo = {
+                            additionalInfo: processorResponse.gatewayReponse,
+                            channel: processorResponse.channel,
+                            ipAddress: processorResponse.ipAddress,
+                        };
+                        orderObj.additionalInfo = JSON.stringify(additionalInfo);
+                        orderObj.order.orderStatus = interfaces_1.OrderStatus.Successful;
+                        orderObj.order.paymentDate = processorResponse.transactionDate;
+                        orderObj.updateAt = new Date();
+                        return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [4 /*yield*/, this._serviceRepository.findById(orderObj.service)];
+                    case 3:
+                        service = _a.sent();
+                        settlement = settlementHandler_1.SettlementHandler.initialize();
+                        settlement.process(orderObj.order.items[0], service.type);
+                        // settlement ends here
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                    case 4:
+                        additionalInfo = {
+                            additionalInfo: processorResponse.gatewayReponse,
+                            channel: processorResponse.channel,
+                            ipAddress: processorResponse.ipAddress,
+                        };
+                        orderObj.additionalInfo = JSON.stringify(additionalInfo);
+                        orderObj.order.orderStatus = interfaces_1.OrderStatus.Failed;
+                        orderObj.order.paymentDate = processorResponse.transactionDate;
+                        orderObj.order.error = "Invalid amount paid";
+                        orderObj.updateAt = new Date();
+                        return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
+                    case 5:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(400, "Invalid amount paid")];
+                    case 6: return [3 /*break*/, 9];
+                    case 7:
+                        additionalInfo = {
+                            additionalInfo: processorResponse.gatewayReponse,
+                            channel: processorResponse.channel,
+                            ipAddress: processorResponse.ipAddress,
+                        };
+                        orderObj.additionalInfo = JSON.stringify(additionalInfo);
+                        orderObj.order.orderStatus = interfaces_1.OrderStatus.Failed;
+                        orderObj.order.paymentDate = processorResponse.transactionDate;
+                        orderObj.order.error = processorResponse.gatewayReponse;
+                        orderObj.updateAt = new Date();
+                        return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
+                    case 8:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(400, processorResponse.gatewayReponse)];
+                    case 9: return [3 /*break*/, 12];
+                    case 10:
+                        additionalInfo = {
+                            additionalInfo: processorResponse.gatewayReponse,
+                        };
+                        orderObj.additionalInfo = JSON.stringify(additionalInfo);
+                        orderObj.order.orderStatus = interfaces_1.OrderStatus.Failed;
+                        orderObj.order.paymentDate = processorResponse.transactionDate;
+                        orderObj.order.error = processorResponse.gatewayReponse;
+                        orderObj.updateAt = new Date();
+                        return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
+                    case 11:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(400, "Payment failed")];
+                    case 12: return [2 /*return*/];
                 }
             });
         });

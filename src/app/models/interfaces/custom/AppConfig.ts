@@ -27,6 +27,11 @@ export interface AppConfig {
   SERVERLESS: Serverless;
   AUTH_ISSUER_SERVER: string;
   VERIFICATION_URI: string;
+  PAYMENT_SECRETS: PaymentGate;
+}
+
+export interface PaymentGate {
+  paystack_secret: string;
 }
 
 export interface RsaSecret {

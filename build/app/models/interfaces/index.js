@@ -10,6 +10,8 @@ __export(require("./Permission"));
 __export(require("./Approval"));
 __export(require("./Media"));
 __export(require("./UserFilterCategory"));
+__export(require("./Order"));
 __export(require("./Payment"));
+__export(require("./Service"));
 __export(require("./IssueCategory"));
 //# sourceMappingURL=index.js.map
