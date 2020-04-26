@@ -84,6 +84,7 @@ var Paystack = /** @class */ (function (_super) {
                             ipAddress: "",
                             requestedAmount: 0,
                             message: "",
+                            customerId: "",
                         };
                         options = {
                             uri: this.payStackVerifyUrl + "/" + referenceNo,
@@ -110,6 +111,7 @@ var Paystack = /** @class */ (function (_super) {
                                 ipAddress: verified.data.ip_address,
                                 requestedAmount: verified.data.requested_amount,
                                 message: verified.data.message,
+                                customerId: verified.customer.email,
                             };
                         }
                         else {
@@ -124,6 +126,7 @@ var Paystack = /** @class */ (function (_super) {
                                 ipAddress: "",
                                 requestedAmount: 0,
                                 message: verified.message,
+                                customerId: "",
                             };
                         }
                         return [2 /*return*/, payStackResponse];
@@ -140,6 +143,7 @@ var Paystack = /** @class */ (function (_super) {
                             ipAddress: "",
                             requestedAmount: 0,
                             message: "Error from PayStack",
+                            customerId: "",
                         };
                         return [2 /*return*/, payStackResponse];
                     case 4: return [2 /*return*/];

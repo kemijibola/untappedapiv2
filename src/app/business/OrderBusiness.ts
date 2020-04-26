@@ -91,6 +91,10 @@ class OrderBusiness implements IOrderBusiness {
         : 0;
     if (isPast(transactionDate))
       return Result.fail<IOrder>(400, "Invalid transaction");
+
+    if (processorResponse.customerId !== orderObj.order.user)
+      return Result.fail<IOrder>(400, "Invalid customer transaction");
+
     orderObj.referencenNo = processorResponse.reference;
 
     if (processorResponse.requestStatus) {

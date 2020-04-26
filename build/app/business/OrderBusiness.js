@@ -167,6 +167,8 @@ var OrderBusiness = /** @class */ (function () {
                             : 0;
                         if (date_fns_1.isPast(transactionDate))
                             return [2 /*return*/, Result_1.Result.fail(400, "Invalid transaction")];
+                        if (processorResponse.customerId !== orderObj.order.user)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid customer transaction")];
                         orderObj.referencenNo = processorResponse.reference;
                         if (!processorResponse.requestStatus) return [3 /*break*/, 10];
                         if (!(PaymentFactory_1.PaymentProcessorStatus[processorResponse.status] ===

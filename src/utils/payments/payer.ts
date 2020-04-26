@@ -12,6 +12,7 @@ export interface PaymentGatewayResponse {
   ipAddress: string;
   requestedAmount: number;
   message: string;
+  customerId: string;
 }
 
 export abstract class AbstractPayment {

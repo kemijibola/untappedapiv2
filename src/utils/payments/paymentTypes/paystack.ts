@@ -25,6 +25,7 @@ export class Paystack extends AbstractPayment {
       ipAddress: "",
       requestedAmount: 0,
       message: "",
+      customerId: "",
     };
 
     var options = {
@@ -49,6 +50,7 @@ export class Paystack extends AbstractPayment {
           ipAddress: verified.data.ip_address,
           requestedAmount: verified.data.requested_amount,
           message: verified.data.message,
+          customerId: verified.customer.email,
         };
       } else {
         payStackResponse = {
@@ -62,6 +64,7 @@ export class Paystack extends AbstractPayment {
           ipAddress: "",
           requestedAmount: 0,
           message: verified.message,
+          customerId: "",
         };
       }
       return payStackResponse;
@@ -77,6 +80,7 @@ export class Paystack extends AbstractPayment {
         ipAddress: "",
         requestedAmount: 0,
         message: "Error from PayStack",
+        customerId: "",
       };
       return payStackResponse;
     }
