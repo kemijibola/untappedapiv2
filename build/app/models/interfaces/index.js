@@ -14,4 +14,5 @@ __export(require("./Order"));
 __export(require("./Payment"));
 __export(require("./Service"));
 __export(require("./IssueCategory"));
+__export(require("./VoteTransaction"));
 //# sourceMappingURL=index.js.map

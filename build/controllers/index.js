@@ -20,4 +20,5 @@ __export(require("./CommentController"));
 __export(require("./ContestController"));
 __export(require("./ServiceController"));
 __export(require("./OrderController"));
+__export(require("./VoteController"));
 //# sourceMappingURL=index.js.map

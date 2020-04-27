@@ -105,6 +105,9 @@ switch (environment) {
       },
       AUTH_ISSUER_SERVER: process.env.AUTH_ISSUER_SERVER,
       VERIFICATION_URI: "",
+      PAYMENT_SECRETS: {
+        paystack_secret: process.env.PAYSTACK_SECRET_KEY,
+      },
     };
     break;
   default:

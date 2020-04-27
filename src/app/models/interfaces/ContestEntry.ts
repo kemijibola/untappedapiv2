@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
-import { IUser } from './User';
-import { IContest } from './Contest';
-import { ITimeStamp } from './Timestamp';
-import { IAppSpec } from './AppSpec';
+import mongoose from "mongoose";
+import { IUser } from "./User";
+import { IContest } from "./Contest";
+import { ITimeStamp } from "./Timestamp";
+import { IAppSpec } from "./AppSpec";
 
 export interface EvaluationRating {
   evaluation: string;
@@ -17,9 +17,9 @@ export interface JudgeEvaluation {
   dateAdded: Date;
 }
 export interface IContestEntry extends ITimeStamp, IAppSpec, mongoose.Document {
-  user: IUser['_id'];
-  contest: IContest['_id'];
+  user: IUser["_id"];
+  contest: IContest["_id"];
+  contestantCode: string;
   submissionPath: string;
-  isApproved: boolean;
-  judgeEvaluations: JudgeEvaluation[];
+  // judgeEvaluations: JudgeEvaluation[];
 }

@@ -30,3 +30,4 @@ export * from "./ContestConfig";
 export * from "./ApprovalOperation";
 export * from "./CategoryType";
 export * from "./RefreshToken";
+export * from "./VoteTransaction";
