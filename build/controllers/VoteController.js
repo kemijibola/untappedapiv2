@@ -46,6 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
+var interfaces_1 = require("../app/models/interfaces");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
 var VoteController = /** @class */ (function () {
     function VoteController() {
@@ -57,12 +58,20 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        item = req.body;
-                        if (item.id === "")
+                        if (!req.body.id)
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
                                     message: "Missing id in request",
                                 }))];
+                        item = Object.assign({
+                            channelId: req.body.id,
+                            phone: req.body.phone,
+                            network: req.body.network,
+                            shortcode: req.body.shortcode,
+                            contestantCode: req.body.message,
+                            channelType: interfaces_1.ChannelType.sms,
+                            voteStatus: interfaces_1.VoteStatus.valid,
+                        });
                         voteBusiness = new VoteTransactionBusiness();
                         return [4 /*yield*/, voteBusiness.create(item)];
                     case 1:
