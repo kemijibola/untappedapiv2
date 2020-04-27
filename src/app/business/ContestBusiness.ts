@@ -29,8 +29,16 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<IContest[]>(200, contests);
   }
 
-  async fetchContestList(condition: any): Promise<Result<IContestList[]>> {
-    const contests = await this._contestRepository.fetch(condition);
+  async fetchContestList(
+    condition: any,
+    perPage: number,
+    page: number
+  ): Promise<Result<IContestList[]>> {
+    const contests = await this._contestRepository.fetchContests(
+      condition,
+      page,
+      perPage
+    );
     const modified = await this.fetchRunningContest(contests);
     return Result.ok<IContestList[]>(200, modified);
   }
@@ -110,7 +118,6 @@ class ContestBusiness implements IContestBusiness {
       .sort((a, b) => {
         return getTime(a.createdAt) - getTime(b.createdAt);
       });
-
     for (let item of currentContests) {
       const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
         {
@@ -122,14 +129,15 @@ class ContestBusiness implements IContestBusiness {
         title: item.title,
         entryCount: contestEntries.length || 0,
         viewCount: item.views,
-        bannerImage: item.bannerImage,
+        bannerImage: item.bannerImage || "",
+        startDate: item.startDate,
       };
       contestList = [...contestList, contestObj];
     }
     contestList = contestList.sort((a, b) => {
       return b.entryCount - a.entryCount;
     });
-    // mergedContests = [...mergedContests, ...contestList];
+
     let earlierContests = contests
       .filter((x) => x.startDate < currentDate)
       .sort((a, b) => {
@@ -147,7 +155,8 @@ class ContestBusiness implements IContestBusiness {
         title: item.title,
         entryCount: contestEntries.length || 0,
         viewCount: item.views,
-        bannerImage: item.bannerImage,
+        bannerImage: item.bannerImage || "",
+        startDate: item.startDate,
       };
       contestList = [...contestList, contestObj];
     }

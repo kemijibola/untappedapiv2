@@ -124,13 +124,21 @@ var ContestController = /** @class */ (function () {
     };
     ContestController.prototype.fetchContestPreviewList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestBusiness, result, err_2;
+            var reqPageNo, pageNo, reqSize, size, condition, contestBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        reqPageNo = req.query.pageNo || 0;
+                        pageNo = parseInt(reqPageNo) !== 0 ? parseInt(reqPageNo) : 0;
+                        reqSize = req.query.size || 10;
+                        size = parseInt(reqSize);
+                        console.log(size);
+                        condition = {
+                        // paymentStatus: PaymentStatus.Completed,
+                        };
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetchContestList({})];
+                        return [4 /*yield*/, contestBusiness.fetchContestList(condition, size, pageNo)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {

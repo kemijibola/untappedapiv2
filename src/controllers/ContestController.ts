@@ -7,7 +7,7 @@ import {
   authorize,
   get,
 } from "../decorators";
-import { IContest, MediaType } from "../app/models/interfaces";
+import { IContest, MediaType, PaymentStatus } from "../app/models/interfaces";
 import ContestBusiness = require("../app/business/ContestBusiness");
 import { PlatformError } from "../utils/error";
 import { requestValidator } from "../middlewares/ValidateRequest";
@@ -118,8 +118,20 @@ export class ContestController {
     next: NextFunction
   ) {
     try {
+      let reqPageNo = req.query.pageNo || 0;
+      const pageNo = parseInt(reqPageNo) !== 0 ? parseInt(reqPageNo) : 0;
+      let reqSize = req.query.size || 10;
+      const size = parseInt(reqSize);
+      console.log(size);
+      let condition = {
+        // paymentStatus: PaymentStatus.Completed,
+      };
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetchContestList({});
+      const result = await contestBusiness.fetchContestList(
+        condition,
+        size,
+        pageNo
+      );
       if (result.error) {
         return next(
           new PlatformError({

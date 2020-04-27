@@ -6,6 +6,7 @@ export interface IContestList {
   entryCount: number;
   viewCount: number;
   bannerImage: string;
+  startDate: Date;
 }
 
 export interface IUserContestList {

@@ -54,6 +54,7 @@ var ContestListAnalysis = /** @class */ (function () {
                                 entryCount: 0,
                                 viewCount: theItem.views,
                                 bannerImage: theItem.bannerImage,
+                                startDate: theItem.startDate,
                             });
                             return acc;
                         }, []);

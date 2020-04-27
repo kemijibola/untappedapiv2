@@ -69,12 +69,34 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  fetch(condition: any): Promise<any> {
+  fetchContests(condition: any, page = 1, perPage = 10): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model
         .find(condition, (error: any, result: any) => {
           if (error) reject(error);
           else resolve(result);
+        })
+        .skip(perPage * page - perPage)
+        .limit(perPage)
+        .sort({
+          startDate: -1,
+        })
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
+  fetch(condition: any, page = 1, perPage = 10): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .skip(perPage * page - perPage)
+        .limit(perPage)
+        .sort({
+          createdAt: -1,
         })
         // .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();

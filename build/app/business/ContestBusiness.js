@@ -60,12 +60,12 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
-    ContestBusiness.prototype.fetchContestList = function (condition) {
+    ContestBusiness.prototype.fetchContestList = function (condition, perPage, page) {
         return __awaiter(this, void 0, void 0, function () {
             var contests, modified;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._contestRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._contestRepository.fetchContests(condition, page, perPage)];
                     case 1:
                         contests = _a.sent();
                         return [4 /*yield*/, this.fetchRunningContest(contests)];
@@ -232,7 +232,8 @@ var ContestBusiness = /** @class */ (function () {
                             title: item.title,
                             entryCount: contestEntries.length || 0,
                             viewCount: item.views,
-                            bannerImage: item.bannerImage,
+                            bannerImage: item.bannerImage || "",
+                            startDate: item.startDate,
                         };
                         contestList = contestList.concat([contestObj]);
                         _b.label = 3;
@@ -263,7 +264,8 @@ var ContestBusiness = /** @class */ (function () {
                             title: item.title,
                             entryCount: contestEntries.length || 0,
                             viewCount: item.views,
-                            bannerImage: item.bannerImage,
+                            bannerImage: item.bannerImage || "",
+                            startDate: item.startDate,
                         };
                         contestList = contestList.concat([contestObj]);
                         _b.label = 7;
