@@ -28,14 +28,12 @@ const contestEntrySchema: Schema = new Schema(
       ref: "Contest",
       required: true,
     },
-    submissionPath: { type: String, required: true },
-    voteCount: { type: Number, default: 0 },
-    isApproved: { type: Boolean, default: false },
-    judgeEvaluations: [{ type: judgeEvaluationSchema }],
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+    entry: { type: String, required: true },
+    contestantCode: { type: String, required: true },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",
-      required: true,
     },
   },
   { timestamps: true }

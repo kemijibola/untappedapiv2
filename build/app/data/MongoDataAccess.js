@@ -18,7 +18,7 @@ var MongodataAccess = /** @class */ (function () {
             console.log("Connected to mongodb");
         });
         mongoose_1.default.Promise = global.Promise;
-        mongoose_1.default.set("useUnifiedTopology", true);
+        // mongoose.set("useUnifiedTopology", true);
         mongoose_1.default.set("useFindAndModify", false);
         this.mongooseInstance = mongoose_1.default.connect(this.dbUri, {
             useNewUrlParser: true,

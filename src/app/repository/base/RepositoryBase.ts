@@ -54,6 +54,19 @@ class RepositoryBase<T extends mongoose.Document>
   //   });
   // }
 
+  fetchWithUser(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate("user", "_id fullName profileImagePath")
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
   fetchWithUserDetails(condition: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model
@@ -86,7 +99,7 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
-  fetch(condition: any, page = 1, perPage = 10): Promise<any> {
+  paginatedFetch(condition: any, page = 1, perPage = 10): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model
         .find(condition, (error: any, result: any) => {
@@ -97,6 +110,18 @@ class RepositoryBase<T extends mongoose.Document>
         .limit(perPage)
         .sort({
           createdAt: -1,
+        })
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
+  fetch(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
         })
         // .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
@@ -158,6 +183,19 @@ class RepositoryBase<T extends mongoose.Document>
         else resolve(result);
       });
       // .cacheDocQuery({ collectionName: this._model.collection.name });
+    });
+  }
+
+  findIdWithDetails(path: string, _id: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .findById(_id, (error: any, result: T) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate(path)
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
     });
   }
 

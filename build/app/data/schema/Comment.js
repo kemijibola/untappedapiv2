@@ -12,7 +12,7 @@ var replySchema = new mongoose_1.Schema({
 // });
 // likedBy is the userId of the user that liked a comment
 var commentSchema = new mongoose_1.Schema({
-    media: { type: String, required: true },
+    entity: { type: String, required: true },
     comment: { type: String, required: true },
     likedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true }],
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },

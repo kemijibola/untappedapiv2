@@ -19,7 +19,8 @@ export interface JudgeEvaluation {
 export interface IContestEntry extends ITimeStamp, IAppSpec, mongoose.Document {
   user: IUser["_id"];
   contest: IContest["_id"];
+  likedBy: string[];
   contestantCode: string;
-  submissionPath: string;
+  entry: string;
   // judgeEvaluations: JudgeEvaluation[];
 }

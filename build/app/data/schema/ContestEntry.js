@@ -25,14 +25,12 @@ var contestEntrySchema = new mongoose_1.Schema({
         ref: "Contest",
         required: true,
     },
-    submissionPath: { type: String, required: true },
-    voteCount: { type: Number, default: 0 },
-    isApproved: { type: Boolean, default: false },
-    judgeEvaluations: [{ type: judgeEvaluationSchema }],
+    likedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true }],
+    entry: { type: String, required: true },
+    contestantCode: { type: String, required: true },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",
-        required: true,
     },
 }, { timestamps: true });
 exports.ContestEntrySchema = mongooseConnection.model("ContestEntry", contestEntrySchema);

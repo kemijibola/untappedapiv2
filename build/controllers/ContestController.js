@@ -162,9 +162,42 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
-    ContestController.prototype.fetch = function (req, res, next) {
+    ContestController.prototype.fetchContestDetailsById = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var condition, contestBusiness, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        condition = {};
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.fetchContestDetailsById(req.params.id)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ContestController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var condition, contestBusiness, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -188,7 +221,7 @@ var ContestController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_3 = _a.sent();
+                        err_4 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -227,6 +260,14 @@ var ContestController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetchContestPreviewList", null);
+    __decorate([
+        decorators_1.get("/:id"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "fetchContestDetailsById", null);
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

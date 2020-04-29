@@ -9,7 +9,7 @@ export interface IReply extends mongoose.Document, ITimeStamp {
 }
 
 export interface IComment extends ITimeStamp, IAppSpec, mongoose.Document {
-  media: string;
+  entity: string;
   comment: string;
   user: IUser["_id"];
   replies: IReply[];

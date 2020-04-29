@@ -1,11 +1,14 @@
+import { IEntries } from "./../models/interfaces/Contest";
 import ContestRepository from "../repository/ContestRepository";
 import ContestEntryRepository from "../repository/ContestEntryRepository";
+import CommentRepository from "../repository/CommentRepository";
 import IContestBusiness = require("./interfaces/ContestBusiness");
 import {
   IContest,
   PaymentStatus,
   MediaType,
   IContestEntry,
+  ContestWithEntries,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { ContestType } from "../data/schema/Contest";
@@ -18,10 +21,12 @@ import { getRandomId, getTime } from "../../utils/lib";
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
   private _contestEntryRepository: ContestEntryRepository;
+  private _commentRepository: CommentRepository;
 
   constructor() {
     this._contestRepository = new ContestRepository();
     this._contestEntryRepository = new ContestEntryRepository();
+    this._commentRepository = new CommentRepository();
   }
 
   async fetch(condition: any): Promise<Result<IContest[]>> {
@@ -48,6 +53,39 @@ class ContestBusiness implements IContestBusiness {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Contest not found");
     return Result.ok<IContest>(200, contest);
+  }
+
+  async fetchContestDetailsById(
+    id: string
+  ): Promise<Result<ContestWithEntries>> {
+    const contest = await this._contestRepository.findById(id);
+    if (!contest)
+      return Result.fail<ContestWithEntries>(404, "Contest not found");
+    let entries: IContestEntry[] = await this._contestEntryRepository.fetchWithUser(
+      {
+        contest: contest._id,
+      }
+    );
+
+    let contestDetails: ContestWithEntries = {
+      contest: contest,
+      submissions: [],
+    };
+    for (let entry of entries) {
+      const entryComment: IContestEntry[] = await this._commentRepository.fetch(
+        { entity: entry._id }
+      );
+      let entryDetails: IEntries = {
+        entry,
+        commentCount: entryComment.length || 0,
+      };
+      contestDetails.submissions = [
+        ...contestDetails.submissions,
+        entryDetails,
+      ];
+    }
+
+    return Result.ok<ContestWithEntries>(200, contestDetails);
   }
 
   async findOne(condition: any): Promise<Result<IContest>> {

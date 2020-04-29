@@ -56,6 +56,21 @@ var RepositoryBase = /** @class */ (function () {
     //       .exec();
     //   });
     // }
+    RepositoryBase.prototype.fetchWithUser = function (condition) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .find(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            })
+                .populate("user", "_id fullName profileImagePath")
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
+        });
+    };
     RepositoryBase.prototype.fetchWithUserDetails = function (condition) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -94,7 +109,7 @@ var RepositoryBase = /** @class */ (function () {
                 .exec();
         });
     };
-    RepositoryBase.prototype.fetch = function (condition, page, perPage) {
+    RepositoryBase.prototype.paginatedFetch = function (condition, page, perPage) {
         var _this = this;
         if (page === void 0) { page = 1; }
         if (perPage === void 0) { perPage = 10; }
@@ -110,6 +125,20 @@ var RepositoryBase = /** @class */ (function () {
                 .limit(perPage)
                 .sort({
                 createdAt: -1,
+            })
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
+        });
+    };
+    RepositoryBase.prototype.fetch = function (condition) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .find(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
             })
                 // .cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();
@@ -173,6 +202,21 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             });
             // .cacheDocQuery({ collectionName: this._model.collection.name });
+        });
+    };
+    RepositoryBase.prototype.findIdWithDetails = function (path, _id) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .findById(_id, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            })
+                .populate(path)
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
         });
     };
     RepositoryBase.prototype.findById = function (_id) {

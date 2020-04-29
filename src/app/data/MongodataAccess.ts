@@ -24,7 +24,7 @@ class MongodataAccess {
     });
 
     mongoose.Promise = global.Promise;
-    mongoose.set("useUnifiedTopology", true);
+    // mongoose.set("useUnifiedTopology", true);
     mongoose.set("useFindAndModify", false);
     this.mongooseInstance = mongoose.connect(this.dbUri, {
       useNewUrlParser: true,

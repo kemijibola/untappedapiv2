@@ -9,6 +9,7 @@ import { IAppSpec } from "./AppSpec";
 import { IIssueCategory, ComplaintStatus } from "./IssueCategory";
 import { MediaType } from "./Media";
 import { ICategoryType } from "./CategoryType";
+import { IContestEntry } from "./ContestEntry";
 
 export interface IRedeemable {
   name: string;
@@ -61,4 +62,14 @@ interface IContestIssues {
   complaint: string;
   dateCreated: Date;
   complaintStatus: ComplaintStatus;
+}
+
+export interface ContestWithEntries {
+  contest: IContest;
+  submissions: IEntries[];
+}
+
+export interface IEntries {
+  entry: IContestEntry;
+  commentCount: number;
 }

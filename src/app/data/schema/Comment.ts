@@ -16,7 +16,7 @@ const replySchema: Schema = new Schema({
 
 const commentSchema: Schema = new Schema(
   {
-    media: { type: String, required: true },
+    entity: { type: String, required: true },
     comment: { type: String, required: true },
     likedBy: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
