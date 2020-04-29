@@ -119,11 +119,13 @@ export class ContestController {
   ) {
     try {
       let reqPageNo = req.query.pageNo || 0;
+
       const pageNo = parseInt(reqPageNo) !== 0 ? parseInt(reqPageNo) : 0;
       let reqSize = req.query.size || 10;
       const size = parseInt(reqSize);
-      console.log(size);
-      let condition = {
+
+      //change condition to paid contests
+      TODO: let condition = {
         // paymentStatus: PaymentStatus.Completed,
       };
       const contestBusiness = new ContestBusiness();

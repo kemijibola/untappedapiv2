@@ -133,8 +133,8 @@ var ContestController = /** @class */ (function () {
                         pageNo = parseInt(reqPageNo) !== 0 ? parseInt(reqPageNo) : 0;
                         reqSize = req.query.size || 10;
                         size = parseInt(reqSize);
-                        console.log(size);
-                        condition = {
+                        //change condition to paid contests
+                        TODO: condition = {
                         // paymentStatus: PaymentStatus.Completed,
                         };
                         contestBusiness = new ContestBusiness();
