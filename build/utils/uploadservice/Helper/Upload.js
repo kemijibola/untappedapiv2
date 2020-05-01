@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var UPLOADOPERATIONS;
 (function (UPLOADOPERATIONS) {
-    UPLOADOPERATIONS["ProfileImage"] = "ProfileImage";
-    UPLOADOPERATIONS["Portfolio"] = "Portfolio";
-    UPLOADOPERATIONS["Entries"] = "Entries";
-    UPLOADOPERATIONS["ContestBanner"] = "ContestBanner";
-    UPLOADOPERATIONS["BannerImage"] = "BannerImage";
-    UPLOADOPERATIONS["Default"] = "Default";
+    UPLOADOPERATIONS["profileimage"] = "profileimage";
+    UPLOADOPERATIONS["portfolio"] = "portfolio";
+    UPLOADOPERATIONS["contestentry"] = "contestentry";
+    UPLOADOPERATIONS["contestbanner"] = "contestbanner";
+    UPLOADOPERATIONS["bannerimage"] = "bannerimage";
+    UPLOADOPERATIONS["default"] = "default";
 })(UPLOADOPERATIONS = exports.UPLOADOPERATIONS || (exports.UPLOADOPERATIONS = {}));
 //# sourceMappingURL=Upload.js.map

@@ -133,10 +133,12 @@ export function generateInvoiceNo(): string {
   return retVal;
 }
 
-export function generateOtp(): string {
+// export function generateContestant
+
+export function generateRandomNumber(size: number): string {
   var otp = "";
   var possible = "0123456789";
-  for (var i = 0; i <= 5; i++) {
+  for (var i = 0; i <= size; i++) {
     otp += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return otp;

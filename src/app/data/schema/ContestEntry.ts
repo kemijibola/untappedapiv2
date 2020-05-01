@@ -28,7 +28,9 @@ const contestEntrySchema: Schema = new Schema(
       ref: "Contest",
       required: true,
     },
-    likedBy: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    title: { type: String, required: true },
+    additionalInfo: { type: String },
     entry: { type: String, required: true },
     contestantCode: { type: String, required: true },
     application: {

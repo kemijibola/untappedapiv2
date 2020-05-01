@@ -4,52 +4,73 @@ import {
   post,
   requestValidators,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import { IContestEntry } from "../app/models/interfaces";
-import ContestEntryEpository = require("../app/repository/ContestEntryRepository");
 import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
-import { canCreateContest } from "../utils/lib/PermissionConstant";
+import {
+  canCreateContest,
+  canEnterContest,
+} from "../utils/lib/PermissionConstant";
+import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
+import ContestEntryBusiness = require("../app/business/ContestEntryBusiness");
+import { PlatformError } from "../utils/error";
 
 @controller("/v1/contest-entries")
 export class ContestEntryController {
   @post("/")
   @use(requestValidator)
   @use(requireAuth)
-  @authorize(canCreateContest)
-  @requestValidators("contest", "submissionPath")
-  async create(req: Request, res: Response, next: NextFunction) {
+  // @authorize(canEnterContest)
+  @requestValidators("contest", "title", "entry")
+  async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IContestEntry = req.body;
-      const contestEntry = await new ContestEntryEpository().create(item);
+      item.user = req.user;
 
-      // create a job to create entry with contest Entry Id in Comment collection
-      // we will use contest entry id to do a lookup on the comment later in the collection
-      // const data: { entityId: string } = {
-      //   entityId: contestEntry._id
-      // };
-      // const sqsParams: SqsParams = {
-      //   region: '',
-      //   version: '',
-      //   accountId: 0,
-      //   accessKeyId: '',
-      //   secretAccessKey: ''
-      // };
-      // const sendMessageParams: SqsSendMessage = {
-      //   MessageBody: JSON.stringify(data),
-      //   QueueUrl: 'https://sqs.us-east-1.amazonaws.com'
-      // };
-
-      // const scheduler = SqsScheduler.setup(sqsParams);
-      // scheduler.create<SqsSendMessage>('comment-entity', sendMessageParams);
-
+      if (item.title.length < 1)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide title",
+          })
+        );
+      if (item.entry.length < 1)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide entry",
+          })
+        );
+      if (item.contest.length < 1)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide contest",
+          })
+        );
+      const contestEntryBusiness = new ContestEntryBusiness();
+      const result = await contestEntryBusiness.create(item);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
       return res.status(201).json({
         message: "Operation successful",
-        data: contestEntry
+        data: result.data,
       });
     } catch (err) {
-      return next("hello");
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
     }
   }
   update(): void {}

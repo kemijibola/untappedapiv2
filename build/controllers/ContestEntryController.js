@@ -45,49 +45,57 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-var ContestEntryEpository = require("../app/repository/ContestEntryRepository");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
-var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
+var ContestEntryBusiness = require("../app/business/ContestEntryBusiness");
+var error_1 = require("../utils/error");
 var ContestEntryController = /** @class */ (function () {
     function ContestEntryController() {
     }
     ContestEntryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, contestEntry, err_1;
+            var item, contestEntryBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        return [4 /*yield*/, new ContestEntryEpository().create(item)];
+                        item.user = req.user;
+                        if (item.title.length < 1)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide title",
+                                }))];
+                        if (item.entry.length < 1)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide entry",
+                                }))];
+                        if (item.contest.length < 1)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide contest",
+                                }))];
+                        contestEntryBusiness = new ContestEntryBusiness();
+                        return [4 /*yield*/, contestEntryBusiness.create(item)];
                     case 1:
-                        contestEntry = _a.sent();
-                        // create a job to create entry with contest Entry Id in Comment collection
-                        // we will use contest entry id to do a lookup on the comment later in the collection
-                        // const data: { entityId: string } = {
-                        //   entityId: contestEntry._id
-                        // };
-                        // const sqsParams: SqsParams = {
-                        //   region: '',
-                        //   version: '',
-                        //   accountId: 0,
-                        //   accessKeyId: '',
-                        //   secretAccessKey: ''
-                        // };
-                        // const sendMessageParams: SqsSendMessage = {
-                        //   MessageBody: JSON.stringify(data),
-                        //   QueueUrl: 'https://sqs.us-east-1.amazonaws.com'
-                        // };
-                        // const scheduler = SqsScheduler.setup(sqsParams);
-                        // scheduler.create<SqsSendMessage>('comment-entity', sendMessageParams);
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
                         return [2 /*return*/, res.status(201).json({
                                 message: "Operation successful",
-                                data: contestEntry
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        return [2 /*return*/, next("hello")];
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -100,9 +108,10 @@ var ContestEntryController = /** @class */ (function () {
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.use(auth_1.requireAuth),
-        decorators_1.authorize(PermissionConstant_1.canCreateContest),
-        decorators_1.requestValidators("contest", "submissionPath"),
+        decorators_1.use(auth_1.requireAuth)
+        // @authorize(canEnterContest)
+        ,
+        decorators_1.requestValidators("contest", "title", "entry"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

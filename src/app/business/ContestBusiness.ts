@@ -107,7 +107,7 @@ class ContestBusiness implements IContestBusiness {
     });
     if (contest) {
       return Result.fail<IContest>(
-        400,
+        409,
         `Contest with title ${item.title} already exist`
       );
     }

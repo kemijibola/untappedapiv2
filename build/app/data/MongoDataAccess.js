@@ -19,6 +19,20 @@ var MongodataAccess = /** @class */ (function () {
         });
         mongoose_1.default.Promise = global.Promise;
         MongodataAccess.setMongoProperty();
+        // mongoose.connect(
+        //   "mongodb://ip:port",
+        //   {
+        //     useNewUrlParser: true,
+        //     useFindAndModify: false,
+        //     useCreateIndex: true,
+        //     user: "username", // IMPORTANT TO HAVE IT HERE AND NOT IN CONNECTION STRING
+        //     pass: "password", // IMPORTANT TO HAVE IT HERE AND NOT IN CONNECTION STRING
+        //     dbName: "database-name", // IMPORTANT TO HAVE IT HERE AND NOT IN CONNECTION STRING
+        //   },
+        //   (err) => {
+        //     throw err;
+        //   }
+        // );
         this.mongooseInstance = mongoose_1.default.connect(this.dbUri, {
             useNewUrlParser: true,
             useCreateIndex: true,
@@ -26,7 +40,6 @@ var MongodataAccess = /** @class */ (function () {
         return this.mongooseInstance;
     };
     MongodataAccess.setMongoProperty = function () {
-        mongoose_1.default.set("useUnifiedTopology", true);
         mongoose_1.default.set("useFindAndModify", false);
     };
     MongodataAccess.disconnect = function () {

@@ -53,7 +53,7 @@ AWS.config.update({
     accessKeyId: config.APP_BUCKET.access_key_id,
     secretAccessKey: config.APP_BUCKET.secret_access_key,
     region: config.APP_BUCKET.region,
-    signatureVersion: "v4"
+    signatureVersion: "v4",
 });
 var S3Storage = /** @class */ (function () {
     // private s3 ;
@@ -78,12 +78,12 @@ var S3Storage = /** @class */ (function () {
                         signedUrlExpireSeconds = 60 * 60;
                         signedUrls = {
                             presignedUrl: [],
-                            action: Upload_1.UPLOADOPERATIONS.ProfileImage
+                            action: Upload_1.UPLOADOPERATIONS.profileimage,
                         };
                         signedUrl = {
                             file: "",
                             url: "",
-                            key: ""
+                            key: "",
                         };
                         if (!data.files) return [3 /*break*/, 7];
                         filesMap = data.files.reduce(function (theMap, item) {
@@ -108,13 +108,13 @@ var S3Storage = /** @class */ (function () {
                                             Bucket: config.APP_BUCKET.bucket,
                                             Key: filesMap[item],
                                             Expires: 30 * 60,
-                                            ContentType: data.files[0].file_type
+                                            ContentType: data.files[0].file_type,
                                         };
                                         options = {
                                             signatureVersion: "v4",
                                             region: config.APP_BUCKET.region,
                                             endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
-                                            useAccelerateEndpoint: true
+                                            useAccelerateEndpoint: true,
                                         };
                                         client = new AWS.S3(options);
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {
@@ -129,7 +129,7 @@ var S3Storage = /** @class */ (function () {
                                         signedUrl = {
                                             file: item,
                                             url: signed,
-                                            key: filesMap[item]
+                                            key: filesMap[item],
                                         };
                                         signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
                                         return [2 /*return*/];

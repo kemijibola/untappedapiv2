@@ -183,7 +183,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (contest) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest with title " + item.title + " already exist")];
+                            return [2 /*return*/, Result_1.Result.fail(409, "Contest with title " + item.title + " already exist")];
                         }
                         item.views = 0;
                         item.likes = 0;

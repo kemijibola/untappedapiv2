@@ -156,15 +156,16 @@ function generateInvoiceNo() {
     return retVal;
 }
 exports.generateInvoiceNo = generateInvoiceNo;
-function generateOtp() {
+// export function generateContestant
+function generateRandomNumber(size) {
     var otp = "";
     var possible = "0123456789";
-    for (var i = 0; i <= 5; i++) {
+    for (var i = 0; i <= size; i++) {
         otp += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return otp;
 }
-exports.generateOtp = generateOtp;
+exports.generateRandomNumber = generateRandomNumber;
 function generateAutoPassword() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789abcdefghijklmnopqrstuvwxyz";

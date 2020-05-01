@@ -20,6 +20,8 @@ export interface IContestEntry extends ITimeStamp, IAppSpec, mongoose.Document {
   user: IUser["_id"];
   contest: IContest["_id"];
   likedBy: string[];
+  title: string;
+  additionalInfo: string;
   contestantCode: string;
   entry: string;
   // judgeEvaluations: JudgeEvaluation[];

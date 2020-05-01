@@ -38,10 +38,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
+var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
+var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var Result_1 = require("../../utils/Result");
+var lib_1 = require("../../utils/lib");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
+        this._contestRepository = new ContestRepository_1.default();
+        this._userRepository = new UserRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -109,13 +114,41 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newContestEntry;
+            var contest, contestant, codeHasBeenAssigned, contestantCode, contestCode, newContestEntry;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._contestEntryRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._contestRepository.findById(item.contest)];
                     case 1:
+                        contest = _a.sent();
+                        return [4 /*yield*/, this._userRepository.findById(item.user)];
+                    case 2:
+                        contestant = _a.sent();
+                        if (!contestant)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contestant not found")];
+                        codeHasBeenAssigned = true;
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                        contestantCode = "";
+                        _a.label = 3;
+                    case 3:
+                        if (!codeHasBeenAssigned) return [3 /*break*/, 5];
+                        contestantCode = (contestant.fullName.substring(0, 1) + " " + lib_1.generateRandomNumber(3)).toUpperCase();
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: contest._id,
+                                contestantCode: contestantCode,
+                            })];
+                    case 4:
+                        contestCode = _a.sent();
+                        if (contestCode)
+                            codeHasBeenAssigned = true;
+                        else
+                            codeHasBeenAssigned = false;
+                        return [3 /*break*/, 3];
+                    case 5:
+                        item.contestantCode = contestantCode;
+                        return [4 /*yield*/, this._contestEntryRepository.create(item)];
+                    case 6:
                         newContestEntry = _a.sent();
-                        // TODO:: create approval request here
                         return [2 /*return*/, Result_1.Result.ok(201, newContestEntry)];
                 }
             });

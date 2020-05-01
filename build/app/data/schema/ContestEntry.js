@@ -25,7 +25,9 @@ var contestEntrySchema = new mongoose_1.Schema({
         ref: "Contest",
         required: true,
     },
-    likedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true }],
+    likedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    title: { type: String, required: true },
+    additionalInfo: { type: String },
     entry: { type: String, required: true },
     contestantCode: { type: String, required: true },
     application: {

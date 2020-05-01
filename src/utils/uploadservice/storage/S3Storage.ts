@@ -5,7 +5,7 @@ import {
   IFileMetaData,
   IUploadFileRequest,
   UPLOADOPERATIONS,
-  SignedUrl
+  SignedUrl,
 } from "../Helper/Upload";
 import { S3Params } from "../../../app/models/interfaces/custom/Bucket";
 import { AcceptedImageExt, ObjectKeyString } from "../../lib";
@@ -20,7 +20,7 @@ AWS.config.update({
   accessKeyId: config.APP_BUCKET.access_key_id,
   secretAccessKey: config.APP_BUCKET.secret_access_key,
   region: config.APP_BUCKET.region,
-  signatureVersion: "v4"
+  signatureVersion: "v4",
 });
 export class S3Storage implements Storage {
   // private s3 ;
@@ -42,12 +42,12 @@ export class S3Storage implements Storage {
     const signedUrlExpireSeconds = 60 * 60;
     let signedUrls: SignedUrl = {
       presignedUrl: [],
-      action: UPLOADOPERATIONS.ProfileImage
+      action: UPLOADOPERATIONS.profileimage,
     };
     let signedUrl: PresignedUrl = {
       file: "",
       url: "",
-      key: ""
+      key: "",
     };
     if (data.files) {
       const filesMap: ObjectKeyString = data.files.reduce(
@@ -75,13 +75,13 @@ export class S3Storage implements Storage {
             Bucket: config.APP_BUCKET.bucket,
             Key: filesMap[item],
             Expires: 30 * 60,
-            ContentType: data.files[0].file_type
+            ContentType: data.files[0].file_type,
           };
           const options = {
             signatureVersion: "v4",
             region: config.APP_BUCKET.region, // same as your bucket
             endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
-            useAccelerateEndpoint: true
+            useAccelerateEndpoint: true,
           };
 
           const client: AWS.S3 = new AWS.S3(options);
@@ -94,7 +94,7 @@ export class S3Storage implements Storage {
           signedUrl = {
             file: item,
             url: signed,
-            key: filesMap[item]
+            key: filesMap[item],
           };
           signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
         }

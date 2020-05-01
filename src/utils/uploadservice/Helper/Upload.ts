@@ -2,12 +2,12 @@ import { IUser, MediaType } from "../../../app/models/interfaces";
 import { ObjectKeyString } from "../../lib";
 
 export enum UPLOADOPERATIONS {
-  ProfileImage = "ProfileImage",
-  Portfolio = "Portfolio",
-  Entries = "Entries",
-  ContestBanner = "ContestBanner",
-  BannerImage = "BannerImage",
-  Default = "Default"
+  profileimage = "profileimage",
+  portfolio = "portfolio",
+  contestentry = "contestentry",
+  contestbanner = "contestbanner",
+  bannerimage = "bannerimage",
+  default = "default",
 }
 export interface IFileMetaData {
   file: string;
