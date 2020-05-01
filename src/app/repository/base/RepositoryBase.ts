@@ -96,15 +96,7 @@ class RepositoryBase<T extends mongoose.Document>
         })
         // .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
-    });[Window Title]
-    Visual Studio Code
-    
-    [Content]
-    There are no staged changes to commit.
-    
-    Would you like to automatically stage all your changes and commit them directly?
-    
-    [Yes] [Always] [Never] [Cancel]
+    });
   }
 
   paginatedFetch(condition: any, page = 1, perPage = 10): Promise<any> {
