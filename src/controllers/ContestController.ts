@@ -119,7 +119,6 @@ export class ContestController {
   ) {
     try {
       let reqPageNo = req.query.pageNo || 0;
-
       const pageNo = parseInt(reqPageNo) !== 0 ? parseInt(reqPageNo) : 0;
       let reqSize = req.query.size || 10;
       const size = parseInt(reqSize);

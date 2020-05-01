@@ -18,13 +18,16 @@ var MongodataAccess = /** @class */ (function () {
             console.log("Connected to mongodb");
         });
         mongoose_1.default.Promise = global.Promise;
-        // mongoose.set("useUnifiedTopology", true);
-        mongoose_1.default.set("useFindAndModify", false);
+        MongodataAccess.setMongoProperty();
         this.mongooseInstance = mongoose_1.default.connect(this.dbUri, {
             useNewUrlParser: true,
             useCreateIndex: true,
         });
         return this.mongooseInstance;
+    };
+    MongodataAccess.setMongoProperty = function () {
+        mongoose_1.default.set("useUnifiedTopology", true);
+        mongoose_1.default.set("useFindAndModify", false);
     };
     MongodataAccess.disconnect = function () {
         this.mongooseConnection.close();

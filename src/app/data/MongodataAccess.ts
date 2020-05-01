@@ -24,13 +24,17 @@ class MongodataAccess {
     });
 
     mongoose.Promise = global.Promise;
-    // mongoose.set("useUnifiedTopology", true);
-    mongoose.set("useFindAndModify", false);
+    MongodataAccess.setMongoProperty();
     this.mongooseInstance = mongoose.connect(this.dbUri, {
       useNewUrlParser: true,
       useCreateIndex: true,
     });
     return this.mongooseInstance;
+  }
+
+  private static setMongoProperty() {
+    mongoose.set("useUnifiedTopology", true);
+    mongoose.set("useFindAndModify", false);
   }
 
   static disconnect(): void {

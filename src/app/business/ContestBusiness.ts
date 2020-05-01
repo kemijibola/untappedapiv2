@@ -150,13 +150,7 @@ class ContestBusiness implements IContestBusiness {
      * current contest = startDate  = today and above
      */
     let contestList: IContestList[] = [];
-    const currentDate = new Date();
-    let currentContests = contests
-      .filter((x) => x.startDate >= currentDate)
-      .sort((a, b) => {
-        return getTime(a.createdAt) - getTime(b.createdAt);
-      });
-    for (let item of currentContests) {
+    for (let item of contests) {
       const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
         {
           contest: item._id,
@@ -172,32 +166,11 @@ class ContestBusiness implements IContestBusiness {
       };
       contestList = [...contestList, contestObj];
     }
+
     contestList = contestList.sort((a, b) => {
       return b.entryCount - a.entryCount;
     });
 
-    let earlierContests = contests
-      .filter((x) => x.startDate < currentDate)
-      .sort((a, b) => {
-        return getTime(b.startDate) - getTime(a.startDate);
-      });
-
-    for (let item of earlierContests) {
-      const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
-        {
-          contest: item._id,
-        }
-      );
-      const contestObj: IContestList = {
-        _id: item._id,
-        title: item.title,
-        entryCount: contestEntries.length || 0,
-        viewCount: item.views,
-        bannerImage: item.bannerImage || "",
-        startDate: item.startDate,
-      };
-      contestList = [...contestList, contestObj];
-    }
     return contestList;
   }
 }

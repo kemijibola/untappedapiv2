@@ -103,7 +103,7 @@ var RepositoryBase = /** @class */ (function () {
                 .skip(perPage * page - perPage)
                 .limit(perPage)
                 .sort({
-                startDate: -1,
+                endDate: "desc",
             })
                 // .cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();

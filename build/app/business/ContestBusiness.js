@@ -251,27 +251,21 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.fetchRunningContest = function (contests) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestList, currentDate, currentContests, _i, currentContests_1, item, contestEntries, contestObj, earlierContests, _a, earlierContests_1, item, contestEntries, contestObj;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var contestList, _i, contests_1, item, contestEntries, contestObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         contestList = [];
-                        currentDate = new Date();
-                        currentContests = contests
-                            .filter(function (x) { return x.startDate >= currentDate; })
-                            .sort(function (a, b) {
-                            return lib_1.getTime(a.createdAt) - lib_1.getTime(b.createdAt);
-                        });
-                        _i = 0, currentContests_1 = currentContests;
-                        _b.label = 1;
+                        _i = 0, contests_1 = contests;
+                        _a.label = 1;
                     case 1:
-                        if (!(_i < currentContests_1.length)) return [3 /*break*/, 4];
-                        item = currentContests_1[_i];
+                        if (!(_i < contests_1.length)) return [3 /*break*/, 4];
+                        item = contests_1[_i];
                         return [4 /*yield*/, this._contestEntryRepository.fetch({
                                 contest: item._id,
                             })];
                     case 2:
-                        contestEntries = _b.sent();
+                        contestEntries = _a.sent();
                         contestObj = {
                             _id: item._id,
                             title: item.title,
@@ -281,7 +275,7 @@ var ContestBusiness = /** @class */ (function () {
                             startDate: item.startDate,
                         };
                         contestList = contestList.concat([contestObj]);
-                        _b.label = 3;
+                        _a.label = 3;
                     case 3:
                         _i++;
                         return [3 /*break*/, 1];
@@ -289,35 +283,7 @@ var ContestBusiness = /** @class */ (function () {
                         contestList = contestList.sort(function (a, b) {
                             return b.entryCount - a.entryCount;
                         });
-                        earlierContests = contests
-                            .filter(function (x) { return x.startDate < currentDate; })
-                            .sort(function (a, b) {
-                            return lib_1.getTime(b.startDate) - lib_1.getTime(a.startDate);
-                        });
-                        _a = 0, earlierContests_1 = earlierContests;
-                        _b.label = 5;
-                    case 5:
-                        if (!(_a < earlierContests_1.length)) return [3 /*break*/, 8];
-                        item = earlierContests_1[_a];
-                        return [4 /*yield*/, this._contestEntryRepository.fetch({
-                                contest: item._id,
-                            })];
-                    case 6:
-                        contestEntries = _b.sent();
-                        contestObj = {
-                            _id: item._id,
-                            title: item.title,
-                            entryCount: contestEntries.length || 0,
-                            viewCount: item.views,
-                            bannerImage: item.bannerImage || "",
-                            startDate: item.startDate,
-                        };
-                        contestList = contestList.concat([contestObj]);
-                        _b.label = 7;
-                    case 7:
-                        _a++;
-                        return [3 /*break*/, 5];
-                    case 8: return [2 /*return*/, contestList];
+                        return [2 /*return*/, contestList];
                 }
             });
         });
