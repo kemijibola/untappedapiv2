@@ -1,1 +1,1 @@
-{"version":3,"file":"ContestEntry.js","sourceRoot":"","sources":["../../../../src/app/models/interfaces/ContestEntry.ts"],"names":[],"mappings":""}
+{"version":3,"file":"ContestEntry.js","sourceRoot":"","sources":["../../../../src/app/models/interfaces/ContestEntry.ts"],"names":[],"mappings":";;AA6BA,IAAY,iBAKX;AALD,WAAY,iBAAiB;IAC3B,wCAAmB,CAAA;IACnB,gDAA2B,CAAA;IAC3B,0CAAqB,CAAA;IACrB,wCAAmB,CAAA;AACrB,CAAC,EALW,iBAAiB,GAAjB,yBAAiB,KAAjB,yBAAiB,QAK5B"}

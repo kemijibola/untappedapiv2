@@ -19,7 +19,7 @@ export class ContestListAnalysis implements ContestAnalyzer<IContestList[]> {
           entryCount: 0,
           viewCount: theItem.views,
           bannerImage: theItem.bannerImage,
-          startDate: theItem.startDate,
+          endDate: theItem.endDate,
         });
         return acc;
       },

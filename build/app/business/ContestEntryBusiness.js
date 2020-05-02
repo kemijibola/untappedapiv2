@@ -39,7 +39,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
+var ProfileRepository_1 = __importDefault(require("../repository/ProfileRepository"));
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
+var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
 var ContestBusiness = /** @class */ (function () {
@@ -47,6 +50,8 @@ var ContestBusiness = /** @class */ (function () {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
         this._contestRepository = new ContestRepository_1.default();
         this._userRepository = new UserRepository_1.default();
+        this._profileRepository = new ProfileRepository_1.default();
+        this._userTypeRepository = new UserTypeRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -112,9 +117,88 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.checkUserEligibility = function (contestId, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var isEligible, eligibleCategoriesMap, eligibilityData, contest, contestantProfile, contestant, userType, alreadyVoted, eligibleCategories, contestantCategories, _i, eligibleCategories_1, item, talentIsEligible;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        isEligible = true;
+                        eligibleCategoriesMap = {};
+                        eligibilityData = {
+                            status: true,
+                            eligibility: interfaces_1.EligibilityStatus.eligible,
+                            message: "",
+                        };
+                        return [4 /*yield*/, this._contestRepository.findById(contestId)];
+                    case 1:
+                        contest = _a.sent();
+                        console.log(contest);
+                        if (!contest)
+                            Result_1.Result.fail(404, "Contest not found");
+                        return [4 /*yield*/, this._profileRepository.findByCriteria({
+                                user: userId,
+                            })];
+                    case 2:
+                        contestantProfile = _a.sent();
+                        if (!contestantProfile)
+                            Result_1.Result.fail(404, "Contestant profile not found");
+                        return [4 /*yield*/, this._userRepository.findById(userId)];
+                    case 3:
+                        contestant = _a.sent();
+                        return [4 /*yield*/, this._userTypeRepository.findByCriteria({
+                                name: "Talent",
+                            })];
+                    case 4:
+                        userType = _a.sent();
+                        if (contestant.userType !== userType._id)
+                            Result_1.Result.fail(400, "User is not registered as a Talent");
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                user: contestant._id,
+                                contest: contest._id,
+                            })];
+                    case 5:
+                        alreadyVoted = _a.sent();
+                        console.log(alreadyVoted);
+                        if (alreadyVoted) {
+                            eligibilityData.status = false;
+                            eligibilityData.eligibility = interfaces_1.EligibilityStatus.entered;
+                            eligibilityData.message = "User already entered contest.";
+                            return [2 /*return*/, Result_1.Result.ok(200, eligibilityData)];
+                        }
+                        eligibleCategories = contest.eligibleCategories;
+                        if (eligibleCategories.length > 0) {
+                            contestantCategories = contestantProfile.categoryTypes || [];
+                            for (_i = 0, eligibleCategories_1 = eligibleCategories; _i < eligibleCategories_1.length; _i++) {
+                                item = eligibleCategories_1[_i];
+                                if (!eligibleCategoriesMap[item]) {
+                                    eligibleCategoriesMap[item] = item;
+                                }
+                            }
+                            talentIsEligible = this.checkIfTalentCategoryEligibility(contestantCategories, eligibleCategoriesMap);
+                            if (!talentIsEligible) {
+                                eligibilityData.status = false;
+                                eligibilityData.eligibility = interfaces_1.EligibilityStatus.noteligible;
+                                eligibilityData.message = "Contestant is not eligible.";
+                            }
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, eligibilityData)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.checkIfTalentCategoryEligibility = function (talentCategories, contestCategory) {
+        for (var _i = 0, talentCategories_1 = talentCategories; _i < talentCategories_1.length; _i++) {
+            var talentCategory = talentCategories_1[_i];
+            if (contestCategory[talentCategory]) {
+                return true;
+            }
+        }
+        return false;
+    };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, contestant, codeHasBeenAssigned, contestantCode, contestCode, newContestEntry;
+            var contest, contestant, alreadyVoted, codeHasBeenAssigned, contestantCode, contestCode, newContestEntry;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._contestRepository.findById(item.contest)];
@@ -125,29 +209,38 @@ var ContestBusiness = /** @class */ (function () {
                         contestant = _a.sent();
                         if (!contestant)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contestant not found")];
+                        return [4 /*yield*/, this._contestRepository.findByCriteria({
+                                user: contestant._id,
+                                contest: contest._id,
+                            })];
+                    case 3:
+                        alreadyVoted = _a.sent();
+                        if (alreadyVoted) {
+                            Result_1.Result.fail(409, "Contestant has already entered competition.");
+                        }
                         codeHasBeenAssigned = true;
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         contestantCode = "";
-                        _a.label = 3;
-                    case 3:
-                        if (!codeHasBeenAssigned) return [3 /*break*/, 5];
-                        contestantCode = (contestant.fullName.substring(0, 1) + " " + lib_1.generateRandomNumber(3)).toUpperCase();
+                        _a.label = 4;
+                    case 4:
+                        if (!codeHasBeenAssigned) return [3 /*break*/, 6];
+                        contestantCode = ("" + contestant.fullName.substring(0, 2) + lib_1.generateRandomNumber(2)).toUpperCase();
                         return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
                                 contest: contest._id,
                                 contestantCode: contestantCode,
                             })];
-                    case 4:
+                    case 5:
                         contestCode = _a.sent();
                         if (contestCode)
                             codeHasBeenAssigned = true;
                         else
                             codeHasBeenAssigned = false;
-                        return [3 /*break*/, 3];
-                    case 5:
+                        return [3 /*break*/, 4];
+                    case 6:
                         item.contestantCode = contestantCode;
                         return [4 /*yield*/, this._contestEntryRepository.create(item)];
-                    case 6:
+                    case 7:
                         newContestEntry = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newContestEntry)];
                 }

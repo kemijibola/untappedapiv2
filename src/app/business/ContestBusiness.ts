@@ -162,7 +162,7 @@ class ContestBusiness implements IContestBusiness {
         entryCount: contestEntries.length || 0,
         viewCount: item.views,
         bannerImage: item.bannerImage || "",
-        startDate: item.startDate,
+        endDate: item.endDate,
       };
       contestList = [...contestList, contestObj];
     }

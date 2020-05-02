@@ -41,6 +41,7 @@ var MongodataAccess = /** @class */ (function () {
     };
     MongodataAccess.setMongoProperty = function () {
         mongoose_1.default.set("useFindAndModify", false);
+        mongoose_1.default.set("useUnifiedTopology", true);
     };
     MongodataAccess.disconnect = function () {
         this.mongooseConnection.close();

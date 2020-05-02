@@ -50,6 +50,7 @@ class MongodataAccess {
 
   private static setMongoProperty() {
     mongoose.set("useFindAndModify", false);
+    mongoose.set("useUnifiedTopology", true);
   }
 
   static disconnect(): void {

@@ -1,20 +1,30 @@
 import ContestEntryRepository from "../repository/ContestEntryRepository";
 import ContestRepository from "../repository/ContestRepository";
+import ProfileRepository from "../repository/ProfileRepository";
 import UserRepository from "../repository/UserRepository";
+import UserTypeRepository from "../repository/UserTypeRepository";
 import IContestEntryBusiness = require("./interfaces/ContestEntryBusiness");
-import { IContestEntry } from "../models/interfaces";
+import {
+  IContestEntry,
+  ContestEligibilityData,
+  EligibilityStatus,
+} from "../models/interfaces";
 import { Result } from "../../utils/Result";
-import { generateRandomNumber } from "../../utils/lib";
+import { generateRandomNumber, ObjectKeyString } from "../../utils/lib";
 
 class ContestBusiness implements IContestEntryBusiness {
   private _contestEntryRepository: ContestEntryRepository;
   private _contestRepository: ContestRepository;
   private _userRepository: UserRepository;
+  private _profileRepository: ProfileRepository;
+  private _userTypeRepository: UserTypeRepository;
 
   constructor() {
     this._contestEntryRepository = new ContestEntryRepository();
     this._contestRepository = new ContestRepository();
     this._userRepository = new UserRepository();
+    this._profileRepository = new ProfileRepository();
+    this._userTypeRepository = new UserTypeRepository();
   }
 
   async fetch(condition: any): Promise<Result<IContestEntry[]>> {
@@ -48,8 +58,87 @@ class ContestBusiness implements IContestEntryBusiness {
       criteria
     );
     if (!contestEntry)
-      return Result.fail<IContestEntry>(404, `Contest entry not found`);
+      return Result.fail<IContestEntry>(404, "Contest entry not found");
     return Result.ok<IContestEntry>(200, contestEntry);
+  }
+
+  async checkUserEligibility(
+    contestId: string,
+    userId: string
+  ): Promise<Result<ContestEligibilityData>> {
+    let isEligible = true;
+    let eligibleCategoriesMap: ObjectKeyString = {};
+    let eligibilityData: ContestEligibilityData = {
+      status: true,
+      eligibility: EligibilityStatus.eligible,
+      message: "",
+    };
+    const contest = await this._contestRepository.findById(contestId);
+    console.log(contest);
+    if (!contest) Result.fail<IContestEntry>(404, "Contest not found");
+
+    const contestantProfile = await this._profileRepository.findByCriteria({
+      user: userId,
+    });
+    if (!contestantProfile)
+      Result.fail<IContestEntry>(404, "Contestant profile not found");
+
+    const contestant = await this._userRepository.findById(userId);
+
+    const userType = await this._userTypeRepository.findByCriteria({
+      name: "Talent",
+    });
+
+    if (contestant.userType !== userType._id)
+      Result.fail<IContestEntry>(400, "User is not registered as a Talent");
+
+    const alreadyVoted = await this._contestEntryRepository.findByCriteria({
+      user: contestant._id,
+      contest: contest._id,
+    });
+
+    console.log(alreadyVoted);
+
+    if (alreadyVoted) {
+      eligibilityData.status = false;
+      eligibilityData.eligibility = EligibilityStatus.entered;
+      eligibilityData.message = "User already entered contest.";
+      return Result.ok<ContestEligibilityData>(200, eligibilityData);
+    }
+
+    const eligibleCategories: string[] = contest.eligibleCategories;
+    if (eligibleCategories.length > 0) {
+      const contestantCategories: string[] =
+        contestantProfile.categoryTypes || [];
+      for (let item of eligibleCategories) {
+        if (!eligibleCategoriesMap[item]) {
+          eligibleCategoriesMap[item] = item;
+        }
+      }
+
+      const talentIsEligible = this.checkIfTalentCategoryEligibility(
+        contestantCategories,
+        eligibleCategoriesMap
+      );
+      if (!talentIsEligible) {
+        eligibilityData.status = false;
+        eligibilityData.eligibility = EligibilityStatus.noteligible;
+        eligibilityData.message = "Contestant is not eligible.";
+      }
+    }
+    return Result.ok<ContestEligibilityData>(200, eligibilityData);
+  }
+
+  private checkIfTalentCategoryEligibility(
+    talentCategories: string[],
+    contestCategory: ObjectKeyString
+  ): boolean {
+    for (let talentCategory of talentCategories) {
+      if (contestCategory[talentCategory]) {
+        return true;
+      }
+    }
+    return false;
   }
 
   async create(item: IContestEntry): Promise<Result<IContestEntry>> {
@@ -57,14 +146,24 @@ class ContestBusiness implements IContestEntryBusiness {
     const contestant = await this._userRepository.findById(item.user);
     if (!contestant)
       return Result.fail<IContestEntry>(404, "Contestant not found");
+    const alreadyVoted = await this._contestRepository.findByCriteria({
+      user: contestant._id,
+      contest: contest._id,
+    });
+    if (alreadyVoted) {
+      Result.fail<IContestEntry>(
+        409,
+        "Contestant has already entered competition."
+      );
+    }
     let codeHasBeenAssigned = true;
     if (!contest) return Result.fail<IContestEntry>(404, "Contest not found");
     let contestantCode = "";
     while (codeHasBeenAssigned) {
       contestantCode = `${contestant.fullName.substring(
         0,
-        1
-      )} ${generateRandomNumber(3)}`.toUpperCase();
+        2
+      )}${generateRandomNumber(2)}`.toUpperCase();
       const contestCode = await this._contestEntryRepository.findByCriteria({
         contest: contest._id,
         contestantCode,

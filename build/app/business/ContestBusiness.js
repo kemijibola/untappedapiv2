@@ -272,7 +272,7 @@ var ContestBusiness = /** @class */ (function () {
                             entryCount: contestEntries.length || 0,
                             viewCount: item.views,
                             bannerImage: item.bannerImage || "",
-                            startDate: item.startDate,
+                            endDate: item.endDate,
                         };
                         contestList = contestList.concat([contestObj]);
                         _a.label = 3;

@@ -26,3 +26,15 @@ export interface IContestEntry extends ITimeStamp, IAppSpec, mongoose.Document {
   entry: string;
   // judgeEvaluations: JudgeEvaluation[];
 }
+
+export enum EligibilityStatus {
+  entered = "entered",
+  noteligible = "noteligible",
+  eligible = "eligible",
+  default = "default",
+}
+export interface ContestEligibilityData {
+  status: boolean;
+  eligibility: EligibilityStatus;
+  message?: string;
+}
