@@ -1,9 +1,8 @@
 import { Analyzer } from "../Helper/Summary";
 import {
   ReportType,
-  IUserFilterCategory
+  IUserFilterCategory,
 } from "../../../app/models/interfaces";
-import { MatchData } from "../Helper/MatchData";
 import { Professional } from "../../../app/models/viewmodels";
 
 export class AllProfessionalAnalysis implements Analyzer {
@@ -13,6 +12,7 @@ export class AllProfessionalAnalysis implements Analyzer {
     users = users.sort((a, b) => {
       return b.contestCount - a.contestCount;
     });
+
     for (let user of users) {
       const filtered: IUserFilterCategory = Object.assign({
         user: user.user,
@@ -24,7 +24,7 @@ export class AllProfessionalAnalysis implements Analyzer {
         shortDescription: user.shortDescription || "",
         categoryTypes: user.categoryTypes || [],
         reportType: ReportType.allprofessionals,
-        userType: user.userType
+        userType: user.userType,
       });
       filteredCategories = [...filteredCategories, filtered];
     }

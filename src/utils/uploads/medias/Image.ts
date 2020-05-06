@@ -2,7 +2,7 @@ import {
   IUploadFileRequest,
   UPLOADOPERATIONS,
   IFileMetaData,
-  PresignedUrl
+  PresignedUrl,
 } from "./../../uploadservice/Helper/Upload";
 import { AbstractMedia } from "../Uploader";
 import * as AWS from "aws-sdk";
@@ -20,7 +20,7 @@ AWS.config.update({
   accessKeyId: config.IMAGE_BUCKET.access_key_id,
   secretAccessKey: config.IMAGE_BUCKET.secret_access_key,
   region: config.IMAGE_BUCKET.region,
-  signatureVersion: "v4"
+  signatureVersion: "v4",
 });
 
 export class Image extends AbstractMedia {
@@ -31,12 +31,12 @@ export class Image extends AbstractMedia {
   async getPresignedUrl(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     let signedUrls: SignedUrl = {
       presignedUrl: [],
-      action: data.action
+      component: data.action,
     };
     let signedUrl: PresignedUrl = {
       file: "",
       url: "",
-      key: ""
+      key: "",
     };
 
     if (data.files) {
@@ -60,19 +60,19 @@ export class Image extends AbstractMedia {
       try {
         for (let item in filesMap) {
           const file: IFileMetaData = data.files.filter(
-            x => x.file === item
+            (x) => x.file === item
           )[0];
           const params = {
             Bucket: config.IMAGE_BUCKET.bucket,
             Key: filesMap[item],
             Expires: 30 * 60,
-            ContentType: file.file_type
+            ContentType: file.file_type,
           };
           const options = {
             signatureVersion: "v4",
             region: config.IMAGE_BUCKET.region,
             endpoint: config.IMAGE_BUCKET.accelerate_endpoint,
-            useAccelerateEndpoint: true
+            useAccelerateEndpoint: true,
           };
 
           const client: AWS.S3 = new AWS.S3(options);
@@ -87,7 +87,7 @@ export class Image extends AbstractMedia {
           signedUrl = {
             file: item,
             url: signed,
-            key: filesMap[item]
+            key: filesMap[item],
           };
           signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
         }

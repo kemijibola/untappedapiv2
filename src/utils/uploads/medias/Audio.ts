@@ -2,7 +2,7 @@ import {
   IUploadFileRequest,
   UPLOADOPERATIONS,
   IFileMetaData,
-  PresignedUrl
+  PresignedUrl,
 } from "./../../uploadservice/Helper/Upload";
 import { AbstractMedia } from "../Uploader";
 import * as AWS from "aws-sdk";
@@ -19,7 +19,7 @@ AWS.config.update({
   accessKeyId: config.AUDIO_BUCKET.access_key_id,
   secretAccessKey: config.AUDIO_BUCKET.secret_access_key,
   region: config.IMAGE_BUCKET.region,
-  signatureVersion: "v4"
+  signatureVersion: "v4",
 });
 
 export class Audio extends AbstractMedia {
@@ -30,12 +30,12 @@ export class Audio extends AbstractMedia {
   async getPresignedUrl(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     let signedUrls: SignedUrl = {
       presignedUrl: [],
-      action: data.action
+      component: data.action,
     };
     let signedUrl: PresignedUrl = {
       file: "",
       url: "",
-      key: ""
+      key: "",
     };
 
     if (data.files) {
@@ -62,13 +62,13 @@ export class Audio extends AbstractMedia {
             Bucket: config.AUDIO_BUCKET.bucket,
             Key: filesMap[item],
             Expires: 30 * 60,
-            ContentType: data.files[0].file_type
+            ContentType: data.files[0].file_type,
           };
           const options = {
             signatureVersion: "v4",
             region: config.AUDIO_BUCKET.region,
             endpoint: config.AUDIO_BUCKET.accelerate_endpoint,
-            useAccelerateEndpoint: true
+            useAccelerateEndpoint: true,
           };
 
           const client: AWS.S3 = new AWS.S3(options);
@@ -83,7 +83,7 @@ export class Audio extends AbstractMedia {
           signedUrl = {
             file: item,
             url: signed,
-            key: filesMap[item]
+            key: filesMap[item],
           };
           signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
         }

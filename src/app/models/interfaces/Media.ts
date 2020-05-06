@@ -22,7 +22,7 @@ export enum ImageFit {
   contain = "contain",
   fill = "fill",
   inside = "inside",
-  outside = "outside"
+  outside = "outside",
 }
 interface Resize {
   width: number;
@@ -38,12 +38,12 @@ interface SmartCrop {
 export enum MediaUploadType {
   single = "single",
   multiple = "multiple",
-  all = "all"
+  all = "all",
 }
 export enum MediaType {
   audio = "audio",
   video = "video",
-  image = "image"
+  image = "image",
 }
 export interface IMediaItem {
   _id?: string;
@@ -52,6 +52,7 @@ export interface IMediaItem {
   createdAt?: Date;
   updatedAt?: Date;
   isDeleted?: boolean;
+  isApproved?: boolean;
 }
 export interface TalentMedia {
   user: string;
@@ -65,7 +66,6 @@ export interface IMedia extends ITimeStamp, IAppSpec, mongoose.Document {
   albumCover?: string;
   uploadType: MediaUploadType;
   mediaType: MediaType;
-  isApproved: boolean;
   activityCount: number;
   isDeleted: boolean;
 }
@@ -85,7 +85,7 @@ export interface MediaPreview {
   uploadType: string;
   defaultMediaPath: string;
   shortDescription: string;
-  activityCount: number;
+  itemCount: number;
 }
 
 export interface AudioPortfolioPreview extends TalentPortfolioPreview {}

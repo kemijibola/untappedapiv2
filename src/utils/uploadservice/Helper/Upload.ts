@@ -15,7 +15,7 @@ export interface IFileMetaData {
 }
 
 export interface SignedUrl {
-  action: UPLOADOPERATIONS;
+  component: UPLOADOPERATIONS;
   presignedUrl: PresignedUrl[];
 }
 export interface PresignedUrl {

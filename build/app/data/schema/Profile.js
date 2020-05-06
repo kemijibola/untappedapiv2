@@ -17,6 +17,7 @@ var profileSchema = new mongoose_1.Schema({
     name: { type: String },
     rcNumber: { type: String },
     location: { type: String, required: true },
+    formattedAddres: { type: String },
     phoneNumbers: [{ type: String }],
     user: {
         type: mongoose_1.Schema.Types.ObjectId,

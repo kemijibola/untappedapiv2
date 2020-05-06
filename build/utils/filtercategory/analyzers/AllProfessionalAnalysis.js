@@ -59,7 +59,7 @@ var AllProfessionalAnalysis = /** @class */ (function () {
                         shortDescription: user.shortDescription || "",
                         categoryTypes: user.categoryTypes || [],
                         reportType: interfaces_1.ReportType.allprofessionals,
-                        userType: user.userType
+                        userType: user.userType,
                     });
                     filteredCategories = filteredCategories.concat([filtered]);
                 }

@@ -4,14 +4,15 @@ const mongooseConnection = MongodataAccess.mongooseConnection;
 import {
   IMedia,
   MediaUploadType,
-  MediaType
+  MediaType,
 } from "../../models/interfaces/Media";
 
 const mediaItemSchema = new Schema(
   {
     path: { type: String, required: true },
     likedBy: [{ type: String }],
-    isDeleted: { type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -26,8 +27,7 @@ const mediaSchema = new Schema(
     activityCount: { type: Number, default: 0 },
     uploadType: { type: MediaUploadType, required: true },
     mediaType: { type: MediaType, required: true },
-    isApproved: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -96,7 +96,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
                                         talent = users.filter(function (x) { return x.user == key; })[0];
                                         this_1.talentMediaComment.push({
                                             count: mediaCounter,
-                                            talent: talent
+                                            talent: talent,
                                         });
                                         return [2 /*return*/];
                                 }
@@ -134,7 +134,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
                                 shortDescription: talentMediaComment.talent.shortDescription || "",
                                 categoryTypes: talentMediaComment.talent.categoryTypes || [],
                                 reportType: interfaces_1.ReportType.highestcomment,
-                                userType: talentMediaComment.talent.userType
+                                userType: talentMediaComment.talent.userType,
                             });
                             filteredCategories = filteredCategories.concat([filtered]);
                         }

@@ -19,6 +19,7 @@ const profileSchema: Schema = new Schema(
     name: { type: String },
     rcNumber: { type: String },
     location: { type: String, required: true },
+    formattedAddres: { type: String },
     phoneNumbers: [{ type: String }],
     user: {
       type: Schema.Types.ObjectId,

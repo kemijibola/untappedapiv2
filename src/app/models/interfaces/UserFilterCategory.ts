@@ -13,7 +13,7 @@ export enum ReportType {
   highestcomment = "highestcomment",
   mostwatchedvideo = "mostwatchedvideo",
   mostplayedsong = "mostplayedsong",
-  mostlikedphoto = "mostlikedphoto"
+  mostlikedphoto = "mostlikedphoto",
 }
 
 export interface CategoryTypeWithCategory {
@@ -28,6 +28,8 @@ export interface IUserFilterCategory
   user: IUser["_id"];
   displayName: string;
   displayPhoto: string;
+  bannerPhoto?: string;
+  location?: string;
   categoryTypes: CategoryTypeWithCategory[];
   shortDescription: string;
   tapCount: number;

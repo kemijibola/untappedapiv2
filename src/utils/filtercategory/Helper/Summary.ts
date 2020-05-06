@@ -5,7 +5,7 @@ import { HighestCommentAnalysis } from "../analyzers/HighestCommentAnalysis";
 import { DatabaseReport } from "../reportTarget/DatabaseReport";
 import {
   UserListViewModel,
-  UserListRequest
+  UserListRequest,
 } from "../../../app/models/viewmodels";
 import { AccountStatus } from "../../../app/models/interfaces";
 import { AllTalentsAnalysis } from "../analyzers/AllTalentsAnalysis";
@@ -28,6 +28,10 @@ export class Summary {
 
   static highestCommentAnalysis(): Summary {
     return new Summary(new HighestCommentAnalysis(), new DatabaseReport());
+  }
+
+  static allProfessionalsAnalysis(): Summary {
+    return new Summary(new AllProfessionalAnalysis(), new DatabaseReport());
   }
 
   async buildReport(data: MatchData[]) {

@@ -1,7 +1,7 @@
 import {
   IMediaItem,
   MediaPreview,
-  TalentPortfolioPreview
+  TalentPortfolioPreview,
 } from "./../models/interfaces/Media";
 import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
@@ -22,10 +22,12 @@ class MediaBusiness implements IMediaBusiness {
   async fetch(condition: any): Promise<Result<IMedia[]>> {
     const medias: IMedia[] = await this._mediaRepository.fetch(condition);
     if (medias) {
-      medias.forEach(x => {
-        return x.items.filter(y => !y.isDeleted);
+      medias.forEach((x) => {
+        const mediaItems = x.items.filter((y) => !y.isDeleted && y.isApproved);
+        if (mediaItems.length > 0) return x;
       });
     }
+
     return Result.ok<IMedia[]>(200, medias);
   }
 
@@ -37,19 +39,23 @@ class MediaBusiness implements IMediaBusiness {
     if (portfolioPreviews) {
       modified = portfolioPreviews.reduce(
         (theMap: TalentPortfolioPreview[], theItem: IMedia) => {
-          const items = [...theItem.items.filter(x => !x.isDeleted)];
-          theMap.push({
-            _id: theItem._id,
-            mediaType: theItem.mediaType,
-            talent: theItem.user,
-            uploadType: theItem.uploadType,
-            defaultImageKey: items.length > 0 ? items[0].path : "",
-            mediaTitle: theItem.title,
-            mediaDescription: theItem.shortDescription,
-            items: items,
-            itemsCount: items.length,
-            dateCreated: theItem.createdAt
-          });
+          const items = [
+            ...theItem.items.filter((x) => !x.isDeleted && x.isApproved),
+          ];
+          if (items.length > 0) {
+            theMap.push({
+              _id: theItem._id,
+              mediaType: theItem.mediaType,
+              talent: theItem.user,
+              uploadType: theItem.uploadType,
+              defaultImageKey: items.length > 0 ? items[0].path : "",
+              mediaTitle: theItem.title,
+              mediaDescription: theItem.shortDescription,
+              items: items,
+              itemsCount: items.length,
+              dateCreated: theItem.createdAt,
+            });
+          }
           return theMap;
         },
         []
@@ -64,29 +70,42 @@ class MediaBusiness implements IMediaBusiness {
     if (mediaPreviews) {
       modified = mediaPreviews.reduce(
         (theMap: MediaPreview[], theItem: IMedia) => {
-          const items = [...theItem.items.filter(x => !x.isDeleted)];
-          theMap.push({
-            _id: theItem._id,
-            title: theItem.title,
-            mediaType: theItem.mediaType,
-            uploadType: theItem.uploadType,
-            defaultMediaPath: items.length > 0 ? items[0].path : "",
-            shortDescription: theItem.shortDescription,
-            activityCount: theItem.activityCount
-          });
+          const items = [
+            ...theItem.items.filter((x) => !x.isDeleted && x.isApproved),
+          ];
+          if (items.length > 0) {
+            theMap.push({
+              _id: theItem._id,
+              title: theItem.title,
+              mediaType: theItem.mediaType,
+              uploadType: theItem.uploadType,
+              defaultMediaPath: items.length > 0 ? items[0].path : "",
+              shortDescription: theItem.shortDescription,
+              itemCount: items.length,
+            });
+          }
           return theMap;
         },
         []
       );
     }
+
     return Result.ok<MediaPreview[]>(200, modified);
+  }
+
+  async findMedia(criteria: any): Promise<Result<IMedia>> {
+    const media = await this._mediaRepository.findByIdCriteria(criteria);
+    if (!media) return Result.fail<IMedia>(404, "Media not found");
+
+    media.items = media.items.filter((x) => !x.isDeleted && x.isApproved);
+    return Result.ok<IMedia>(200, media);
   }
 
   async findById(id: string): Promise<Result<IMedia>> {
     const criteria = {
       _id: id,
       isApproved: true,
-      isDeleted: false
+      isDeleted: false,
     };
     const media = await this._mediaRepository.findByIdCriteria(criteria);
     if (!media) return Result.fail<IMedia>(404, "Media not found");
@@ -112,62 +131,80 @@ class MediaBusiness implements IMediaBusiness {
 
   async create(item: IMedia): Promise<Result<IMedia>> {
     item.activityCount = 0;
-    item.isApproved = false;
     item.isDeleted = false;
     const newMedia = await this._mediaRepository.create(item);
     return Result.ok<IMedia>(201, newMedia);
   }
 
   async update(id: string, item: IMedia): Promise<Result<IMedia>> {
+    console.log("update called");
     const media = await this._mediaRepository.findById(id);
     if (!media) return Result.fail<IMedia>(404, "Media not found.");
-    item.isApproved = media.isApproved;
-    item.isDeleted = media.isDeleted;
-    item.createdAt = media.createdAt;
-    item.updateAt = new Date();
-    const mediaItems = item.items ? [...item.items] : [];
-    item.items = [];
 
-    if (mediaItems) {
-      for (let mediaItem of mediaItems) {
-        if (mediaItem._id) {
-          var found = media.items.filter(x => (x._id = mediaItem._id))[0];
-          if (!found) {
-            return Result.fail<IMedia>(
-              404,
-              `Media item ${mediaItem._id} not found`
-            );
-          }
-          const imageItem: IMediaItem = {
-            _id: found._id,
-            likedBy: mediaItem.likedBy,
-            path: found.path,
-            createdAt: found.createdAt,
-            isDeleted: found.isDeleted
-          };
-          item.items = [...item.items, imageItem];
-        } else {
-          var newMediaItem: IMediaItem = {
-            path: mediaItem.path
-          };
-          item.items = [...item.items, newMediaItem];
-        }
-      }
-    }
-    const updateObj = await this._mediaRepository.update(media._id, item);
+    if (media.user != item.user)
+      return Result.fail<IMedia>(
+        403,
+        "You are not authorized to perform this update."
+      );
+
+    media._id = media._id;
+    media.title = item.title || media.title;
+    media.shortDescription = item.shortDescription || media.shortDescription;
+    media.user = media.user;
+    media.isDeleted = media.isDeleted;
+    media.createdAt = media.createdAt;
+    media.items = [...media.items];
+
+    const updateObj = await this._mediaRepository.update(media._id, media);
     return Result.ok<IMedia>(200, updateObj);
   }
 
   async delete(id: string): Promise<Result<boolean>> {
     await this._mediaRepository.patch(id, {
-      isDeleted: true
+      isDeleted: true,
     });
     return Result.ok<boolean>(200, true);
   }
 
+  async updateExistingMedia(id: string, item: IMedia): Promise<Result<IMedia>> {
+    const media = await this._mediaRepository.findById(id);
+    if (!media) return Result.fail<IMedia>(404, "Media not found");
+    console.log(media.user);
+    console.log(item.user);
+    if (media.user != item.user)
+      return Result.fail<IMedia>(
+        403,
+        "You are not authorized to perform this update."
+      );
+    media._id = media._id;
+    media.title = item.title || media.title;
+    media.shortDescription = item.shortDescription || media.shortDescription;
+    media.user = media.user;
+    const newItems = item.items.reduce((theMap: IMediaItem[], theItem: any) => {
+      const item: IMediaItem = {
+        path: theItem.path,
+        isApproved: false,
+        isDeleted: false,
+      };
+      theMap = [...theMap, item];
+      return theMap;
+    }, []);
+    media.items = [...media.items, ...newItems];
+    media.uploadType = media.uploadType;
+    media.mediaType = media.mediaType;
+    media.isDeleted = media.isDeleted;
+    media.activityCount = media.activityCount;
+
+    let updatedObj = await this._mediaRepository.patch(media._id, media);
+    updatedObj.items = updatedObj.items.filter(
+      (x) => !x.isDeleted && x.isApproved
+    );
+    return Result.ok<IMedia>(200, updatedObj);
+  }
+
   async deleteMediaItem(id: string, itemId: string): Promise<Result<boolean>> {
     const media = await this._mediaRepository.findById(id);
-    const newMediaItems = media.items.reduce(
+    media.items = media.items.reduce(
       (theMap: IMediaItem[], theItem: IMediaItem) => {
         if (theItem._id == itemId) {
           theMap.push({
@@ -176,7 +213,8 @@ class MediaBusiness implements IMediaBusiness {
             likedBy: theItem.likedBy,
             createdAt: theItem.createdAt,
             updatedAt: theItem.updatedAt,
-            isDeleted: true
+            isDeleted: true,
+            isApproved: theItem.isApproved,
           });
         } else {
           theMap.push(theItem);
@@ -185,7 +223,18 @@ class MediaBusiness implements IMediaBusiness {
       },
       []
     );
-    await this._mediaRepository.patch(id, { items: newMediaItems });
+
+    const remainingMediaItems = media.items.filter(
+      (x) => !x.isDeleted && x.isApproved
+    );
+    if (remainingMediaItems.length < 1) {
+      media.isDeleted = true;
+      await this._mediaRepository.patch(media._id, { items: media.items });
+      await this._mediaRepository.update(media._id, media);
+    } else {
+      await this._mediaRepository.patch(media._id, { items: media.items });
+    }
+
     return Result.ok<boolean>(200, true);
   }
 }

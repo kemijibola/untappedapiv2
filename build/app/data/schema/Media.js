@@ -7,7 +7,8 @@ var Media_1 = require("../../models/interfaces/Media");
 var mediaItemSchema = new mongoose_1.Schema({
     path: { type: String, required: true },
     likedBy: [{ type: String }],
-    isDeleted: { type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
 }, { timestamps: true });
 var mediaSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
@@ -18,8 +19,7 @@ var mediaSchema = new mongoose_1.Schema({
     activityCount: { type: Number, default: 0 },
     uploadType: { type: Media_1.MediaUploadType, required: true },
     mediaType: { type: Media_1.MediaType, required: true },
-    isApproved: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 exports.MediaSchema = mongooseConnection.model("Media", mediaSchema);
 //# sourceMappingURL=Media.js.map

@@ -109,9 +109,45 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
+    MediaController.prototype.patchMedia = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateObj, mediaBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        updateObj = req.body;
+                        updateObj.user = req.user;
+                        console.log(updateObj);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.updateExistingMedia(req.params.id, updateObj)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     MediaController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, mediaType, systemMediaTypes, modifiedItems, newMedia, mediaBusiness, result, err_2;
+            var uploadType, mediaType, systemMediaTypes, modifiedItems, newMedia, mediaBusiness, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -134,6 +170,8 @@ var MediaController = /** @class */ (function () {
                         modifiedItems = req.body.items.reduce(function (theMap, theItem) {
                             var item = {
                                 path: theItem.path,
+                                isApproved: false,
+                                isDeleted: false,
                             };
                             theMap = theMap.concat([item]);
                             return theMap;
@@ -158,7 +196,7 @@ var MediaController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         //       console.log(err);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
@@ -171,79 +209,6 @@ var MediaController = /** @class */ (function () {
     };
     // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
     MediaController.prototype.fetchUserPreviewList = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        if (!req.query.mediaType) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Please provide mediaType in query param",
-                                }))];
-                        }
-                        if (!req.query.uploadType) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Please provide uploadType in query param",
-                                }))];
-                        }
-                        uploadType = req.query.uploadType.toLowerCase();
-                        systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
-                        if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Invalid uploadType",
-                                }))];
-                        }
-                        mediaType = req.query.mediaType.toLowerCase();
-                        systemMediaTypes = Object.values(interfaces_1.MediaType);
-                        if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: 400,
-                                    message: "Invalid mediaType",
-                                }))];
-                        }
-                        condition = {
-                            isApproved: true,
-                            isDeleted: false,
-                        };
-                        if (uploadType !== "all") {
-                            condition.uploadType = uploadType;
-                        }
-                        if (mediaType !== "all") {
-                            condition.mediaType = mediaType;
-                        }
-                        condition.user = req.user;
-                        mediaBusiness = new MediaBusiness();
-                        return [4 /*yield*/, mediaBusiness.fetchPreview(condition)];
-                    case 1:
-                        result = _a.sent();
-                        if (result.error) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: "Error occured, " + result.error,
-                                }))];
-                        }
-                        return [2 /*return*/, res.status(result.responseCode).json({
-                                message: "Media Operation successful",
-                                data: result.data,
-                            })];
-                    case 2:
-                        err_3 = _a.sent();
-                        console.log(err_3);
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured. Please try again later",
-                            }))];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
-    MediaController.prototype.fetchPreviewList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_4;
             return __generator(this, function (_a) {
@@ -279,7 +244,6 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         condition = {
-                            isApproved: true,
                             isDeleted: false,
                         };
                         if (uploadType !== "all") {
@@ -288,9 +252,9 @@ var MediaController = /** @class */ (function () {
                         if (mediaType !== "all") {
                             condition.mediaType = mediaType;
                         }
-                        condition.user = req.params.id;
+                        condition.user = req.user;
                         mediaBusiness = new MediaBusiness();
-                        return [4 /*yield*/, mediaBusiness.fetchTalentPortfolioPreview(condition)];
+                        return [4 /*yield*/, mediaBusiness.fetchPreview(condition)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -316,9 +280,82 @@ var MediaController = /** @class */ (function () {
         });
     };
     // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
-    MediaController.prototype.fetchUserList = function (req, res, next) {
+    MediaController.prototype.fetchPreviewList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (!req.query.mediaType) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide mediaType in query param",
+                                }))];
+                        }
+                        if (!req.query.uploadType) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide uploadType in query param",
+                                }))];
+                        }
+                        uploadType = req.query.uploadType.toLowerCase();
+                        console.log(uploadType);
+                        systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
+                        if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Invalid uploadType",
+                                }))];
+                        }
+                        mediaType = req.query.mediaType.toLowerCase();
+                        systemMediaTypes = Object.values(interfaces_1.MediaType);
+                        if (!systemMediaTypes.includes(mediaType) && mediaType !== "all") {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Invalid mediaType",
+                                }))];
+                        }
+                        condition = {
+                            isDeleted: false,
+                        };
+                        if (uploadType !== "all") {
+                            condition.uploadType = uploadType;
+                        }
+                        if (mediaType !== "all") {
+                            condition.mediaType = mediaType;
+                        }
+                        condition.user = req.params.id;
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.fetchTalentPortfolioPreview(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: "Error occured, " + result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        console.log(err_5);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
+    MediaController.prototype.fetchUserList = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -352,7 +389,6 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         condition = {
-                            isApproved: true,
                             isDeleted: false,
                         };
                         if (uploadType !== "all") {
@@ -377,8 +413,8 @@ var MediaController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_5 = _a.sent();
-                        console.log(err_5);
+                        err_6 = _a.sent();
+                        console.log(err_6);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later",
@@ -391,7 +427,7 @@ var MediaController = /** @class */ (function () {
     // SAMPLE GET ALL LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
     MediaController.prototype.fetchList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_6;
+            var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -424,7 +460,9 @@ var MediaController = /** @class */ (function () {
                                     message: "Invalid mediaType",
                                 }))];
                         }
-                        condition = {};
+                        condition = {
+                            isDeleted: false,
+                        };
                         if (uploadType !== "all") {
                             condition.uploadType = uploadType;
                         }
@@ -446,42 +484,6 @@ var MediaController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_6 = _a.sent();
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured." + err_6,
-                            }))];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
-    MediaController.prototype.fetch = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, result, err_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        mediaBusiness = new MediaBusiness();
-                        return [4 /*yield*/, mediaBusiness.findById(req.params.id)];
-                    case 1:
-                        result = _a.sent();
-                        if (result.error) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: result.error,
-                                }))];
-                        }
-                        if (result.data) {
-                            result.data.items = result.data.items.filter(function (x) { return !x.isDeleted; });
-                        }
-                        return [2 /*return*/, res.status(result.responseCode).json({
-                                message: "Media Operation successful",
-                                data: result.data,
-                            })];
-                    case 2:
                         err_7 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
@@ -492,9 +494,46 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
+    // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
+    MediaController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, condition, result, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        mediaBusiness = new MediaBusiness();
+                        condition = {
+                            _id: req.params.id,
+                            isDeleted: false,
+                        };
+                        return [4 /*yield*/, mediaBusiness.findMedia(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_8 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_8,
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     MediaController.prototype.deleteMedia = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, media, result, err_8;
+            var mediaBusiness, media, result, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -531,10 +570,10 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        err_8 = _a.sent();
+                        err_9 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_8,
+                                message: "Internal Server error occured." + err_9,
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -543,7 +582,7 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.deleteMediaItem = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, media, mediaUser, currentUser, result, err_9;
+            var mediaBusiness, media, mediaUser, currentUser, result, err_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -588,11 +627,11 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        err_9 = _a.sent();
-                        console.log(err_9);
+                        err_10 = _a.sent();
+                        console.log(err_10);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_9,
+                                message: "Internal Server error occured." + err_10,
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -608,6 +647,14 @@ var MediaController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "update", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.patch("/:id"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "patchMedia", null);
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.post("/"),

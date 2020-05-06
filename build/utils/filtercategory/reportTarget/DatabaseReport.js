@@ -39,7 +39,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var UserFilterCategoryBusiness_1 = __importDefault(require("../../../app/business/UserFilterCategoryBusiness"));
-var error_1 = require("../../error");
 var DatabaseReport = /** @class */ (function () {
     function DatabaseReport() {
     }
@@ -49,22 +48,24 @@ var DatabaseReport = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 4, , 5]);
+                        if (!(report.length > 0)) return [3 /*break*/, 3];
                         userFilterBusiness = new UserFilterCategoryBusiness_1.default();
-                        return [4 /*yield*/, userFilterBusiness.deleteMany({ reportType: report[0].reportType })];
+                        return [4 /*yield*/, userFilterBusiness.deleteMany({
+                                reportType: report[0].reportType,
+                            })];
                     case 1:
                         _a.sent();
                         return [4 /*yield*/, userFilterBusiness.createMany(report)];
                     case 2:
                         _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
+                        _a.label = 3;
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
                         err_1 = _a.sent();
-                        throw new error_1.PlatformError({
-                            code: 500,
-                            message: err_1
-                        });
-                    case 4: return [2 /*return*/];
+                        console.log(err_1);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         });

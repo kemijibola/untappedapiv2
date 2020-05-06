@@ -57,8 +57,7 @@ var ProfessionalPortfolio = /** @class */ (function () {
                         contestBusiness = new ContestBusiness_1.default();
                         return [4 /*yield*/, contestBusiness.fetch({
                                 createdBy: this.userId,
-                                isApproved: true,
-                                paymentStatus: interfaces_1.PaymentStatus.Completed
+                                paymentStatus: interfaces_1.PaymentStatus.Completed,
                             })];
                     case 1:
                         userContests = _a.sent();

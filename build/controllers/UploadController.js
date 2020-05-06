@@ -62,11 +62,11 @@ var UploadController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        action = req.body.action;
+                        action = req.body.component;
                         if (!Upload_1.UPLOADOPERATIONS[action]) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "action is invalid."
+                                    message: "component is invalid.",
                                 }))];
                         }
                         mediaType = req.body.mediaType.toLowerCase();
@@ -74,16 +74,17 @@ var UploadController = /** @class */ (function () {
                         if (!systemMediaTypes.includes(mediaType) || mediaType === "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Invalid mediaType"
+                                    message: "Invalid mediaType",
                                 }))];
                         }
                         if (req.body.files.length < 1) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "Please provide at least 1 item in files for upload."
+                                    message: "Please provide at least 1 item in files for upload.",
                                 }))];
                         }
                         item = req.body;
+                        item.action = action;
                         item.uploader = req.user;
                         mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.mediaType.toLowerCase());
                         return [4 /*yield*/, mediaFactory.getPresignedUrl(item)];
@@ -92,24 +93,24 @@ var UploadController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         if (err_1.code === 400) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: err_1.code,
-                                    message: err_1.message
+                                    message: err_1.message,
                                 }))];
                         }
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -123,7 +124,7 @@ var UploadController = /** @class */ (function () {
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.requestValidators("action", "files", "mediaType"),
+        decorators_1.requestValidators("component", "files", "mediaType"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.authorize(PermissionConstant_1.canUploadGigs, PermissionConstant_1.canUploadProfileImage),
         __metadata("design:type", Function),

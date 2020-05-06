@@ -3,17 +3,17 @@ import {
   UserListRequest,
   UserListViewModel,
   Talent,
-  Professional
+  Professional,
 } from "../../app/models/viewmodels";
 import {
   generateProfessionalReport,
-  generateTalentReport
+  generateTalentReport,
 } from "./Helper/MatchData";
 import UserTypeBusiness = require("../../app/business/UserTypeBusiness");
 import {
   AccountStatus,
   IUserModel,
-  CategoryTypeWithCategory
+  CategoryTypeWithCategory,
 } from "../../app/models/interfaces";
 import UserBusiness = require("../../app/business/UserBusiness");
 import CategoryTypeBusiness = require("../../app/business/CategoryTypeBusiness");
@@ -41,12 +41,12 @@ export class UserFilter {
     try {
       const userTypeBusiness = new UserTypeBusiness();
       var result = await userTypeBusiness.findByCriteria({
-        name: AppUsers.Talent
+        name: AppUsers.Talent,
       });
 
       if (result.data) {
         let talents = await this.fetchUsers({
-          userType: result.data._id
+          userType: result.data._id,
         });
         let users: Talent[] = [];
 
@@ -68,7 +68,7 @@ export class UserFilter {
               shortDescription: userProfile.data
                 ? userProfile.data.shortBio
                 : "",
-              dateJoined: x.createdAt
+              dateJoined: x.createdAt,
             };
             users = [...users, user];
           }
@@ -91,38 +91,23 @@ export class UserFilter {
         transformed.push({
           categoryTypeId: found.data._id,
           categoryTypeName: found.data.name,
-          category: found.data.category
+          category: found.data.category,
         });
     }
     return transformed;
-
-    // const transformed: any = categories.reduce(
-    //   async (theMap: CategoryTypeWithCategory[], theItem: string) => {
-    //     const result = await categoryTypeBusiness.findById(theItem);
-    //     if (result.data) {
-    //       theMap.push({
-    //         categoryTypeId: result.data._id,
-    //         category: result.data.category
-    //       });
-    //     }
-    //     return theMap;
-    //   },
-    //   Promise.resolve([])
-    // );
-    // return transformed;
   };
+
   private fetchProfessionals = async (
     condition: UserListRequest
   ): Promise<void> => {
     try {
       const userTypeBusiness = new UserTypeBusiness();
       var result = await userTypeBusiness.findByCriteria({
-        name: AppUsers.Professional
+        name: AppUsers.Professional,
       });
-
       if (result.data) {
         let professionals = await this.fetchUsers({
-          userType: result.data._id
+          userType: result.data._id,
         });
 
         let users: Professional[] = [];
@@ -133,21 +118,21 @@ export class UserFilter {
             var userProfile = await profileBusiness.findByUser(x._id);
             var professionalSetUp = ProfessionalPortfolio.setUp(x._id);
             var userContest = await professionalSetUp.fetchProfessionalContests();
-
+            const categoryTypes: any = userProfile.data
+              ? await this.transformCategoryType(userProfile.data.categoryTypes)
+              : [];
             var user: Professional = {
               user: x._id,
               userType: x.userType,
               businessName: userProfile.data ? userProfile.data.name : "",
               displayPhoto: x.profileImagePath || "",
               displayName: x.fullName,
-              categoryTypes: userProfile.data
-                ? userProfile.data.categoryTypes
-                : [],
+              categoryTypes: categoryTypes,
               shortDescription: userProfile.data
                 ? userProfile.data.shortBio
                 : "",
               dateJoined: x.createdAt,
-              contestCount: userContest.length
+              contestCount: userContest.length,
             };
             users = [...users, user];
           }

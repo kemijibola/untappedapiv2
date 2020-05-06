@@ -26,21 +26,6 @@ class MongodataAccess {
     mongoose.Promise = global.Promise;
     MongodataAccess.setMongoProperty();
 
-    // mongoose.connect(
-    //   "mongodb://ip:port",
-    //   {
-    //     useNewUrlParser: true,
-    //     useFindAndModify: false,
-    //     useCreateIndex: true,
-    //     user: "username", // IMPORTANT TO HAVE IT HERE AND NOT IN CONNECTION STRING
-    //     pass: "password", // IMPORTANT TO HAVE IT HERE AND NOT IN CONNECTION STRING
-    //     dbName: "database-name", // IMPORTANT TO HAVE IT HERE AND NOT IN CONNECTION STRING
-    //   },
-    //   (err) => {
-    //     throw err;
-    //   }
-    // );
-
     this.mongooseInstance = mongoose.connect(this.dbUri, {
       useNewUrlParser: true,
       useCreateIndex: true,
@@ -49,8 +34,8 @@ class MongodataAccess {
   }
 
   private static setMongoProperty() {
-    mongoose.set("useFindAndModify", false);
-    mongoose.set("useUnifiedTopology", true);
+    //m ongoose.set("useFindAndModify", false);
+    // mongoose.set("useUnifiedTopology", true);
   }
 
   static disconnect(): void {

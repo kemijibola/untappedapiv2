@@ -6,7 +6,7 @@ import {
   AccountStatus,
   IUserType,
   ReportType,
-  ICategoryType
+  ICategoryType,
 } from "../interfaces";
 
 export interface UserViewModel {
@@ -49,6 +49,8 @@ export interface UserListViewModel {
   user: string;
   userType: IUserType["_id"];
   displayPhoto: string;
+  location?: string;
+  bannerPhoto?: string;
   categoryTypes?: CategoryTypeWithCategory[];
   displayName: string;
   shortDescription?: string;
@@ -58,7 +60,7 @@ export interface UserListViewModel {
 export enum AppUsers {
   Talent = "Talent",
   Professional = "Professional",
-  Audience = "Audience"
+  Audience = "Audience",
 }
 
 export interface CreatedContest {

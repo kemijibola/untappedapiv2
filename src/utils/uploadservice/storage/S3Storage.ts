@@ -42,7 +42,7 @@ export class S3Storage implements Storage {
     const signedUrlExpireSeconds = 60 * 60;
     let signedUrls: SignedUrl = {
       presignedUrl: [],
-      action: UPLOADOPERATIONS.profileimage,
+      component: UPLOADOPERATIONS.profileimage,
     };
     let signedUrl: PresignedUrl = {
       file: "",

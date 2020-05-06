@@ -4,7 +4,7 @@ import {
   IImage,
   IMedia,
   IContest,
-  PaymentStatus
+  PaymentStatus,
 } from "../../app/models/interfaces";
 import ContestBusiness from "../../app/business/ContestBusiness";
 import { UserListViewModel } from "../../app/models/viewmodels";
@@ -21,8 +21,7 @@ export class ProfessionalPortfolio {
     const contestBusiness = new ContestBusiness();
     const userContests = await contestBusiness.fetch({
       createdBy: this.userId,
-      isApproved: true,
-      paymentStatus: PaymentStatus.Completed
+      paymentStatus: PaymentStatus.Completed,
     });
     if (userContests.data) contests = [...contests, ...userContests.data];
     return contests;

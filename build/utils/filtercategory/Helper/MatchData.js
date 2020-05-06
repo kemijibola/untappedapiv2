@@ -14,8 +14,8 @@ function generateTalentReport(data) {
 }
 exports.generateTalentReport = generateTalentReport;
 function generateProfessionalReport(data) {
-    // const allProfessionalSummary = Summary.allProfessionalAnalysisReport();
-    // allProfessionalSummary.buildAndProcessReport(data);
+    var allProfessionalSummary = Summary_1.Summary.allProfessionalsAnalysis();
+    allProfessionalSummary.buildReport(data);
 }
 exports.generateProfessionalReport = generateProfessionalReport;
 //# sourceMappingURL=MatchData.js.map

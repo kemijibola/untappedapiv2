@@ -6,15 +6,20 @@ import { PlatformError } from "../../error";
 export class DatabaseReport implements OutputTarget {
   async save(report: IUserFilterCategory[]) {
     try {
-      // delete existing report before saving new to db
-      const userFilterBusiness = new UserFilterCategoryBusiness();
-      await userFilterBusiness.deleteMany({ reportType: report[0].reportType });
-      await userFilterBusiness.createMany(report);
+      if (report.length > 0) {
+        // delete existing report before saving new to db
+        const userFilterBusiness = new UserFilterCategoryBusiness();
+        await userFilterBusiness.deleteMany({
+          reportType: report[0].reportType,
+        });
+        await userFilterBusiness.createMany(report);
+      }
     } catch (err) {
-      throw new PlatformError({
-        code: 500,
-        message: err
-      });
+      console.log(err);
+      // throw new PlatformError({
+      //   code: 500,
+      //   message: err,
+      // });
     }
   }
 }

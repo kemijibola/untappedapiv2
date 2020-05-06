@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var HighestCommentAnalysis_1 = require("../analyzers/HighestCommentAnalysis");
 var DatabaseReport_1 = require("../reportTarget/DatabaseReport");
 var AllTalentsAnalysis_1 = require("../analyzers/AllTalentsAnalysis");
+var AllProfessionalAnalysis_1 = require("../analyzers/AllProfessionalAnalysis");
 var Summary = /** @class */ (function () {
     function Summary(analyzer, output) {
         this.analyzer = analyzer;
@@ -48,6 +49,9 @@ var Summary = /** @class */ (function () {
     };
     Summary.highestCommentAnalysis = function () {
         return new Summary(new HighestCommentAnalysis_1.HighestCommentAnalysis(), new DatabaseReport_1.DatabaseReport());
+    };
+    Summary.allProfessionalsAnalysis = function () {
+        return new Summary(new AllProfessionalAnalysis_1.AllProfessionalAnalysis(), new DatabaseReport_1.DatabaseReport());
     };
     Summary.prototype.buildReport = function (data) {
         return __awaiter(this, void 0, void 0, function () {

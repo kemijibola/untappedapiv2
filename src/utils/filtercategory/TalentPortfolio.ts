@@ -23,8 +23,7 @@ export class TalentPortfolio {
     const videoBusiness = new MediaBusiness();
     const result = await videoBusiness.fetch({
       user: this.userId,
-      isApproved: true,
-      isDeleted: false
+      isDeleted: false,
     });
     return result.data ? result.data : [];
   }

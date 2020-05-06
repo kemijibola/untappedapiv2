@@ -78,7 +78,7 @@ var S3Storage = /** @class */ (function () {
                         signedUrlExpireSeconds = 60 * 60;
                         signedUrls = {
                             presignedUrl: [],
-                            action: Upload_1.UPLOADOPERATIONS.profileimage,
+                            component: Upload_1.UPLOADOPERATIONS.profileimage,
                         };
                         signedUrl = {
                             file: "",

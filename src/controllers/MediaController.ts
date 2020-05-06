@@ -7,6 +7,7 @@ import {
   use,
   put,
   del,
+  patch,
 } from "../decorators";
 import MediaBusiness = require("../app/business/MediaBusiness");
 import {
@@ -93,6 +94,42 @@ export class MediaController {
   }
 
   @use(requireAuth)
+  @use(requestValidator)
+  @patch("/:id")
+  async patchMedia(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const updateObj: IMedia = req.body;
+      updateObj.user = req.user;
+      console.log(updateObj);
+      const mediaBusiness = new MediaBusiness();
+      const result = await mediaBusiness.updateExistingMedia(
+        req.params.id,
+        updateObj
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
   @post("/")
   @use(requestValidator)
   @requestValidators("title", "items", "mediaType")
@@ -123,6 +160,8 @@ export class MediaController {
         (theMap: IMediaItem[], theItem: any) => {
           const item: IMediaItem = {
             path: theItem.path,
+            isApproved: false,
+            isDeleted: false,
           };
           theMap = [...theMap, item];
           return theMap;
@@ -209,7 +248,6 @@ export class MediaController {
       }
 
       let condition: any = {
-        isApproved: true,
         isDeleted: false,
       };
       if (uploadType !== "all") {
@@ -270,6 +308,7 @@ export class MediaController {
       }
 
       const uploadType: string = req.query.uploadType.toLowerCase();
+      console.log(uploadType);
       const systemUploadTypes: string[] = Object.values(MediaUploadType);
       if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
         return next(
@@ -292,7 +331,6 @@ export class MediaController {
       }
 
       let condition: any = {
-        isApproved: true,
         isDeleted: false,
       };
       if (uploadType !== "all") {
@@ -375,7 +413,6 @@ export class MediaController {
       }
 
       let condition: any = {
-        isApproved: true,
         isDeleted: false,
       };
       if (uploadType !== "all") {
@@ -457,7 +494,9 @@ export class MediaController {
         );
       }
 
-      let condition: ObjectKeyString = {};
+      let condition: any = {
+        isDeleted: false,
+      };
       if (uploadType !== "all") {
         condition.uploadType = uploadType;
       }
@@ -496,7 +535,11 @@ export class MediaController {
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       const mediaBusiness = new MediaBusiness();
-      const result = await mediaBusiness.findById(req.params.id);
+      let condition: any = {
+        _id: req.params.id,
+        isDeleted: false,
+      };
+      const result = await mediaBusiness.findMedia(condition);
       if (result.error) {
         return next(
           new PlatformError({
@@ -504,9 +547,6 @@ export class MediaController {
             message: result.error,
           })
         );
-      }
-      if (result.data) {
-        result.data.items = result.data.items.filter((x) => !x.isDeleted);
       }
       return res.status(result.responseCode).json({
         message: "Media Operation successful",

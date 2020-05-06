@@ -5,12 +5,12 @@ import {
   requestValidators,
   get,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import { PlatformError } from "../utils/error";
 import {
   IUploadFileRequest,
-  UPLOADOPERATIONS
+  UPLOADOPERATIONS,
 } from "../utils/uploadservice/Helper/Upload";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { FileUpload } from "../utils/uploadservice/FileUpload";
@@ -21,7 +21,7 @@ import { MediaMakerFactory } from "../utils/uploads/MediaMakerFactory";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import {
   canUploadProfileImage,
-  canUploadGigs
+  canUploadGigs,
 } from "../utils/lib/PermissionConstant";
 import { MediaType } from "../app/models/interfaces";
 
@@ -29,7 +29,7 @@ import { MediaType } from "../app/models/interfaces";
 export class UploadController {
   @post("/")
   @use(requestValidator)
-  @requestValidators("action", "files", "mediaType")
+  @requestValidators("component", "files", "mediaType")
   @use(requireAuth)
   @authorize(canUploadGigs, canUploadProfileImage)
   async getPresignedUrl(
@@ -38,12 +38,12 @@ export class UploadController {
     next: NextFunction
   ) {
     try {
-      const action: UPLOADOPERATIONS = req.body.action;
+      const action: UPLOADOPERATIONS = req.body.component;
       if (!UPLOADOPERATIONS[action]) {
         return next(
           new PlatformError({
             code: 400,
-            message: "action is invalid."
+            message: "component is invalid.",
           })
         );
       }
@@ -54,7 +54,7 @@ export class UploadController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Invalid mediaType"
+            message: "Invalid mediaType",
           })
         );
       }
@@ -63,11 +63,12 @@ export class UploadController {
         return next(
           new PlatformError({
             code: 400,
-            message: "Please provide at least 1 item in files for upload."
+            message: "Please provide at least 1 item in files for upload.",
           })
         );
       }
       const item: IUploadFileRequest = req.body;
+      item.action = action;
       item.uploader = req.user;
 
       var mediaFactory: AbstractMedia = new MediaMakerFactory().create(
@@ -78,27 +79,27 @@ export class UploadController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       if (err.code === 400) {
         return next(
           new PlatformError({
             code: err.code,
-            message: err.message
+            message: err.message,
           })
         );
       }
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }

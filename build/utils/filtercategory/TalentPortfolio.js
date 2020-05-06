@@ -56,8 +56,7 @@ var TalentPortfolio = /** @class */ (function () {
                         videoBusiness = new MediaBusiness_1.default();
                         return [4 /*yield*/, videoBusiness.fetch({
                                 user: this.userId,
-                                isApproved: true,
-                                isDeleted: false
+                                isDeleted: false,
                             })];
                     case 1:
                         result = _a.sent();

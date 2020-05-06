@@ -66,7 +66,7 @@ AWS.config.update({
     accessKeyId: config.VIDEO_BUCKET.access_key_id,
     secretAccessKey: config.VIDEO_BUCKET.secret_access_key,
     region: config.IMAGE_BUCKET.region,
-    signatureVersion: "v4"
+    signatureVersion: "v4",
 });
 var Video = /** @class */ (function (_super) {
     __extends(Video, _super);
@@ -81,12 +81,12 @@ var Video = /** @class */ (function (_super) {
                     case 0:
                         signedUrls = {
                             presignedUrl: [],
-                            action: data.action
+                            component: data.action,
                         };
                         signedUrl = {
                             file: "",
                             url: "",
-                            key: ""
+                            key: "",
                         };
                         if (!data.files) return [3 /*break*/, 7];
                         filesMap = data.files.reduce(function (theMap, item) {
@@ -110,13 +110,13 @@ var Video = /** @class */ (function (_super) {
                                             Bucket: config.VIDEO_BUCKET.bucket,
                                             Key: filesMap[item],
                                             Expires: 30 * 60,
-                                            ContentType: data.files[0].file_type
+                                            ContentType: data.files[0].file_type,
                                         };
                                         options = {
                                             signatureVersion: "v4",
                                             region: config.VIDEO_BUCKET.region,
                                             endpoint: config.VIDEO_BUCKET.accelerate_endpoint,
-                                            useAccelerateEndpoint: true
+                                            useAccelerateEndpoint: true,
                                         };
                                         client = new AWS.S3(options);
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {
@@ -131,7 +131,7 @@ var Video = /** @class */ (function (_super) {
                                         signedUrl = {
                                             file: item,
                                             url: signed,
-                                            key: filesMap[item]
+                                            key: filesMap[item],
                                         };
                                         signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
                                         return [2 /*return*/];

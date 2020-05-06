@@ -2,7 +2,7 @@ import { Summary } from "./Summary";
 import {
   UserListViewModel,
   Talent,
-  Professional
+  Professional,
 } from "../../../app/models/viewmodels";
 
 export type MatchData = UserListViewModel;
@@ -22,6 +22,6 @@ export function generateTalentReport(data: Talent[]): void {
 }
 
 export function generateProfessionalReport(data: Professional[]): void {
-  // const allProfessionalSummary = Summary.allProfessionalAnalysisReport();
-  // allProfessionalSummary.buildAndProcessReport(data);
+  const allProfessionalSummary = Summary.allProfessionalsAnalysis();
+  allProfessionalSummary.buildReport(data);
 }

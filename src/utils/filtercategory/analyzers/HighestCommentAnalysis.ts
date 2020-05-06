@@ -6,7 +6,7 @@ import {
   ReportType,
   IUserFilterCategory,
   IAudio,
-  MediaType
+  MediaType,
 } from "../../../app/models/interfaces";
 import CommentBusiness from "../../../app/business/CommentBusiness";
 import { TalentMediaComment, ITalentPortfolio } from "../TalentPortfolio";
@@ -44,10 +44,10 @@ export class HighestCommentAnalysis implements Analyzer {
         mediaCounter = mediaCounter + mediaCount;
       }
 
-      var talent = users.filter(x => x.user == key)[0];
+      var talent = users.filter((x) => x.user == key)[0];
       this.talentMediaComment.push({
         count: mediaCounter,
-        talent
+        talent,
       });
     }
 
@@ -66,7 +66,7 @@ export class HighestCommentAnalysis implements Analyzer {
         shortDescription: talentMediaComment.talent.shortDescription || "",
         categoryTypes: talentMediaComment.talent.categoryTypes || [],
         reportType: ReportType.highestcomment,
-        userType: talentMediaComment.talent.userType
+        userType: talentMediaComment.talent.userType,
       });
 
       filteredCategories = [...filteredCategories, filtered];
@@ -78,11 +78,11 @@ export class HighestCommentAnalysis implements Analyzer {
     let medias: IMedia[] = [];
     const talentPortfolio = TalentPortfolio.setUp(userId);
     const allMedia = await talentPortfolio.fetchTalentMedia();
-    const userAudios = allMedia.filter(x => x.mediaType === MediaType.audio);
+    const userAudios = allMedia.filter((x) => x.mediaType === MediaType.audio);
     medias = [...medias, ...userAudios];
-    const userImages = allMedia.filter(x => x.mediaType === MediaType.image);
+    const userImages = allMedia.filter((x) => x.mediaType === MediaType.image);
     medias = [...medias, ...userImages];
-    const userVideos = allMedia.filter(x => x.mediaType === MediaType.video);
+    const userVideos = allMedia.filter((x) => x.mediaType === MediaType.video);
     medias = [...medias, ...userVideos];
     return medias;
   }

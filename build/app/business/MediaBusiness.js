@@ -54,7 +54,9 @@ var MediaBusiness = /** @class */ (function () {
                         medias = _a.sent();
                         if (medias) {
                             medias.forEach(function (x) {
-                                return x.items.filter(function (y) { return !y.isDeleted; });
+                                var mediaItems = x.items.filter(function (y) { return !y.isDeleted && y.isApproved; });
+                                if (mediaItems.length > 0)
+                                    return x;
                             });
                         }
                         return [2 /*return*/, Result_1.Result.ok(200, medias)];
@@ -73,19 +75,21 @@ var MediaBusiness = /** @class */ (function () {
                         modified = [];
                         if (portfolioPreviews) {
                             modified = portfolioPreviews.reduce(function (theMap, theItem) {
-                                var items = theItem.items.filter(function (x) { return !x.isDeleted; }).slice();
-                                theMap.push({
-                                    _id: theItem._id,
-                                    mediaType: theItem.mediaType,
-                                    talent: theItem.user,
-                                    uploadType: theItem.uploadType,
-                                    defaultImageKey: items.length > 0 ? items[0].path : "",
-                                    mediaTitle: theItem.title,
-                                    mediaDescription: theItem.shortDescription,
-                                    items: items,
-                                    itemsCount: items.length,
-                                    dateCreated: theItem.createdAt
-                                });
+                                var items = theItem.items.filter(function (x) { return !x.isDeleted && x.isApproved; }).slice();
+                                if (items.length > 0) {
+                                    theMap.push({
+                                        _id: theItem._id,
+                                        mediaType: theItem.mediaType,
+                                        talent: theItem.user,
+                                        uploadType: theItem.uploadType,
+                                        defaultImageKey: items.length > 0 ? items[0].path : "",
+                                        mediaTitle: theItem.title,
+                                        mediaDescription: theItem.shortDescription,
+                                        items: items,
+                                        itemsCount: items.length,
+                                        dateCreated: theItem.createdAt,
+                                    });
+                                }
                                 return theMap;
                             }, []);
                         }
@@ -105,20 +109,38 @@ var MediaBusiness = /** @class */ (function () {
                         modified = [];
                         if (mediaPreviews) {
                             modified = mediaPreviews.reduce(function (theMap, theItem) {
-                                var items = theItem.items.filter(function (x) { return !x.isDeleted; }).slice();
-                                theMap.push({
-                                    _id: theItem._id,
-                                    title: theItem.title,
-                                    mediaType: theItem.mediaType,
-                                    uploadType: theItem.uploadType,
-                                    defaultMediaPath: items.length > 0 ? items[0].path : "",
-                                    shortDescription: theItem.shortDescription,
-                                    activityCount: theItem.activityCount
-                                });
+                                var items = theItem.items.filter(function (x) { return !x.isDeleted && x.isApproved; }).slice();
+                                if (items.length > 0) {
+                                    theMap.push({
+                                        _id: theItem._id,
+                                        title: theItem.title,
+                                        mediaType: theItem.mediaType,
+                                        uploadType: theItem.uploadType,
+                                        defaultMediaPath: items.length > 0 ? items[0].path : "",
+                                        shortDescription: theItem.shortDescription,
+                                        itemCount: items.length,
+                                    });
+                                }
                                 return theMap;
                             }, []);
                         }
                         return [2 /*return*/, Result_1.Result.ok(200, modified)];
+                }
+            });
+        });
+    };
+    MediaBusiness.prototype.findMedia = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var media;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.findByIdCriteria(criteria)];
+                    case 1:
+                        media = _a.sent();
+                        if (!media)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Media not found")];
+                        media.items = media.items.filter(function (x) { return !x.isDeleted && x.isApproved; });
+                        return [2 /*return*/, Result_1.Result.ok(200, media)];
                 }
             });
         });
@@ -132,7 +154,7 @@ var MediaBusiness = /** @class */ (function () {
                         criteria = {
                             _id: id,
                             isApproved: true,
-                            isDeleted: false
+                            isDeleted: false,
                         };
                         return [4 /*yield*/, this._mediaRepository.findByIdCriteria(criteria)];
                     case 1:
@@ -189,7 +211,6 @@ var MediaBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         item.activityCount = 0;
-                        item.isApproved = false;
                         item.isDeleted = false;
                         return [4 /*yield*/, this._mediaRepository.create(item)];
                     case 1:
@@ -201,51 +222,26 @@ var MediaBusiness = /** @class */ (function () {
     };
     MediaBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var media, mediaItems, _loop_1, found, newMediaItem, _i, mediaItems_1, mediaItem, state_1, updateObj;
+            var media, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._mediaRepository.findById(id)];
+                    case 0:
+                        console.log("update called");
+                        return [4 /*yield*/, this._mediaRepository.findById(id)];
                     case 1:
                         media = _a.sent();
                         if (!media)
                             return [2 /*return*/, Result_1.Result.fail(404, "Media not found.")];
-                        item.isApproved = media.isApproved;
-                        item.isDeleted = media.isDeleted;
-                        item.createdAt = media.createdAt;
-                        item.updateAt = new Date();
-                        mediaItems = item.items ? item.items.slice() : [];
-                        item.items = [];
-                        if (mediaItems) {
-                            _loop_1 = function (mediaItem) {
-                                if (mediaItem._id) {
-                                    found = media.items.filter(function (x) { return (x._id = mediaItem._id); })[0];
-                                    if (!found) {
-                                        return { value: Result_1.Result.fail(404, "Media item " + mediaItem._id + " not found") };
-                                    }
-                                    var imageItem = {
-                                        _id: found._id,
-                                        likedBy: mediaItem.likedBy,
-                                        path: found.path,
-                                        createdAt: found.createdAt,
-                                        isDeleted: found.isDeleted
-                                    };
-                                    item.items = item.items.concat([imageItem]);
-                                }
-                                else {
-                                    newMediaItem = {
-                                        path: mediaItem.path
-                                    };
-                                    item.items = item.items.concat([newMediaItem]);
-                                }
-                            };
-                            for (_i = 0, mediaItems_1 = mediaItems; _i < mediaItems_1.length; _i++) {
-                                mediaItem = mediaItems_1[_i];
-                                state_1 = _loop_1(mediaItem);
-                                if (typeof state_1 === "object")
-                                    return [2 /*return*/, state_1.value];
-                            }
-                        }
-                        return [4 /*yield*/, this._mediaRepository.update(media._id, item)];
+                        if (media.user != item.user)
+                            return [2 /*return*/, Result_1.Result.fail(403, "You are not authorized to perform this update.")];
+                        media._id = media._id;
+                        media.title = item.title || media.title;
+                        media.shortDescription = item.shortDescription || media.shortDescription;
+                        media.user = media.user;
+                        media.isDeleted = media.isDeleted;
+                        media.createdAt = media.createdAt;
+                        media.items = media.items.slice();
+                        return [4 /*yield*/, this._mediaRepository.update(media._id, media)];
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
@@ -258,7 +254,7 @@ var MediaBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._mediaRepository.patch(id, {
-                            isDeleted: true
+                            isDeleted: true,
                         })];
                     case 1:
                         _a.sent();
@@ -267,15 +263,56 @@ var MediaBusiness = /** @class */ (function () {
             });
         });
     };
-    MediaBusiness.prototype.deleteMediaItem = function (id, itemId) {
+    MediaBusiness.prototype.updateExistingMedia = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
-            var media, newMediaItems;
+            var media, newItems, updatedObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._mediaRepository.findById(id)];
                     case 1:
                         media = _a.sent();
-                        newMediaItems = media.items.reduce(function (theMap, theItem) {
+                        if (!media)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Media not found")];
+                        console.log(media.user);
+                        console.log(item.user);
+                        if (media.user != item.user)
+                            return [2 /*return*/, Result_1.Result.fail(403, "You are not authorized to perform this update.")];
+                        media._id = media._id;
+                        media.title = item.title || media.title;
+                        media.shortDescription = item.shortDescription || media.shortDescription;
+                        media.user = media.user;
+                        newItems = item.items.reduce(function (theMap, theItem) {
+                            var item = {
+                                path: theItem.path,
+                                isApproved: false,
+                                isDeleted: false,
+                            };
+                            theMap = theMap.concat([item]);
+                            return theMap;
+                        }, []);
+                        media.items = media.items.concat(newItems);
+                        media.uploadType = media.uploadType;
+                        media.mediaType = media.mediaType;
+                        media.isDeleted = media.isDeleted;
+                        media.activityCount = media.activityCount;
+                        return [4 /*yield*/, this._mediaRepository.patch(media._id, media)];
+                    case 2:
+                        updatedObj = _a.sent();
+                        updatedObj.items = updatedObj.items.filter(function (x) { return !x.isDeleted && x.isApproved; });
+                        return [2 /*return*/, Result_1.Result.ok(200, updatedObj)];
+                }
+            });
+        });
+    };
+    MediaBusiness.prototype.deleteMediaItem = function (id, itemId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var media, remainingMediaItems;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.findById(id)];
+                    case 1:
+                        media = _a.sent();
+                        media.items = media.items.reduce(function (theMap, theItem) {
                             if (theItem._id == itemId) {
                                 theMap.push({
                                     _id: theItem._id,
@@ -283,7 +320,8 @@ var MediaBusiness = /** @class */ (function () {
                                     likedBy: theItem.likedBy,
                                     createdAt: theItem.createdAt,
                                     updatedAt: theItem.updatedAt,
-                                    isDeleted: true
+                                    isDeleted: true,
+                                    isApproved: theItem.isApproved,
                                 });
                             }
                             else {
@@ -291,10 +329,21 @@ var MediaBusiness = /** @class */ (function () {
                             }
                             return theMap;
                         }, []);
-                        return [4 /*yield*/, this._mediaRepository.patch(id, { items: newMediaItems })];
+                        remainingMediaItems = media.items.filter(function (x) { return !x.isDeleted && x.isApproved; });
+                        if (!(remainingMediaItems.length < 1)) return [3 /*break*/, 4];
+                        media.isDeleted = true;
+                        return [4 /*yield*/, this._mediaRepository.patch(media._id, { items: media.items })];
                     case 2:
                         _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                        return [4 /*yield*/, this._mediaRepository.update(media._id, media)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4: return [4 /*yield*/, this._mediaRepository.patch(media._id, { items: media.items })];
+                    case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6: return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
         });
