@@ -137,6 +137,10 @@ export class ProfileController {
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IProfile = req.body;
+      if (req.body.userAddress.address.location)
+        item.location = req.body.userAddress.address.location;
+      if (req.body.userAddress.address.formattedAddres)
+        item.formattedAddres = req.body.userAddress.address.formattedAddres;
       item.user = req.user;
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.create(item);
@@ -171,6 +175,10 @@ export class ProfileController {
       const item: IProfile = req.body;
       item.user = req.user;
       const id = req.params.id;
+      if (req.body.userAddress.address.location)
+        item.location = req.body.userAddress.address.location;
+      if (req.body.userAddress.address.formattedAddres)
+        item.formattedAddres = req.body.userAddress.address.formattedAddres;
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.patch(id, item);
       if (result.error) {

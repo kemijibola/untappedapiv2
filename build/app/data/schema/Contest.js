@@ -45,7 +45,7 @@ var contestSchema = new mongoose_1.Schema({
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },
-    likes: { type: Number, default: 0 },
+    likedBy: [{ type: String }],
     entryMediaType: { type: interfaces_1.MediaType, required: true },
     startDate: { type: Date, required: true },
     redeemable: [{ type: redeemableSchema, required: true }],

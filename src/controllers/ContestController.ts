@@ -157,7 +157,6 @@ export class ContestController {
 
   @get("/:id")
   @use(requestValidator)
-  @use(requireAuth)
   async fetchContestDetailsById(
     req: Request,
     res: Response,
@@ -166,6 +165,42 @@ export class ContestController {
     try {
       let condition: ObjectKeyString = {};
       const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.fetchContestDetailsById(
+        req.params.id
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @get("/contests/user/:userId")
+  @use(requestValidator)
+  async fetchContestListByUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let condition: ObjectKeyString = {};
+      const contestBusiness = new ContestBusiness();
+      const userId: string = req.params.id;
       const result = await contestBusiness.fetchContestDetailsById(
         req.params.id
       );
@@ -223,12 +258,4 @@ export class ContestController {
       );
     }
   }
-
-  @authorize("ADMIN")
-  async updateContest(req: Request, res: Response, next: NextFunction) {}
-
-  @authorize("ADMIN")
-  async pathContest(req: Request, res: Response, next: NextFunction) {}
-  delete(): void {}
-  findById(): void {}
 }

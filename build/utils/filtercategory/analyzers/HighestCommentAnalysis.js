@@ -129,6 +129,7 @@ var HighestCommentAnalysis = /** @class */ (function () {
                                 displayName: talentMediaComment.talent.displayName,
                                 tapCount: talentMediaComment.talent.tapCount,
                                 aliasName: talentMediaComment.talent.stageName,
+                                location: talentMediaComment.talent.location,
                                 dateJoined: talentMediaComment.talent.dateJoined,
                                 displayPhoto: talentMediaComment.talent.displayPhoto,
                                 shortDescription: talentMediaComment.talent.shortDescription || "",

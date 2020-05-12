@@ -43,6 +43,7 @@ var UserBusiness = require("../../app/business/UserBusiness");
 var CategoryTypeBusiness = require("../../app/business/CategoryTypeBusiness");
 var ProfileBusiness = require("../../app/business/ProfileBusiness");
 var ProfessionalPortfolio_1 = require("../../utils/filtercategory/ProfessionalPortfolio");
+var ContestBusiness = require("../../app/business/ContestBusiness");
 var UserFilter = /** @class */ (function () {
     function UserFilter() {
         var _this = this;
@@ -91,6 +92,7 @@ var UserFilter = /** @class */ (function () {
                             stageName: userProfile.data ? userProfile.data.name : "",
                             displayPhoto: x.profileImagePath || "",
                             displayName: x.fullName,
+                            location: userProfile.data ? userProfile.data.location : "",
                             categoryTypes: categoryTypes,
                             tapCount: userProfile.data ? userProfile.data.tapCount : 0,
                             shortDescription: userProfile.data
@@ -145,12 +147,13 @@ var UserFilter = /** @class */ (function () {
             });
         }); };
         this.fetchProfessionals = function (condition) { return __awaiter(_this, void 0, void 0, function () {
-            var userTypeBusiness, result, professionals, users, profileBusiness, _i, professionals_1, x, userProfile, professionalSetUp, userContest, categoryTypes, _a, user, err_2;
+            var userTypeBusiness, contestBusiness, result, professionals, users, profileBusiness, _i, professionals_1, x, userProfile, professionalSetUp, userContests, categoryTypes, _a, userSocial, user, err_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 12, , 13]);
                         userTypeBusiness = new UserTypeBusiness();
+                        contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, userTypeBusiness.findByCriteria({
                                 name: viewmodels_1.AppUsers.Professional,
                             })];
@@ -174,9 +177,9 @@ var UserFilter = /** @class */ (function () {
                     case 4:
                         userProfile = _b.sent();
                         professionalSetUp = ProfessionalPortfolio_1.ProfessionalPortfolio.setUp(x._id);
-                        return [4 /*yield*/, professionalSetUp.fetchProfessionalContests()];
+                        return [4 /*yield*/, professionalSetUp.fetchContestListByUser()];
                     case 5:
-                        userContest = _b.sent();
+                        userContests = _b.sent();
                         if (!userProfile.data) return [3 /*break*/, 7];
                         return [4 /*yield*/, this.transformCategoryType(userProfile.data.categoryTypes)];
                     case 6:
@@ -187,20 +190,53 @@ var UserFilter = /** @class */ (function () {
                         _b.label = 8;
                     case 8:
                         categoryTypes = _a;
-                        user = {
-                            user: x._id,
-                            userType: x.userType,
-                            businessName: userProfile.data ? userProfile.data.name : "",
-                            displayPhoto: x.profileImagePath || "",
-                            displayName: x.fullName,
-                            categoryTypes: categoryTypes,
-                            shortDescription: userProfile.data
-                                ? userProfile.data.shortBio
-                                : "",
-                            dateJoined: x.createdAt,
-                            contestCount: userContest.length,
-                        };
-                        users = users.concat([user]);
+                        userSocial = [];
+                        if (userProfile.data) {
+                            if (userProfile.data.facebook)
+                                userSocial = userSocial.concat([
+                                    {
+                                        type: interfaces_1.SocialMediaTypes.facebook,
+                                        handle: userProfile.data.facebook,
+                                    },
+                                ]);
+                            if (userProfile.data.instagram)
+                                userSocial = userSocial.concat([
+                                    {
+                                        type: interfaces_1.SocialMediaTypes.instagram,
+                                        handle: userProfile.data.instagram,
+                                    },
+                                ]);
+                            if (userProfile.data.youtube)
+                                userSocial = userSocial.concat([
+                                    {
+                                        type: interfaces_1.SocialMediaTypes.youtube,
+                                        handle: userProfile.data.youtube,
+                                    },
+                                ]);
+                            if (userProfile.data.twitter)
+                                userSocial = userSocial.concat([
+                                    {
+                                        type: interfaces_1.SocialMediaTypes.twitter,
+                                        handle: userProfile.data.twitter,
+                                    },
+                                ]);
+                            user = {
+                                user: x._id,
+                                userType: x.userType,
+                                businessName: userProfile.data.name,
+                                userSocials: userSocial.slice(),
+                                displayPhoto: x.profileImagePath || "",
+                                displayName: x.fullName,
+                                bannerPhoto: x.bannerImagePath || "",
+                                location: userProfile.data.location || "",
+                                categoryTypes: categoryTypes,
+                                shortDescription: userProfile.data.shortBio || "",
+                                dateJoined: x.createdAt,
+                                contestCount: userContests.length,
+                                contests: userContests.slice(),
+                            };
+                            users = users.concat([user]);
+                        }
                         _b.label = 9;
                     case 9:
                         _i++;

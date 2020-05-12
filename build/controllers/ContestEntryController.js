@@ -85,9 +85,42 @@ var ContestEntryController = /** @class */ (function () {
             });
         });
     };
+    ContestEntryController.prototype.fetchUserContestList = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntryBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        contestEntryBusiness = new ContestEntryBusiness();
+                        return [4 /*yield*/, contestEntryBusiness.fetchContestEntryListByUser(req.user)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ContestEntryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, contestEntryBusiness, result, err_2;
+            var item, contestEntryBusiness, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -124,7 +157,7 @@ var ContestEntryController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -142,6 +175,14 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "canEnterContest", null);
+    __decorate([
+        decorators_1.get("/user"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestEntryController.prototype, "fetchUserContestList", null);
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

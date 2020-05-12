@@ -40,7 +40,11 @@ import { AppConfig } from "../../app/models/interfaces/custom/AppConfig";
 import { TokenType } from "../models/interfaces/custom/GlobalEnum";
 import { UserViewModel, SignUpEmailViewModel } from "../models/viewmodels";
 import { bool } from "aws-sdk/clients/signer";
-import { WelcomeEmail, ForgotPasswordEmail } from "../../utils/emailtemplates";
+import {
+  WelcomeEmail,
+  ForgotPasswordEmail,
+  ChangeEmail,
+} from "../../utils/emailtemplates";
 import {
   TemplatePlaceHolder,
   TemplateKeyValue,
@@ -284,6 +288,36 @@ class UserBusiness implements IUserBusiness {
       };
       return Result.ok<IAuthData>(200, authData);
     }
+  }
+
+  async confirmEmailChange(
+    userId: string,
+    request: ConfirmEmailRequest
+  ): Promise<Result<string>> {
+    const unverifiedUser: IUserModel = await this._userRepository.findById(
+      userId
+    );
+    if (!unverifiedUser) return Result.fail<string>(404, "User not found.");
+    const publicKey = getPublicKey(this._currentVerifyKey);
+    const verifyOptions = {
+      issuer: config.VERIFICATION_URI,
+      algorithms: [this._currentRsaAlgType],
+      email: request.userEmail,
+      type: TokenType.VERIFY,
+      audience: request.audience,
+      keyid: this._currentVerifyKey,
+      expiresIn: `${this._mailExpiratation}h`,
+    };
+    const decoded: TokenResult = await unverifiedUser.verifyToken(
+      request.token,
+      publicKey,
+      verifyOptions
+    );
+    if (decoded.error)
+      return Result.fail<string>(400, `${decoded.error.split(".")[0]}`);
+    unverifiedUser.email = request.userEmail;
+    unverifiedUser.save();
+    return Result.ok<string>(200, "Email successfully verified");
   }
 
   async confirmEmail(request: ConfirmEmailRequest): Promise<Result<string>> {
@@ -541,6 +575,50 @@ class UserBusiness implements IUserBusiness {
     user.save();
     return Result.ok<string>(200, "Password successfully reset");
   }
+
+  async changeEmail(
+    userId: string,
+    newEmail: string,
+    audience: string,
+    redirectUrl: string
+  ): Promise<Result<boolean>> {
+    const user: IUserModel = await this._userRepository.findById(userId);
+    if (!user) return Result.fail<boolean>(404, "User not found.");
+    const userExist = await this._userRepository.findByCriteria({
+      email: newEmail,
+    });
+    if (userExist)
+      return Result.fail<boolean>(
+        400,
+        `There is a user registered with this email: ${newEmail}`
+      );
+
+    const request: TokenGenerationRequest = {
+      user,
+      audience,
+      tokenExpiresIn: `${this._mailExpiratation}h`,
+      tokenType: TokenType.VERIFY,
+      redirectUrl,
+    };
+    var token = await this.generateToken(request);
+    if (token.data) {
+      const changeEmailKeyValues: TemplateKeyValue[] = this.TokenEmailKeyValue(
+        user.fullName,
+        audience,
+        `${redirectUrl}/${newEmail}/${token.data}`
+      );
+      const changeEmailTemplateString: string = ChangeEmail.template;
+      const changeEmailPlaceHolder: TemplatePlaceHolder = {
+        template: changeEmailTemplateString,
+        placeholders: changeEmailKeyValues,
+      };
+      const emailBody: string = replaceTemplateString(changeEmailPlaceHolder);
+      const recievers: string[] = [newEmail];
+      await this.sendMail(recievers, "Verify Your Email Address", emailBody);
+    }
+    return Result.ok<boolean>(200, true);
+  }
+
   async changePassword(data: ChangePasswordData): Promise<Result<boolean>> {
     // fetch user by id
     const user: IUserModel = await this._userRepository.findByCriteria({

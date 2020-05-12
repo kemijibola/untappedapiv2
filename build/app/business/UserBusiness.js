@@ -259,6 +259,38 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
+    UserBusiness.prototype.confirmEmailChange = function (userId, request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var unverifiedUser, publicKey, verifyOptions, decoded;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userRepository.findById(userId)];
+                    case 1:
+                        unverifiedUser = _a.sent();
+                        if (!unverifiedUser)
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found.")];
+                        publicKey = lib_1.getPublicKey(this._currentVerifyKey);
+                        verifyOptions = {
+                            issuer: config.VERIFICATION_URI,
+                            algorithms: [this._currentRsaAlgType],
+                            email: request.userEmail,
+                            type: GlobalEnum_1.TokenType.VERIFY,
+                            audience: request.audience,
+                            keyid: this._currentVerifyKey,
+                            expiresIn: this._mailExpiratation + "h",
+                        };
+                        return [4 /*yield*/, unverifiedUser.verifyToken(request.token, publicKey, verifyOptions)];
+                    case 2:
+                        decoded = _a.sent();
+                        if (decoded.error)
+                            return [2 /*return*/, Result_1.Result.fail(400, "" + decoded.error.split(".")[0])];
+                        unverifiedUser.email = request.userEmail;
+                        unverifiedUser.save();
+                        return [2 /*return*/, Result_1.Result.ok(200, "Email successfully verified")];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.confirmEmail = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             var criteria, unverifiedUser, publicKey, verifyOptions, decoded;
@@ -587,6 +619,51 @@ var UserBusiness = /** @class */ (function () {
                         user.passwordResetRequested = false;
                         user.save();
                         return [2 /*return*/, Result_1.Result.ok(200, "Password successfully reset")];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.changeEmail = function (userId, newEmail, audience, redirectUrl) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, userExist, request, token, changeEmailKeyValues, changeEmailTemplateString, changeEmailPlaceHolder, emailBody, recievers;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userRepository.findById(userId)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user)
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found.")];
+                        return [4 /*yield*/, this._userRepository.findByCriteria({
+                                email: newEmail,
+                            })];
+                    case 2:
+                        userExist = _a.sent();
+                        if (userExist)
+                            return [2 /*return*/, Result_1.Result.fail(400, "There is a user registered with this email: " + newEmail)];
+                        request = {
+                            user: user,
+                            audience: audience,
+                            tokenExpiresIn: this._mailExpiratation + "h",
+                            tokenType: GlobalEnum_1.TokenType.VERIFY,
+                            redirectUrl: redirectUrl,
+                        };
+                        return [4 /*yield*/, this.generateToken(request)];
+                    case 3:
+                        token = _a.sent();
+                        if (!token.data) return [3 /*break*/, 5];
+                        changeEmailKeyValues = this.TokenEmailKeyValue(user.fullName, audience, redirectUrl + "/" + newEmail + "/" + token.data);
+                        changeEmailTemplateString = emailtemplates_1.ChangeEmail.template;
+                        changeEmailPlaceHolder = {
+                            template: changeEmailTemplateString,
+                            placeholders: changeEmailKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(changeEmailPlaceHolder);
+                        recievers = [newEmail];
+                        return [4 /*yield*/, this.sendMail(recievers, "Verify Your Email Address", emailBody)];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
         });

@@ -139,6 +139,69 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.fetchContestListByUser = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var totalCommentCount, contestEntryCommentCountMap, userContestResults, userContests, _i, userContests_1, item, contestEntries, _a, contestEntries_1, entry, entryComment, userContestResult;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        totalCommentCount = 0;
+                        contestEntryCommentCountMap = {};
+                        userContestResults = [];
+                        return [4 /*yield*/, this._contestRepository.fetch({
+                                createdBy: userId,
+                                paymentStatus: interfaces_1.PaymentStatus.Completed,
+                            })];
+                    case 1:
+                        userContests = _b.sent();
+                        _i = 0, userContests_1 = userContests;
+                        _b.label = 2;
+                    case 2:
+                        if (!(_i < userContests_1.length)) return [3 /*break*/, 9];
+                        item = userContests_1[_i];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch({
+                                contest: item._id,
+                            })];
+                    case 3:
+                        contestEntries = _b.sent();
+                        contestEntryCommentCountMap["totalCommentCount"] = 0;
+                        _a = 0, contestEntries_1 = contestEntries;
+                        _b.label = 4;
+                    case 4:
+                        if (!(_a < contestEntries_1.length)) return [3 /*break*/, 7];
+                        entry = contestEntries_1[_a];
+                        return [4 /*yield*/, this._commentRepository.fetch({
+                                entity: entry._id,
+                            })];
+                    case 5:
+                        entryComment = _b.sent();
+                        contestEntryCommentCountMap["totalCommentCount"] =
+                            contestEntryCommentCountMap["totalCommentCount"] +
+                                entryComment.length;
+                        _b.label = 6;
+                    case 6:
+                        _a++;
+                        return [3 /*break*/, 4];
+                    case 7:
+                        userContestResult = {
+                            contestId: item._id,
+                            contestTitle: item.title,
+                            contestBanner: item.bannerImage || "",
+                            contestViewCount: item.views || 0,
+                            contestLikedByCount: item.likedBy.length,
+                            entryCount: contestEntries.length,
+                            commentCount: contestEntryCommentCountMap["totalCommentCount"],
+                        };
+                        userContestResults = userContestResults.concat([userContestResult]);
+                        _b.label = 8;
+                    case 8:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 9: return [2 /*return*/, Result_1.Result.ok(200, userContestResults)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var contest;
@@ -186,7 +249,7 @@ var ContestBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(409, "Contest with title " + item.title + " already exist")];
                         }
                         item.views = 0;
-                        item.likes = 0;
+                        item.likedBy = [];
                         item.paymentStatus = interfaces_1.PaymentStatus.UnPaid;
                         item.issues = [];
                         item.code = lib_1.getRandomId();

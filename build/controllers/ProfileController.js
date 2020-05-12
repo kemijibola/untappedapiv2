@@ -177,6 +177,10 @@ var ProfileController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
+                        if (req.body.userAddress.address.location)
+                            item.location = req.body.userAddress.address.location;
+                        if (req.body.userAddress.address.formattedAddres)
+                            item.formattedAddres = req.body.userAddress.address.formattedAddres;
                         item.user = req.user;
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.create(item)];
@@ -214,6 +218,10 @@ var ProfileController = /** @class */ (function () {
                         item = req.body;
                         item.user = req.user;
                         id = req.params.id;
+                        if (req.body.userAddress.address.location)
+                            item.location = req.body.userAddress.address.location;
+                        if (req.body.userAddress.address.formattedAddres)
+                            item.formattedAddres = req.body.userAddress.address.formattedAddres;
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.patch(id, item)];
                     case 1:

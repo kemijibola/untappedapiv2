@@ -274,7 +274,6 @@ export class AuthController {
     next: NextFunction
   ) {
     try {
-      // TODO: get userId from tokenExchange
       const userBusiness = new UserBusiness();
       const data: ChangePasswordData = {
         userId: req.user,
@@ -282,6 +281,48 @@ export class AuthController {
         newPassword: req.body.newPassword,
       };
       const result = await userBusiness.changePassword(data);
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @post("/account/email/change")
+  @use(requestValidator)
+  @use(requireAuth)
+  @requestValidators("newEmailAddress", "redirectUrl")
+  async postChangeEmail(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userBusiness = new UserBusiness();
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+      const redirectConfirmation = req.appUser
+        ? req.appUser.redirectBaseUrl.toLowerCase()
+        : "";
+      const result = await userBusiness.changeEmail(
+        req.user,
+        req.body.newEmailAddress.toLowerCase(),
+        audience,
+        `${redirectConfirmation}/${req.body.redirectUrl}`
+      );
       if (result.error)
         return next(
           new PlatformError({
@@ -362,6 +403,47 @@ export class AuthController {
 
       const userBusiness = new UserBusiness();
       const result = await userBusiness.confirmEmail(request);
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @post("/account/email/change/verify")
+  @use(requestValidator)
+  @use(requireAuth)
+  @requestValidators("email", "token")
+  async postVerifyChangedEmail(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+
+      const request: ConfirmEmailRequest = {
+        userEmail: req.body.email.toLowerCase(),
+        token: req.body.token,
+        audience,
+      };
+
+      const userBusiness = new UserBusiness();
+      const result = await userBusiness.confirmEmailChange(req.user, request);
       if (result.error)
         return next(
           new PlatformError({

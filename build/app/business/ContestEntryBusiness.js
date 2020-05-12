@@ -42,6 +42,7 @@ var ContestRepository_1 = __importDefault(require("../repository/ContestReposito
 var ProfileRepository_1 = __importDefault(require("../repository/ProfileRepository"));
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
+var CommentRepository_1 = __importDefault(require("../repository/CommentRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
@@ -52,6 +53,7 @@ var ContestBusiness = /** @class */ (function () {
         this._userRepository = new UserRepository_1.default();
         this._profileRepository = new ProfileRepository_1.default();
         this._userTypeRepository = new UserTypeRepository_1.default();
+        this._commentRepository = new CommentRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -159,7 +161,6 @@ var ContestBusiness = /** @class */ (function () {
                             })];
                     case 5:
                         alreadyVoted = _a.sent();
-                        console.log(alreadyVoted);
                         if (alreadyVoted) {
                             eligibilityData.status = false;
                             eligibilityData.eligibility = interfaces_1.EligibilityStatus.entered;
@@ -195,6 +196,57 @@ var ContestBusiness = /** @class */ (function () {
             }
         }
         return false;
+    };
+    ContestBusiness.prototype.fetchContestEntryListByUser = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var totalCommentCount, contestEntryCommentCountMap, userContestResults, userContestEntries, _i, userContestEntries_1, item, contestEntries, entryComment, userContestResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        totalCommentCount = 0;
+                        contestEntryCommentCountMap = {};
+                        userContestResults = [];
+                        return [4 /*yield*/, this._contestEntryRepository.fetchContestEntryWithContest({
+                                user: userId,
+                            })];
+                    case 1:
+                        userContestEntries = _a.sent();
+                        contestEntryCommentCountMap["totalCommentCount"] = 0;
+                        _i = 0, userContestEntries_1 = userContestEntries;
+                        _a.label = 2;
+                    case 2:
+                        if (!(_i < userContestEntries_1.length)) return [3 /*break*/, 6];
+                        item = userContestEntries_1[_i];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch({
+                                contest: item.contest,
+                            })];
+                    case 3:
+                        contestEntries = _a.sent();
+                        return [4 /*yield*/, this._commentRepository.fetch({
+                                entity: item._id,
+                            })];
+                    case 4:
+                        entryComment = _a.sent();
+                        contestEntryCommentCountMap["totalCommentCount"] =
+                            contestEntryCommentCountMap["totalCommentCount"] + entryComment.length;
+                        userContestResult = {
+                            contestId: item._id,
+                            contestTitle: item.title,
+                            contestBanner: item.contest.bannerImage || "",
+                            contestViewCount: item.contest.views || 0,
+                            contestLikedByCount: item.contest.likedBy.length || 0,
+                            entryCount: contestEntries.length,
+                            commentCount: contestEntryCommentCountMap["totalCommentCount"],
+                        };
+                        userContestResults = userContestResults.concat([userContestResult]);
+                        _a.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 6: return [2 /*return*/, Result_1.Result.ok(200, userContestResults)];
+                }
+            });
+        });
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {

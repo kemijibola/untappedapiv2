@@ -10,16 +10,15 @@ export interface IPhysicalStatistics {
   color: string;
 }
 
-export enum SocialMedia {
-  FACEBOOK = "FACEBOOK",
-  TWITTER = "TWITTER",
-  INSTAGRAM = "INSTAGRAM",
-  YOUTUBE = "YOUTUBE",
-  OTHER = "OTHER",
+export enum SocialMediaTypes {
+  facebook = "facebook",
+  twitter = "twitter",
+  instagram = "instagram",
+  youtube = "youtube",
 }
 
 export interface IUserSocialMedia {
-  type: SocialMedia;
+  type: SocialMediaTypes;
   handle: string;
 }
 
@@ -27,6 +26,7 @@ export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
   name?: string;
   rcNumber?: string;
   location: string;
+  formattedAddres: string;
   phoneNumbers?: string[];
   tapCount: number;
   user?: IUserModel["_id"];

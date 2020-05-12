@@ -313,7 +313,7 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.postResendVerificationLink = function (req, res, next) {
+    AuthController.prototype.postChangeEmail = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var userBusiness, audience, redirectConfirmation, result, err_7;
             return __generator(this, function (_a) {
@@ -323,9 +323,9 @@ var AuthController = /** @class */ (function () {
                         userBusiness = new UserBusiness_1.default();
                         audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
                         redirectConfirmation = req.appUser
-                            ? req.appUser.emailConfirmationRedirectUrl.toLowerCase()
+                            ? req.appUser.redirectBaseUrl.toLowerCase()
                             : "";
-                        return [4 /*yield*/, userBusiness.resendVerificationLink(req.body.email.toLowerCase(), audience, redirectConfirmation)];
+                        return [4 /*yield*/, userBusiness.changeEmail(req.user, req.body.newEmailAddress.toLowerCase(), audience, redirectConfirmation + "/" + req.body.redirectUrl)];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -348,9 +348,44 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
+    AuthController.prototype.postResendVerificationLink = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, audience, redirectConfirmation, result, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness_1.default();
+                        audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+                        redirectConfirmation = req.appUser
+                            ? req.appUser.emailConfirmationRedirectUrl.toLowerCase()
+                            : "";
+                        return [4 /*yield*/, userBusiness.resendVerificationLink(req.body.email.toLowerCase(), audience, redirectConfirmation)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_8 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     AuthController.prototype.postVerifyEmail = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var audience, request, userBusiness, result, err_8;
+            var audience, request, userBusiness, result, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -375,7 +410,44 @@ var AuthController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_8 = _a.sent();
+                        err_9 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.postVerifyChangedEmail = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var audience, request, userBusiness, result, err_10;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+                        request = {
+                            userEmail: req.body.email.toLowerCase(),
+                            token: req.body.token,
+                            audience: audience,
+                        };
+                        userBusiness = new UserBusiness_1.default();
+                        return [4 /*yield*/, userBusiness.confirmEmailChange(req.user, request)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_10 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -387,7 +459,7 @@ var AuthController = /** @class */ (function () {
     };
     AuthController.prototype.postSignup = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var audience, redirectConfirmation, signUpParams, userBusiness, result, err_9;
+            var audience, redirectConfirmation, signUpParams, userBusiness, result, err_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -419,7 +491,7 @@ var AuthController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_9 = _a.sent();
+                        err_11 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -479,6 +551,15 @@ var AuthController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postChangePassword", null);
     __decorate([
+        decorators_1.post("/account/email/change"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.requestValidators("newEmailAddress", "redirectUrl"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postChangeEmail", null);
+    __decorate([
         decorators_1.post("/account/resend-link"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.requestValidators("email"),
@@ -494,6 +575,15 @@ var AuthController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "postVerifyEmail", null);
+    __decorate([
+        decorators_1.post("/account/email/change/verify"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.requestValidators("email", "token"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "postVerifyChangedEmail", null);
     __decorate([
         decorators_1.post("/account/signup"),
         decorators_1.use(ValidateRequest_1.requestValidator),

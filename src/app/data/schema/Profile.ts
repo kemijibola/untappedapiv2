@@ -1,12 +1,17 @@
 import MongodataAccess = require("../MongodataAccess");
 import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IProfile, SocialMedia } from "../../models/interfaces";
+import { IProfile, SocialMediaTypes } from "../../models/interfaces";
 
 export const socialMediaSchema: Schema = new Schema({
-  type: { type: SocialMedia },
+  type: { type: SocialMediaTypes },
   handle: { type: String },
 });
+
+export type ILocation = {
+  location: string;
+  formattedAddres: string;
+};
 
 const physicalStatisticsSchema: Schema = new Schema({
   height: { type: String },
@@ -26,7 +31,7 @@ const profileSchema: Schema = new Schema(
       ref: "User",
       required: true,
     },
-    shortBio: { type: String, required: true, minlength: 50, maxlength: 1500 },
+    shortBio: { type: String, required: true, minlength: 80, maxlength: 1500 },
     categoryTypes: [
       {
         type: Schema.Types.ObjectId,

@@ -7,7 +7,9 @@ import {
   IUserType,
   ReportType,
   ICategoryType,
+  IUserSocialMedia,
 } from "../interfaces";
+import { IUserContestListAnalysis } from "../interfaces/custom/ContestList";
 
 export interface UserViewModel {
   _id?: string;
@@ -40,9 +42,10 @@ export interface Talent extends UserListViewModel {
 export interface Professional extends UserListViewModel {
   // location: string;
   businessName?: string;
+  bannerPhoto?: string;
   contestCount: number;
-  // bannerPhoto: string;
-  // contests: CreatedContest[];
+  userSocials?: IUserSocialMedia[];
+  contests?: IUserContestListAnalysis[];
 }
 
 export interface UserListViewModel {
@@ -50,7 +53,6 @@ export interface UserListViewModel {
   userType: IUserType["_id"];
   displayPhoto: string;
   location?: string;
-  bannerPhoto?: string;
   categoryTypes?: CategoryTypeWithCategory[];
   displayName: string;
   shortDescription?: string;

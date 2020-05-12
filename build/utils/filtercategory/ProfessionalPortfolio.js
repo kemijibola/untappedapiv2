@@ -68,6 +68,24 @@ var ProfessionalPortfolio = /** @class */ (function () {
             });
         });
     };
+    ProfessionalPortfolio.prototype.fetchContestListByUser = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var userContests, contestBusiness, userContestData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        userContests = [];
+                        contestBusiness = new ContestBusiness_1.default();
+                        return [4 /*yield*/, contestBusiness.fetchContestListByUser(this.userId)];
+                    case 1:
+                        userContestData = _a.sent();
+                        if (userContestData.data)
+                            userContests = userContests.concat(userContestData.data);
+                        return [2 /*return*/, userContests];
+                }
+            });
+        });
+    };
     return ProfessionalPortfolio;
 }());
 exports.ProfessionalPortfolio = ProfessionalPortfolio;

@@ -14,11 +14,14 @@ import {
   AccountStatus,
   IUserModel,
   CategoryTypeWithCategory,
+  IUserSocialMedia,
+  SocialMediaTypes,
 } from "../../app/models/interfaces";
 import UserBusiness = require("../../app/business/UserBusiness");
 import CategoryTypeBusiness = require("../../app/business/CategoryTypeBusiness");
 import ProfileBusiness = require("../../app/business/ProfileBusiness");
 import { ProfessionalPortfolio } from "../../utils/filtercategory/ProfessionalPortfolio";
+import ContestBusiness = require("../../app/business/ContestBusiness");
 
 export class UserFilter {
   constructor() {}
@@ -63,6 +66,7 @@ export class UserFilter {
               stageName: userProfile.data ? userProfile.data.name : "",
               displayPhoto: x.profileImagePath || "",
               displayName: x.fullName,
+              location: userProfile.data ? userProfile.data.location : "",
               categoryTypes: categoryTypes,
               tapCount: userProfile.data ? userProfile.data.tapCount : 0,
               shortDescription: userProfile.data
@@ -102,6 +106,7 @@ export class UserFilter {
   ): Promise<void> => {
     try {
       const userTypeBusiness = new UserTypeBusiness();
+      const contestBusiness = new ContestBusiness();
       var result = await userTypeBusiness.findByCriteria({
         name: AppUsers.Professional,
       });
@@ -117,24 +122,61 @@ export class UserFilter {
           for (let x of professionals) {
             var userProfile = await profileBusiness.findByUser(x._id);
             var professionalSetUp = ProfessionalPortfolio.setUp(x._id);
-            var userContest = await professionalSetUp.fetchProfessionalContests();
+            var userContests = await professionalSetUp.fetchContestListByUser();
             const categoryTypes: any = userProfile.data
               ? await this.transformCategoryType(userProfile.data.categoryTypes)
               : [];
-            var user: Professional = {
-              user: x._id,
-              userType: x.userType,
-              businessName: userProfile.data ? userProfile.data.name : "",
-              displayPhoto: x.profileImagePath || "",
-              displayName: x.fullName,
-              categoryTypes: categoryTypes,
-              shortDescription: userProfile.data
-                ? userProfile.data.shortBio
-                : "",
-              dateJoined: x.createdAt,
-              contestCount: userContest.length,
-            };
-            users = [...users, user];
+            let userSocial: IUserSocialMedia[] = [];
+            if (userProfile.data) {
+              if (userProfile.data.facebook)
+                userSocial = [
+                  ...userSocial,
+                  {
+                    type: SocialMediaTypes.facebook,
+                    handle: userProfile.data.facebook,
+                  },
+                ];
+              if (userProfile.data.instagram)
+                userSocial = [
+                  ...userSocial,
+                  {
+                    type: SocialMediaTypes.instagram,
+                    handle: userProfile.data.instagram,
+                  },
+                ];
+              if (userProfile.data.youtube)
+                userSocial = [
+                  ...userSocial,
+                  {
+                    type: SocialMediaTypes.youtube,
+                    handle: userProfile.data.youtube,
+                  },
+                ];
+              if (userProfile.data.twitter)
+                userSocial = [
+                  ...userSocial,
+                  {
+                    type: SocialMediaTypes.twitter,
+                    handle: userProfile.data.twitter,
+                  },
+                ];
+              var user: Professional = {
+                user: x._id,
+                userType: x.userType,
+                businessName: userProfile.data.name,
+                userSocials: [...userSocial],
+                displayPhoto: x.profileImagePath || "",
+                displayName: x.fullName,
+                bannerPhoto: x.bannerImagePath || "",
+                location: userProfile.data.location || "",
+                categoryTypes: categoryTypes,
+                shortDescription: userProfile.data.shortBio || "",
+                dateJoined: x.createdAt,
+                contestCount: userContests.length,
+                contests: [...userContests],
+              };
+              users = [...users, user];
+            }
           }
         }
         generateProfessionalReport(users);

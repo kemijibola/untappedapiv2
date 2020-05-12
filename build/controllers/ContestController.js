@@ -195,19 +195,17 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
-    ContestController.prototype.fetch = function (req, res, next) {
+    ContestController.prototype.fetchContestListByUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var condition, contestBusiness, result, err_4;
+            var condition, contestBusiness, userId, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         condition = {};
-                        if (req.query) {
-                            condition.title = req.query.title || "";
-                        }
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetch(condition)];
+                        userId = req.params.id;
+                        return [4 /*yield*/, contestBusiness.fetchContestDetailsById(req.params.id)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -231,18 +229,42 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
-    ContestController.prototype.updateContest = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2 /*return*/];
-        }); });
+    ContestController.prototype.fetch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var condition, contestBusiness, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        condition = {};
+                        if (req.query) {
+                            condition.title = req.query.title || "";
+                        }
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.fetch(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
-    ContestController.prototype.pathContest = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2 /*return*/];
-        }); });
-    };
-    ContestController.prototype.delete = function () { };
-    ContestController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -263,11 +285,17 @@ var ContestController = /** @class */ (function () {
     __decorate([
         decorators_1.get("/:id"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetchContestDetailsById", null);
+    __decorate([
+        decorators_1.get("/contests/user/:userId"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "fetchContestListByUser", null);
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -276,18 +304,6 @@ var ContestController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetch", null);
-    __decorate([
-        decorators_1.authorize("ADMIN"),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Object, Function]),
-        __metadata("design:returntype", Promise)
-    ], ContestController.prototype, "updateContest", null);
-    __decorate([
-        decorators_1.authorize("ADMIN"),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Object, Function]),
-        __metadata("design:returntype", Promise)
-    ], ContestController.prototype, "pathContest", null);
     ContestController = __decorate([
         decorators_1.controller("/v1/contests")
     ], ContestController);

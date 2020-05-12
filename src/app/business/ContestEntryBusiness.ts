@@ -3,14 +3,17 @@ import ContestRepository from "../repository/ContestRepository";
 import ProfileRepository from "../repository/ProfileRepository";
 import UserRepository from "../repository/UserRepository";
 import UserTypeRepository from "../repository/UserTypeRepository";
+import CommentRepository from "../repository/CommentRepository";
 import IContestEntryBusiness = require("./interfaces/ContestEntryBusiness");
 import {
   IContestEntry,
   ContestEligibilityData,
   EligibilityStatus,
+  IComment,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { generateRandomNumber, ObjectKeyString } from "../../utils/lib";
+import { IUserContestListAnalysis } from "../models/interfaces/custom/ContestList";
 
 class ContestBusiness implements IContestEntryBusiness {
   private _contestEntryRepository: ContestEntryRepository;
@@ -18,6 +21,7 @@ class ContestBusiness implements IContestEntryBusiness {
   private _userRepository: UserRepository;
   private _profileRepository: ProfileRepository;
   private _userTypeRepository: UserTypeRepository;
+  private _commentRepository: CommentRepository;
 
   constructor() {
     this._contestEntryRepository = new ContestEntryRepository();
@@ -25,6 +29,7 @@ class ContestBusiness implements IContestEntryBusiness {
     this._userRepository = new UserRepository();
     this._profileRepository = new ProfileRepository();
     this._userTypeRepository = new UserTypeRepository();
+    this._commentRepository = new CommentRepository();
   }
 
   async fetch(condition: any): Promise<Result<IContestEntry[]>> {
@@ -97,8 +102,6 @@ class ContestBusiness implements IContestEntryBusiness {
       contest: contest._id,
     });
 
-    console.log(alreadyVoted);
-
     if (alreadyVoted) {
       eligibilityData.status = false;
       eligibilityData.eligibility = EligibilityStatus.entered;
@@ -139,6 +142,47 @@ class ContestBusiness implements IContestEntryBusiness {
       }
     }
     return false;
+  }
+
+  async fetchContestEntryListByUser(
+    userId: string
+  ): Promise<Result<IUserContestListAnalysis[]>> {
+    let totalCommentCount: number = 0;
+    let contestEntryCommentCountMap: any = {};
+    let userContestResults: IUserContestListAnalysis[] = [];
+
+    const userContestEntries: IContestEntry[] = await this._contestEntryRepository.fetchContestEntryWithContest(
+      {
+        user: userId,
+      }
+    );
+
+    contestEntryCommentCountMap["totalCommentCount"] = 0;
+    for (let item of userContestEntries) {
+      const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
+        {
+          contest: item.contest,
+        }
+      );
+
+      const entryComment: IComment[] = await this._commentRepository.fetch({
+        entity: item._id,
+      });
+      contestEntryCommentCountMap["totalCommentCount"] =
+        contestEntryCommentCountMap["totalCommentCount"] + entryComment.length;
+
+      let userContestResult: IUserContestListAnalysis = {
+        contestId: item._id,
+        contestTitle: item.title,
+        contestBanner: item.contest.bannerImage || "",
+        contestViewCount: item.contest.views || 0,
+        contestLikedByCount: item.contest.likedBy.length || 0,
+        entryCount: contestEntries.length,
+        commentCount: contestEntryCommentCountMap["totalCommentCount"],
+      };
+      userContestResults = [...userContestResults, userContestResult];
+    }
+    return Result.ok<IUserContestListAnalysis[]>(200, userContestResults);
   }
 
   async create(item: IContestEntry): Promise<Result<IContestEntry>> {

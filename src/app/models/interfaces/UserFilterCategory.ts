@@ -5,6 +5,8 @@ import { IAppSpec } from "./AppSpec";
 import { IUserType } from "./UserType";
 import { ICategory } from "./Category";
 import { ICategoryType } from "./CategoryType";
+import { IUserSocialMedia } from "./Profile";
+import { IUserContestListAnalysis } from "./custom/ContestList";
 
 export enum ReportType {
   alltalents = "alltalents",
@@ -27,6 +29,7 @@ export interface IUserFilterCategory
     mongoose.Document {
   user: IUser["_id"];
   displayName: string;
+  userSocials: IUserSocialMedia[];
   displayPhoto: string;
   bannerPhoto?: string;
   location?: string;
@@ -36,6 +39,7 @@ export interface IUserFilterCategory
   contestCount: number;
   reportType: ReportType;
   userType: IUserType["_id"];
+  contests: IUserContestListAnalysis[];
   createdAt: Date;
   aliasName: string;
   dateJoined: Date;

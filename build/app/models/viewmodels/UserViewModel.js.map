@@ -1,1 +1,1 @@
-{"version":3,"file":"UserViewModel.js","sourceRoot":"","sources":["../../../../src/app/models/viewmodels/UserViewModel.ts"],"names":[],"mappings":";;AA2DA,IAAY,QAIX;AAJD,WAAY,QAAQ;IAClB,6BAAiB,CAAA;IACjB,yCAA6B,CAAA;IAC7B,iCAAqB,CAAA;AACvB,CAAC,EAJW,QAAQ,GAAR,gBAAQ,KAAR,gBAAQ,QAInB"}
+{"version":3,"file":"UserViewModel.js","sourceRoot":"","sources":["../../../../src/app/models/viewmodels/UserViewModel.ts"],"names":[],"mappings":";;AA6DA,IAAY,QAIX;AAJD,WAAY,QAAQ;IAClB,6BAAiB,CAAA;IACjB,yCAA6B,CAAA;IAC7B,iCAAqB,CAAA;AACvB,CAAC,EAJW,QAAQ,GAAR,gBAAQ,KAAR,gBAAQ,QAInB"}

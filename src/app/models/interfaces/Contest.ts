@@ -49,7 +49,7 @@ export interface IContest
   startDate: Date;
   endDate: Date;
   views: number;
-  likes: number;
+  likedBy: string[];
   evaluations: string[];
   redeemable: IRedeemable[];
   createdBy: IUser["_id"];

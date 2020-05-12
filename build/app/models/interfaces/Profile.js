@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var SocialMedia;
-(function (SocialMedia) {
-    SocialMedia["FACEBOOK"] = "FACEBOOK";
-    SocialMedia["TWITTER"] = "TWITTER";
-    SocialMedia["INSTAGRAM"] = "INSTAGRAM";
-    SocialMedia["YOUTUBE"] = "YOUTUBE";
-    SocialMedia["OTHER"] = "OTHER";
-})(SocialMedia = exports.SocialMedia || (exports.SocialMedia = {}));
+var SocialMediaTypes;
+(function (SocialMediaTypes) {
+    SocialMediaTypes["facebook"] = "facebook";
+    SocialMediaTypes["twitter"] = "twitter";
+    SocialMediaTypes["instagram"] = "instagram";
+    SocialMediaTypes["youtube"] = "youtube";
+})(SocialMediaTypes = exports.SocialMediaTypes || (exports.SocialMediaTypes = {}));
 //# sourceMappingURL=Profile.js.map

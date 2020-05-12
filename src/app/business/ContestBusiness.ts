@@ -9,14 +9,19 @@ import {
   MediaType,
   IContestEntry,
   ContestWithEntries,
+  IComment,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { ContestType } from "../data/schema/Contest";
 import { isAfter, addDays, differenceInDays } from "date-fns";
-import { IContestList } from "../models/interfaces/custom/ContestList";
+import {
+  IContestList,
+  IUserContestListAnalysis,
+  IContestEntryPreview,
+} from "../models/interfaces/custom/ContestList";
 import { ContestSummary } from "../../utils/contests/ContestSummary";
 import { ContestListAnalysis } from "../../utils/contests/analyzers/ContestListAnalysis";
-import { getRandomId, getTime } from "../../utils/lib";
+import { getRandomId, getTime, ObjectKeyString } from "../../utils/lib";
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
@@ -88,6 +93,53 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<ContestWithEntries>(200, contestDetails);
   }
 
+  async fetchContestListByUser(
+    userId: string
+  ): Promise<Result<IUserContestListAnalysis[]>> {
+    let totalCommentCount: number = 0;
+    let contestEntryCommentCountMap: any = {};
+
+    let userContestResults: IUserContestListAnalysis[] = [];
+    const userContests: IContest[] = await this._contestRepository.fetch({
+      createdBy: userId,
+      paymentStatus: PaymentStatus.Completed,
+    });
+
+    // console.log("contest created  by user", userContests);
+
+    for (let item of userContests) {
+      const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
+        {
+          contest: item._id,
+        }
+      );
+
+      contestEntryCommentCountMap["totalCommentCount"] = 0;
+      for (let entry of contestEntries) {
+        const entryComment: IComment[] = await this._commentRepository.fetch({
+          entity: entry._id,
+        });
+        contestEntryCommentCountMap["totalCommentCount"] =
+          contestEntryCommentCountMap["totalCommentCount"] +
+          entryComment.length;
+      }
+
+      let userContestResult: IUserContestListAnalysis = {
+        contestId: item._id,
+        contestTitle: item.title,
+        contestBanner: item.bannerImage || "",
+        contestViewCount: item.views || 0,
+        contestLikedByCount: item.likedBy.length,
+        entryCount: contestEntries.length,
+        commentCount: contestEntryCommentCountMap["totalCommentCount"],
+      };
+
+      userContestResults = [...userContestResults, userContestResult];
+    }
+
+    return Result.ok<IUserContestListAnalysis[]>(200, userContestResults);
+  }
+
   async findOne(condition: any): Promise<Result<IContest>> {
     if (!condition) return Result.fail<IContest>(400, "Bad request.");
     const contest = await this._contestRepository.findByOne(condition);
@@ -113,7 +165,7 @@ class ContestBusiness implements IContestBusiness {
     }
 
     item.views = 0;
-    item.likes = 0;
+    item.likedBy = [];
     item.paymentStatus = PaymentStatus.UnPaid;
     item.issues = [];
     item.code = getRandomId();

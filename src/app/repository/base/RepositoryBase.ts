@@ -82,6 +82,41 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  fetchContestEntryWithContest(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate("contest", "_id title bannerImage views likedBy")
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
+  fetchContestEntryPaginated(
+    condition: any,
+    page = 1,
+    perPage = 10
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate("user", "_id fullName profileImagePath")
+        .skip(perPage * page - perPage)
+        .limit(perPage)
+        .sort({
+          createdAt: -1,
+        })
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
   fetchContests(condition: any, page = 1, perPage = 10): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model

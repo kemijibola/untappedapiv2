@@ -35,7 +35,7 @@ class ProfileBusiness implements IProfileBusiness {
 
   async findByUser(id: string): Promise<Result<IProfile>> {
     const profile = await this._profileRepository.findByCriteria({
-      user: id
+      user: id,
     });
     return Result.ok<IProfile>(200, profile);
   }

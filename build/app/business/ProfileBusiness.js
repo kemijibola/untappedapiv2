@@ -104,7 +104,7 @@ var ProfileBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._profileRepository.findByCriteria({
-                            user: id
+                            user: id,
                         })];
                     case 1:
                         profile = _a.sent();

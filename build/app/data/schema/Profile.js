@@ -5,7 +5,7 @@ var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
 var interfaces_1 = require("../../models/interfaces");
 exports.socialMediaSchema = new mongoose_1.Schema({
-    type: { type: interfaces_1.SocialMedia },
+    type: { type: interfaces_1.SocialMediaTypes },
     handle: { type: String },
 });
 var physicalStatisticsSchema = new mongoose_1.Schema({
@@ -24,7 +24,7 @@ var profileSchema = new mongoose_1.Schema({
         ref: "User",
         required: true,
     },
-    shortBio: { type: String, required: true, minlength: 50, maxlength: 1500 },
+    shortBio: { type: String, required: true, minlength: 80, maxlength: 1500 },
     categoryTypes: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
