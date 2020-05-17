@@ -190,20 +190,16 @@ export class ContestController {
     }
   }
 
-  @get("/contests/user/:userId")
+  @get("/contests/user")
   @use(requestValidator)
   async fetchContestListByUser(
-    req: Request,
+    req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
-      let condition: ObjectKeyString = {};
       const contestBusiness = new ContestBusiness();
-      const userId: string = req.params.id;
-      const result = await contestBusiness.fetchContestDetailsById(
-        req.params.id
-      );
+      const result = await contestBusiness.fetchContestListByUser(req.user);
       if (result.error) {
         return next(
           new PlatformError({

@@ -807,7 +807,7 @@ var UserBusiness = /** @class */ (function () {
                         item.createdAt = user.createdAt;
                         item._id = user._id;
                         item.password = user.password;
-                        return [4 /*yield*/, this._userRepository.update(user._id, item)];
+                        return [4 /*yield*/, this._userRepository.patch(user._id, item)];
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];

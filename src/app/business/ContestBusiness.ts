@@ -93,6 +93,7 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<ContestWithEntries>(200, contestDetails);
   }
 
+  
   async fetchContestListByUser(
     userId: string
   ): Promise<Result<IUserContestListAnalysis[]>> {

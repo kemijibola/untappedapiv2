@@ -727,7 +727,7 @@ class UserBusiness implements IUserBusiness {
     item._id = user._id;
     item.password = user.password;
 
-    const updateObj = await this._userRepository.update(user._id, item);
+    const updateObj = await this._userRepository.patch(user._id, item);
     return Result.ok<IUserModel>(200, updateObj);
   }
 
