@@ -37,8 +37,127 @@ export class S3Storage implements Storage {
     // });
   }
 
+  async putThumbNail(
+    uploader: string,
+    encodedImage: string
+  ): Promise<Result<SignedUrl>> {
+    let signedUrls: SignedUrl = {
+      presignedUrl: [],
+      component: UPLOADOPERATIONS.thumbnail,
+    };
+
+    let signedUrl: PresignedUrl = {
+      file: "",
+      url: "",
+      key: "",
+    };
+
+    const key = `${uploader}/images/thumbnail/${uuid()}.png`;
+    try {
+      const params = {
+        Bucket: config.APP_BUCKET.bucket,
+        Key: key,
+        Body: encodedImage,
+        ContentEncoding: "base64",
+        Expires: 30 * 60,
+        ContentType: "image/png",
+      };
+      const options = {
+        signatureVersion: "v4",
+        region: config.APP_BUCKET.region, // same as your bucket
+        endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+        useAccelerateEndpoint: true,
+      };
+
+      const client: AWS.S3 = new AWS.S3(options);
+      const signed: string = await new Promise((resolve, reject) => {
+        client.getSignedUrl("putObject", params, (err, data) => {
+          if (err) reject(err);
+          resolve(data);
+        });
+      });
+      signedUrl = {
+        file: "none",
+        url: signed,
+        key: key,
+      };
+      signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
+      return Result.ok<SignedUrl>(200, signedUrls);
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error occured");
+    }
+  }
   // async getObject():
   async putObject(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
+    const signedUrlExpireSeconds = 60 * 60;
+    let signedUrls: SignedUrl = {
+      presignedUrl: [],
+      component: UPLOADOPERATIONS.profileimage,
+    };
+    let signedUrl: PresignedUrl = {
+      file: "",
+      url: "",
+      key: "",
+    };
+    if (data.files) {
+      const filesMap: ObjectKeyString = data.files.reduce(
+        (theMap: any, item: IFileMetaData) => {
+          let fileExtension = item.file.split(".").pop() || "";
+          fileExtension = fileExtension.toLowerCase();
+          // we are ensuring the user sent valid media type for processing on s3
+          if (!AcceptedImageExt[fileExtension]) {
+            return Result.fail<PresignedUrl[]>(
+              400,
+              `${fileExtension} is not allowed.`
+            );
+          }
+
+          theMap[item.file] = `${data.uploader}/${
+            AcceptedImageExt[fileExtension]
+          }/${UPLOADOPERATIONS[data.action]}/${uuid()}.${fileExtension}`;
+          return theMap;
+        },
+        {}
+      );
+      try {
+        for (let item in filesMap) {
+          const params = {
+            Bucket: config.APP_BUCKET.bucket,
+            Key: filesMap[item],
+            Expires: 30 * 60,
+            ContentType: data.files[0].file_type,
+          };
+          const options = {
+            signatureVersion: "v4",
+            region: config.APP_BUCKET.region, // same as your bucket
+            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+            useAccelerateEndpoint: true,
+          };
+
+          const client: AWS.S3 = new AWS.S3(options);
+          const signed: string = await new Promise((resolve, reject) => {
+            client.getSignedUrl("putObject", params, (err, data) => {
+              if (err) reject(err);
+              resolve(data);
+            });
+          });
+          signedUrl = {
+            file: item,
+            url: signed,
+            key: filesMap[item],
+          };
+          signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
+        }
+        return Result.ok<SignedUrl>(200, signedUrls);
+      } catch (err) {
+        console.log(err);
+        throw new Error("Internal server error occured");
+      }
+    }
+    return Result.fail<SignedUrl>(400, "No file uploaded.");
+  }
+  async putBase64Object(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     const signedUrlExpireSeconds = 60 * 60;
     let signedUrls: SignedUrl = {
       presignedUrl: [],

@@ -7,6 +7,7 @@ var UPLOADOPERATIONS;
     UPLOADOPERATIONS["contestentry"] = "contestentry";
     UPLOADOPERATIONS["contestbanner"] = "contestbanner";
     UPLOADOPERATIONS["bannerimage"] = "bannerimage";
+    UPLOADOPERATIONS["thumbnail"] = "thumbnail";
     UPLOADOPERATIONS["default"] = "default";
 })(UPLOADOPERATIONS = exports.UPLOADOPERATIONS || (exports.UPLOADOPERATIONS = {}));
 //# sourceMappingURL=Upload.js.map

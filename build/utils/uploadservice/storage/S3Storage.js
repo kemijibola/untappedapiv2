@@ -68,10 +68,69 @@ var S3Storage = /** @class */ (function () {
         //   useAccelerateEndpoint: true
         // });
     }
+    S3Storage.prototype.putThumbNail = function (uploader, encodedImage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signedUrls, signedUrl, key, params_1, options, client_1, signed, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        signedUrls = {
+                            presignedUrl: [],
+                            component: Upload_1.UPLOADOPERATIONS.thumbnail,
+                        };
+                        signedUrl = {
+                            file: "",
+                            url: "",
+                            key: "",
+                        };
+                        key = uploader + "/images/thumbnail/" + uuid() + ".png";
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        params_1 = {
+                            Bucket: config.APP_BUCKET.bucket,
+                            Key: key,
+                            Body: encodedImage,
+                            ContentEncoding: "base64",
+                            Expires: 30 * 60,
+                            ContentType: "image/png",
+                        };
+                        options = {
+                            signatureVersion: "v4",
+                            region: config.APP_BUCKET.region,
+                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+                            useAccelerateEndpoint: true,
+                        };
+                        client_1 = new AWS.S3(options);
+                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                client_1.getSignedUrl("putObject", params_1, function (err, data) {
+                                    if (err)
+                                        reject(err);
+                                    resolve(data);
+                                });
+                            })];
+                    case 2:
+                        signed = _a.sent();
+                        signedUrl = {
+                            file: "none",
+                            url: signed,
+                            key: key,
+                        };
+                        signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
+                        return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
+                    case 3:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        throw new Error("Internal server error occured");
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     // async getObject():
     S3Storage.prototype.putObject = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var signedUrlExpireSeconds, signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_1;
+            var signedUrlExpireSeconds, signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_2;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -153,8 +212,100 @@ var S3Storage = /** @class */ (function () {
                         return [3 /*break*/, 2];
                     case 5: return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
                     case 6:
-                        err_1 = _c.sent();
-                        console.log(err_1);
+                        err_2 = _c.sent();
+                        console.log(err_2);
+                        throw new Error("Internal server error occured");
+                    case 7: return [2 /*return*/, Result_1.Result.fail(400, "No file uploaded.")];
+                }
+            });
+        });
+    };
+    S3Storage.prototype.putBase64Object = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signedUrlExpireSeconds, signedUrls, signedUrl, filesMap, _loop_2, _a, _b, _i, item, err_3;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        signedUrlExpireSeconds = 60 * 60;
+                        signedUrls = {
+                            presignedUrl: [],
+                            component: Upload_1.UPLOADOPERATIONS.profileimage,
+                        };
+                        signedUrl = {
+                            file: "",
+                            url: "",
+                            key: "",
+                        };
+                        if (!data.files) return [3 /*break*/, 7];
+                        filesMap = data.files.reduce(function (theMap, item) {
+                            var fileExtension = item.file.split(".").pop() || "";
+                            fileExtension = fileExtension.toLowerCase();
+                            // we are ensuring the user sent valid media type for processing on s3
+                            if (!lib_1.AcceptedImageExt[fileExtension]) {
+                                return Result_1.Result.fail(400, fileExtension + " is not allowed.");
+                            }
+                            theMap[item.file] = data.uploader + "/" + lib_1.AcceptedImageExt[fileExtension] + "/" + Upload_1.UPLOADOPERATIONS[data.action] + "/" + uuid() + "." + fileExtension;
+                            return theMap;
+                        }, {});
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 6, , 7]);
+                        _loop_2 = function (item) {
+                            var params, options, client, signed;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        params = {
+                                            Bucket: config.APP_BUCKET.bucket,
+                                            Key: filesMap[item],
+                                            Expires: 30 * 60,
+                                            ContentType: data.files[0].file_type,
+                                        };
+                                        options = {
+                                            signatureVersion: "v4",
+                                            region: config.APP_BUCKET.region,
+                                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+                                            useAccelerateEndpoint: true,
+                                        };
+                                        client = new AWS.S3(options);
+                                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                                client.getSignedUrl("putObject", params, function (err, data) {
+                                                    if (err)
+                                                        reject(err);
+                                                    resolve(data);
+                                                });
+                                            })];
+                                    case 1:
+                                        signed = _a.sent();
+                                        signedUrl = {
+                                            file: item,
+                                            url: signed,
+                                            key: filesMap[item],
+                                        };
+                                        signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
+                        _a = [];
+                        for (_b in filesMap)
+                            _a.push(_b);
+                        _i = 0;
+                        _c.label = 2;
+                    case 2:
+                        if (!(_i < _a.length)) return [3 /*break*/, 5];
+                        item = _a[_i];
+                        return [5 /*yield**/, _loop_2(item)];
+                    case 3:
+                        _c.sent();
+                        _c.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
+                    case 6:
+                        err_3 = _c.sent();
+                        console.log(err_3);
                         throw new Error("Internal server error occured");
                     case 7: return [2 /*return*/, Result_1.Result.fail(400, "No file uploaded.")];
                 }

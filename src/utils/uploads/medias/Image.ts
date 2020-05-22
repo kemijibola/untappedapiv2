@@ -28,6 +28,53 @@ export class Image extends AbstractMedia {
     super();
   }
 
+  async getThumbNailUrl(
+    uploader: string,
+    encodedImage: string
+  ): Promise<Result<SignedUrl>> {
+    let signedUrls: SignedUrl = {
+      presignedUrl: [],
+      component: UPLOADOPERATIONS.thumbnail,
+    };
+
+    let signedUrl: PresignedUrl = {
+      file: "",
+      url: "",
+      key: "",
+    };
+
+    const key = `${uploader}/images/thumbnail/${uuid()}.png`;
+    try {
+      const params = {
+        Bucket: config.APP_BUCKET.bucket,
+        Key: key,
+        Body: encodedImage,
+        ContentEncoding: "base64",
+        ContentType: "image/png",
+      };
+      const options = {
+        signatureVersion: "v4",
+        region: config.APP_BUCKET.region, // same as your bucket
+        endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+        useAccelerateEndpoint: true,
+      };
+
+      const client: AWS.S3 = new AWS.S3(options);
+      const { Location, Key } = await client.upload(params).promise();
+
+      signedUrl = {
+        file: "none",
+        url: Location,
+        key: Key,
+      };
+      signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
+      return Result.ok<SignedUrl>(200, signedUrls);
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error occured");
+    }
+  }
+
   async getPresignedUrl(data: IUploadFileRequest): Promise<Result<SignedUrl>> {
     let signedUrls: SignedUrl = {
       presignedUrl: [],

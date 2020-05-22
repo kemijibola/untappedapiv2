@@ -73,9 +73,61 @@ var Audio = /** @class */ (function (_super) {
     function Audio() {
         return _super.call(this) || this;
     }
+    Audio.prototype.getThumbNailUrl = function (uploader, encodedImage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signedUrls, signedUrl, key, params, options, client, _a, Location_1, Key, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        signedUrls = {
+                            presignedUrl: [],
+                            component: Upload_1.UPLOADOPERATIONS.thumbnail,
+                        };
+                        signedUrl = {
+                            file: "",
+                            url: "",
+                            key: "",
+                        };
+                        key = uploader + "/images/thumbnail/" + uuid() + ".png";
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        params = {
+                            Bucket: config.APP_BUCKET.bucket,
+                            Key: key,
+                            Body: encodedImage,
+                            ContentEncoding: "base64",
+                            ContentType: "image/png",
+                        };
+                        options = {
+                            signatureVersion: "v4",
+                            region: config.APP_BUCKET.region,
+                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+                            useAccelerateEndpoint: true,
+                        };
+                        client = new AWS.S3(options);
+                        return [4 /*yield*/, client.upload(params).promise()];
+                    case 2:
+                        _a = _b.sent(), Location_1 = _a.Location, Key = _a.Key;
+                        signedUrl = {
+                            file: "none",
+                            url: Location_1,
+                            key: Key,
+                        };
+                        signedUrls.presignedUrl = signedUrls.presignedUrl.concat([signedUrl]);
+                        return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
+                    case 3:
+                        err_1 = _b.sent();
+                        console.log(err_1);
+                        throw new Error("Internal server error occured");
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     Audio.prototype.getPresignedUrl = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_1;
+            var signedUrls, signedUrl, filesMap, _loop_1, _a, _b, _i, item, err_2;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -155,7 +207,7 @@ var Audio = /** @class */ (function (_super) {
                         return [3 /*break*/, 2];
                     case 5: return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
                     case 6:
-                        err_1 = _c.sent();
+                        err_2 = _c.sent();
                         throw new Error("Internal server error occured");
                     case 7: return [2 /*return*/, Result_1.Result.fail(400, "No file uploaded.")];
                 }

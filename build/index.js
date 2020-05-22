@@ -15,7 +15,7 @@ var SocketIo_1 = require("./socket/SocketIo");
 var CronJob_1 = require("./utils/CronJob");
 var app = express_1.default();
 app.use(body_parser_1.default.json());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
+app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(cors_1.default());
 // app.use(function(req: Request, res: Response, next: NextFunction) {
 //   res.header('Access-Control-Allow-Origin', '*');

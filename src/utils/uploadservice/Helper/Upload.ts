@@ -7,6 +7,7 @@ export enum UPLOADOPERATIONS {
   contestentry = "contestentry",
   contestbanner = "contestbanner",
   bannerimage = "bannerimage",
+  thumbnail = "thumbnail",
   default = "default",
 }
 export interface IFileMetaData {

@@ -117,10 +117,50 @@ var UploadController = /** @class */ (function () {
             });
         });
     };
-    UploadController.prototype.update = function () { };
-    UploadController.prototype.delete = function () { };
-    UploadController.prototype.fetch = function () { };
-    UploadController.prototype.findById = function () { };
+    UploadController.prototype.getThumbNailPresignedUrl = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaFactory, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (req.body.encodedImage.length < 1) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "encodedImage is invalid.",
+                                }))];
+                        }
+                        mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create("image");
+                        return [4 /*yield*/, mediaFactory.getThumbNailUrl(req.user, req.body.encodedImage)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        if (err_2.code === 400) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: err_2.code,
+                                    message: err_2.message,
+                                }))];
+                        }
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -131,6 +171,16 @@ var UploadController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UploadController.prototype, "getPresignedUrl", null);
+    __decorate([
+        decorators_1.post("/uploads/thumbnail"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("encodedImage"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canUploadGigs, PermissionConstant_1.canUploadProfileImage),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UploadController.prototype, "getThumbNailPresignedUrl", null);
     UploadController = __decorate([
         decorators_1.controller("/v1/uploads")
     ], UploadController);

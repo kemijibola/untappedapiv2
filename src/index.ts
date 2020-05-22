@@ -18,7 +18,7 @@ import { userFilterJob } from "./utils/CronJob";
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 // app.use(function(req: Request, res: Response, next: NextFunction) {
 //   res.header('Access-Control-Allow-Origin', '*');

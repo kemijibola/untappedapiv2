@@ -6,6 +6,10 @@ export abstract class AbstractMedia {
   abstract getPresignedUrl(
     data: IUploadFileRequest
   ): Promise<Result<SignedUrl>>;
+  abstract getThumbNailUrl(
+    uploader: string,
+    encodedImage: string
+  ): Promise<Result<SignedUrl>>;
 }
 
 export class Uploader {
@@ -19,5 +23,12 @@ export class Uploader {
     filesToUpload: IUploadFileRequest
   ): Promise<Result<SignedUrl>> {
     return await this.media.getPresignedUrl(filesToUpload);
+  }
+
+  async getThumbnailUrl(
+    uploader: string,
+    encoded: string
+  ): Promise<Result<SignedUrl>> {
+    return await this.media.getThumbNailUrl(uploader, encoded);
   }
 }
