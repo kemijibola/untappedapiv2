@@ -16,6 +16,9 @@ interface IUserData {
   full_name: string;
   email: string;
   profile_is_completed: boolean;
+  tap_notification: boolean;
+  email_notification: boolean;
+  profile_visibility: boolean;
   profile_image_path: string;
   banner_image_path: string;
   userType: UserType;

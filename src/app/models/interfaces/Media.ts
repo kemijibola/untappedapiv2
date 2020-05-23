@@ -97,6 +97,7 @@ export interface TalentPortfolioPreview {
   mediaType: string;
   talent: string;
   uploadType: string;
+  albumCoverKey: string;
   defaultImageKey: string;
   mediaDescription: string;
   items: IMediaItem[];

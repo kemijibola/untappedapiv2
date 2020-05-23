@@ -187,6 +187,9 @@ class UserBusiness implements IUserBusiness {
             full_name: user.data.fullName,
             email: user.data.email,
             profile_is_completed: user.data.isProfileCompleted,
+            tap_notification: user.data.tapNotification,
+            email_notification: user.data.emailNotification,
+            profile_visibility: user.data.profileVisibility,
             profile_image_path: user.data.profileImagePath || "",
             banner_image_path: user.data.bannerImagePath || "",
             userType: { _id: typeOfUser._id, name: typeOfUser.name },
@@ -281,6 +284,9 @@ class UserBusiness implements IUserBusiness {
           full_name: user.fullName,
           email: user.email,
           profile_is_completed: user.isProfileCompleted,
+          tap_notification: user.tapNotification,
+          email_notification: user.emailNotification,
+          profile_visibility: user.profileVisibility,
           profile_image_path: user.profileImagePath || "",
           banner_image_path: user.bannerImagePath || "",
           userType: { _id: typeOfUser._id, name: typeOfUser.name },
@@ -708,6 +714,9 @@ class UserBusiness implements IUserBusiness {
     item.createdAt = user.createdAt;
     item._id = user._id;
     item.password = user.password;
+    item.userType = user.userType;
+    item.status = user.status;
+    item.roles = [...user.roles];
 
     const updateObj = await this._userRepository.update(user._id, item);
     return Result.ok<IUserModel>(200, updateObj);
@@ -726,6 +735,9 @@ class UserBusiness implements IUserBusiness {
     item.createdAt = user.createdAt;
     item._id = user._id;
     item.password = user.password;
+    item.userType = user.userType;
+    item.status = user.status;
+    item.roles = [...user.roles];
 
     const updateObj = await this._userRepository.patch(user._id, item);
     return Result.ok<IUserModel>(200, updateObj);

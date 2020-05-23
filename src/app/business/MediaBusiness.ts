@@ -48,6 +48,7 @@ class MediaBusiness implements IMediaBusiness {
               mediaType: theItem.mediaType,
               talent: theItem.user,
               uploadType: theItem.uploadType,
+              albumCoverKey: theItem.albumCover || "",
               defaultImageKey: items.length > 0 ? items[0].path : "",
               mediaTitle: theItem.title,
               mediaDescription: theItem.shortDescription,
