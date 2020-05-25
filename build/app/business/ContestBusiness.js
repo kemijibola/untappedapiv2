@@ -149,7 +149,6 @@ var ContestBusiness = /** @class */ (function () {
                         contestEntryCommentCountMap = {};
                         userContestResults = [];
                         return [4 /*yield*/, this._contestRepository.fetch({
-                                createdBy: userId,
                                 paymentStatus: interfaces_1.PaymentStatus.Completed,
                             })];
                     case 1:

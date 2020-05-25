@@ -197,13 +197,14 @@ var ContestController = /** @class */ (function () {
     };
     ContestController.prototype.fetchContestListByUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestBusiness, result, err_4;
+            var userId, contestBusiness, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        userId = req.user;
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetchContestListByUser(req.user)];
+                        return [4 /*yield*/, contestBusiness.fetchContestListByUser(userId)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -288,7 +289,7 @@ var ContestController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetchContestDetailsById", null);
     __decorate([
-        decorators_1.get("/contests/user"),
+        decorators_1.get("/user/contests"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

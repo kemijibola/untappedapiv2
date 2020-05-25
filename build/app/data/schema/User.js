@@ -61,7 +61,7 @@ var userSchema = new mongoose_1.Schema({
     profileVisibility: { type: Boolean, default: false },
     isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: { type: interfaces_1.AccountStatus, default: interfaces_1.AccountStatus.DEFAULT },
+    status: { type: interfaces_1.AccountStatus, default: interfaces_1.AccountStatus.ACTIVATED },
     roles: [
         {
             type: mongoose_1.Schema.Types.ObjectId,

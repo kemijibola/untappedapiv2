@@ -18,6 +18,7 @@ import {
   ImageEditRequest,
   IRefreshToken,
   IRefreshTokenViewModel,
+  AccountStatus,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import {
@@ -212,6 +213,15 @@ class UserBusiness implements IUserBusiness {
       const user = await this.findUserByEmail(criteria);
 
       if (!user)
+        return Result.fail<IAuthData>(401, "Invalid username/password");
+
+      if (user.status === AccountStatus.SUSPENDED) {
+        user.status = AccountStatus.ACTIVATED;
+        await user.save();
+      }
+
+      // TODO:: ask around for what happens when an account is deleted
+      if (user.status === AccountStatus.DELETED)
         return Result.fail<IAuthData>(401, "Invalid username/password");
 
       const passwordMatched: boolean = await user.comparePassword(
@@ -436,7 +446,6 @@ class UserBusiness implements IUserBusiness {
     }
 
     item.roles.push(defaultRole._id);
-
     const newUser: IUserModel = await this._userRepository.register(item);
     // generate token and send to email
     const data: TokenGenerationRequest = {
@@ -490,7 +499,7 @@ class UserBusiness implements IUserBusiness {
         const forgorPasswordEmailKeyValues: TemplateKeyValue[] = this.TokenEmailKeyValue(
           user.fullName,
           audience,
-          `${redirectUrl}?email=${user.email}&token=${token.data}`
+          `${redirectUrl}/${user.email}/${token.data}`
         );
         const forgoPasswordTemplateString: string =
           ForgotPasswordEmail.template;
@@ -509,7 +518,7 @@ class UserBusiness implements IUserBusiness {
     }
 
     user.passwordResetRequested = true;
-    user.save();
+    await user.save();
 
     return Result.ok<string>(
       200,
@@ -578,7 +587,7 @@ class UserBusiness implements IUserBusiness {
     }
     user.password = data.newPassword;
     user.passwordResetRequested = false;
-    user.save();
+    await user.save();
     return Result.ok<string>(200, "Password successfully reset");
   }
 
@@ -645,7 +654,7 @@ class UserBusiness implements IUserBusiness {
       return Result.fail<boolean>(400, "Password is incorrect.");
 
     user.password = data.newPassword;
-    user.save();
+    await user.save();
 
     return Result.ok<bool>(200, true);
   }
@@ -719,6 +728,16 @@ class UserBusiness implements IUserBusiness {
     item.roles = [...user.roles];
 
     const updateObj = await this._userRepository.update(user._id, item);
+    return Result.ok<IUserModel>(200, updateObj);
+  }
+
+  async updateUserStatus(id: string): Promise<Result<IUserModel>> {
+    const user = await this._userRepository.findById(id);
+    if (!user) return Result.fail<IUserModel>(404, "User not found");
+
+    const updateObj = await this._userRepository.patch(user._id, {
+      status: AccountStatus.SUSPENDED,
+    });
     return Result.ok<IUserModel>(200, updateObj);
   }
 

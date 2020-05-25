@@ -197,10 +197,13 @@ export class AuthController {
     try {
       const userBusiness = new UserBusiness();
       const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+      const redirectConfirmation = req.appUser
+        ? req.appUser.redirectBaseUrl.toLowerCase()
+        : "";
       const item: VerifyResetPasswordRequest = {
         email: req.body.email.toLowerCase(),
         token: req.body.token,
-        audience: audience,
+        audience,
       };
       const result = await userBusiness.verifyPasswordResetLink(item);
       if (result.error)
@@ -226,7 +229,7 @@ export class AuthController {
 
   @post("/account/password/reset/request")
   @use(requestValidator)
-  @requestValidators("email")
+  @requestValidators("email", "redirectUrl")
   async postforgotPassword(
     req: RequestWithUser,
     res: Response,
@@ -241,7 +244,7 @@ export class AuthController {
       const result = await userBusiness.forgotPassword(
         req.body.email.toLowerCase(),
         audience,
-        redirectBaseUrl
+        `${redirectBaseUrl}/${req.body.redirectUrl}`
       );
       if (result.error)
         return next(

@@ -190,7 +190,7 @@ export class ContestController {
     }
   }
 
-  @get("/contests/user")
+  @get("/user/contests")
   @use(requestValidator)
   async fetchContestListByUser(
     req: RequestWithUser,
@@ -198,8 +198,9 @@ export class ContestController {
     next: NextFunction
   ) {
     try {
+      const userId: string = req.user;
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetchContestListByUser(req.user);
+      const result = await contestBusiness.fetchContestListByUser(userId);
       if (result.error) {
         return next(
           new PlatformError({

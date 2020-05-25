@@ -25,7 +25,7 @@ const userSchema: Schema = new Schema(
     profileVisibility: { type: Boolean, default: false },
     isBounced: { type: Boolean, default: false },
     loginCount: { type: Number, default: 0 },
-    status: { type: AccountStatus, default: AccountStatus.DEFAULT },
+    status: { type: AccountStatus, default: AccountStatus.ACTIVATED },
     roles: [
       {
         type: Schema.Types.ObjectId,

@@ -93,7 +93,6 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<ContestWithEntries>(200, contestDetails);
   }
 
-  
   async fetchContestListByUser(
     userId: string
   ): Promise<Result<IUserContestListAnalysis[]>> {
@@ -102,11 +101,8 @@ class ContestBusiness implements IContestBusiness {
 
     let userContestResults: IUserContestListAnalysis[] = [];
     const userContests: IContest[] = await this._contestRepository.fetch({
-      createdBy: userId,
       paymentStatus: PaymentStatus.Completed,
     });
-
-    // console.log("contest created  by user", userContests);
 
     for (let item of userContests) {
       const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
@@ -134,10 +130,8 @@ class ContestBusiness implements IContestBusiness {
         entryCount: contestEntries.length,
         commentCount: contestEntryCommentCountMap["totalCommentCount"],
       };
-
       userContestResults = [...userContestResults, userContestResult];
     }
-
     return Result.ok<IUserContestListAnalysis[]>(200, userContestResults);
   }
 

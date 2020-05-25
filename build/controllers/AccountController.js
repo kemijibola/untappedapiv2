@@ -207,13 +207,16 @@ var AuthController = /** @class */ (function () {
     };
     AuthController.prototype.postVerifyResetPassword = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, audience, item, result, err_4;
+            var userBusiness, audience, redirectConfirmation, item, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         userBusiness = new UserBusiness_1.default();
                         audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+                        redirectConfirmation = req.appUser
+                            ? req.appUser.redirectBaseUrl.toLowerCase()
+                            : "";
                         item = {
                             email: req.body.email.toLowerCase(),
                             token: req.body.token,
@@ -254,7 +257,7 @@ var AuthController = /** @class */ (function () {
                             ? req.appUser.redirectBaseUrl.toLowerCase()
                             : "";
                         userBusiness = new UserBusiness_1.default();
-                        return [4 /*yield*/, userBusiness.forgotPassword(req.body.email.toLowerCase(), audience, redirectBaseUrl)];
+                        return [4 /*yield*/, userBusiness.forgotPassword(req.body.email.toLowerCase(), audience, redirectBaseUrl + "/" + req.body.redirectUrl)];
                     case 1:
                         result = _a.sent();
                         if (result.error)
@@ -536,7 +539,7 @@ var AuthController = /** @class */ (function () {
     __decorate([
         decorators_1.post("/account/password/reset/request"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.requestValidators("email"),
+        decorators_1.requestValidators("email", "redirectUrl"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

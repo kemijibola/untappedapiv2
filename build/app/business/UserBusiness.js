@@ -43,6 +43,7 @@ var ScheduledEmailRepository_1 = __importDefault(require("../repository/Schedule
 var RolePermissionRepository_1 = __importDefault(require("../repository/RolePermissionRepository"));
 var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
 var RefreshTokenRepository_1 = __importDefault(require("../repository/RefreshTokenRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
 var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
@@ -187,29 +188,39 @@ var UserBusiness = /** @class */ (function () {
                         user = _c.sent();
                         if (!user)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid username/password")];
-                        return [4 /*yield*/, user.comparePassword(params.password)];
+                        if (!(user.status === interfaces_1.AccountStatus.SUSPENDED)) return [3 /*break*/, 3];
+                        user.status = interfaces_1.AccountStatus.ACTIVATED;
+                        return [4 /*yield*/, user.save()];
                     case 2:
+                        _c.sent();
+                        _c.label = 3;
+                    case 3:
+                        // TODO:: ask around for what happens when an account is deleted
+                        if (user.status === interfaces_1.AccountStatus.DELETED)
+                            return [2 /*return*/, Result_1.Result.fail(401, "Invalid username/password")];
+                        return [4 /*yield*/, user.comparePassword(params.password)];
+                    case 4:
                         passwordMatched = _c.sent();
                         if (!passwordMatched)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid username/password")];
                         if (!user.isEmailConfirmed)
                             return [2 /*return*/, Result_1.Result.fail(401, "Please verify your email.")];
                         _i = 0, _a = user.roles;
-                        _c.label = 3;
-                    case 3:
-                        if (!(_i < _a.length)) return [3 /*break*/, 6];
+                        _c.label = 5;
+                    case 5:
+                        if (!(_i < _a.length)) return [3 /*break*/, 8];
                         role = _a[_i];
                         return [4 /*yield*/, this.fetchPermissionsByRole(role, user.userType)];
-                    case 4:
+                    case 6:
                         permissions = _c.sent();
                         if (permissions) {
                             (_b = this.chunkedUserPermissons).push.apply(_b, permissions);
                         }
-                        _c.label = 5;
-                    case 5:
+                        _c.label = 7;
+                    case 7:
                         _i++;
-                        return [3 /*break*/, 3];
-                    case 6:
+                        return [3 /*break*/, 5];
+                    case 8:
                         signInOptions = {
                             issuer: config.AUTH_ISSUER_SERVER,
                             audience: params.audience,
@@ -226,7 +237,7 @@ var UserBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(401, "Private Key is missing for " + this._currentAuthKey)];
                         }
                         return [4 /*yield*/, this._userTypeRepository.findById(user.userType)];
-                    case 7:
+                    case 9:
                         typeOfUser = _c.sent();
                         rfToken = Object.assign({
                             token: uuid_1.default(),
@@ -234,10 +245,10 @@ var UserBusiness = /** @class */ (function () {
                             ownerId: user._id,
                         });
                         return [4 /*yield*/, this._refreshTokenRepository.create(rfToken)];
-                    case 8:
+                    case 10:
                         newUserRefreshToken = _c.sent();
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
-                    case 9:
+                    case 11:
                         userToken = _c.sent();
                         tokenExpiration = date_fns_1.addHours(new Date(), this._authExpiration);
                         if (userToken.error)
@@ -527,7 +538,7 @@ var UserBusiness = /** @class */ (function () {
                     case 2:
                         token = _a.sent();
                         if (!token.data) return [3 /*break*/, 4];
-                        forgorPasswordEmailKeyValues = this.TokenEmailKeyValue(user.fullName, audience, redirectUrl + "?email=" + user.email + "&token=" + token.data);
+                        forgorPasswordEmailKeyValues = this.TokenEmailKeyValue(user.fullName, audience, redirectUrl + "/" + user.email + "/" + token.data);
                         forgoPasswordTemplateString = emailtemplates_1.ForgotPasswordEmail.template;
                         forgotPasswordEmailPlaceHolder = {
                             template: forgoPasswordTemplateString,
@@ -541,7 +552,9 @@ var UserBusiness = /** @class */ (function () {
                         _a.label = 4;
                     case 4:
                         user.passwordResetRequested = true;
-                        user.save();
+                        return [4 /*yield*/, user.save()];
+                    case 5:
+                        _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, "Reset password link has been sent successfully.")];
                 }
             });
@@ -623,7 +636,9 @@ var UserBusiness = /** @class */ (function () {
                         }
                         user.password = data.newPassword;
                         user.passwordResetRequested = false;
-                        user.save();
+                        return [4 /*yield*/, user.save()];
+                    case 2:
+                        _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, "Password successfully reset")];
                 }
             });
@@ -695,7 +710,9 @@ var UserBusiness = /** @class */ (function () {
                         if (!passwordMatched)
                             return [2 /*return*/, Result_1.Result.fail(400, "Password is incorrect.")];
                         user.password = data.newPassword;
-                        user.save();
+                        return [4 /*yield*/, user.save()];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
@@ -790,6 +807,26 @@ var UserBusiness = /** @class */ (function () {
                         item.status = user.status;
                         item.roles = user.roles.slice();
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.updateUserStatus = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, updateObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
+                    case 1:
+                        user = _a.sent();
+                        if (!user)
+                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
+                        return [4 /*yield*/, this._userRepository.patch(user._id, {
+                                status: interfaces_1.AccountStatus.SUSPENDED,
+                            })];
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];

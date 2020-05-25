@@ -49,7 +49,6 @@ var error_1 = require("../utils/error");
 var UserBusiness = require("../app/business/UserBusiness");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
-var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -71,58 +70,68 @@ var UserController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserController.prototype.postSuspendAccount = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, userId, currentUser, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        userBusiness = new UserBusiness();
+                        userId = req.user;
+                        return [4 /*yield*/, userBusiness.findById(req.user)];
+                    case 1:
+                        currentUser = _a.sent();
+                        if (currentUser.data) {
+                            if (userId.localeCompare(currentUser.data._id))
+                                return [2 /*return*/, next(new error_1.PlatformError({
+                                        code: 403,
+                                        message: "You are not authorized to make this request",
+                                    }))];
+                        }
+                        return [4 /*yield*/, userBusiness.updateUserStatus(req.user)];
+                    case 2:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 3:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     UserController.prototype.postUser = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, user, result, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        userBusiness = new UserBusiness();
-                        user = req.user;
-                        return [4 /*yield*/, userBusiness.patch(user, req.body)];
-                    case 1:
-                        result = _a.sent();
-                        if (result.error) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: result.error
-                                }))];
-                        }
-                        return [2 /*return*/, res.status(result.responseCode).json({
-                                message: "Operation successful",
-                                data: result.data
-                            })];
-                    case 2:
-                        err_2 = _a.sent();
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured. Please try again later."
-                            }))];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UserController.prototype.patch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var userBusiness, user, result, err_3;
             return __generator(this, function (_a) {
@@ -137,18 +146,51 @@ var UserController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserController.prototype.patch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, user, result, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness();
+                        user = req.user;
+                        return [4 /*yield*/, userBusiness.patch(user, req.body)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_4 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -163,10 +205,17 @@ var UserController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
     __decorate([
+        decorators_1.post("/suspend"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "postSuspendAccount", null);
+    __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
-        decorators_1.authorize(PermissionConstant_1.canCreateUser),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
