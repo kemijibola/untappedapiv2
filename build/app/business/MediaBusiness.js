@@ -69,7 +69,9 @@ var MediaBusiness = /** @class */ (function () {
             var portfolioPreviews, modified;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 0:
+                        console.log(condition);
+                        return [4 /*yield*/, this._mediaRepository.fetch(condition)];
                     case 1:
                         portfolioPreviews = _a.sent();
                         modified = [];
@@ -94,6 +96,7 @@ var MediaBusiness = /** @class */ (function () {
                                 return theMap;
                             }, []);
                         }
+                        console.log(modified);
                         return [2 /*return*/, Result_1.Result.ok(200, modified)];
                 }
             });

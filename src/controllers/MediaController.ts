@@ -173,6 +173,7 @@ export class MediaController {
       req.body.mediaType = mediaType;
       const newMedia: IMedia = req.body;
       newMedia.user = req.user;
+      console.log(newMedia);
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.create(newMedia);
       if (result.error) {

@@ -181,6 +181,7 @@ var MediaController = /** @class */ (function () {
                         req.body.mediaType = mediaType;
                         newMedia = req.body;
                         newMedia.user = req.user;
+                        console.log(newMedia);
                         mediaBusiness = new MediaBusiness();
                         return [4 /*yield*/, mediaBusiness.create(newMedia)];
                     case 1:

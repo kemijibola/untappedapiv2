@@ -34,6 +34,7 @@ class MediaBusiness implements IMediaBusiness {
   async fetchTalentPortfolioPreview(
     condition: any
   ): Promise<Result<TalentPortfolioPreview[]>> {
+    console.log(condition);
     const portfolioPreviews = await this._mediaRepository.fetch(condition);
     let modified: TalentPortfolioPreview[] = [];
     if (portfolioPreviews) {
@@ -62,6 +63,7 @@ class MediaBusiness implements IMediaBusiness {
         []
       );
     }
+    console.log(modified);
     return Result.ok<TalentPortfolioPreview[]>(200, modified);
   }
 
