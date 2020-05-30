@@ -117,6 +117,19 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  fetchWithLimit(condition: any, limit = 10): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .limit(limit)
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
   fetchContests(condition: any, page = 1, perPage = 10): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model

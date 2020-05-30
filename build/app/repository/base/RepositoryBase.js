@@ -125,6 +125,22 @@ var RepositoryBase = /** @class */ (function () {
                 .exec();
         });
     };
+    RepositoryBase.prototype.fetchWithLimit = function (condition, limit) {
+        var _this = this;
+        if (limit === void 0) { limit = 10; }
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .find(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            })
+                .limit(limit)
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
+        });
+    };
     RepositoryBase.prototype.fetchContests = function (condition, page, perPage) {
         var _this = this;
         if (page === void 0) { page = 1; }

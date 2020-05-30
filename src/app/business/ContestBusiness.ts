@@ -1,4 +1,8 @@
-import { IEntries } from "./../models/interfaces/Contest";
+import {
+  IEntries,
+  ContestWithEntriesPreview,
+  IContestPreview,
+} from "./../models/interfaces/Contest";
 import ContestRepository from "../repository/ContestRepository";
 import ContestEntryRepository from "../repository/ContestEntryRepository";
 import CommentRepository from "../repository/CommentRepository";
@@ -58,6 +62,38 @@ class ContestBusiness implements IContestBusiness {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Contest not found");
     return Result.ok<IContest>(200, contest);
+  }
+
+  async fetchDashboardContest(): Promise<Result<ContestWithEntriesPreview[]>> {
+    console.log("called");
+    let result: ContestWithEntriesPreview[] = [];
+
+    // get latest contests
+    // iterate each and get entries
+    const latestContests: IContest[] = await this._contestRepository.fetchWithLimit(
+      {
+        endDate: { $gte: new Date() },
+      }
+    );
+
+    for (let item of latestContests) {
+      const entries: IContestEntry[] = await this._contestEntryRepository.fetchWithUser(
+        { contest: item._id }
+      );
+      const contestPreview: IContestPreview = {
+        _id: item._id,
+        title: item.title,
+        banner: item.bannerImage || "",
+        entryCount: entries.length,
+      };
+      var contestEntry: ContestWithEntriesPreview = {
+        contest: contestPreview,
+        entries,
+      };
+      result = [...result, contestEntry];
+    }
+
+    return Result.ok<ContestWithEntriesPreview[]>(200, result);
   }
 
   async fetchContestDetailsById(

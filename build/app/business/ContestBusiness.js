@@ -96,6 +96,47 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.fetchDashboardContest = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, latestContests, _i, latestContests_1, item, entries, contestPreview, contestEntry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("called");
+                        result = [];
+                        return [4 /*yield*/, this._contestRepository.fetchWithLimit({
+                                endDate: { $gte: new Date() },
+                            })];
+                    case 1:
+                        latestContests = _a.sent();
+                        _i = 0, latestContests_1 = latestContests;
+                        _a.label = 2;
+                    case 2:
+                        if (!(_i < latestContests_1.length)) return [3 /*break*/, 5];
+                        item = latestContests_1[_i];
+                        return [4 /*yield*/, this._contestEntryRepository.fetchWithUser({ contest: item._id })];
+                    case 3:
+                        entries = _a.sent();
+                        contestPreview = {
+                            _id: item._id,
+                            title: item.title,
+                            banner: item.bannerImage || "",
+                            entryCount: entries.length,
+                        };
+                        contestEntry = {
+                            contest: contestPreview,
+                            entries: entries,
+                        };
+                        result = result.concat([contestEntry]);
+                        _a.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [2 /*return*/, Result_1.Result.ok(200, result)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.fetchContestDetailsById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var contest, entries, contestDetails, _i, entries_1, entry, entryComment, entryDetails;

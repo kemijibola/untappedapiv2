@@ -73,3 +73,14 @@ export interface IEntries {
   entry: IContestEntry;
   commentCount: number;
 }
+
+export interface ContestWithEntriesPreview {
+  contest: IContestPreview;
+  entries: IContestEntry[];
+}
+export interface IContestPreview {
+  _id: string;
+  title: string;
+  banner: string;
+  entryCount: number;
+}

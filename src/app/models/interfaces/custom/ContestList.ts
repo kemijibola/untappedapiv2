@@ -1,5 +1,4 @@
 import { IContest } from "../Contest";
-import { IContestEntry } from "../ContestEntry";
 
 export interface IContestList {
   _id: IContest["_id"];
