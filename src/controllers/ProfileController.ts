@@ -18,6 +18,7 @@ import ProfileBusiness = require("../app/business/ProfileBusiness");
 import { PlatformError } from "../utils/error";
 import { requireAuth } from "../middlewares/auth";
 import { requestValidator } from "../middlewares/ValidateRequest";
+import * as _ from "underscore";
 
 @controller("/v1/profiles")
 export class ProfileController {
@@ -137,10 +138,10 @@ export class ProfileController {
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IProfile = req.body;
-      if (req.body.userAddress.address.location)
+      if (_.has(req.body.userAddress, "address")) {
         item.location = req.body.userAddress.address.location;
-      if (req.body.userAddress.address.formattedAddres)
         item.formattedAddres = req.body.userAddress.address.formattedAddres;
+      }
       item.user = req.user;
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.create(item);
@@ -175,10 +176,10 @@ export class ProfileController {
       const item: IProfile = req.body;
       item.user = req.user;
       const id = req.params.id;
-      if (req.body.userAddress.address.location)
+      if (_.has(req.body.userAddress, "address")) {
         item.location = req.body.userAddress.address.location;
-      if (req.body.userAddress.address.formattedAddres)
         item.formattedAddres = req.body.userAddress.address.formattedAddres;
+      }
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.patch(id, item);
       if (result.error) {
@@ -194,6 +195,7 @@ export class ProfileController {
         data: result.data,
       });
     } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,

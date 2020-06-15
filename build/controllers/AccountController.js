@@ -480,6 +480,11 @@ var AuthController = /** @class */ (function () {
                             confirmationUrl: redirectConfirmation,
                             roles: [],
                         };
+                        if (signUpParams.password.length < 5)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Password is too short. Must be greater than 3.",
+                                }))];
                         userBusiness = new UserBusiness_1.default();
                         return [4 /*yield*/, userBusiness.register(signUpParams)];
                     case 1:

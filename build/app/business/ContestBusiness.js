@@ -384,7 +384,7 @@ var ContestBusiness = /** @class */ (function () {
                         return [3 /*break*/, 1];
                     case 4:
                         contestList = contestList.sort(function (a, b) {
-                            return b.entryCount - a.entryCount;
+                            return lib_1.getTime(b.endDate) - lib_1.getTime(a.endDate);
                         });
                         return [2 /*return*/, contestList];
                 }

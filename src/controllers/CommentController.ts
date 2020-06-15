@@ -20,7 +20,7 @@ export class CommentController {
   @post("/")
   @use(requireAuth)
   @use(requestValidator)
-  @requestValidators("media", "comment")
+  @requestValidators("entity", "comment")
   async create(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const item: IComment = req.body;
@@ -225,12 +225,12 @@ export class CommentController {
     }
   }
 
-  @get("/media/:id")
+  @get("/entity/:id")
   @use(requestValidator)
   async fetchPreviewList(req: Request, res: Response, next: NextFunction) {
     try {
       let condition: any = {};
-      condition.media = req.params.id;
+      condition.entity = req.params.id;
       const commentBusiness = new CommentBusiness();
       const result = await commentBusiness.fetch(condition);
 
@@ -243,7 +243,7 @@ export class CommentController {
         );
       }
       return res.status(result.responseCode).json({
-        message: "Media Operation successful",
+        message: "Operation successful",
         data: result.data,
       });
     } catch (err) {

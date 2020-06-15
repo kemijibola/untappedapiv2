@@ -488,6 +488,15 @@ export class AuthController {
         confirmationUrl: redirectConfirmation,
         roles: [],
       };
+
+      if (signUpParams.password.length < 5)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Password is too short. Must be greater than 3.",
+          })
+        );
+
       const userBusiness = new UserBusiness();
       const result = await userBusiness.register(signUpParams);
       if (result.error)

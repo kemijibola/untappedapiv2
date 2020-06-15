@@ -251,7 +251,7 @@ class ContestBusiness implements IContestBusiness {
     }
 
     contestList = contestList.sort((a, b) => {
-      return b.entryCount - a.entryCount;
+      return getTime(b.endDate) - getTime(a.endDate);
     });
 
     return contestList;

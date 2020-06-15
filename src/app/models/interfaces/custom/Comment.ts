@@ -1,6 +1,6 @@
 export interface CommentViewModel {
   _id?: string;
-  media: string;
+  entity: string;
   comment: string;
   user?: CommenterViewModel;
   replies?: ReplyViewModel[];

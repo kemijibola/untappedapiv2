@@ -71,15 +71,15 @@ class ContestBusiness implements IContestEntryBusiness {
     contestId: string,
     userId: string
   ): Promise<Result<ContestEligibilityData>> {
-    let isEligible = true;
+    //let isEligible = true;
     let eligibleCategoriesMap: ObjectKeyString = {};
     let eligibilityData: ContestEligibilityData = {
       status: true,
       eligibility: EligibilityStatus.eligible,
       message: "",
     };
+
     const contest = await this._contestRepository.findById(contestId);
-    console.log(contest);
     if (!contest) Result.fail<IContestEntry>(404, "Contest not found");
 
     const contestantProfile = await this._profileRepository.findByCriteria({
@@ -94,8 +94,19 @@ class ContestBusiness implements IContestEntryBusiness {
       name: "Talent",
     });
 
-    if (contestant.userType !== userType._id)
-      Result.fail<IContestEntry>(400, "User is not registered as a Talent");
+    if (contestant.userType != userType._id.toString()) {
+      eligibilityData.status = false;
+      eligibilityData.eligibility = EligibilityStatus.noteligible;
+      eligibilityData.message = "User is not registered as a Talent";
+      return Result.ok<ContestEligibilityData>(200, eligibilityData);
+    }
+    // Result.fail<IContestEntry>(400, "User is not registered as a Talent");
+
+    // if (!contestant.isProfileCompleted)
+    //   Result.fail<IContestEntry>(
+    //     400,
+    //     "Please complete your profile before you proceed"
+    //   );
 
     const alreadyVoted = await this._contestEntryRepository.findByCriteria({
       user: contestant._id,
@@ -190,6 +201,13 @@ class ContestBusiness implements IContestEntryBusiness {
     const contestant = await this._userRepository.findById(item.user);
     if (!contestant)
       return Result.fail<IContestEntry>(404, "Contestant not found");
+
+    if (!contestant.isProfileCompleted)
+      return Result.fail<IContestEntry>(
+        400,
+        "Please complete your profile before proceeding"
+      );
+
     const alreadyVoted = await this._contestRepository.findByCriteria({
       user: contestant._id,
       contest: contest._id,
@@ -200,6 +218,17 @@ class ContestBusiness implements IContestEntryBusiness {
         "Contestant has already entered competition."
       );
     }
+
+    const userType = await this._userTypeRepository.findByCriteria({
+      name: "Talent",
+    });
+
+    if (contestant.userType != userType._id.toString())
+      return Result.fail<IContestEntry>(
+        400,
+        "User is not registered as a Talent"
+      );
+
     let codeHasBeenAssigned = true;
     if (!contest) return Result.fail<IContestEntry>(404, "Contest not found");
     let contestantCode = "";

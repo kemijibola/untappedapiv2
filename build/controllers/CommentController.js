@@ -249,7 +249,7 @@ var CommentController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         condition = {};
-                        condition.media = req.params.id;
+                        condition.entity = req.params.id;
                         commentBusiness = new CommentBusiness();
                         return [4 /*yield*/, commentBusiness.fetch(condition)];
                     case 1:
@@ -261,7 +261,7 @@ var CommentController = /** @class */ (function () {
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
-                                message: "Media Operation successful",
+                                message: "Operation successful",
                                 data: result.data,
                             })];
                     case 2:
@@ -280,7 +280,7 @@ var CommentController = /** @class */ (function () {
         decorators_1.post("/"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.requestValidators("media", "comment"),
+        decorators_1.requestValidators("entity", "comment"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
@@ -310,7 +310,7 @@ var CommentController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CommentController.prototype, "postCommentLike", null);
     __decorate([
-        decorators_1.get("/media/:id"),
+        decorators_1.get("/entity/:id"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

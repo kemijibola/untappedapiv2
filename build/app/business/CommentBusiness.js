@@ -123,7 +123,7 @@ var CommentBusiness = /** @class */ (function () {
                         likedBy = [];
                         commentObj = {
                             _id: newComment._id,
-                            media: newComment.entity,
+                            entity: newComment.entity,
                             comment: newComment.comment,
                             user: {
                                 _id: userDetails._id,
@@ -215,7 +215,7 @@ var CommentBusiness = /** @class */ (function () {
                     case 11:
                         commentObj = {
                             _id: updateObj._id,
-                            media: updateObj.entity,
+                            entity: updateObj.entity,
                             comment: updateObj.comment,
                             user: {
                                 _id: commenterDetails._id,

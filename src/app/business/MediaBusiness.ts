@@ -2,6 +2,7 @@ import {
   IMediaItem,
   MediaPreview,
   TalentPortfolioPreview,
+  MediaType,
 } from "./../models/interfaces/Media";
 import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
@@ -76,13 +77,20 @@ class MediaBusiness implements IMediaBusiness {
           const items = [
             ...theItem.items.filter((x) => !x.isDeleted && x.isApproved),
           ];
+          let albumCover = "";
           if (items.length > 0) {
+            if (theItem.mediaType === MediaType.video) {
+              albumCover = theItem.albumCover || "";
+            }
+            if (theItem.mediaType === MediaType.image) {
+              albumCover = theItem.items[0].path;
+            }
             theMap.push({
               _id: theItem._id,
               title: theItem.title,
               mediaType: theItem.mediaType,
               uploadType: theItem.uploadType,
-              defaultMediaPath: items.length > 0 ? items[0].path : "",
+              defaultMediaPath: albumCover || "",
               shortDescription: theItem.shortDescription,
               itemCount: items.length,
             });

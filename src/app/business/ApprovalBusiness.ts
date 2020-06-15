@@ -12,7 +12,7 @@ class ApprovalBusiness implements IApprovalBusiness {
     this._approvalRepository = new ApprovalRepository();
     this._approvalOperationRepository = new ApprovalOperationRepository();
   }
-
+  
   async fetch(condition: any): Promise<Result<IApproval[]>> {
     const approvals = await this._approvalRepository.fetch(condition);
     return Result.ok<IApproval[]>(200, approvals);

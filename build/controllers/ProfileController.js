@@ -43,12 +43,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var ProfileBusiness = require("../app/business/ProfileBusiness");
 var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var _ = __importStar(require("underscore"));
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
@@ -177,10 +185,10 @@ var ProfileController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        if (req.body.userAddress.address.location)
+                        if (_.has(req.body.userAddress, "address")) {
                             item.location = req.body.userAddress.address.location;
-                        if (req.body.userAddress.address.formattedAddres)
                             item.formattedAddres = req.body.userAddress.address.formattedAddres;
+                        }
                         item.user = req.user;
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.create(item)];
@@ -218,10 +226,10 @@ var ProfileController = /** @class */ (function () {
                         item = req.body;
                         item.user = req.user;
                         id = req.params.id;
-                        if (req.body.userAddress.address.location)
+                        if (_.has(req.body.userAddress, "address")) {
                             item.location = req.body.userAddress.address.location;
-                        if (req.body.userAddress.address.formattedAddres)
                             item.formattedAddres = req.body.userAddress.address.formattedAddres;
+                        }
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.patch(id, item)];
                     case 1:
@@ -238,6 +246,7 @@ var ProfileController = /** @class */ (function () {
                             })];
                     case 2:
                         err_5 = _a.sent();
+                        console.log(err_5);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again.",

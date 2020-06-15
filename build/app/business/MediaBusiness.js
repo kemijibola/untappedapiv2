@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var Media_1 = require("./../models/interfaces/Media");
 var MediaRepository_1 = __importDefault(require("../repository/MediaRepository"));
 var Result_1 = require("../../utils/Result");
 var MediaBusiness = /** @class */ (function () {
@@ -114,13 +115,20 @@ var MediaBusiness = /** @class */ (function () {
                         if (mediaPreviews) {
                             modified = mediaPreviews.reduce(function (theMap, theItem) {
                                 var items = theItem.items.filter(function (x) { return !x.isDeleted && x.isApproved; }).slice();
+                                var albumCover = "";
                                 if (items.length > 0) {
+                                    if (theItem.mediaType === Media_1.MediaType.video) {
+                                        albumCover = theItem.albumCover || "";
+                                    }
+                                    if (theItem.mediaType === Media_1.MediaType.image) {
+                                        albumCover = theItem.items[0].path;
+                                    }
                                     theMap.push({
                                         _id: theItem._id,
                                         title: theItem.title,
                                         mediaType: theItem.mediaType,
                                         uploadType: theItem.uploadType,
-                                        defaultMediaPath: items.length > 0 ? items[0].path : "",
+                                        defaultMediaPath: albumCover || "",
                                         shortDescription: theItem.shortDescription,
                                         itemCount: items.length,
                                     });

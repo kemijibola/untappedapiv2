@@ -55,7 +55,7 @@ class CommentBusiness implements ICommentBusiness {
 
     const commentObj: CommentViewModel = {
       _id: newComment._id,
-      media: newComment.entity,
+      entity: newComment.entity,
       comment: newComment.comment,
       user: {
         _id: userDetails._id,
@@ -134,7 +134,7 @@ class CommentBusiness implements ICommentBusiness {
 
     const commentObj: CommentViewModel = {
       _id: updateObj._id,
-      media: updateObj.entity,
+      entity: updateObj.entity,
       comment: updateObj.comment,
       user: {
         _id: commenterDetails._id,

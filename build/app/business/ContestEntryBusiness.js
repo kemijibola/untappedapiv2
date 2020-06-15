@@ -121,11 +121,10 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.checkUserEligibility = function (contestId, userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var isEligible, eligibleCategoriesMap, eligibilityData, contest, contestantProfile, contestant, userType, alreadyVoted, eligibleCategories, contestantCategories, _i, eligibleCategories_1, item, talentIsEligible;
+            var eligibleCategoriesMap, eligibilityData, contest, contestantProfile, contestant, userType, alreadyVoted, eligibleCategories, contestantCategories, _i, eligibleCategories_1, item, talentIsEligible;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        isEligible = true;
                         eligibleCategoriesMap = {};
                         eligibilityData = {
                             status: true,
@@ -135,7 +134,6 @@ var ContestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._contestRepository.findById(contestId)];
                     case 1:
                         contest = _a.sent();
-                        console.log(contest);
                         if (!contest)
                             Result_1.Result.fail(404, "Contest not found");
                         return [4 /*yield*/, this._profileRepository.findByCriteria({
@@ -153,8 +151,12 @@ var ContestBusiness = /** @class */ (function () {
                             })];
                     case 4:
                         userType = _a.sent();
-                        if (contestant.userType !== userType._id)
-                            Result_1.Result.fail(400, "User is not registered as a Talent");
+                        if (contestant.userType != userType._id.toString()) {
+                            eligibilityData.status = false;
+                            eligibilityData.eligibility = interfaces_1.EligibilityStatus.noteligible;
+                            eligibilityData.message = "User is not registered as a Talent";
+                            return [2 /*return*/, Result_1.Result.ok(200, eligibilityData)];
+                        }
                         return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
                                 user: contestant._id,
                                 contest: contest._id,
@@ -250,7 +252,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, contestant, alreadyVoted, codeHasBeenAssigned, contestantCode, contestCode, newContestEntry;
+            var contest, contestant, alreadyVoted, userType, codeHasBeenAssigned, contestantCode, contestCode, newContestEntry;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._contestRepository.findById(item.contest)];
@@ -261,6 +263,8 @@ var ContestBusiness = /** @class */ (function () {
                         contestant = _a.sent();
                         if (!contestant)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contestant not found")];
+                        if (!contestant.isProfileCompleted)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please complete your profile before proceeding")];
                         return [4 /*yield*/, this._contestRepository.findByCriteria({
                                 user: contestant._id,
                                 contest: contest._id,
@@ -270,29 +274,36 @@ var ContestBusiness = /** @class */ (function () {
                         if (alreadyVoted) {
                             Result_1.Result.fail(409, "Contestant has already entered competition.");
                         }
+                        return [4 /*yield*/, this._userTypeRepository.findByCriteria({
+                                name: "Talent",
+                            })];
+                    case 4:
+                        userType = _a.sent();
+                        if (contestant.userType != userType._id.toString())
+                            return [2 /*return*/, Result_1.Result.fail(400, "User is not registered as a Talent")];
                         codeHasBeenAssigned = true;
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         contestantCode = "";
-                        _a.label = 4;
-                    case 4:
-                        if (!codeHasBeenAssigned) return [3 /*break*/, 6];
+                        _a.label = 5;
+                    case 5:
+                        if (!codeHasBeenAssigned) return [3 /*break*/, 7];
                         contestantCode = ("" + contestant.fullName.substring(0, 2) + lib_1.generateRandomNumber(2)).toUpperCase();
                         return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
                                 contest: contest._id,
                                 contestantCode: contestantCode,
                             })];
-                    case 5:
+                    case 6:
                         contestCode = _a.sent();
                         if (contestCode)
                             codeHasBeenAssigned = true;
                         else
                             codeHasBeenAssigned = false;
-                        return [3 /*break*/, 4];
-                    case 6:
+                        return [3 /*break*/, 5];
+                    case 7:
                         item.contestantCode = contestantCode;
                         return [4 /*yield*/, this._contestEntryRepository.create(item)];
-                    case 7:
+                    case 8:
                         newContestEntry = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newContestEntry)];
                 }
