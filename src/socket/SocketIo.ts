@@ -1,23 +1,27 @@
-import express, { Express } from 'express';
-import { createServer, Server } from 'http';
-import socketIo from 'socket.io';
+// import * as http from "http";
+// import * as WebSocket from "ws";
+// import express, { Express } from "express";
 
-export class SocketIo {
-  private static instance: socketIo.Server;
-  private static server: Server;
+// class WebSocketIoServer {
+//   server: any;
+//   wws: any;
+//   constructor(app: Express) {
+//     this.server = http.createServer(app);
+//     const wss = new WebSocket.Server({ server: this.server });
+//   }
 
-  constructor() {
-    // SocketIo.getInstance;
-  }
-  static setUpApp(app: Express) {
-    this.server = createServer(app);
-  }
+//   listen(): socketIo.Server {
+//     const server = createServer(this.app);
+//     return socketIo(server);
+//   }
 
-  static get getInstance(): socketIo.Server {
-    if (!SocketIo.instance) {
-      SocketIo.instance = socketIo(this.server);
-    }
-    console.log(this.instance);
-    return SocketIo.instance;
-  }
-}
+//   static initialize() {
+//     if (this.wws) {
+//       return this.wws;
+//     }
+
+//   }
+// }
+
+// Object.seal(SocketIoServer);
+// export = SocketIoServer;

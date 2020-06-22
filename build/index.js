@@ -11,9 +11,10 @@ var config = module.require("./config/keys");
 var ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 var cors_1 = __importDefault(require("cors"));
 // import SocketIo = require('./socket/SocketIo');
-var SocketIo_1 = require("./socket/SocketIo");
 var CronJob_1 = require("./utils/CronJob");
+var VoteSocketServer_1 = __importDefault(require("./socket/VoteSocketServer"));
 var app = express_1.default();
+VoteSocketServer_1.default.setUpWs(app);
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(cors_1.default());
@@ -34,6 +35,5 @@ app.set("port", port);
 CronJob_1.userFilterJob();
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
-    SocketIo_1.SocketIo.setUpApp(app);
 });
 //# sourceMappingURL=index.js.map

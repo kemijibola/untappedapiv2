@@ -257,7 +257,7 @@ var CommentController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured, " + result.error,
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({

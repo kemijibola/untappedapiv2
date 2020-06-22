@@ -15,13 +15,14 @@ const voteTransactionSchema: Schema = new Schema(
     },
     phone: {
       type: String,
-      required: true,
     },
     network: {
       type: String,
-      required: true,
     },
     shortcode: {
+      type: String,
+    },
+    contestId: {
       type: String,
     },
     contestantCode: {

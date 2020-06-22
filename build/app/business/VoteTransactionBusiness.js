@@ -38,10 +38,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var VoteTransactionRepository_1 = __importDefault(require("../repository/VoteTransactionRepository"));
+var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
+var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
+var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
+var date_fns_1 = require("date-fns");
 var VoteTransactionBusiness = /** @class */ (function () {
     function VoteTransactionBusiness() {
         this._voteTransactionRepository = new VoteTransactionRepository_1.default();
+        this._contestRepository = new ContestRepository_1.default();
+        this._contestEntryRepository = new ContestEntryRepository_1.default();
     }
     VoteTransactionBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -103,6 +109,68 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         if (!voteTransaction)
                             return [2 /*return*/, Result_1.Result.fail(404, "Vote not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, voteTransaction)];
+                }
+            });
+        });
+    };
+    VoteTransactionBusiness.prototype.fetchContestantVoteCount = function (contest, contestantCode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var votes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._voteTransactionRepository.fetch({
+                            contestantCode: contestantCode,
+                            contestId: contest,
+                            voteStatus: interfaces_1.VoteStatus.valid,
+                        })];
+                    case 1:
+                        votes = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, votes.length)];
+                }
+            });
+        });
+    };
+    VoteTransactionBusiness.prototype.createSMSVote = function (item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntry, newVote_1, contest, newVote_2, newVote_3, newVote;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                            contestantCode: item.contestantCode,
+                        })];
+                    case 1:
+                        contestEntry = _a.sent();
+                        if (!!contestEntry) return [3 /*break*/, 3];
+                        item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        return [4 /*yield*/, this._voteTransactionRepository.create(item)];
+                    case 2:
+                        newVote_1 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newVote_1)];
+                    case 3:
+                        item.contestId = contestEntry.contest;
+                        return [4 /*yield*/, this._contestRepository.findById(item.contestId)];
+                    case 4:
+                        contest = _a.sent();
+                        if (!!contest) return [3 /*break*/, 6];
+                        item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        return [4 /*yield*/, this._voteTransactionRepository.create(item)];
+                    case 5:
+                        newVote_2 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newVote_2)];
+                    case 6:
+                        if (!contest) return [3 /*break*/, 8];
+                        if (!date_fns_1.isAfter(Date.now(), contest.endDate)) return [3 /*break*/, 8];
+                        item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        return [4 /*yield*/, this._voteTransactionRepository.create(item)];
+                    case 7:
+                        newVote_3 = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newVote_3)];
+                    case 8:
+                        item.voteStatus = interfaces_1.VoteStatus.valid;
+                        return [4 /*yield*/, this._voteTransactionRepository.create(item)];
+                    case 9:
+                        newVote = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(201, newVote)];
                 }
             });
         });

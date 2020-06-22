@@ -1,29 +1,24 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var http_1 = require("http");
-var socket_io_1 = __importDefault(require("socket.io"));
-var SocketIo = /** @class */ (function () {
-    function SocketIo() {
-        // SocketIo.getInstance;
-    }
-    SocketIo.setUpApp = function (app) {
-        this.server = http_1.createServer(app);
-    };
-    Object.defineProperty(SocketIo, "getInstance", {
-        get: function () {
-            if (!SocketIo.instance) {
-                SocketIo.instance = socket_io_1.default(this.server);
-            }
-            console.log(this.instance);
-            return SocketIo.instance;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return SocketIo;
-}());
-exports.SocketIo = SocketIo;
+// import * as http from "http";
+// import * as WebSocket from "ws";
+// import express, { Express } from "express";
+// class WebSocketIoServer {
+//   server: any;
+//   wws: any;
+//   constructor(app: Express) {
+//     this.server = http.createServer(app);
+//     const wss = new WebSocket.Server({ server: this.server });
+//   }
+//   listen(): socketIo.Server {
+//     const server = createServer(this.app);
+//     return socketIo(server);
+//   }
+//   static initialize() {
+//     if (this.wws) {
+//       return this.wws;
+//     }
+//   }
+// }
+// Object.seal(SocketIoServer);
+// export = SocketIoServer;
 //# sourceMappingURL=SocketIo.js.map

@@ -238,7 +238,7 @@ export class CommentController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured, ${result.error}`,
+            message: result.error,
           })
         );
       }

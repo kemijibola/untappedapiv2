@@ -12,10 +12,14 @@ import { errorHandler } from "./middlewares/ErrorMiddleware";
 import { IError } from "./utils/error/GlobalError";
 import cors from "cors";
 // import SocketIo = require('./socket/SocketIo');
-import { SocketIo } from "./socket/SocketIo";
 import { userFilterJob } from "./utils/CronJob";
 
+import { createServer, Server } from "http";
+import socketIo from "socket.io";
+import VoteSocketServer from "./socket/VoteSocketServer";
 const app = express();
+
+VoteSocketServer.setUpWs(app);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -47,5 +51,4 @@ userFilterJob();
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);
-  SocketIo.setUpApp(app);
 });

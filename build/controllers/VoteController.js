@@ -48,12 +48,83 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var interfaces_1 = require("../app/models/interfaces");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
+var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var VoteController = /** @class */ (function () {
     function VoteController() {
     }
+    VoteController.prototype.fetchContestantVotes = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestantCode, contestId, voteBusiness, result, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        contestantCode = req.params.code;
+                        contestId = req.params.contestId;
+                        voteBusiness = new VoteTransactionBusiness();
+                        return [4 /*yield*/, voteBusiness.fetch({ contestantCode: contestantCode, contestId: contestId })];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    VoteController.prototype.fetchContestantVoteCount = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestantCode, contestId, voteBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        contestantCode = req.params.code;
+                        contestId = req.params.contestId;
+                        voteBusiness = new VoteTransactionBusiness();
+                        return [4 /*yield*/, voteBusiness.fetchContestantVoteCount(contestantCode, contestId)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     VoteController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, voteBusiness, result, err_1;
+            var item, voteBusiness, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -70,10 +141,9 @@ var VoteController = /** @class */ (function () {
                             shortcode: req.body.shortcode,
                             contestantCode: req.body.message,
                             channelType: interfaces_1.ChannelType.sms,
-                            voteStatus: interfaces_1.VoteStatus.valid,
                         });
                         voteBusiness = new VoteTransactionBusiness();
-                        return [4 /*yield*/, voteBusiness.create(item)];
+                        return [4 /*yield*/, voteBusiness.createSMSVote(item)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -87,7 +157,7 @@ var VoteController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_1 = _a.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -97,6 +167,20 @@ var VoteController = /** @class */ (function () {
             });
         });
     };
+    __decorate([
+        decorators_1.get("/contest/:contestId/contestant/:code"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], VoteController.prototype, "fetchContestantVotes", null);
+    __decorate([
+        decorators_1.get("/count/:contestId/:contestantCode"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], VoteController.prototype, "fetchContestantVoteCount", null);
     __decorate([
         decorators_1.post("/"),
         decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),

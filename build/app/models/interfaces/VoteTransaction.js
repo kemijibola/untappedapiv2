@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ChannelType;
 (function (ChannelType) {
     ChannelType["sms"] = "sms";
-    ChannelType["web"] = "web";
-    ChannelType["mobile"] = "mobile";
+    ChannelType["online"] = "online";
 })(ChannelType = exports.ChannelType || (exports.ChannelType = {}));
 var VoteStatus;
 (function (VoteStatus) {

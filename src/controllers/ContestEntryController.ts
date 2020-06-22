@@ -93,8 +93,6 @@ export class ContestEntryController {
     }
   }
 
-
-
   @post("/")
   @use(requestValidator)
   @use(requireAuth)

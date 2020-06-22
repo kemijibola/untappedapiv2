@@ -4,8 +4,7 @@ import { IAppSpec } from "./AppSpec";
 
 export enum ChannelType {
   sms = "sms",
-  web = "web",
-  mobile = "mobile",
+  online = "online",
 }
 
 export enum VoteStatus {
@@ -20,6 +19,7 @@ export interface VoteTransaction
   channelId: string;
   phone: string;
   network: string;
+  contestId: string;
   shortcode: number;
   contestantCode: string;
   channelType: ChannelType;
