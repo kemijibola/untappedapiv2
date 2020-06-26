@@ -1,5 +1,25 @@
 import { IContest } from "../Contest";
 
+export interface IContestContestant {
+  entryId: string;
+  contestantName: string;
+  contestantPhoto: string;
+  contestantCode: string;
+  contestantTotalVote: number;
+}
+
+export interface ContestVoteResult {
+  contestId: string;
+  contestPhoto: string;
+  contestHasEnded: boolean;
+  contestTitle: string;
+  contestStartDate: Date;
+  contestDuration: string;
+  contestTotalVote: number;
+  contestTotalValidVote: number;
+  contestTotalInvalidVote: number;
+  entries: IContestContestant[];
+}
 export interface IContestList {
   _id: IContest["_id"];
   title: string;

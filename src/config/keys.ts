@@ -1,5 +1,5 @@
 import { Environment } from "../app/models/interfaces/custom/Environment";
-// import * as development from "./development.json";
+import * as development from "./development.json";
 // import * as ci from "./ci.json";
 // import * as production from "./production.json";
 
@@ -108,10 +108,17 @@ switch (environment) {
       PAYMENT_SECRETS: {
         paystack_secret: process.env.PAYSTACK_SECRET_KEY,
       },
+      PUSHER: {
+        channel: process.env.PUSHER_CHANNEL,
+        app_id: process.env.PUSHER_APP_ID,
+        key: process.env.PUSHER_KEY,
+        secret: process.env.PUSHER_SECRET,
+        cluster: process.env.PUSHER_CLUSTER,
+      },
     };
     break;
   default:
-    // Object.seal(development);
-    // module.exports = development;
+    Object.seal(development);
+    module.exports = development;
     break;
 }

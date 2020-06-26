@@ -34,26 +34,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var http_1 = require("http");
-var socket_io_1 = __importDefault(require("socket.io"));
+Object.defineProperty(exports, "__esModule", { value: true });
+var SocketServer_1 = require("./SocketServer");
 var AppConfig_1 = require("../app/models/interfaces/custom/AppConfig");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
 var VoteSocketServer = /** @class */ (function () {
-    function VoteSocketServer(app) {
-        this._voteBusiness = new VoteTransactionBusiness();
-        this.server = http_1.createServer(app);
-        this.io = socket_io_1.default(this.server);
-        this.listen();
+    function VoteSocketServer() {
     }
-    VoteSocketServer.setUpWs = function (app) {
-        return new VoteSocketServer(app);
-    };
-    VoteSocketServer.prototype.listen = function () {
+    VoteSocketServer.listen = function () {
         var _this = this;
-        this.io.on("connection", function (socket) {
+        this.socketServer = SocketServer_1.SocketServer.getSocketInstance;
+        this._voteBusiness = new VoteTransactionBusiness();
+        this.socketServer.on("connection", function (socket) {
+            console.log("Made socket connection");
+            console.log(socket);
             socket.on(AppConfig_1.VoteEvent.GET_VOTE_COUNT, function (data) { return __awaiter(_this, void 0, void 0, function () {
                 var voteCountObj, result, e_1;
                 return __generator(this, function (_a) {
@@ -64,7 +58,7 @@ var VoteSocketServer = /** @class */ (function () {
                             return [4 /*yield*/, this._voteBusiness.fetchContestantVoteCount(voteCountObj["contestId"], voteCountObj["contestantCode"])];
                         case 1:
                             result = _a.sent();
-                            this.io.emit(AppConfig_1.VoteEvent.USER_TOTAL_VOTE, JSON.stringify(result.data));
+                            this.socketServer.emit(AppConfig_1.VoteEvent.USER_TOTAL_VOTE, JSON.stringify(result.data));
                             return [3 /*break*/, 3];
                         case 2:
                             e_1 = _a.sent();
@@ -74,17 +68,18 @@ var VoteSocketServer = /** @class */ (function () {
                     }
                 });
             }); });
-            socket.on(AppConfig_1.VoteEvent.INITIAL_DATA, function (data) { return __awaiter(_this, void 0, void 0, function () {
-                var voteCountObj, result, e_2;
+            socket.on(AppConfig_1.VoteEvent.GET_VOTE_RESULT, function (data) { return __awaiter(_this, void 0, void 0, function () {
+                var contest, result, e_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            voteCountObj = JSON.parse(data);
-                            return [4 /*yield*/, this._voteBusiness.fetchContestantVoteCount(voteCountObj["contestId"], voteCountObj["contestantCode"])];
+                            console.log(data);
+                            contest = JSON.parse(data);
+                            return [4 /*yield*/, this._voteBusiness.FetchContestEntries(contest)];
                         case 1:
                             result = _a.sent();
-                            this.io.emit(AppConfig_1.VoteEvent.GET_VOTES, JSON.stringify(result.data));
+                            this.socketServer.emit(AppConfig_1.VoteEvent.VOTE_RESULT, JSON.stringify(result));
                             return [3 /*break*/, 3];
                         case 2:
                             e_2 = _a.sent();
@@ -94,6 +89,17 @@ var VoteSocketServer = /** @class */ (function () {
                     }
                 });
             }); });
+            socket.on(AppConfig_1.VoteEvent.INITIAL_DATA, function (data) { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    try {
+                        console.log("vote socket server called", data);
+                    }
+                    catch (e) {
+                        console.error(e.message);
+                    }
+                    return [2 /*return*/];
+                });
+            }); });
             socket.on("disconnect", function () {
                 console.log("user disconnected");
             });
@@ -101,6 +107,5 @@ var VoteSocketServer = /** @class */ (function () {
     };
     return VoteSocketServer;
 }());
-Object.seal(VoteSocketServer);
-module.exports = VoteSocketServer;
+exports.VoteSocketServer = VoteSocketServer;
 //# sourceMappingURL=VoteSocketServer.js.map

@@ -43,8 +43,13 @@ var Result_1 = require("../../utils/Result");
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
 var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
 var date_fns_1 = require("date-fns");
+var PusherHelper = require("../../utils/wrappers/Pusher");
+var AppConfig_1 = require("../../app/models/interfaces/custom/AppConfig");
+var config = module.require("../../config/keys");
+var date_fns_2 = require("date-fns");
 var VoteTransactionBusiness = /** @class */ (function () {
     function VoteTransactionBusiness() {
+        this.publisher = PusherHelper.init();
         this._voteTransactionRepository = new VoteTransactionRepository_1.default();
         this._contestRepository = new ContestRepository_1.default();
         this._contestEntryRepository = new ContestEntryRepository_1.default();
@@ -164,12 +169,14 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 7:
                         newVote_3 = _a.sent();
+                        this.FetchContestResult(contest);
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_3)];
                     case 8:
                         item.voteStatus = interfaces_1.VoteStatus.valid;
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 9:
                         newVote = _a.sent();
+                        this.FetchContestResult(contest);
                         return [2 /*return*/, Result_1.Result.ok(201, newVote)];
                 }
             });
@@ -218,6 +225,73 @@ var VoteTransactionBusiness = /** @class */ (function () {
                 }
             });
         });
+    };
+    VoteTransactionBusiness.prototype.FetchContestResult = function (contest) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, contestTotalVote, contestTotalValidVote, contestTotalInvalidVote, contestEntries, _i, contestEntries_1, item, entryVoteCount, entry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        result = {
+                            contestId: contest._id,
+                            contestPhoto: contest.bannerImage || "",
+                            contestTitle: contest.title,
+                            contestStartDate: contest.startDate,
+                            contestDuration: date_fns_2.distanceInWordsStrict(contest.endDate, contest.startDate),
+                            contestTotalVote: 0,
+                            contestTotalValidVote: 0,
+                            contestTotalInvalidVote: 0,
+                            entries: [],
+                        };
+                        return [4 /*yield*/, this._voteTransactionRepository.fetch({
+                                contestId: contest._id,
+                            })];
+                    case 1:
+                        contestTotalVote = _a.sent();
+                        contestTotalValidVote = contestTotalVote.filter(function (x) { return x.voteStatus === interfaces_1.VoteStatus.valid; });
+                        contestTotalInvalidVote = contestTotalVote.filter(function (x) { return x.voteStatus === interfaces_1.VoteStatus.invalid; });
+                        result.contestTotalVote = contestTotalVote.length || 0;
+                        result.contestTotalValidVote = contestTotalValidVote.length;
+                        result.contestTotalInvalidVote = contestTotalInvalidVote.length;
+                        return [4 /*yield*/, this._contestEntryRepository.fetchWithUserDetails({
+                                contest: contest._id,
+                            })];
+                    case 2:
+                        contestEntries = _a.sent();
+                        _i = 0, contestEntries_1 = contestEntries;
+                        _a.label = 3;
+                    case 3:
+                        if (!(_i < contestEntries_1.length)) return [3 /*break*/, 6];
+                        item = contestEntries_1[_i];
+                        return [4 /*yield*/, this._voteTransactionRepository.fetch({
+                                contestId: contest._id,
+                                contestantCode: item.contestantCode,
+                                voteStatus: interfaces_1.VoteStatus.valid,
+                            })];
+                    case 4:
+                        entryVoteCount = _a.sent();
+                        entry = {
+                            entryId: item._id,
+                            contestantName: item.user.fullName,
+                            contestantPhoto: item.user.profileImagePath || "",
+                            contestantCode: item.contestantCode,
+                            contestantTotalVote: entryVoteCount.length,
+                        };
+                        result.entries = result.entries.concat([entry]);
+                        _a.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6:
+                        this.publishData(result);
+                        return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    VoteTransactionBusiness.prototype.publishData = function (data) {
+        var stringified = JSON.stringify(data);
+        this.publisher.publish(config.PUSHER.channel, AppConfig_1.VoteEvent.VOTE_RESULT, stringified);
     };
     return VoteTransactionBusiness;
 }());

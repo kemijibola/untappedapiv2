@@ -28,6 +28,7 @@ export interface AppConfig {
   AUTH_ISSUER_SERVER: string;
   VERIFICATION_URI: string;
   PAYMENT_SECRETS: PaymentGate;
+  PUSHER: Pusher;
 }
 
 export interface PaymentGate {
@@ -65,6 +66,14 @@ export interface ScheduledEmailSQS {
   url: string;
   queueName: string;
 }
+
+export interface Pusher {
+  channel: string;
+  app_id: string;
+  key: string;
+  secret: string;
+  cluster: string;
+}
 export interface Serverless {
   access_key_id: string;
   secret_access_key: string;
@@ -80,7 +89,8 @@ export interface SqsConfig {
 export const VoteEvent = {
   INITIAL_DATA: "INITIAL_DATA",
   PUT_SMS_VOTE: "PUT_VOTE",
-  GET_VOTES: "GET_VOTES",
+  GET_VOTE_RESULT: "GET_VOTE_RESULT",
+  VOTE_RESULT: "VOTE_RESULT",
   GET_VOTE_COUNT: "GET_VOTE_COUNT",
   MESSAGE: "MESSAGE",
   USER_TOTAL_VOTE: "USER_TOTAL_VOTE",

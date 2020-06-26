@@ -62,25 +62,26 @@ var UserTypeController = /** @class */ (function () {
                         userTypeBusiness = new UserTypeBusiness();
                         return [4 /*yield*/, userTypeBusiness.fetch({
                                 isActive: true,
-                                isAdmin: false
+                                isAdmin: false,
                             })];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
+                        console.log(err_1);
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again."
+                                message: "Internal Server error occured. Please try again.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -102,18 +103,18 @@ var UserTypeController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -139,7 +140,8 @@ var UserTypeController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], UserTypeController.prototype, "create", null);
     UserTypeController = __decorate([
-        decorators_1.controller("/v1/user-types")
+        decorators_1.controller("/v1/user-types"),
+        __metadata("design:paramtypes", [])
     ], UserTypeController);
     return UserTypeController;
 }());

@@ -49,82 +49,119 @@ var decorators_1 = require("../decorators");
 var interfaces_1 = require("../app/models/interfaces");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var ContestBusiness = require("../app/business/ContestBusiness");
 var VoteController = /** @class */ (function () {
     function VoteController() {
     }
-    VoteController.prototype.fetchContestantVotes = function (req, res, next) {
+    // @get("/contest/:contestId/contestant/:code")
+    // @use(requestValidator)
+    // async fetchContestantVotes(req: Request, res: Response, next: NextFunction) {
+    //   try {
+    //     const contestantCode: string = req.params.code;
+    //     const contestId: string = req.params.contestId;
+    //     const voteBusiness = new VoteTransactionBusiness();
+    //     const result = await voteBusiness.fetch({ contestantCode, contestId });
+    //     if (result.error) {
+    //       return next(
+    //         new PlatformError({
+    //           code: result.responseCode,
+    //           message: result.error,
+    //         })
+    //       );
+    //     }
+    //     return res.status(200).json({
+    //       message: "Operation successful",
+    //       data: result.data,
+    //     });
+    //   } catch (err) {
+    //     console.log(err);
+    //     return next(
+    //       new PlatformError({
+    //         code: 500,
+    //         message: "Internal Server error occured. Please try again later.",
+    //       })
+    //     );
+    //   }
+    // }
+    // @get("/count/:contestId/:contestantCode")
+    // @use(requestValidator)
+    // async fetchContestantVoteCount(
+    //   req: Request,
+    //   res: Response,
+    //   next: NextFunction
+    // ) {
+    //   try {
+    //     const contestantCode: string = req.params.code;
+    //     const contestId: string = req.params.contestId;
+    //     const voteBusiness = new VoteTransactionBusiness();
+    //     const result = await voteBusiness.fetchContestantVoteCount(
+    //       contestantCode,
+    //       contestId
+    //     );
+    //     if (result.error) {
+    //       return next(
+    //         new PlatformError({
+    //           code: result.responseCode,
+    //           message: result.error,
+    //         })
+    //       );
+    //     }
+    //     return res.status(200).json({
+    //       message: "Operation successful",
+    //       data: result.data,
+    //     });
+    //   } catch (err) {
+    //     console.log(err);
+    //     return next(
+    //       new PlatformError({
+    //         code: 500,
+    //         message: "Internal Server error occured. Please try again later.",
+    //       })
+    //     );
+    //   }
+    // }
+    VoteController.prototype.fetchContestEntries = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestantCode, contestId, voteBusiness, result, err_1;
+            var contestId, contestBusiness, contest, voteTransactionBusiness, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        contestantCode = req.params.code;
-                        contestId = req.params.contestId;
-                        voteBusiness = new VoteTransactionBusiness();
-                        return [4 /*yield*/, voteBusiness.fetch({ contestantCode: contestantCode, contestId: contestId })];
+                        _a.trys.push([0, 4, , 5]);
+                        contestId = req.params.id;
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.findById(contestId)];
                     case 1:
-                        result = _a.sent();
-                        if (result.error) {
+                        contest = _a.sent();
+                        if (contest.error)
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: result.error,
+                                    code: 404,
+                                    message: contest.error,
                                 }))];
-                        }
+                        if (!contest.data) return [3 /*break*/, 3];
+                        voteTransactionBusiness = new VoteTransactionBusiness();
+                        return [4 /*yield*/, voteTransactionBusiness.FetchContestResult(contest.data)];
+                    case 2:
+                        result = _a.sent();
                         return [2 /*return*/, res.status(200).json({
                                 message: "Operation successful",
-                                data: result.data,
+                                data: result,
                             })];
-                    case 2:
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
                         err_1 = _a.sent();
                         console.log(err_1);
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    VoteController.prototype.fetchContestantVoteCount = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var contestantCode, contestId, voteBusiness, result, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        contestantCode = req.params.code;
-                        contestId = req.params.contestId;
-                        voteBusiness = new VoteTransactionBusiness();
-                        return [4 /*yield*/, voteBusiness.fetchContestantVoteCount(contestantCode, contestId)];
-                    case 1:
-                        result = _a.sent();
-                        if (result.error) {
-                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: result.error,
-                                }))];
-                        }
-                        return [2 /*return*/, res.status(200).json({
-                                message: "Operation successful",
-                                data: result.data,
-                            })];
-                    case 2:
-                        err_2 = _a.sent();
-                        console.log(err_2);
-                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured. Please try again later.",
-                            }))];
-                    case 3: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
     };
     VoteController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, voteBusiness, result, err_3;
+            var item, voteBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -157,7 +194,7 @@ var VoteController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_3 = _a.sent();
+                        err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -168,19 +205,12 @@ var VoteController = /** @class */ (function () {
         });
     };
     __decorate([
-        decorators_1.get("/contest/:contestId/contestant/:code"),
+        decorators_1.get("/contest/:id/result"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], VoteController.prototype, "fetchContestantVotes", null);
-    __decorate([
-        decorators_1.get("/count/:contestId/:contestantCode"),
-        decorators_1.use(ValidateRequest_1.requestValidator),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Object, Function]),
-        __metadata("design:returntype", Promise)
-    ], VoteController.prototype, "fetchContestantVoteCount", null);
+    ], VoteController.prototype, "fetchContestEntries", null);
     __decorate([
         decorators_1.post("/"),
         decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),
