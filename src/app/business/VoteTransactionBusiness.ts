@@ -143,6 +143,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
       contestId: contest._id,
       contestPhoto: contest.bannerImage || "",
       contestTitle: contest.title,
+      contestHasEnded: isAfter(Date.now(), contest.endDate),
       contestStartDate: contest.startDate,
       contestDuration: distanceInWordsStrict(
         contest.endDate,

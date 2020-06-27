@@ -236,6 +236,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                             contestId: contest._id,
                             contestPhoto: contest.bannerImage || "",
                             contestTitle: contest.title,
+                            contestHasEnded: date_fns_1.isAfter(Date.now(), contest.endDate),
                             contestStartDate: contest.startDate,
                             contestDuration: date_fns_2.distanceInWordsStrict(contest.endDate, contest.startDate),
                             contestTotalVote: 0,

@@ -260,6 +260,7 @@ export class MediaController {
 
       condition.user = req.user;
 
+      console.log("line 263", condition);
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.fetchPreview(condition);
 
