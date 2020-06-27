@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Environment_1 = require("../app/models/interfaces/custom/Environment");
-// import * as development from "./development.json";
+var development = __importStar(require("./development.json"));
 // import * as ci from "./ci.json";
 // import * as production from "./production.json";
 var dotenv = __importStar(require("dotenv"));
@@ -123,8 +123,8 @@ switch (environment) {
         };
         break;
     default:
-        // Object.seal(development);
-        // module.exports = development;
+        Object.seal(development);
+        module.exports = development;
         break;
 }
 //# sourceMappingURL=keys.js.map
