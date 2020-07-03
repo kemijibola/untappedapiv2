@@ -70,9 +70,7 @@ var MediaBusiness = /** @class */ (function () {
             var portfolioPreviews, modified;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log(condition);
-                        return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
                     case 1:
                         portfolioPreviews = _a.sent();
                         modified = [];
@@ -97,7 +95,6 @@ var MediaBusiness = /** @class */ (function () {
                                 return theMap;
                             }, []);
                         }
-                        console.log(modified);
                         return [2 /*return*/, Result_1.Result.ok(200, modified)];
                 }
             });
@@ -285,8 +282,6 @@ var MediaBusiness = /** @class */ (function () {
                         media = _a.sent();
                         if (!media)
                             return [2 /*return*/, Result_1.Result.fail(404, "Media not found")];
-                        console.log(media.user);
-                        console.log(item.user);
                         if (media.user != item.user)
                             return [2 /*return*/, Result_1.Result.fail(403, "You are not authorized to perform this update.")];
                         media._id = media._id;

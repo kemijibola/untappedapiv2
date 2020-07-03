@@ -2,6 +2,7 @@ import UserFilterCategoryRepository from "../repository/UserFilterCategoryReposi
 import IUserFilterCategoryBusiness = require("./interfaces/UserFilterCategoryBusiness");
 import { IUserFilterCategory } from "../models/interfaces";
 import { Result } from "../../utils/Result";
+import { ObjectKeyString } from "../../utils/lib";
 
 class UserFilterCategoryBusiness implements IUserFilterCategoryBusiness {
   private _userFilterCategoryRepository: UserFilterCategoryRepository;
@@ -11,9 +12,37 @@ class UserFilterCategoryBusiness implements IUserFilterCategoryBusiness {
   }
 
   async fetch(condition: any): Promise<Result<IUserFilterCategory[]>> {
-    const userFilterCategories = await this._userFilterCategoryRepository.fetch(
+    if (condition.searchText) {
+      condition = {
+        $text: { $search: condition.searchText },
+      };
+    }
+
+    if (condition.userTypeId) {
+      condition.userType = condition.userTypeId;
+    }
+
+    let userFilterCategories: IUserFilterCategory[] = await this._userFilterCategoryRepository.fetch(
       condition
     );
+
+    console.log(condition);
+    if (condition.categoryId) {
+      console.log("categoryId found");
+      userFilterCategories = userFilterCategories.reduce(
+        (theMap: IUserFilterCategory[], theItem: IUserFilterCategory) => {
+          var found = theItem.categoryTypes.filter(
+            (x) => x.category.toString() === condition.categoryId
+          )[0];
+          console.log("category found", found);
+          if (found) {
+            theMap = [...theMap, theItem];
+          }
+          return theMap;
+        },
+        []
+      );
+    }
     return Result.ok<IUserFilterCategory[]>(200, userFilterCategories);
   }
 

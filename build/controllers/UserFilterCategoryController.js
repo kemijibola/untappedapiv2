@@ -46,7 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
-var TalentFilterCategoryBusiness = require("../app/business/UserFilterCategoryBusiness");
+var UserFilterCategoryBusiness = require("../app/business/UserFilterCategoryBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var UserFilterCategoryController = /** @class */ (function () {
     function UserFilterCategoryController() {
@@ -59,74 +59,45 @@ var UserFilterCategoryController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         condition = {};
-                        if (!req.query.reportType) {
-                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                                    code: 400,
-                                    message: "Please provide reportType in query param"
-                                }))];
+                        if (req.body.searchText) {
+                            condition.searchText = req.body.searchText;
                         }
-                        if (req.query.userType) {
-                            condition.userType = req.query.userType;
+                        if (req.body.categoryId) {
+                            condition.categoryId = req.body.categoryId;
                         }
-                        condition.reportType = req.query.reportType.toLowerCase();
-                        userFilterCategoryBusiness = new TalentFilterCategoryBusiness();
+                        if (req.body.userTypeId) {
+                            condition.userTypeId = req.body.userTypeId;
+                        }
+                        if (req.body.reportType) {
+                            condition.reportType = req.body.reportType.toLowerCase();
+                        }
+                        userFilterCategoryBusiness = new UserFilterCategoryBusiness();
                         return [4 /*yield*/, userFilterCategoryBusiness.fetch(condition)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    // @post('/')
-    // @requestValidators('name', 'global', 'description')
-    // async create(req: Request, res: Response, next: NextFunction) {
-    //   try {
-    //     const item: ITalentFilterCategory = req.body;
-    //     const talentFilterCategoryBusiness = new TalentFilterCategoryBusiness();
-    //     const result = await talentFilterCategoryBusiness.create(item);
-    //     if (result.error) {
-    //       return next(
-    //         PlatformError.error({
-    //           code: result.responseCode,
-    //           message: `Error occured. ${result.error}`
-    //         })
-    //       );
-    //     }
-    //     return res.status(result.responseCode).json({
-    //       message: 'Operation successful',
-    //       data: result.data
-    //     });
-    //   } catch (err) {
-    //     return next(
-    //       PlatformError.error({
-    //         code: 500,
-    //         message: `Internal Server error occured.${err}`
-    //       })
-    //     );
-    //   }
-    // }
-    UserFilterCategoryController.prototype.update = function () { };
-    UserFilterCategoryController.prototype.delete = function () { };
-    UserFilterCategoryController.prototype.findById = function () { };
     __decorate([
-        decorators_1.get("/"),
+        decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

@@ -135,7 +135,7 @@ export class CommentController {
           (x) => x != req.user
         );
 
-        console.log(comment.data.likedBy);
+        
         const result = await commentBusiness.update(
           req.params.id,
           comment.data

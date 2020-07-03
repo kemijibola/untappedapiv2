@@ -35,7 +35,7 @@ class MediaBusiness implements IMediaBusiness {
   async fetchTalentPortfolioPreview(
     condition: any
   ): Promise<Result<TalentPortfolioPreview[]>> {
-    console.log(condition);
+    
     const portfolioPreviews = await this._mediaRepository.fetch(condition);
     let modified: TalentPortfolioPreview[] = [];
     if (portfolioPreviews) {
@@ -64,7 +64,6 @@ class MediaBusiness implements IMediaBusiness {
         []
       );
     }
-    console.log(modified);
     return Result.ok<TalentPortfolioPreview[]>(200, modified);
   }
 
@@ -180,8 +179,6 @@ class MediaBusiness implements IMediaBusiness {
   async updateExistingMedia(id: string, item: IMedia): Promise<Result<IMedia>> {
     const media = await this._mediaRepository.findById(id);
     if (!media) return Result.fail<IMedia>(404, "Media not found");
-    console.log(media.user);
-    console.log(item.user);
     if (media.user != item.user)
       return Result.fail<IMedia>(
         403,

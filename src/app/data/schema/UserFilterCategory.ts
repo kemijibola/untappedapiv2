@@ -49,6 +49,11 @@ const userFilterCategorySchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+userFilterCategorySchema.index(
+  { aliasName: "text", displayName: "text" },
+  { weights: { aliasName: 1, displayName: 2 } }
+);
+
 export const UserFilterCategorySchema = mongooseConnection.model<
   IUserFilterCategory
 >("UserFilterCategory", userFilterCategorySchema);

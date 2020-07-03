@@ -204,4 +204,6 @@ export class ProfileController {
       );
     }
   }
+
+  // like talent profile
 }

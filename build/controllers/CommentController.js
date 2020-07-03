@@ -161,7 +161,6 @@ var CommentController = /** @class */ (function () {
                                 }))];
                         }
                         comment.data.likedBy = comment.data.likedBy.filter(function (x) { return x != req.user; });
-                        console.log(comment.data.likedBy);
                         return [4 /*yield*/, commentBusiness.update(req.params.id, comment.data)];
                     case 2:
                         result = _a.sent();

@@ -48,9 +48,30 @@ var UserFilterCategoryBusiness = /** @class */ (function () {
             var userFilterCategories;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._userFilterCategoryRepository.fetch(condition)];
+                    case 0:
+                        if (condition.searchText) {
+                            condition = {
+                                $text: { $search: condition.searchText },
+                            };
+                        }
+                        if (condition.userTypeId) {
+                            condition.userType = condition.userTypeId;
+                        }
+                        return [4 /*yield*/, this._userFilterCategoryRepository.fetch(condition)];
                     case 1:
                         userFilterCategories = _a.sent();
+                        console.log(condition);
+                        if (condition.categoryId) {
+                            console.log("categoryId found");
+                            userFilterCategories = userFilterCategories.reduce(function (theMap, theItem) {
+                                var found = theItem.categoryTypes.filter(function (x) { return x.category.toString() === condition.categoryId; })[0];
+                                console.log("category found", found);
+                                if (found) {
+                                    theMap = theMap.concat([theItem]);
+                                }
+                                return theMap;
+                            }, []);
+                        }
                         return [2 /*return*/, Result_1.Result.ok(200, userFilterCategories)];
                 }
             });

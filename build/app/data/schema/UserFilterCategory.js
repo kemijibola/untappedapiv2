@@ -43,5 +43,6 @@ var userFilterCategorySchema = new mongoose_1.Schema({
     dateJoined: { type: Date, required: true },
     createdAt: { type: Date, default: Date.now },
 });
+userFilterCategorySchema.index({ aliasName: "text", displayName: "text" }, { weights: { aliasName: 1, displayName: 2 } });
 exports.UserFilterCategorySchema = mongooseConnection.model("UserFilterCategory", userFilterCategorySchema);
 //# sourceMappingURL=UserFilterCategory.js.map
