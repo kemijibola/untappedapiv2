@@ -255,6 +255,68 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
+    // like talent profile
+    ProfileController.prototype.postTalentLike = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profileBusiness, talentProfile, userHasLiked, result, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        if (!req.body.userId)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide userId",
+                                }))];
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.findByCriteria({
+                                user: req.body.userId,
+                            })];
+                    case 1:
+                        talentProfile = _a.sent();
+                        if (talentProfile.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: talentProfile.responseCode,
+                                    message: talentProfile.error,
+                                }))];
+                        }
+                        if (!talentProfile.data) return [3 /*break*/, 3];
+                        userHasLiked = talentProfile.data.tappedBy.filter(function (x) { return x == req.user; })[0];
+                        if (userHasLiked) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "You have already performed Like operation.",
+                                }))];
+                        }
+                        talentProfile.data.tappedBy = talentProfile.data.tappedBy.concat([
+                            req.user,
+                        ]);
+                        return [4 /*yield*/, profileBusiness.updateLike(req.params.id, talentProfile.data)];
+                    case 2:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: "Operation successful",
+                                data: true,
+                            })];
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        err_6 = _a.sent();
+                        console.log(err_6);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.get("/"),
@@ -301,6 +363,14 @@ var ProfileController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "updateProfile", null);
+    __decorate([
+        decorators_1.post("/talent/like"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "postTalentLike", null);
     ProfileController = __decorate([
         decorators_1.controller("/v1/profiles")
     ], ProfileController);

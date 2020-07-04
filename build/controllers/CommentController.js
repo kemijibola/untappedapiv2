@@ -189,7 +189,7 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.postCommentLike = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var commentBusiness, comment, userId, userHasLiked, result, err_4;
+            var commentBusiness, comment, userHasLiked, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -205,7 +205,6 @@ var CommentController = /** @class */ (function () {
                                 }))];
                         }
                         if (!comment.data) return [3 /*break*/, 3];
-                        userId = req.user;
                         userHasLiked = comment.data.likedBy.filter(function (x) { return x == req.user; })[0];
                         if (userHasLiked) {
                             return [2 /*return*/, next(new error_1.PlatformError({

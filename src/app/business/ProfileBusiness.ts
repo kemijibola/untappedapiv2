@@ -65,6 +65,17 @@ class ProfileBusiness implements IProfileBusiness {
     return Result.ok<IProfile>(200, updateObj);
   }
 
+  async updateLike(id: string, item: IProfile): Promise<Result<IProfile>> {
+    const profile = await this._profileRepository.findById(id);
+    if (!profile)
+      return Result.fail<IProfile>(
+        404,
+        `Could not update profile.Profile with Id ${id} not found`
+      );
+    const updateObj = await this._profileRepository.update(profile._id, item);
+    return Result.ok<IProfile>(200, updateObj);
+  }
+
   async update(id: string, item: IProfile): Promise<Result<IProfile>> {
     const profile = await this._profileRepository.findById(id);
     if (!profile)
@@ -72,6 +83,8 @@ class ProfileBusiness implements IProfileBusiness {
         404,
         `Could not update profile.Profile with Id ${id} not found`
       );
+    item.tappedBy = profile.tappedBy;
+    item.user = profile.user;
     const updateObj = await this._profileRepository.update(profile._id, item);
     return Result.ok<IProfile>(200, updateObj);
   }

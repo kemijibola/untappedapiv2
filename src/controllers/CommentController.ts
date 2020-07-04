@@ -184,7 +184,7 @@ export class CommentController {
         );
       }
       if (comment.data) {
-        const userId: string = req.user;
+        
         const userHasLiked = comment.data.likedBy.filter(
           (x) => x == req.user
         )[0];

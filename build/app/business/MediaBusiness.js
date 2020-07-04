@@ -70,7 +70,7 @@ var MediaBusiness = /** @class */ (function () {
             var portfolioPreviews, modified;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._mediaRepository.fetchWithUser(condition)];
                     case 1:
                         portfolioPreviews = _a.sent();
                         modified = [];
@@ -82,6 +82,7 @@ var MediaBusiness = /** @class */ (function () {
                                         _id: theItem._id,
                                         mediaType: theItem.mediaType,
                                         talent: theItem.user,
+                                        aliasName: theItem.user.fullName,
                                         uploadType: theItem.uploadType,
                                         albumCoverKey: theItem.albumCover || "",
                                         defaultImageKey: items.length > 0 ? items[0].path : "",

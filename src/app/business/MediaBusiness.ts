@@ -35,8 +35,9 @@ class MediaBusiness implements IMediaBusiness {
   async fetchTalentPortfolioPreview(
     condition: any
   ): Promise<Result<TalentPortfolioPreview[]>> {
-    
-    const portfolioPreviews = await this._mediaRepository.fetch(condition);
+    const portfolioPreviews = await this._mediaRepository.fetchWithUser(
+      condition
+    );
     let modified: TalentPortfolioPreview[] = [];
     if (portfolioPreviews) {
       modified = portfolioPreviews.reduce(
@@ -49,6 +50,7 @@ class MediaBusiness implements IMediaBusiness {
               _id: theItem._id,
               mediaType: theItem.mediaType,
               talent: theItem.user,
+              aliasName: theItem.user.fullName,
               uploadType: theItem.uploadType,
               albumCoverKey: theItem.albumCover || "",
               defaultImageKey: items.length > 0 ? items[0].path : "",

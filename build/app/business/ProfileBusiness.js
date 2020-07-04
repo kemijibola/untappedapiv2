@@ -163,6 +163,24 @@ var ProfileBusiness = /** @class */ (function () {
             });
         });
     };
+    ProfileBusiness.prototype.updateLike = function (id, item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile, updateObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._profileRepository.findById(id)];
+                    case 1:
+                        profile = _a.sent();
+                        if (!profile)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update profile.Profile with Id " + id + " not found")];
+                        return [4 /*yield*/, this._profileRepository.update(profile._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                }
+            });
+        });
+    };
     ProfileBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
             var profile, updateObj;
@@ -173,6 +191,8 @@ var ProfileBusiness = /** @class */ (function () {
                         profile = _a.sent();
                         if (!profile)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update profile.Profile with Id " + id + " not found")];
+                        item.tappedBy = profile.tappedBy;
+                        item.user = profile.user;
                         return [4 /*yield*/, this._profileRepository.update(profile._id, item)];
                     case 2:
                         updateObj = _a.sent();

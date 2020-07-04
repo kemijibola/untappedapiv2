@@ -32,6 +32,7 @@ var profileSchema = new mongoose_1.Schema({
             required: true,
         },
     ],
+    tappedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
     twitter: { type: String },
     facebook: { type: String },
     instagram: { type: String },

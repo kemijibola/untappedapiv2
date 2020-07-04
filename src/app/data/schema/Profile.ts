@@ -39,6 +39,7 @@ const profileSchema: Schema = new Schema(
         required: true,
       },
     ],
+    tappedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     twitter: { type: String },
     facebook: { type: String },
     instagram: { type: String },
