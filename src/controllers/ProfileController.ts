@@ -56,7 +56,6 @@ export class ProfileController {
     }
   }
 
-  // http://localhost:8900/v1/profile?userType=id&withdetails=true
   @get("/")
   @use(requestValidator)
   async fetchTalents(req: RequestWithUser, res: Response, next: NextFunction) {
@@ -206,4 +205,64 @@ export class ProfileController {
   }
 
   // like talent profile
+  // @put("/:id/like")
+  // @use(requestValidator)
+  // @use(requireAuth)
+  // async postTalentLike(
+  //   req: RequestWithUser,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const profileBusiness = new ProfileBusiness();
+  //     const talentProfile = await profileBusiness.findById(req.params.id);
+  //     if (talentProfile.error) {
+  //       return next(
+  //         new PlatformError({
+  //           code: talentProfile.responseCode,
+  //           message: talentProfile.error,
+  //         })
+  //       );
+  //     }
+  //     if (talentProfile.data) {
+  //       const userId: string = req.user;
+  //       const userHasLiked = comment.data.likedBy.filter(
+  //         (x) => x == req.user
+  //       )[0];
+  //       if (userHasLiked) {
+  //         return next(
+  //           new PlatformError({
+  //             code: 400,
+  //             message: "You have already performed Like operation.",
+  //           })
+  //         );
+  //       }
+  //       comment.data.likedBy = [...comment.data.likedBy, req.user];
+  //       const result = await commentBusiness.update(
+  //         req.params.id,
+  //         comment.data
+  //       );
+  //       if (result.error) {
+  //         return next(
+  //           new PlatformError({
+  //             code: result.responseCode,
+  //             message: result.error,
+  //           })
+  //         );
+  //       }
+  //       return res.status(200).json({
+  //         message: "Operation successful",
+  //         data: result.data,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     return next(
+  //       new PlatformError({
+  //         code: 500,
+  //         message: "Internal Server error occured. Please try again later.",
+  //       })
+  //     );
+  //   }
+  // }
 }

@@ -254,7 +254,6 @@ var MediaController = /** @class */ (function () {
                             condition.mediaType = mediaType;
                         }
                         condition.user = req.user;
-                        console.log("line 263", condition);
                         mediaBusiness = new MediaBusiness();
                         return [4 /*yield*/, mediaBusiness.fetchPreview(condition)];
                     case 1:

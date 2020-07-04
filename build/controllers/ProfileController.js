@@ -97,7 +97,6 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
-    // http://localhost:8900/v1/profile?userType=id&withdetails=true
     ProfileController.prototype.fetchTalents = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
