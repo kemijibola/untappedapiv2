@@ -34,6 +34,7 @@ var userFilterCategorySchema = new mongoose_1.Schema({
     bannerPhoto: { type: String },
     shortDescription: { type: String, required: true },
     tapCount: { type: Number, default: 0 },
+    tappedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
     contestCount: { type: Number, default: 0 },
     socialMedias: [{ type: Profile_1.socialMediaSchema }],
     contests: [{ type: userContestListSchema }],

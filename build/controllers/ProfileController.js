@@ -269,6 +269,7 @@ var ProfileController = /** @class */ (function () {
                                     message: "Please provide userId",
                                 }))];
                         profileBusiness = new ProfileBusiness();
+                        console.log("from controller", req.body.userId);
                         return [4 /*yield*/, profileBusiness.findByCriteria({
                                 user: req.body.userId,
                             })];
@@ -291,7 +292,7 @@ var ProfileController = /** @class */ (function () {
                         talentProfile.data.tappedBy = talentProfile.data.tappedBy.concat([
                             req.user,
                         ]);
-                        return [4 /*yield*/, profileBusiness.updateLike(req.params.id, talentProfile.data)];
+                        return [4 /*yield*/, profileBusiness.updateLike(talentProfile.data._id, talentProfile.data)];
                     case 2:
                         result = _a.sent();
                         if (result.error) {
@@ -366,6 +367,7 @@ var ProfileController = /** @class */ (function () {
     __decorate([
         decorators_1.post("/talent/like"),
         decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("userId"),
         decorators_1.use(auth_1.requireAuth),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

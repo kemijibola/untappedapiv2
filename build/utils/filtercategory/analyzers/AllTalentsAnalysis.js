@@ -54,6 +54,7 @@ var AllTalentsAnalysis = /** @class */ (function () {
                         user: user.user,
                         displayName: user.displayName,
                         tapCount: user.tapCount,
+                        tappedBy: user.tappedBy,
                         aliasName: user.stageName,
                         dateJoined: user.dateJoined,
                         displayPhoto: user.displayPhoto || "",

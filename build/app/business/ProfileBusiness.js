@@ -118,7 +118,9 @@ var ProfileBusiness = /** @class */ (function () {
             var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._profileRepository.findByCriteria(criteria)];
+                    case 0:
+                        console.log("user profile", criteria);
+                        return [4 /*yield*/, this._profileRepository.findByCriteria(criteria)];
                     case 1:
                         profile = _a.sent();
                         if (!profile)
@@ -155,6 +157,7 @@ var ProfileBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update profile.Profile with Id " + id + " not found")];
                         item.tapCount = profile.tapCount;
                         item.updateAt = Date.now();
+                        item.user = profile.user;
                         return [4 /*yield*/, this._profileRepository.patch(profile._id, item)];
                     case 2:
                         updateObj = _a.sent();

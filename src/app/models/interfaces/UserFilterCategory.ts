@@ -36,6 +36,7 @@ export interface IUserFilterCategory
   categoryTypes: CategoryTypeWithCategory[];
   shortDescription: string;
   tapCount: number;
+  tappedBy: string[];
   contestCount: number;
   reportType: ReportType;
   userType: IUserType["_id"];

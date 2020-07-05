@@ -68,12 +68,14 @@ export class UserFilter {
               displayName: x.fullName,
               location: userProfile.data ? userProfile.data.location : "",
               categoryTypes: categoryTypes,
-              tapCount: userProfile.data ? userProfile.data.tapCount : 0,
+              tapCount: userProfile.data ? userProfile.data.tappedBy.length : 0,
+              tappedBy: userProfile.data ? [...userProfile.data.tappedBy] : [],
               shortDescription: userProfile.data
                 ? userProfile.data.shortBio
                 : "",
               dateJoined: x.createdAt,
             };
+
             users = [...users, user];
           }
         }

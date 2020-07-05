@@ -39,6 +39,7 @@ const userFilterCategorySchema = new Schema({
   bannerPhoto: { type: String },
   shortDescription: { type: String, required: true },
   tapCount: { type: Number, default: 0 },
+  tappedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
   contestCount: { type: Number, default: 0 },
   socialMedias: [{ type: socialMediaSchema }],
   contests: [{ type: userContestListSchema }],

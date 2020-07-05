@@ -53,13 +53,14 @@ var MostTapAnalysis = /** @class */ (function () {
                         user: user.user,
                         displayName: user.displayName,
                         tapCount: user.tapCount,
+                        tappedBy: user.tappedBy,
                         aliasName: user.stageName,
                         dateJoined: user.dateJoined,
                         displayPhoto: user.displayPhoto,
                         shortDescription: user.shortDescription,
                         categoryTypes: user.categoryTypes || [],
                         reportType: interfaces_1.ReportType.mosttap,
-                        userType: user.userType
+                        userType: user.userType,
                     });
                     filteredCategories = filteredCategories.concat([filtered]);
                 }

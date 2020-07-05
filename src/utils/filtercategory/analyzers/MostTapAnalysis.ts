@@ -1,7 +1,7 @@
 import { Analyzer } from "../Helper/Summary";
 import {
   ReportType,
-  IUserFilterCategory
+  IUserFilterCategory,
 } from "../../../app/models/interfaces";
 import { MatchData } from "../Helper/MatchData";
 import { Talent } from "../../../app/models/viewmodels";
@@ -19,13 +19,14 @@ export class MostTapAnalysis implements Analyzer {
         user: user.user,
         displayName: user.displayName,
         tapCount: user.tapCount,
+        tappedBy: user.tappedBy,
         aliasName: user.stageName,
         dateJoined: user.dateJoined,
         displayPhoto: user.displayPhoto,
         shortDescription: user.shortDescription,
         categoryTypes: user.categoryTypes || [],
         reportType: ReportType.mosttap,
-        userType: user.userType
+        userType: user.userType,
       });
       filteredCategories = [...filteredCategories, filtered];
     }

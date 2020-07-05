@@ -207,6 +207,7 @@ export class ProfileController {
   // like talent profile
   @post("/talent/like")
   @use(requestValidator)
+  @requestValidators("userId")
   @use(requireAuth)
   async postTalentLike(
     req: RequestWithUser,
@@ -222,6 +223,7 @@ export class ProfileController {
           })
         );
       const profileBusiness = new ProfileBusiness();
+      console.log("from controller", req.body.userId);
       const talentProfile = await profileBusiness.findByCriteria({
         user: req.body.userId,
       });
@@ -250,7 +252,7 @@ export class ProfileController {
           req.user,
         ];
         const result = await profileBusiness.updateLike(
-          req.params.id,
+          talentProfile.data._id,
           talentProfile.data
         );
         if (result.error) {

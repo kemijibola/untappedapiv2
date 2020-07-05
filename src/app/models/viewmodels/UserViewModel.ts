@@ -33,7 +33,8 @@ export interface Talent extends UserListViewModel {
   // location: string;
   stageName?: string;
   tapCount: number;
-  // audios: IMedia[];
+  tappedBy: string[];
+  // audios: IMedia[]
   // videos: IMedia[];
   // images: IMedia[];
   // generalUploads: IMedia[];

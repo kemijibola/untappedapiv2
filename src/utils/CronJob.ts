@@ -2,7 +2,7 @@ import * as cron from "node-cron";
 import { UserFilter } from "./filtercategory/UserFilter";
 
 export const userFilterJob = () => {
-  cron.schedule("*/10 * * * *", async () => {
+  cron.schedule("*/1 * * * *", async () => {
     var report = UserFilter.initReport();
     await report.generateReport();
   });

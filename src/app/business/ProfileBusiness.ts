@@ -41,6 +41,7 @@ class ProfileBusiness implements IProfileBusiness {
   }
 
   async findByCriteria(criteria: any): Promise<Result<IProfile>> {
+    console.log("user profile", criteria);
     const profile = await this._profileRepository.findByCriteria(criteria);
     if (!profile) return Result.fail<IProfile>(404, "Profile not found");
     return Result.ok<IProfile>(200, profile);
@@ -61,6 +62,7 @@ class ProfileBusiness implements IProfileBusiness {
       );
     item.tapCount = profile.tapCount;
     item.updateAt = Date.now();
+    item.user = profile.user;
     const updateObj = await this._profileRepository.patch(profile._id, item);
     return Result.ok<IProfile>(200, updateObj);
   }
