@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
 var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
 var CommentRepository_1 = __importDefault(require("../repository/CommentRepository"));
+var VoteTransactionRepository_1 = __importDefault(require("../repository/VoteTransactionRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
@@ -48,6 +49,7 @@ var ContestBusiness = /** @class */ (function () {
         this._contestRepository = new ContestRepository_1.default();
         this._contestEntryRepository = new ContestEntryRepository_1.default();
         this._commentRepository = new CommentRepository_1.default();
+        this._voteTransactionRepository = new VoteTransactionRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -139,7 +141,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.fetchContestDetailsById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, entries, contestDetails, _i, entries_1, entry, entryComment, entryDetails;
+            var contest, entries, contestDetails, _i, entries_1, entry, entryComment, contestantValidVotes, entryDetails;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._contestRepository.findById(id)];
@@ -159,23 +161,31 @@ var ContestBusiness = /** @class */ (function () {
                         _i = 0, entries_1 = entries;
                         _a.label = 3;
                     case 3:
-                        if (!(_i < entries_1.length)) return [3 /*break*/, 6];
+                        if (!(_i < entries_1.length)) return [3 /*break*/, 7];
                         entry = entries_1[_i];
                         return [4 /*yield*/, this._commentRepository.fetch({ entity: entry._id })];
                     case 4:
                         entryComment = _a.sent();
+                        return [4 /*yield*/, this._voteTransactionRepository.fetch({
+                                contestId: contest._id,
+                                contestantCode: entry.contestantCode,
+                                voteStatus: interfaces_1.VoteStatus.valid,
+                            })];
+                    case 5:
+                        contestantValidVotes = _a.sent();
                         entryDetails = {
                             entry: entry,
                             commentCount: entryComment.length || 0,
+                            totalVote: contestantValidVotes.length || 0,
                         };
                         contestDetails.submissions = contestDetails.submissions.concat([
                             entryDetails,
                         ]);
-                        _a.label = 5;
-                    case 5:
+                        _a.label = 6;
+                    case 6:
                         _i++;
                         return [3 /*break*/, 3];
-                    case 6: return [2 /*return*/, Result_1.Result.ok(200, contestDetails)];
+                    case 7: return [2 /*return*/, Result_1.Result.ok(200, contestDetails)];
                 }
             });
         });

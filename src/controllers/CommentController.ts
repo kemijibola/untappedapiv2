@@ -126,7 +126,7 @@ export class CommentController {
           return next(
             new PlatformError({
               code: 400,
-              message: "You can't perform Unlike action.",
+              message: "Yo have not liked comment",
             })
           );
         }
@@ -135,7 +135,6 @@ export class CommentController {
           (x) => x != req.user
         );
 
-        
         const result = await commentBusiness.update(
           req.params.id,
           comment.data
@@ -184,7 +183,6 @@ export class CommentController {
         );
       }
       if (comment.data) {
-        
         const userHasLiked = comment.data.likedBy.filter(
           (x) => x == req.user
         )[0];

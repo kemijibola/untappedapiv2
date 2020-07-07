@@ -157,7 +157,7 @@ var CommentController = /** @class */ (function () {
                         if (!userHasLiked) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,
-                                    message: "You can't perform Unlike action.",
+                                    message: "Yo have not liked comment",
                                 }))];
                         }
                         comment.data.likedBy = comment.data.likedBy.filter(function (x) { return x != req.user; });

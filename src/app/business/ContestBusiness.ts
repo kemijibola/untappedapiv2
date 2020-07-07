@@ -6,6 +6,7 @@ import {
 import ContestRepository from "../repository/ContestRepository";
 import ContestEntryRepository from "../repository/ContestEntryRepository";
 import CommentRepository from "../repository/CommentRepository";
+import VoteTransactionRepository from "../repository/VoteTransactionRepository";
 import IContestBusiness = require("./interfaces/ContestBusiness");
 import {
   IContest,
@@ -14,6 +15,8 @@ import {
   IContestEntry,
   ContestWithEntries,
   IComment,
+  VoteTransaction,
+  VoteStatus,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { ContestType } from "../data/schema/Contest";
@@ -31,11 +34,13 @@ class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
   private _contestEntryRepository: ContestEntryRepository;
   private _commentRepository: CommentRepository;
+  private _voteTransactionRepository: VoteTransactionRepository;
 
   constructor() {
     this._contestRepository = new ContestRepository();
     this._contestEntryRepository = new ContestEntryRepository();
     this._commentRepository = new CommentRepository();
+    this._voteTransactionRepository = new VoteTransactionRepository();
   }
 
   async fetch(condition: any): Promise<Result<IContest[]>> {
@@ -116,9 +121,18 @@ class ContestBusiness implements IContestBusiness {
       const entryComment: IContestEntry[] = await this._commentRepository.fetch(
         { entity: entry._id }
       );
+
+      var contestantValidVotes: VoteTransaction[] = await this._voteTransactionRepository.fetch(
+        {
+          contestId: contest._id,
+          contestantCode: entry.contestantCode,
+          voteStatus: VoteStatus.valid,
+        }
+      );
       let entryDetails: IEntries = {
         entry,
         commentCount: entryComment.length || 0,
+        totalVote: contestantValidVotes.length || 0,
       };
       contestDetails.submissions = [
         ...contestDetails.submissions,

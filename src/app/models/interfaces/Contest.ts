@@ -72,6 +72,7 @@ export interface ContestWithEntries {
 export interface IEntries {
   entry: IContestEntry;
   commentCount: number;
+  totalVote: number;
 }
 
 export interface ContestWithEntriesPreview {

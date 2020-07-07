@@ -278,4 +278,78 @@ export class ProfileController {
       );
     }
   }
+
+  @post("/talent/unLike")
+  @use(requestValidator)
+  @requestValidators("userId")
+  @use(requireAuth)
+  async postTalentUnLike(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      if (!req.body.userId)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide userId",
+          })
+        );
+      const profileBusiness = new ProfileBusiness();
+      const talentProfile = await profileBusiness.findByCriteria({
+        user: req.body.userId,
+      });
+      if (talentProfile.error) {
+        return next(
+          new PlatformError({
+            code: talentProfile.responseCode,
+            message: talentProfile.error,
+          })
+        );
+      }
+      if (talentProfile.data) {
+        const userHasLiked = talentProfile.data.tappedBy.filter(
+          (x) => x == req.user
+        )[0];
+        if (!userHasLiked) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: "You have not liked talent",
+            })
+          );
+        }
+
+        talentProfile.data.tappedBy = talentProfile.data.tappedBy.filter(
+          (x) => x != req.user
+        );
+
+        const result = await profileBusiness.updateLike(
+          talentProfile.data._id,
+          talentProfile.data
+        );
+        if (result.error) {
+          return next(
+            new PlatformError({
+              code: result.responseCode,
+              message: result.error,
+            })
+          );
+        }
+        return res.status(200).json({
+          message: "Operation successful",
+          data: true,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
 }
