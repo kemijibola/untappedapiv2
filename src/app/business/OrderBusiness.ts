@@ -1,5 +1,6 @@
 import OrderRepository from "../repository/OrderRepository";
 import ServiceRepository from "../repository/ServiceRepository";
+import UserRepository from "../repository/UserRepository";
 import IOrderBusiness = require("./interfaces/OrderBusiness");
 import { IOrder, OrderStatus } from "../models/interfaces";
 import { Result } from "../../utils/Result";
@@ -15,10 +16,12 @@ import { isAfter, isPast } from "date-fns";
 class OrderBusiness implements IOrderBusiness {
   private _orderRepository: OrderRepository;
   private _serviceRepository: ServiceRepository;
+  private _userRepository: UserRepository;
 
   constructor() {
     this._orderRepository = new OrderRepository();
     this._serviceRepository = new ServiceRepository();
+    this._userRepository = new UserRepository();
   }
 
   async fetch(condition: any): Promise<Result<IOrder[]>> {
@@ -79,6 +82,7 @@ class OrderBusiness implements IOrderBusiness {
     processorResponse: PaymentGatewayResponse,
     orderId: string
   ): Promise<Result<IOrder>> {
+    console.log(processorResponse);
     const orderObj = await this._orderRepository.findById(orderId);
     if (!orderObj) return Result.fail<IOrder>(404, "Order not found");
 
@@ -92,7 +96,16 @@ class OrderBusiness implements IOrderBusiness {
     if (isPast(transactionDate))
       return Result.fail<IOrder>(400, "Invalid transaction");
 
-    if (processorResponse.customerId !== orderObj.order.user)
+    if (processorResponse.amount !== processorResponse.requestedAmount)
+      return Result.fail<IOrder>(400, "Invalid transaction amount");
+
+    var user = await this._userRepository.findByCriteria({
+      email: processorResponse.customerId,
+    });
+
+    if (!user) return Result.fail<IOrder>(404, "Customer not found");
+
+    if (user._id.toString() != orderObj.order.user.toString())
       return Result.fail<IOrder>(400, "Invalid customer transaction");
 
     orderObj.referencenNo = processorResponse.reference;

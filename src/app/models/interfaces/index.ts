@@ -31,3 +31,6 @@ export * from "./ApprovalOperation";
 export * from "./CategoryType";
 export * from "./RefreshToken";
 export * from "./VoteTransaction";
+export * from "./TransactionRequest";
+export * from "./WalletData";
+export * from "./WalletTransaction";

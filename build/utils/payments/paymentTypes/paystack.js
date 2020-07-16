@@ -68,24 +68,10 @@ var Paystack = /** @class */ (function (_super) {
     }
     Paystack.prototype.verifyPayment = function (referenceNo) {
         return __awaiter(this, void 0, void 0, function () {
-            var payStackResponse, options, verified, err_1;
+            var options, verified, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("reference no", referenceNo);
-                        payStackResponse = {
-                            amount: 0,
-                            requestStatus: false,
-                            transactionDate: new Date(),
-                            status: PaymentFactory_1.PaymentProcessorStatus.pending,
-                            reference: "",
-                            gatewayReponse: "",
-                            channel: "",
-                            ipAddress: "",
-                            requestedAmount: 0,
-                            message: "",
-                            customerId: "",
-                        };
                         options = {
                             uri: this.payStackVerifyUrl + "/" + referenceNo,
                             headers: {
@@ -100,52 +86,51 @@ var Paystack = /** @class */ (function (_super) {
                     case 2:
                         verified = _a.sent();
                         if (verified.status) {
-                            payStackResponse = {
-                                amount: verified.data.amount / 100,
-                                requestStatus: verified.status,
-                                transactionDate: verified.data.transaction_date,
-                                status: verified.data.status,
-                                reference: verified.data.reference,
-                                gatewayReponse: verified.data.gateway_response,
-                                channel: verified.data.channel,
-                                ipAddress: verified.data.ip_address,
-                                requestedAmount: verified.data.requested_amount,
-                                message: verified.data.message,
-                                customerId: verified.customer.email,
-                            };
+                            return [2 /*return*/, Object.assign({
+                                    amount: verified.data["amount"] / 100,
+                                    requestStatus: verified["status"],
+                                    transactionDate: verified.data["transaction_date"],
+                                    status: verified.data["status"],
+                                    reference: verified.data["reference"],
+                                    gatewayReponse: verified.data["gateway_response"],
+                                    channel: verified.data["channel"],
+                                    ipAddress: verified.data["ip_address"],
+                                    requestedAmount: verified.data["requested_amount"] / 100,
+                                    message: verified.data["message"],
+                                    customerId: verified.data.customer["email"],
+                                })];
                         }
                         else {
-                            payStackResponse = {
+                            return [2 /*return*/, Object.assign({
+                                    amount: 0,
+                                    requestStatus: verified.status,
+                                    transactionDate: new Date(),
+                                    status: PaymentFactory_1.PaymentProcessorStatus.failed,
+                                    reference: referenceNo,
+                                    gatewayReponse: verified.message,
+                                    channel: "",
+                                    ipAddress: "",
+                                    requestedAmount: 0,
+                                    message: verified.message,
+                                    customerId: "",
+                                })];
+                        }
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, Object.assign({
                                 amount: 0,
-                                requestStatus: verified.status,
+                                requestStatus: false,
                                 transactionDate: new Date(),
                                 status: PaymentFactory_1.PaymentProcessorStatus.failed,
                                 reference: referenceNo,
-                                gatewayReponse: verified.message,
+                                gatewayReponse: err_1,
                                 channel: "",
                                 ipAddress: "",
                                 requestedAmount: 0,
-                                message: verified.message,
+                                message: "Error from PayStack",
                                 customerId: "",
-                            };
-                        }
-                        return [2 /*return*/, payStackResponse];
-                    case 3:
-                        err_1 = _a.sent();
-                        payStackResponse = {
-                            amount: 0,
-                            requestStatus: false,
-                            transactionDate: new Date(),
-                            status: PaymentFactory_1.PaymentProcessorStatus.failed,
-                            reference: referenceNo,
-                            gatewayReponse: err_1,
-                            channel: "",
-                            ipAddress: "",
-                            requestedAmount: 0,
-                            message: "Error from PayStack",
-                            customerId: "",
-                        };
-                        return [2 /*return*/, payStackResponse];
+                            })];
                     case 4: return [2 /*return*/];
                 }
             });

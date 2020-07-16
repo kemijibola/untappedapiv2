@@ -49,7 +49,7 @@ var SettlementHandler = /** @class */ (function () {
     };
     SettlementHandler.prototype.process = function (item, serviceType) {
         return __awaiter(this, void 0, void 0, function () {
-            var updateObj, updateContest, err_1;
+            var updateObj, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -59,7 +59,7 @@ var SettlementHandler = /** @class */ (function () {
                     case 1:
                         updateObj = _a.sent();
                         if (updateObj) {
-                            updateContest = this._contestRepository.patch(item, {
+                            this._contestRepository.patch(item, {
                                 paymentStatus: interfaces_1.PaymentStatus.Completed,
                             });
                         }

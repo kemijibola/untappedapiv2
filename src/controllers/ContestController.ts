@@ -257,9 +257,9 @@ export class ContestController {
   @use(requireAuth)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
-      let condition: ObjectKeyString = {};
-      if (req.query) {
-        condition.title = req.query.title || "";
+      let condition: any;
+      if (req.query.title) {
+        condition = { title: new RegExp("^" + req.query.title + "$", "i") };
       }
       const contestBusiness = new ContestBusiness();
       const result = await contestBusiness.fetch(condition);

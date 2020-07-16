@@ -4,7 +4,6 @@ import { AppConfig } from "../../../app/models/interfaces/custom/AppConfig";
 const config: AppConfig = module.require("../../../config/keys");
 import * as request from "request-promise";
 import { PaymentProcessorStatus } from "../PaymentFactory";
-import { map } from "bluebird";
 
 export class Paystack extends AbstractPayment {
   payStackVerifyUrl = "https://api.paystack.co/transaction/verify";
@@ -13,21 +12,6 @@ export class Paystack extends AbstractPayment {
   }
 
   async verifyPayment(referenceNo: string): Promise<PaymentGatewayResponse> {
-    console.log("reference no", referenceNo);
-    let payStackResponse: PaymentGatewayResponse = {
-      amount: 0,
-      requestStatus: false,
-      transactionDate: new Date(),
-      status: PaymentProcessorStatus.pending,
-      reference: "",
-      gatewayReponse: "",
-      channel: "",
-      ipAddress: "",
-      requestedAmount: 0,
-      message: "",
-      customerId: "",
-    };
-
     var options = {
       uri: `${this.payStackVerifyUrl}/${referenceNo}`,
       headers: {
@@ -39,21 +23,21 @@ export class Paystack extends AbstractPayment {
     try {
       const verified = await request.get(options);
       if (verified.status) {
-        payStackResponse = {
-          amount: verified.data.amount / 100,
-          requestStatus: verified.status,
-          transactionDate: verified.data.transaction_date,
-          status: verified.data.status,
-          reference: verified.data.reference,
-          gatewayReponse: verified.data.gateway_response,
-          channel: verified.data.channel,
-          ipAddress: verified.data.ip_address,
-          requestedAmount: verified.data.requested_amount,
-          message: verified.data.message,
-          customerId: verified.customer.email,
-        };
+        return Object.assign({
+          amount: verified.data["amount"] / 100,
+          requestStatus: verified["status"],
+          transactionDate: verified.data["transaction_date"],
+          status: verified.data["status"],
+          reference: verified.data["reference"],
+          gatewayReponse: verified.data["gateway_response"],
+          channel: verified.data["channel"],
+          ipAddress: verified.data["ip_address"],
+          requestedAmount: verified.data["requested_amount"] / 100,
+          message: verified.data["message"],
+          customerId: verified.data.customer["email"],
+        });
       } else {
-        payStackResponse = {
+        return Object.assign({
           amount: 0,
           requestStatus: verified.status,
           transactionDate: new Date(),
@@ -65,11 +49,10 @@ export class Paystack extends AbstractPayment {
           requestedAmount: 0,
           message: verified.message,
           customerId: "",
-        };
+        });
       }
-      return payStackResponse;
     } catch (err) {
-      payStackResponse = {
+      return Object.assign({
         amount: 0,
         requestStatus: false,
         transactionDate: new Date(),
@@ -81,8 +64,7 @@ export class Paystack extends AbstractPayment {
         requestedAmount: 0,
         message: "Error from PayStack",
         customerId: "",
-      };
-      return payStackResponse;
+      });
     }
   }
 }

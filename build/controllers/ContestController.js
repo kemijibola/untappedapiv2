@@ -268,9 +268,9 @@ var ContestController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        condition = {};
-                        if (req.query) {
-                            condition.title = req.query.title || "";
+                        condition = void 0;
+                        if (req.query.title) {
+                            condition = { title: new RegExp("^" + req.query.title + "$", "i") };
                         }
                         contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, contestBusiness.fetch(condition)];

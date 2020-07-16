@@ -59,5 +59,6 @@ var contestSchema = new mongoose_1.Schema({
         ref: "Application",
     },
 }, { timestamps: true });
+// contestSchema.index({ title: "text" });
 exports.ContestSchema = mongooseConnection.model("Contest", contestSchema);
 //# sourceMappingURL=Contest.js.map

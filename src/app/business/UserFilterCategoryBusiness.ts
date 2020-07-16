@@ -12,21 +12,27 @@ class UserFilterCategoryBusiness implements IUserFilterCategoryBusiness {
   }
 
   async fetch(condition: any): Promise<Result<IUserFilterCategory[]>> {
+    let query: any = {};
     if (condition.searchText) {
-      condition = {
+      query = {
         $text: { $search: condition.searchText },
       };
     }
 
     if (condition.userTypeId) {
-      condition.userType = condition.userTypeId;
+      query.userType = condition.userTypeId;
+    }
+
+    if (condition.reportType) {
+      query.reportType = condition.reportType;
     }
 
     let userFilterCategories: IUserFilterCategory[] = await this._userFilterCategoryRepository.fetch(
-      condition
+      query
     );
 
-    console.log(condition);
+    console.log("line 30", query);
+    console.log("line 31", userFilterCategories);
     if (condition.categoryId) {
       console.log("categoryId found");
       userFilterCategories = userFilterCategories.reduce(

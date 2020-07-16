@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var OrderRepository_1 = __importDefault(require("../repository/OrderRepository"));
 var ServiceRepository_1 = __importDefault(require("../repository/ServiceRepository"));
+var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var Helper_1 = require("../../utils/lib/Helper");
@@ -49,6 +50,7 @@ var OrderBusiness = /** @class */ (function () {
     function OrderBusiness() {
         this._orderRepository = new OrderRepository_1.default();
         this._serviceRepository = new ServiceRepository_1.default();
+        this._userRepository = new UserRepository_1.default();
     }
     OrderBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -152,10 +154,12 @@ var OrderBusiness = /** @class */ (function () {
     };
     OrderBusiness.prototype.updatePayment = function (processorResponse, orderId) {
         return __awaiter(this, void 0, void 0, function () {
-            var orderObj, transactionDate, additionalInfo, updateObj, service, settlement, additionalInfo, additionalInfo, additionalInfo;
+            var orderObj, transactionDate, user, additionalInfo, updateObj, service, settlement, additionalInfo, additionalInfo, additionalInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._orderRepository.findById(orderId)];
+                    case 0:
+                        console.log(processorResponse);
+                        return [4 /*yield*/, this._orderRepository.findById(orderId)];
                     case 1:
                         orderObj = _a.sent();
                         if (!orderObj)
@@ -167,13 +171,22 @@ var OrderBusiness = /** @class */ (function () {
                             : 0;
                         if (date_fns_1.isPast(transactionDate))
                             return [2 /*return*/, Result_1.Result.fail(400, "Invalid transaction")];
-                        if (processorResponse.customerId !== orderObj.order.user)
+                        if (processorResponse.amount !== processorResponse.requestedAmount)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid transaction amount")];
+                        return [4 /*yield*/, this._userRepository.findByCriteria({
+                                email: processorResponse.customerId,
+                            })];
+                    case 2:
+                        user = _a.sent();
+                        if (!user)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Customer not found")];
+                        if (user._id.toString() != orderObj.order.user.toString())
                             return [2 /*return*/, Result_1.Result.fail(400, "Invalid customer transaction")];
                         orderObj.referencenNo = processorResponse.reference;
-                        if (!processorResponse.requestStatus) return [3 /*break*/, 10];
+                        if (!processorResponse.requestStatus) return [3 /*break*/, 11];
                         if (!(PaymentFactory_1.PaymentProcessorStatus[processorResponse.status] ===
-                            PaymentFactory_1.PaymentProcessorStatus.success)) return [3 /*break*/, 7];
-                        if (!(processorResponse.amount === orderObj.order.totalAmount)) return [3 /*break*/, 4];
+                            PaymentFactory_1.PaymentProcessorStatus.success)) return [3 /*break*/, 8];
+                        if (!(processorResponse.amount === orderObj.order.totalAmount)) return [3 /*break*/, 5];
                         additionalInfo = {
                             additionalInfo: processorResponse.gatewayReponse,
                             channel: processorResponse.channel,
@@ -184,16 +197,16 @@ var OrderBusiness = /** @class */ (function () {
                         orderObj.order.paymentDate = processorResponse.transactionDate;
                         orderObj.updateAt = new Date();
                         return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
-                    case 2:
+                    case 3:
                         updateObj = _a.sent();
                         return [4 /*yield*/, this._serviceRepository.findById(orderObj.service)];
-                    case 3:
+                    case 4:
                         service = _a.sent();
                         settlement = settlementHandler_1.SettlementHandler.initialize();
                         settlement.process(orderObj.order.items[0], service.type);
                         // settlement ends here
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                    case 4:
+                    case 5:
                         additionalInfo = {
                             additionalInfo: processorResponse.gatewayReponse,
                             channel: processorResponse.channel,
@@ -205,11 +218,11 @@ var OrderBusiness = /** @class */ (function () {
                         orderObj.order.error = "Invalid amount paid";
                         orderObj.updateAt = new Date();
                         return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
-                    case 5:
+                    case 6:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.fail(400, "Invalid amount paid")];
-                    case 6: return [3 /*break*/, 9];
-                    case 7:
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
                         additionalInfo = {
                             additionalInfo: processorResponse.gatewayReponse,
                             channel: processorResponse.channel,
@@ -221,11 +234,11 @@ var OrderBusiness = /** @class */ (function () {
                         orderObj.order.error = processorResponse.gatewayReponse;
                         orderObj.updateAt = new Date();
                         return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
-                    case 8:
+                    case 9:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.fail(400, processorResponse.gatewayReponse)];
-                    case 9: return [3 /*break*/, 12];
-                    case 10:
+                    case 10: return [3 /*break*/, 13];
+                    case 11:
                         additionalInfo = {
                             additionalInfo: processorResponse.gatewayReponse,
                         };
@@ -235,10 +248,10 @@ var OrderBusiness = /** @class */ (function () {
                         orderObj.order.error = processorResponse.gatewayReponse;
                         orderObj.updateAt = new Date();
                         return [4 /*yield*/, this._orderRepository.update(orderObj._id, orderObj)];
-                    case 11:
+                    case 12:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.fail(400, "Payment failed")];
-                    case 12: return [2 /*return*/];
+                    case 13: return [2 /*return*/];
                 }
             });
         });

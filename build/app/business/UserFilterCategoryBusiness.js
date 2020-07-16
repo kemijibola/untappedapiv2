@@ -45,22 +45,27 @@ var UserFilterCategoryBusiness = /** @class */ (function () {
     }
     UserFilterCategoryBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var userFilterCategories;
+            var query, userFilterCategories;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        query = {};
                         if (condition.searchText) {
-                            condition = {
+                            query = {
                                 $text: { $search: condition.searchText },
                             };
                         }
                         if (condition.userTypeId) {
-                            condition.userType = condition.userTypeId;
+                            query.userType = condition.userTypeId;
                         }
-                        return [4 /*yield*/, this._userFilterCategoryRepository.fetch(condition)];
+                        if (condition.reportType) {
+                            query.reportType = condition.reportType;
+                        }
+                        return [4 /*yield*/, this._userFilterCategoryRepository.fetch(query)];
                     case 1:
                         userFilterCategories = _a.sent();
-                        console.log(condition);
+                        console.log("line 30", query);
+                        console.log("line 31", userFilterCategories);
                         if (condition.categoryId) {
                             console.log("categoryId found");
                             userFilterCategories = userFilterCategories.reduce(function (theMap, theItem) {

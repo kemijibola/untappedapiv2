@@ -69,6 +69,9 @@ const contestSchema: Schema = new Schema(
   },
   { timestamps: true }
 );
+
+// contestSchema.index({ title: "text" });
+
 export const ContestSchema = mongooseConnection.model<IContest>(
   "Contest",
   contestSchema

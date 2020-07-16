@@ -44,6 +44,7 @@ class ContestBusiness implements IContestBusiness {
   }
 
   async fetch(condition: any): Promise<Result<IContest[]>> {
+    console.log(condition);
     const contests = await this._contestRepository.fetch(condition);
     return Result.ok<IContest[]>(200, contests);
   }

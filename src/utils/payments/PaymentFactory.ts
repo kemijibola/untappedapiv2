@@ -17,7 +17,6 @@ export enum PaymentProcessorStatus {
 
 export class PaymentFactory {
   create(processor: string): AbstractPayment {
-    console.log(processor);
     if (processor === "paystack") {
       return new Paystack();
     } else {

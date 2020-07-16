@@ -19,7 +19,6 @@ var PaymentFactory = /** @class */ (function () {
     function PaymentFactory() {
     }
     PaymentFactory.prototype.create = function (processor) {
-        console.log(processor);
         if (processor === "paystack") {
             return new paystack_1.Paystack();
         }

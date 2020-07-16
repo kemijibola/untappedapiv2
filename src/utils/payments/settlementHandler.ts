@@ -21,7 +21,7 @@ export class SettlementHandler {
       if (serviceType === ServiceType.contest) {
         var updateObj = await this._contestRepository.findById(item);
         if (updateObj) {
-          var updateContest = this._contestRepository.patch(item, {
+          this._contestRepository.patch(item, {
             paymentStatus: PaymentStatus.Completed,
           });
         }
