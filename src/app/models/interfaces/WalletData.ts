@@ -5,7 +5,7 @@ import { IAppSpec } from "./AppSpec";
 import { IUser } from "./User";
 
 export interface WalletData extends ITimeStamp, IAppSpec, mongoose.Document {
-  walletNumber: number;
+  walletNumber: string;
   user: IUser["_id"];
   pin: string;
   status: PaymentProviderStatus;

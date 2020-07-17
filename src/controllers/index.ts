@@ -17,3 +17,4 @@ export * from "./ServiceController";
 export * from "./OrderController";
 export * from "./VoteController";
 export * from "./ContestEntryController";
+export * from "./WalletController";

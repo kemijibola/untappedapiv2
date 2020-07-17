@@ -6,7 +6,8 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 var TransactionDTO_1 = require("../../models/interfaces/custom/TransactionDTO");
 var walletDataSchema = new mongoose_1.Schema({
     walletNumber: {
-        type: Number,
+        type: String,
+        unique: true,
         required: true,
     },
     user: {

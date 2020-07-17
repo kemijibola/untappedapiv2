@@ -63,3 +63,6 @@ export const canDeleteUserType = "canDeleteUserType";
 export const canCreateService = "canCreateService";
 export const canUpdateService = "canUpdateService";
 export const canDeleteService = "canDeleteService";
+
+export const canCreateWallet = "canCreateWallet";
+export const canDeActivateWallet = "canDeActivateWallet";

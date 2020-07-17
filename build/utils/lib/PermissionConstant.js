@@ -46,4 +46,6 @@ exports.canDeleteUserType = "canDeleteUserType";
 exports.canCreateService = "canCreateService";
 exports.canUpdateService = "canUpdateService";
 exports.canDeleteService = "canDeleteService";
+exports.canCreateWallet = "canCreateWallet";
+exports.canDeActivateWallet = "canDeActivateWallet";
 //# sourceMappingURL=PermissionConstant.js.map

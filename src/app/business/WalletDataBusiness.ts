@@ -2,8 +2,10 @@ import WalletDataRepository from "../repository/WalletDataRepository";
 import IWalletDataBusiness = require("./interfaces/WalletDataBusiness");
 import { WalletData } from "../models/interfaces";
 import { Result } from "../../utils/Result";
+import { generateRandomNumber } from "../../utils/lib/Helper";
+import { PaymentProviderStatus } from "../models/interfaces/custom/TransactionDTO";
 
-class TransactionRequestBusiness implements IWalletDataBusiness {
+class WalletBusiness implements IWalletDataBusiness {
   private _walletDataRepository: WalletDataRepository;
 
   constructor() {
@@ -41,6 +43,14 @@ class TransactionRequestBusiness implements IWalletDataBusiness {
   }
 
   async create(item: WalletData): Promise<Result<WalletData>> {
+    const walletData = await this._walletDataRepository.findByCriteria({
+      user: item.user,
+    });
+    if (walletData) return Result.fail<WalletData>(409, "User wallet exist");
+
+    item.walletNumber = generateRandomNumber(10);
+    item.status = PaymentProviderStatus.activated;
+    item.balance = 0;
     const newWalletData = await this._walletDataRepository.create(item);
     return Result.ok<WalletData>(201, newWalletData);
   }
@@ -65,5 +75,5 @@ class TransactionRequestBusiness implements IWalletDataBusiness {
   }
 }
 
-Object.seal(TransactionRequestBusiness);
-export = TransactionRequestBusiness;
+Object.seal(WalletBusiness);
+export = WalletBusiness;

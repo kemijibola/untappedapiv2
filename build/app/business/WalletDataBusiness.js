@@ -39,11 +39,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var WalletDataRepository_1 = __importDefault(require("../repository/WalletDataRepository"));
 var Result_1 = require("../../utils/Result");
-var TransactionRequestBusiness = /** @class */ (function () {
-    function TransactionRequestBusiness() {
+var Helper_1 = require("../../utils/lib/Helper");
+var TransactionDTO_1 = require("../models/interfaces/custom/TransactionDTO");
+var WalletBusiness = /** @class */ (function () {
+    function WalletBusiness() {
         this._walletDataRepository = new WalletDataRepository_1.default();
     }
-    TransactionRequestBusiness.prototype.fetch = function (condition) {
+    WalletBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var walletData;
             return __generator(this, function (_a) {
@@ -56,7 +58,7 @@ var TransactionRequestBusiness = /** @class */ (function () {
             });
         });
     };
-    TransactionRequestBusiness.prototype.findById = function (id) {
+    WalletBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var walletData;
             return __generator(this, function (_a) {
@@ -74,7 +76,7 @@ var TransactionRequestBusiness = /** @class */ (function () {
             });
         });
     };
-    TransactionRequestBusiness.prototype.findOne = function (condition) {
+    WalletBusiness.prototype.findOne = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var walletData;
             return __generator(this, function (_a) {
@@ -92,7 +94,7 @@ var TransactionRequestBusiness = /** @class */ (function () {
             });
         });
     };
-    TransactionRequestBusiness.prototype.findByCriteria = function (criteria) {
+    WalletBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
             var walletData;
             return __generator(this, function (_a) {
@@ -107,20 +109,30 @@ var TransactionRequestBusiness = /** @class */ (function () {
             });
         });
     };
-    TransactionRequestBusiness.prototype.create = function (item) {
+    WalletBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newWalletData;
+            var walletData, newWalletData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._walletDataRepository.create(item)];
+                    case 0: return [4 /*yield*/, this._walletDataRepository.findByCriteria({
+                            user: item.user,
+                        })];
                     case 1:
+                        walletData = _a.sent();
+                        if (walletData)
+                            return [2 /*return*/, Result_1.Result.fail(409, "User wallet exist")];
+                        item.walletNumber = Helper_1.generateRandomNumber(10);
+                        item.status = TransactionDTO_1.PaymentProviderStatus.activated;
+                        item.balance = 0;
+                        return [4 /*yield*/, this._walletDataRepository.create(item)];
+                    case 2:
                         newWalletData = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newWalletData)];
                 }
             });
         });
     };
-    TransactionRequestBusiness.prototype.update = function (id, item) {
+    WalletBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
             var transactionRequest, updateObj;
             return __generator(this, function (_a) {
@@ -138,7 +150,7 @@ var TransactionRequestBusiness = /** @class */ (function () {
             });
         });
     };
-    TransactionRequestBusiness.prototype.delete = function (id) {
+    WalletBusiness.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var isDeleted;
             return __generator(this, function (_a) {
@@ -151,8 +163,8 @@ var TransactionRequestBusiness = /** @class */ (function () {
             });
         });
     };
-    return TransactionRequestBusiness;
+    return WalletBusiness;
 }());
-Object.seal(TransactionRequestBusiness);
-module.exports = TransactionRequestBusiness;
+Object.seal(WalletBusiness);
+module.exports = WalletBusiness;
 //# sourceMappingURL=WalletDataBusiness.js.map

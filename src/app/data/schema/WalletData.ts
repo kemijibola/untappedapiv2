@@ -7,7 +7,8 @@ import { PaymentProviderStatus } from "../../models/interfaces/custom/Transactio
 const walletDataSchema: Schema = new Schema(
   {
     walletNumber: {
-      type: Number,
+      type: String,
+      unique: true,
       required: true,
     },
     user: {
