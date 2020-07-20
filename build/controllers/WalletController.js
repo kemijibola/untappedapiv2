@@ -50,18 +50,23 @@ var WalletBusiness = require("../app/business/WalletDataBusiness");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
+var TransactionDTO_1 = require("../app/models/interfaces/custom/TransactionDTO");
 var WalletController = /** @class */ (function () {
     function WalletController() {
     }
-    WalletController.prototype.fetch = function (req, res, next) {
+    WalletController.prototype.fetchWalletBalance = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var walletBusiness, result, err_1;
+            var walletBusiness, condition, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         walletBusiness = new WalletBusiness();
-                        return [4 /*yield*/, walletBusiness.fetch({})];
+                        condition = {
+                            user: req.user,
+                            status: TransactionDTO_1.PaymentProviderStatus.activated,
+                        };
+                        return [4 /*yield*/, walletBusiness.findByCriteriaFirstOrDefault(condition)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -120,12 +125,14 @@ var WalletController = /** @class */ (function () {
         });
     };
     __decorate([
-        decorators_1.get("/"),
+        decorators_1.get("/details"),
         decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canViewWallet),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], WalletController.prototype, "fetch", null);
+    ], WalletController.prototype, "fetchWalletBalance", null);
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

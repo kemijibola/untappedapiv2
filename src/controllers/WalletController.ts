@@ -15,20 +15,33 @@ import {
   canCreateUserType,
   canCreateUser,
   canCreateWallet,
+  canViewWallet,
 } from "../utils/lib/PermissionConstant";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
 import { WalletData } from "../app/models/interfaces";
+import { PaymentProviderStatus } from "../app/models/interfaces/custom/TransactionDTO";
 
 @controller("/v1/wallets")
 export class WalletController {
-  @get("/")
+  @get("/details")
   @use(requestValidator)
-  // @use(requireAuth)
-  async fetch(req: Request, res: Response, next: NextFunction) {
+  @use(requireAuth)
+  @authorize(canViewWallet)
+  async fetchWalletBalance(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const walletBusiness = new WalletBusiness();
-      const result = await walletBusiness.fetch({});
+      let condition = {
+        user: req.user,
+        status: PaymentProviderStatus.activated,
+      };
+      const result = await walletBusiness.findByCriteriaFirstOrDefault(
+        condition
+      );
       if (result.error) {
         return next(
           new PlatformError({

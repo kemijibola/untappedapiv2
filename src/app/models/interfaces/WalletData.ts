@@ -11,3 +11,14 @@ export interface WalletData extends ITimeStamp, IAppSpec, mongoose.Document {
   status: PaymentProviderStatus;
   balance: Number;
 }
+
+export interface WalletViewModel {
+  _id: string;
+  user: {
+    _id: string;
+    name: string;
+  };
+  walletNmber: string;
+  balance: number;
+  status: string;
+}

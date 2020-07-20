@@ -1,15 +1,19 @@
 import WalletDataRepository from "../repository/WalletDataRepository";
+import UserRepository from "../repository/UserRepository";
 import IWalletDataBusiness = require("./interfaces/WalletDataBusiness");
-import { WalletData } from "../models/interfaces";
+import { WalletData, WalletViewModel } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { generateRandomNumber } from "../../utils/lib/Helper";
 import { PaymentProviderStatus } from "../models/interfaces/custom/TransactionDTO";
+import { AnyAaaaRecord } from "dns";
 
 class WalletBusiness implements IWalletDataBusiness {
   private _walletDataRepository: WalletDataRepository;
+  private _userRepository: UserRepository;
 
   constructor() {
     this._walletDataRepository = new WalletDataRepository();
+    this._userRepository = new UserRepository();
   }
 
   async fetch(condition: any): Promise<Result<WalletData[]>> {
@@ -33,6 +37,36 @@ class WalletBusiness implements IWalletDataBusiness {
     return Result.ok<WalletData>(200, walletData);
   }
 
+  async findByCriteriaFirstOrDefault(criteria: any): Promise<Result<any>> {
+    let userWalletData = null;
+    const walletData: WalletData = await this._walletDataRepository.fetchFirstOrDefaultWithUser(
+      criteria
+    );
+    if (walletData) {
+      userWalletData = {
+        _id: walletData._id,
+        user: {
+          _id: walletData.user._id,
+          name: walletData.user.fullName,
+        },
+        walletNmber: walletData.walletNumber,
+        status: walletData.status,
+        balance: walletData.balance,
+      };
+    }
+
+    return Result.ok<any>(200, userWalletData);
+  }
+
+  async findByCriteriaDetails(criteria: any): Promise<Result<WalletData>> {
+    const walletData = await this._walletDataRepository.fetchWithUserDetails(
+      criteria
+    );
+    if (!walletData)
+      return Result.fail<WalletData>(404, "WalletData not found");
+    return Result.ok<WalletData>(200, walletData);
+  }
+
   async findByCriteria(criteria: any): Promise<Result<WalletData>> {
     const walletData = await this._walletDataRepository.findByCriteria(
       criteria
@@ -42,17 +76,31 @@ class WalletBusiness implements IWalletDataBusiness {
     return Result.ok<WalletData>(200, walletData);
   }
 
-  async create(item: WalletData): Promise<Result<WalletData>> {
+  async create(item: WalletData): Promise<Result<any>> {
     const walletData = await this._walletDataRepository.findByCriteria({
       user: item.user,
     });
-    if (walletData) return Result.fail<WalletData>(409, "User wallet exist");
+    if (walletData)
+      return Result.fail<WalletViewModel>(409, "User wallet exist");
 
-    item.walletNumber = generateRandomNumber(10);
+    item.walletNumber = generateRandomNumber(9);
     item.status = PaymentProviderStatus.activated;
     item.balance = 0;
     const newWalletData = await this._walletDataRepository.create(item);
-    return Result.ok<WalletData>(201, newWalletData);
+
+    const walletOwner = await this._userRepository.findById(newWalletData.user);
+    let walletInfo = {
+      _id: newWalletData._id,
+      user: {
+        _id: newWalletData.user._id,
+        name: walletOwner.fullName,
+      },
+      walletNmber: newWalletData.walletNumber,
+      status: newWalletData.status,
+      balance: newWalletData.balance,
+    };
+
+    return Result.ok<any>(201, walletInfo);
   }
 
   async update(id: string, item: WalletData): Promise<Result<WalletData>> {

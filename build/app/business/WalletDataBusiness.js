@@ -38,12 +38,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var WalletDataRepository_1 = __importDefault(require("../repository/WalletDataRepository"));
+var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
 var Result_1 = require("../../utils/Result");
 var Helper_1 = require("../../utils/lib/Helper");
 var TransactionDTO_1 = require("../models/interfaces/custom/TransactionDTO");
 var WalletBusiness = /** @class */ (function () {
     function WalletBusiness() {
         this._walletDataRepository = new WalletDataRepository_1.default();
+        this._userRepository = new UserRepository_1.default();
     }
     WalletBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -94,6 +96,48 @@ var WalletBusiness = /** @class */ (function () {
             });
         });
     };
+    WalletBusiness.prototype.findByCriteriaFirstOrDefault = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userWalletData, walletData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        userWalletData = null;
+                        return [4 /*yield*/, this._walletDataRepository.fetchFirstOrDefaultWithUser(criteria)];
+                    case 1:
+                        walletData = _a.sent();
+                        if (walletData) {
+                            userWalletData = {
+                                _id: walletData._id,
+                                user: {
+                                    _id: walletData.user._id,
+                                    name: walletData.user.fullName,
+                                },
+                                walletNmber: walletData.walletNumber,
+                                status: walletData.status,
+                                balance: walletData.balance,
+                            };
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, userWalletData)];
+                }
+            });
+        });
+    };
+    WalletBusiness.prototype.findByCriteriaDetails = function (criteria) {
+        return __awaiter(this, void 0, void 0, function () {
+            var walletData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._walletDataRepository.fetchWithUserDetails(criteria)];
+                    case 1:
+                        walletData = _a.sent();
+                        if (!walletData)
+                            return [2 /*return*/, Result_1.Result.fail(404, "WalletData not found")];
+                        return [2 /*return*/, Result_1.Result.ok(200, walletData)];
+                }
+            });
+        });
+    };
     WalletBusiness.prototype.findByCriteria = function (criteria) {
         return __awaiter(this, void 0, void 0, function () {
             var walletData;
@@ -111,7 +155,7 @@ var WalletBusiness = /** @class */ (function () {
     };
     WalletBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var walletData, newWalletData;
+            var walletData, newWalletData, walletOwner, walletInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._walletDataRepository.findByCriteria({
@@ -121,13 +165,26 @@ var WalletBusiness = /** @class */ (function () {
                         walletData = _a.sent();
                         if (walletData)
                             return [2 /*return*/, Result_1.Result.fail(409, "User wallet exist")];
-                        item.walletNumber = Helper_1.generateRandomNumber(10);
+                        item.walletNumber = Helper_1.generateRandomNumber(9);
                         item.status = TransactionDTO_1.PaymentProviderStatus.activated;
                         item.balance = 0;
                         return [4 /*yield*/, this._walletDataRepository.create(item)];
                     case 2:
                         newWalletData = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(201, newWalletData)];
+                        return [4 /*yield*/, this._userRepository.findById(newWalletData.user)];
+                    case 3:
+                        walletOwner = _a.sent();
+                        walletInfo = {
+                            _id: newWalletData._id,
+                            user: {
+                                _id: newWalletData.user._id,
+                                name: walletOwner.fullName,
+                            },
+                            walletNmber: newWalletData.walletNumber,
+                            status: newWalletData.status,
+                            balance: newWalletData.balance,
+                        };
+                        return [2 /*return*/, Result_1.Result.ok(201, walletInfo)];
                 }
             });
         });

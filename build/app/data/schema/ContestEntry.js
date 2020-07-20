@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess = require("../MongodataAccess");
 var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
+var interfaces_1 = require("../../models/interfaces");
 var evaluationRatingSchema = new mongoose_1.Schema({
     evaluation: { type: String, required: true },
     rating: { type: Number, default: 0 },
@@ -30,6 +31,7 @@ var contestEntrySchema = new mongoose_1.Schema({
     additionalInfo: { type: String },
     entry: { type: String, required: true },
     contestantCode: { type: String, required: true },
+    position: { type: interfaces_1.EntryPosition, default: interfaces_1.EntryPosition.participant },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",

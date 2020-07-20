@@ -10,4 +10,14 @@ var PaymentProviderStatus;
     PaymentProviderStatus["activated"] = "activated";
     PaymentProviderStatus["deactivated"] = "deactivated";
 })(PaymentProviderStatus = exports.PaymentProviderStatus || (exports.PaymentProviderStatus = {}));
+var PaymentChannel;
+(function (PaymentChannel) {
+    PaymentChannel["paystack"] = "paystack";
+    PaymentChannel["wallet"] = "wallet";
+})(PaymentChannel = exports.PaymentChannel || (exports.PaymentChannel = {}));
+var TransactionStatus;
+(function (TransactionStatus) {
+    TransactionStatus["successful"] = "successful";
+    TransactionStatus["failed"] = "failed";
+})(TransactionStatus = exports.TransactionStatus || (exports.TransactionStatus = {}));
 //# sourceMappingURL=TransactionDTO.js.map

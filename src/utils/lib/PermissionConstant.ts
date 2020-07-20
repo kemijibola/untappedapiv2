@@ -65,4 +65,5 @@ export const canUpdateService = "canUpdateService";
 export const canDeleteService = "canDeleteService";
 
 export const canCreateWallet = "canCreateWallet";
+export const canViewWallet = "canViewWallet";
 export const canDeActivateWallet = "canDeActivateWallet";

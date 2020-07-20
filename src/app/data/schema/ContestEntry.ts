@@ -1,7 +1,7 @@
 import MongodataAccess = require("../MongodataAccess");
 import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { IContestEntry } from "../../models/interfaces";
+import { IContestEntry, EntryPosition } from "../../models/interfaces";
 
 const evaluationRatingSchema: Schema = new Schema({
   evaluation: { type: String, required: true },
@@ -33,6 +33,7 @@ const contestEntrySchema: Schema = new Schema(
     additionalInfo: { type: String },
     entry: { type: String, required: true },
     contestantCode: { type: String, required: true },
+    position: { type: EntryPosition, default: EntryPosition.participant },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",

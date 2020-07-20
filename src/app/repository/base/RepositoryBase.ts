@@ -54,6 +54,19 @@ class RepositoryBase<T extends mongoose.Document>
   //   });
   // }
 
+  fetchFirstOrDefaultWithUser(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .findOne(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .populate("user", "_id fullName")
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
   fetchWithUser(condition: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model

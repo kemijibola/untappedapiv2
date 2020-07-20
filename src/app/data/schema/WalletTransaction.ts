@@ -1,9 +1,10 @@
 import MongodataAccess = require("../MongodataAccess");
 import { Schema } from "mongoose";
 const mongooseConnection = MongodataAccess.mongooseConnection;
-import { WalletTransaction } from "../../models/interfaces";
+import { WalletTransaction, PaymentChannel } from "../../models/interfaces";
 import {
   TransctionType,
+  TransactionStatus,
 } from "../../models/interfaces/custom/TransactionDTO";
 
 const walletDataSchema: Schema = new Schema(
@@ -13,9 +14,13 @@ const walletDataSchema: Schema = new Schema(
       ref: "WalletData",
       required: true,
     },
-    requestId: {
-      type: Schema.Types.ObjectId,
+    reference: {
+      type: Number,
       ref: "TransactionRequest",
+      required: true,
+    },
+    paymentChannel: {
+      type: PaymentChannel,
       required: true,
     },
     amount: {
@@ -32,6 +37,16 @@ const walletDataSchema: Schema = new Schema(
     },
     transactionType: {
       type: TransctionType,
+    },
+    responseCode: {
+      type: String,
+    },
+    responseMessage: {
+      type: String,
+    },
+    status: {
+      type: TransactionStatus,
+      required: true,
     },
   },
   { timestamps: true }

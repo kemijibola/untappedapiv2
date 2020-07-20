@@ -56,6 +56,21 @@ var RepositoryBase = /** @class */ (function () {
     //       .exec();
     //   });
     // }
+    RepositoryBase.prototype.fetchFirstOrDefaultWithUser = function (condition) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .findOne(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            })
+                .populate("user", "_id fullName")
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
+        });
+    };
     RepositoryBase.prototype.fetchWithUser = function (condition) {
         var _this = this;
         return new Promise(function (resolve, reject) {
