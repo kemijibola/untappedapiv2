@@ -7,15 +7,24 @@ import {
   authorize,
   get,
 } from "../decorators";
-import { IContest, MediaType, PaymentStatus } from "../app/models/interfaces";
+import {
+  IContest,
+  MediaType,
+  PaymentStatus,
+  PrizePosition,
+} from "../app/models/interfaces";
 import ContestBusiness = require("../app/business/ContestBusiness");
 import { PlatformError } from "../utils/error";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
 import { ObjectKeyString } from "../utils/lib";
-import { canCreateContest } from "../utils/lib/PermissionConstant";
+import {
+  canCreateContest,
+  canDisbursePrize,
+  canViewPendingDisbursement,
+} from "../utils/lib/PermissionConstant";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
-import { differenceInDays, isAfter } from "date-fns";
+import { differenceInDays, isAfter, startOfToday, endOfToday } from "date-fns";
 
 @controller("/v1/contests")
 export class ContestController {
@@ -82,6 +91,19 @@ export class ContestController {
             message: "Contest can not have more than 3 winners",
           })
         );
+      }
+
+      const prizePositions: string[] = Object.values(PrizePosition);
+
+      for (let prize of item.redeemable) {
+        if (!prizePositions.includes(prize.name)) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: "Invalid prize position",
+            })
+          );
+        }
       }
 
       item.createdBy = req.user;
@@ -190,6 +212,74 @@ export class ContestController {
     }
   }
 
+  @get("/pending/disbursement")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canViewPendingDisbursement)
+  async fetchContestPendingDisbursement(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let condition: ObjectKeyString = {};
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.fetch({
+        endDate: { $gte: startOfToday(), $lte: new Date() },
+      });
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @post("/:id/disburse")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canDisbursePrize)
+  async disbursePrize(req: Request, res: Response, next: NextFunction) {
+    try {
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.disbursePayment(req.params.id);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
   @get("/user/contests")
   @use(requestValidator)
   async fetchContestListByUser(
@@ -214,6 +304,7 @@ export class ContestController {
         data: result.data,
       });
     } catch (err) {
+      console.log("got here");
       return next(
         new PlatformError({
           code: 500,
@@ -223,34 +314,34 @@ export class ContestController {
     }
   }
 
-  @get("/dashboard/runningcontests")
-  @use(requestValidator)
-  async fetchContestDashboard(req: Request, res: Response, next: NextFunction) {
-    try {
-      const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetchDashboardContest();
-      if (result.error) {
-        return next(
-          new PlatformError({
-            code: result.responseCode,
-            message: result.error,
-          })
-        );
-      }
-      return res.status(result.responseCode).json({
-        message: "Operation successful",
-        data: result.data,
-      });
-    } catch (err) {
-      console.log(err);
-      return next(
-        new PlatformError({
-          code: 500,
-          message: "Internal Server error occured. Please try again later.",
-        })
-      );
-    }
-  }
+  // @get("/dashboard/runningcontests")
+  // @use(requestValidator)
+  // async fetchContestDashboard(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const contestBusiness = new ContestBusiness();
+  //     const result = await contestBusiness.fetchDashboardContest();
+  //     if (result.error) {
+  //       return next(
+  //         new PlatformError({
+  //           code: result.responseCode,
+  //           message: result.error,
+  //         })
+  //       );
+  //     }
+  //     return res.status(result.responseCode).json({
+  //       message: "Operation successful",
+  //       data: result.data,
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //     return next(
+  //       new PlatformError({
+  //         code: 500,
+  //         message: "Internal Server error occured. Please try again later.",
+  //       })
+  //     );
+  //   }
+  // }
 
   @get("/")
   @use(requestValidator)

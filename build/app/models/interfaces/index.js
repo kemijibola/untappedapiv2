@@ -7,6 +7,7 @@ __export(require("./User"));
 __export(require("./Profile"));
 __export(require("./ScheduledEmail"));
 __export(require("./Permission"));
+__export(require("./Contest"));
 __export(require("./ContestEntry"));
 __export(require("./Approval"));
 __export(require("./Media"));

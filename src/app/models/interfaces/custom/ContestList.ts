@@ -6,6 +6,7 @@ export interface IContestContestant {
   contestantPhoto: string;
   contestantCode: string;
   contestantTotalVote: number;
+  position: string;
 }
 
 export interface ContestVoteResult {

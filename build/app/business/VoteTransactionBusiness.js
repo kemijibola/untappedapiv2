@@ -277,6 +277,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                             contestantPhoto: item.user.profileImagePath || "",
                             contestantCode: item.contestantCode,
                             contestantTotalVote: entryVoteCount.length,
+                            position: item.position,
                         };
                         result.entries = result.entries.concat([entry]);
                         _a.label = 5;

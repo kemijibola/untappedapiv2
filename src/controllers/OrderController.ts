@@ -99,6 +99,4 @@ export class OrderController {
       );
     }
   }
-  delete(): void {}
-  findById(): void {}
 }

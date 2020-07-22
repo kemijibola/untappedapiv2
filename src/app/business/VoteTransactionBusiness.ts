@@ -191,6 +191,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
         contestantPhoto: item.user.profileImagePath || "",
         contestantCode: item.contestantCode,
         contestantTotalVote: entryVoteCount.length,
+        position: item.position,
       };
       result.entries = [...result.entries, entry];
     }

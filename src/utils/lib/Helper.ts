@@ -180,3 +180,16 @@ export function toObjectId(_id: string): mongoose.Types.ObjectId {
 export function getTime(date?: Date) {
   return date != null ? new Date(date).getTime() : 0;
 }
+
+export function isUnique(arr: any): boolean {
+  let seenValues: any = {};
+
+  for (let i = 0; i < arr.length; i++) {
+    if (seenValues[arr[i]]) {
+      return false;
+    } else {
+      seenValues[arr[i]] = true;
+    }
+  }
+  return true;
+}

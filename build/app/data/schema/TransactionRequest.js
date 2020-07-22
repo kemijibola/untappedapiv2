@@ -3,23 +3,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MongodataAccess = require("../MongodataAccess");
 var mongoose_1 = require("mongoose");
 var mongooseConnection = MongodataAccess.mongooseConnection;
+var interfaces_1 = require("../../models/interfaces");
+var TransactionDTO_1 = require("../../models/interfaces/custom/TransactionDTO");
 var transactionRequestSchema = new mongoose_1.Schema({
-    providerId: {
-        type: String,
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     amount: {
         type: Number,
         required: true,
     },
+    reference: {
+        type: String,
+    },
     narration: {
         type: String,
     },
-    requestType: {
-        type: String,
+    paymentChannel: {
+        type: interfaces_1.PaymentChannel,
         required: true,
     },
-    responseStatus: {
+    transactionType: {
+        type: TransactionDTO_1.TransctionType,
+        required: true,
+    },
+    responseCode: {
         type: String,
     },
     responseMessage: {

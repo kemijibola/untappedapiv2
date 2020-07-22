@@ -35,6 +35,16 @@ export enum EligibilityStatus {
   default = "default",
 }
 
+export interface CreateEntryPosition {
+  contestId: string;
+  positions: ContestPosition[];
+}
+
+export interface ContestPosition {
+  entryId: string;
+  user: string;
+  position: string;
+}
 export interface ContestEligibilityData {
   status: boolean;
   eligibility: EligibilityStatus;
@@ -42,9 +52,11 @@ export interface ContestEligibilityData {
 }
 
 export enum EntryPosition {
-  first = "1st",
-  second = "2nd",
-  third = "3rd",
+  firstplace = "firstplace",
+  secondplace = "secondplace",
+  thirdplace = "thirdplace",
+  fourthplace = "fourthplace",
+  fifthplace = "fifthplace",
   disqualified = "disqualified",
   participant = "participant",
 }

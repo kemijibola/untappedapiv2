@@ -10,10 +10,13 @@ import {
   ContestEligibilityData,
   EligibilityStatus,
   IComment,
+  EntryPosition,
+  CreateEntryPosition,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import { generateRandomNumber, ObjectKeyString } from "../../utils/lib";
 import { IUserContestListAnalysis } from "../models/interfaces/custom/ContestList";
+import { isFuture } from "date-fns";
 
 class ContestBusiness implements IContestEntryBusiness {
   private _contestEntryRepository: ContestEntryRepository;
@@ -196,6 +199,46 @@ class ContestBusiness implements IContestEntryBusiness {
     return Result.ok<IUserContestListAnalysis[]>(200, userContestResults);
   }
 
+  async updateEntryPosition(
+    item: CreateEntryPosition
+  ): Promise<Result<IContestEntry[]>> {
+    const contest = await this._contestRepository.findById(item.contestId);
+    console.log(contest);
+    if (!contest) return Result.fail<IContestEntry[]>(404, "Contest not found");
+    if (isFuture(contest.endDate))
+      return Result.fail<IContestEntry[]>(400, "Contest still ongoing");
+
+    for (let data of item.positions) {
+      const contestantEntry = await this._contestEntryRepository.findByOne({
+        _id: data.entryId,
+      });
+
+      if (!contestantEntry)
+        return Result.fail<IContestEntry[]>(404, "Contestant entry not found");
+    }
+
+    if (contest.redeemable.length !== item.positions.length) {
+      const winner = contest.redeemable.length > 1 ? "Winners" : "Winner";
+      return Result.fail<IContestEntry[]>(
+        400,
+        `Contest ${contest.title} must have ${contest.redeemable.length} ${winner}`
+      );
+    }
+
+    var contestEntries: IContestEntry[] = [];
+    for (let data of item.positions) {
+      const updateObj = await this._contestEntryRepository.patch(data.entryId, {
+        position: data.position,
+      });
+      contestEntries = [...contestEntries, updateObj];
+    }
+
+    contest.positionsAssigned = true;
+    await contest.save();
+
+    return Result.ok<IContestEntry[]>(200, contestEntries);
+  }
+
   async create(item: IContestEntry): Promise<Result<IContestEntry>> {
     const contest = await this._contestRepository.findById(item.contest);
     const contestant = await this._userRepository.findById(item.user);
@@ -245,6 +288,7 @@ class ContestBusiness implements IContestEntryBusiness {
       else codeHasBeenAssigned = false;
     }
     item.contestantCode = contestantCode;
+    item.position = EntryPosition.participant;
     const newContestEntry = await this._contestEntryRepository.create(item);
     return Result.ok<IContestEntry>(201, newContestEntry);
   }
@@ -259,6 +303,7 @@ class ContestBusiness implements IContestEntryBusiness {
         404,
         `Could not update contest entry.Contest entry with Id ${id} not found`
       );
+    item.position = contestEntry.position;
     const updateObj = await this._contestEntryRepository.update(
       contestEntry._id,
       item
@@ -273,6 +318,7 @@ class ContestBusiness implements IContestEntryBusiness {
         404,
         `Could not update contest entry.Contest entry with Id ${id} not found`
       );
+    item.position = contestEntry.position;
     const updateObj = await this._contestEntryRepository.update(
       contestEntry._id,
       item

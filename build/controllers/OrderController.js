@@ -127,8 +127,6 @@ var OrderController = /** @class */ (function () {
             });
         });
     };
-    OrderController.prototype.delete = function () { };
-    OrderController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

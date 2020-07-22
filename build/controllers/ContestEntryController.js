@@ -45,11 +45,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
+var interfaces_1 = require("../app/models/interfaces");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ContestEntryBusiness = require("../app/business/ContestEntryBusiness");
 var error_1 = require("../utils/error");
+var lib_1 = require("../utils/lib");
 var ContestEntryController = /** @class */ (function () {
     function ContestEntryController() {
     }
@@ -167,6 +169,68 @@ var ContestEntryController = /** @class */ (function () {
             });
         });
     };
+    ContestEntryController.prototype.updateEntryPosition = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var prizePositions, _i, _a, item_1, item, positions, contestEntryBusiness, result, err_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        if (!req.body.contestId)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide contest",
+                                }))];
+                        if (req.body.positions.length < 1)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide at least one contest position",
+                                }))];
+                        prizePositions = Object.values(interfaces_1.EntryPosition);
+                        for (_i = 0, _a = req.body.positions; _i < _a.length; _i++) {
+                            item_1 = _a[_i];
+                            if (!prizePositions.includes(item_1.position)) {
+                                return [2 /*return*/, next(new error_1.PlatformError({
+                                        code: 400,
+                                        message: "Invalid prize position",
+                                    }))];
+                            }
+                        }
+                        item = req.body;
+                        positions = item.positions.map(function (item) {
+                            return item.position;
+                        });
+                        if (!lib_1.isUnique(positions))
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Entry position must be unique",
+                                }))];
+                        contestEntryBusiness = new ContestEntryBusiness();
+                        return [4 /*yield*/, contestEntryBusiness.updateEntryPosition(item)];
+                    case 1:
+                        result = _b.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(200).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_4 = _b.sent();
+                        console.log(err_4);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/:id/user"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -193,6 +257,16 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
+    __decorate([
+        decorators_1.put("/assign/position"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canUpdateEntryPosition),
+        decorators_1.requestValidators("contestId", "positions"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestEntryController.prototype, "updateEntryPosition", null);
     ContestEntryController = __decorate([
         decorators_1.controller("/v1/contest-entries")
     ], ContestEntryController);

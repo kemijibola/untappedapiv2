@@ -57,11 +57,11 @@ var ContestController = /** @class */ (function () {
     }
     ContestController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, mediaType, systemMediaTypes, contestBusiness, result, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var item, mediaType, systemMediaTypes, prizePositions, _i, _a, prize, contestBusiness, result, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         item = req.body;
                         if (date_fns_1.isAfter(Date.now(), item.startDate)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
@@ -95,11 +95,21 @@ var ContestController = /** @class */ (function () {
                                     message: "Contest can not have more than 3 winners",
                                 }))];
                         }
+                        prizePositions = Object.values(interfaces_1.PrizePosition);
+                        for (_i = 0, _a = item.redeemable; _i < _a.length; _i++) {
+                            prize = _a[_i];
+                            if (!prizePositions.includes(prize.name)) {
+                                return [2 /*return*/, next(new error_1.PlatformError({
+                                        code: 400,
+                                        message: "Invalid prize position",
+                                    }))];
+                            }
+                        }
                         item.createdBy = req.user;
                         contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, contestBusiness.create(item)];
                     case 1:
-                        result = _a.sent();
+                        result = _b.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
@@ -111,7 +121,7 @@ var ContestController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_1 = _a.sent();
+                        err_1 = _b.sent();
                         // console.log(err);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
@@ -195,16 +205,18 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
-    ContestController.prototype.fetchContestListByUser = function (req, res, next) {
+    ContestController.prototype.fetchContestPendingDisbursement = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userId, contestBusiness, result, err_4;
+            var condition, contestBusiness, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        userId = req.user;
+                        condition = {};
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetchContestListByUser(userId)];
+                        return [4 /*yield*/, contestBusiness.fetch({
+                                endDate: { $gte: date_fns_1.startOfToday(), $lte: new Date() },
+                            })];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -228,7 +240,7 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
-    ContestController.prototype.fetchContestDashboard = function (req, res, next) {
+    ContestController.prototype.disbursePrize = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var contestBusiness, result, err_5;
             return __generator(this, function (_a) {
@@ -236,7 +248,7 @@ var ContestController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetchDashboardContest()];
+                        return [4 /*yield*/, contestBusiness.disbursePayment(req.params.id)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -261,9 +273,71 @@ var ContestController = /** @class */ (function () {
             });
         });
     };
+    ContestController.prototype.fetchContestListByUser = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userId, contestBusiness, result, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userId = req.user;
+                        contestBusiness = new ContestBusiness();
+                        return [4 /*yield*/, contestBusiness.fetchContestListByUser(userId)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_6 = _a.sent();
+                        console.log("got here");
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    // @get("/dashboard/runningcontests")
+    // @use(requestValidator)
+    // async fetchContestDashboard(req: Request, res: Response, next: NextFunction) {
+    //   try {
+    //     const contestBusiness = new ContestBusiness();
+    //     const result = await contestBusiness.fetchDashboardContest();
+    //     if (result.error) {
+    //       return next(
+    //         new PlatformError({
+    //           code: result.responseCode,
+    //           message: result.error,
+    //         })
+    //       );
+    //     }
+    //     return res.status(result.responseCode).json({
+    //       message: "Operation successful",
+    //       data: result.data,
+    //     });
+    //   } catch (err) {
+    //     console.log(err);
+    //     return next(
+    //       new PlatformError({
+    //         code: 500,
+    //         message: "Internal Server error occured. Please try again later.",
+    //       })
+    //     );
+    //   }
+    // }
     ContestController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var condition, contestBusiness, result, err_6;
+            var condition, contestBusiness, result, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -287,7 +361,7 @@ var ContestController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_6 = _a.sent();
+                        err_7 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -322,19 +396,30 @@ var ContestController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetchContestDetailsById", null);
     __decorate([
+        decorators_1.get("/pending/disbursement"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canViewPendingDisbursement),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "fetchContestPendingDisbursement", null);
+    __decorate([
+        decorators_1.post("/:id/disburse"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canDisbursePrize),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestController.prototype, "disbursePrize", null);
+    __decorate([
         decorators_1.get("/user/contests"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetchContestListByUser", null);
-    __decorate([
-        decorators_1.get("/dashboard/runningcontests"),
-        decorators_1.use(ValidateRequest_1.requestValidator),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Object, Function]),
-        __metadata("design:returntype", Promise)
-    ], ContestController.prototype, "fetchContestDashboard", null);
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

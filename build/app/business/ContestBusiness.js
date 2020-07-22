@@ -37,10 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var Contest_1 = require("./../models/interfaces/Contest");
 var ContestRepository_1 = __importDefault(require("../repository/ContestRepository"));
 var ContestEntryRepository_1 = __importDefault(require("../repository/ContestEntryRepository"));
 var CommentRepository_1 = __importDefault(require("../repository/CommentRepository"));
 var VoteTransactionRepository_1 = __importDefault(require("../repository/VoteTransactionRepository"));
+var WalletDataRepository_1 = __importDefault(require("../repository/WalletDataRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
@@ -50,6 +52,7 @@ var ContestBusiness = /** @class */ (function () {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
         this._commentRepository = new CommentRepository_1.default();
         this._voteTransactionRepository = new VoteTransactionRepository_1.default();
+        this._walletDataRepository = new WalletDataRepository_1.default();
     }
     ContestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -324,10 +327,163 @@ var ContestBusiness = /** @class */ (function () {
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         item.paymentStatus = contest.paymentStatus;
+                        item.prizeRedeemed = contest.prizeRedeemed;
                         return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.disbursePayment = function (contestId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var prizeRedeemed, contest, i, firstPlaceWinner, contestantWallet, prizeMoney, secondPlaceWinner, contestantWallet, prizeMoney, thirdPlaceWinner, contestantWallet, prizeMoney, fourthPlaceWinner, contestantWallet, prizeMoney, fifthPlaceWinner, contestantWallet, prizeMoney;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        prizeRedeemed = false;
+                        return [4 /*yield*/, this._contestRepository.findById(contestId)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            if (!contest)
+                                return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                        if (contest.prizeRedeemed)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest prize has been redeemed")];
+                        if (contest.redeemable.length < 1)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Contest does not have redeemables")];
+                        if (!contest.positionsAssigned)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Please assign positions to contest entries before proceeding")];
+                        i = 1;
+                        _a.label = 2;
+                    case 2:
+                        if (!(i <= contest.redeemable.length)) return [3 /*break*/, 23];
+                        if (!(i === 1)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: contest._id,
+                                position: interfaces_1.EntryPosition.firstplace,
+                            })];
+                    case 3:
+                        firstPlaceWinner = _a.sent();
+                        if (!firstPlaceWinner)
+                            return [2 /*return*/, Result_1.Result.fail(400, "First place winner has not been assigned")];
+                        return [4 /*yield*/, this._walletDataRepository.findByCriteria({
+                                user: firstPlaceWinner.user,
+                            })];
+                    case 4:
+                        contestantWallet = _a.sent();
+                        if (!contestantWallet) return [3 /*break*/, 6];
+                        prizeMoney = contest.redeemable.filter(function (x) { return x.name === Contest_1.PrizePosition.position1; })[0];
+                        contestantWallet.balance = prizeMoney.prizeCash;
+                        return [4 /*yield*/, contestantWallet.save()];
+                    case 5:
+                        _a.sent();
+                        prizeRedeemed = true;
+                        _a.label = 6;
+                    case 6:
+                        if (!(i === 2)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: contest._id,
+                                position: interfaces_1.EntryPosition.secondplace,
+                            })];
+                    case 7:
+                        secondPlaceWinner = _a.sent();
+                        if (!secondPlaceWinner)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Second place winner ha s notbeen assigned")];
+                        return [4 /*yield*/, this._walletDataRepository.findByCriteria({
+                                user: secondPlaceWinner.user,
+                            })];
+                    case 8:
+                        contestantWallet = _a.sent();
+                        if (!contestantWallet) return [3 /*break*/, 10];
+                        prizeMoney = contest.redeemable.filter(function (x) { return x.name === Contest_1.PrizePosition.position2; })[0];
+                        contestantWallet.balance = prizeMoney.prizeCash;
+                        return [4 /*yield*/, contestantWallet.save()];
+                    case 9:
+                        _a.sent();
+                        prizeRedeemed = true;
+                        _a.label = 10;
+                    case 10:
+                        if (!(i === 3)) return [3 /*break*/, 14];
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: contest._id,
+                                position: interfaces_1.EntryPosition.thirdplace,
+                            })];
+                    case 11:
+                        thirdPlaceWinner = _a.sent();
+                        if (!thirdPlaceWinner)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Third place winner have not been assigned")];
+                        return [4 /*yield*/, this._walletDataRepository.findByCriteria({
+                                user: thirdPlaceWinner.user,
+                            })];
+                    case 12:
+                        contestantWallet = _a.sent();
+                        if (!contestantWallet) return [3 /*break*/, 14];
+                        prizeMoney = contest.redeemable.filter(function (x) { return x.name === Contest_1.PrizePosition.position3; })[0];
+                        contestantWallet.balance = prizeMoney.prizeCash;
+                        return [4 /*yield*/, contestantWallet.save()];
+                    case 13:
+                        _a.sent();
+                        prizeRedeemed = true;
+                        _a.label = 14;
+                    case 14:
+                        if (!(i === 4)) return [3 /*break*/, 18];
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: contest._id,
+                                position: interfaces_1.EntryPosition.fourthplace,
+                            })];
+                    case 15:
+                        fourthPlaceWinner = _a.sent();
+                        if (!fourthPlaceWinner)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Third place winner have not been assigned")];
+                        return [4 /*yield*/, this._walletDataRepository.findByCriteria({
+                                user: fourthPlaceWinner.user,
+                            })];
+                    case 16:
+                        contestantWallet = _a.sent();
+                        if (!contestantWallet) return [3 /*break*/, 18];
+                        prizeMoney = contest.redeemable.filter(function (x) { return x.name === Contest_1.PrizePosition.position4; })[0];
+                        contestantWallet.balance = prizeMoney.prizeCash;
+                        return [4 /*yield*/, contestantWallet.save()];
+                    case 17:
+                        _a.sent();
+                        prizeRedeemed = true;
+                        _a.label = 18;
+                    case 18:
+                        if (!(i === 5)) return [3 /*break*/, 22];
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: contest._id,
+                                position: interfaces_1.EntryPosition.fifthplace,
+                            })];
+                    case 19:
+                        fifthPlaceWinner = _a.sent();
+                        if (!fifthPlaceWinner)
+                            return [2 /*return*/, Result_1.Result.fail(400, "Third place winner have not been assigned")];
+                        return [4 /*yield*/, this._walletDataRepository.findByCriteria({
+                                user: fifthPlaceWinner.user,
+                            })];
+                    case 20:
+                        contestantWallet = _a.sent();
+                        if (!contestantWallet) return [3 /*break*/, 22];
+                        prizeMoney = contest.redeemable.filter(function (x) { return x.name === Contest_1.PrizePosition.position5; })[0];
+                        contestantWallet.balance = prizeMoney.prizeCash;
+                        return [4 /*yield*/, contestantWallet.save()];
+                    case 21:
+                        _a.sent();
+                        prizeRedeemed = true;
+                        _a.label = 22;
+                    case 22:
+                        i++;
+                        return [3 /*break*/, 2];
+                    case 23:
+                        if (!prizeRedeemed) return [3 /*break*/, 25];
+                        contest.prizeRedeemed = true;
+                        return [4 /*yield*/, contest.save()];
+                    case 24:
+                        _a.sent();
+                        _a.label = 25;
+                    case 25: return [2 /*return*/, Result_1.Result.ok(200, contest)];
                 }
             });
         });
@@ -343,6 +499,7 @@ var ContestBusiness = /** @class */ (function () {
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         item.paymentStatus = contest.paymentStatus;
+                        item.prizeRedeemed = contest.prizeRedeemed;
                         return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
                     case 2:
                         updateObj = _a.sent();

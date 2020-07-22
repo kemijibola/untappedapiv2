@@ -9,11 +9,19 @@ import { IAppSpec } from "./AppSpec";
 import { IIssueCategory, ComplaintStatus } from "./IssueCategory";
 import { MediaType } from "./Media";
 import { ICategoryType } from "./CategoryType";
-import { IContestEntry } from "./ContestEntry";
+import { IContestEntry, EntryPosition } from "./ContestEntry";
 
 export interface IRedeemable {
-  name: string;
+  name: PrizePosition;
   prizeCash: number;
+}
+
+export enum PrizePosition {
+  position1 = "position1",
+  position2 = "position2",
+  position3 = "position3",
+  position4 = "position4",
+  position5 = "position5",
 }
 
 export interface IJudge {
@@ -55,6 +63,8 @@ export interface IContest
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
+  prizeRedeemed: boolean;
+  positionsAssigned: boolean;
 }
 
 interface IContestIssues {

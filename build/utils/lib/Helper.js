@@ -202,4 +202,17 @@ function getTime(date) {
     return date != null ? new Date(date).getTime() : 0;
 }
 exports.getTime = getTime;
+function isUnique(arr) {
+    var seenValues = {};
+    for (var i = 0; i < arr.length; i++) {
+        if (seenValues[arr[i]]) {
+            return false;
+        }
+        else {
+            seenValues[arr[i]] = true;
+        }
+    }
+    return true;
+}
+exports.isUnique = isUnique;
 //# sourceMappingURL=Helper.js.map
