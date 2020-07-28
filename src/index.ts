@@ -12,7 +12,7 @@ import { errorHandler } from "./middlewares/ErrorMiddleware";
 import { IError } from "./utils/error/GlobalError";
 import cors from "cors";
 // import SocketIo = require('./socket/SocketIo');
-import { userFilterJob } from "./utils/CronJob";
+import { userFilterJob, contestSettlement } from "./utils/CronJob";
 
 const app = express();
 app.use(bodyParser.json());
@@ -42,6 +42,7 @@ const port = config.PORT || 5000;
 app.set("port", port);
 
 userFilterJob();
+contestSettlement();
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);

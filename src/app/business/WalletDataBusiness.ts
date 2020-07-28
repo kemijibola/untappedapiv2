@@ -1,19 +1,34 @@
+import { TransctionType } from "./../models/interfaces/custom/TransactionDTO";
 import WalletDataRepository from "../repository/WalletDataRepository";
 import UserRepository from "../repository/UserRepository";
+import UserAccountRepository from "../repository/UserAccountRepository";
+import TransactionRequestRepository from "../repository/TransactionRequestRepository";
 import IWalletDataBusiness = require("./interfaces/WalletDataBusiness");
-import { WalletData, WalletViewModel } from "../models/interfaces";
+import {
+  WalletData,
+  WalletViewModel,
+  TransactionRequest,
+} from "../models/interfaces";
 import { Result } from "../../utils/Result";
-import { generateRandomNumber } from "../../utils/lib/Helper";
+import { generateRandomNumber, decrypt } from "../../utils/lib/Helper";
 import { PaymentProviderStatus } from "../models/interfaces/custom/TransactionDTO";
-import { AnyAaaaRecord } from "dns";
+import { AppConfig } from "../models/interfaces/custom/AppConfig";
+import { AbstractPayment } from "../../utils/payments/payer";
+import { PaymentFactory } from "../../utils/payments/PaymentFactory";
+import { parse } from "date-fns";
+const config: AppConfig = module.require("../../config/keys");
 
 class WalletBusiness implements IWalletDataBusiness {
   private _walletDataRepository: WalletDataRepository;
   private _userRepository: UserRepository;
+  private _userAccountRepository: UserAccountRepository;
+  private _transactionRequestRepository: TransactionRequestRepository;
 
   constructor() {
     this._walletDataRepository = new WalletDataRepository();
     this._userRepository = new UserRepository();
+    this._userAccountRepository = new UserAccountRepository();
+    this._transactionRequestRepository = new TransactionRequestRepository();
   }
 
   async fetch(condition: any): Promise<Result<WalletData[]>> {
@@ -74,6 +89,91 @@ class WalletBusiness implements IWalletDataBusiness {
     if (!walletData)
       return Result.fail<WalletData>(404, "WalletData not found");
     return Result.ok<WalletData>(200, walletData);
+  }
+
+  async transferFromWallet(
+    processor: string,
+    pin: string,
+    amount: number,
+    user: string,
+    narration?: string
+  ): Promise<Result<WalletData>> {
+    var userWallet = await this._walletDataRepository.findByCriteria({ user });
+    if (!userWallet)
+      return Result.fail<WalletData>(404, "User wallet not found");
+    if (userWallet.status === PaymentProviderStatus.deactivated)
+      return Result.fail<WalletData>(400, "User wallet not activated");
+    var walletPin = decrypt(config.KEY, userWallet.pin);
+    var decrypted = decrypt(config.KEY, pin);
+    if (walletPin !== decrypted)
+      return Result.fail<WalletData>(400, "Incorrect wallet pin");
+    const walletBalance: any = userWallet.balance;
+    const walletBalanceInKobo = walletBalance * 100;
+    if (walletBalanceInKobo < amount)
+      return Result.fail<WalletData>(400, "Insufficient wallet balance");
+
+    const userAccount = await this._userAccountRepository.findByCriteria({
+      user: userWallet.user,
+    });
+    if (!userAccount)
+      return Result.fail<WalletData>(
+        404,
+        "User account not found. Please setup account before proceeding."
+      );
+
+    var recipientCode = userAccount.gatewayRecipientCode || "";
+    var paymentFactory: AbstractPayment = new PaymentFactory().create(
+      processor.toLowerCase()
+    );
+
+    const result = await paymentFactory.transferFund(
+      "balance",
+      amount,
+      recipientCode,
+      narration || `Wallet transfer on ${new Date()}`
+    );
+    if (result.status) {
+      const walletBalance: any = userWallet.balance;
+      const newWalletBalance = walletBalance - amount / 100;
+      userWallet.balance = newWalletBalance;
+      await userWallet.save();
+
+      // log transaction
+      const transactionObj: TransactionRequest = Object.assign({
+        user: userWallet.user,
+        amount: result.data.amount / 100,
+        paymentReference: generateRandomNumber(12),
+        externalReference: result.data.reference,
+        narration: result.data.reason,
+        paymentChannel: "paystack",
+        transactionType: TransctionType.debit,
+        transferCode: result.data.transfer_code,
+        responseCode: 200,
+        responseMessage: result.message,
+        currency: result.data.currency,
+        transactionDate: parse(result.data.createdAt),
+        transactionStatus: result.data.status,
+      });
+      await this._transactionRequestRepository.create(transactionObj);
+      return Result.ok<WalletData>(201, userWallet);
+    } else {
+      const transactionObj: TransactionRequest = Object.assign({
+        user: userWallet.user,
+        amount: result.data.amount / 100 || amount,
+        externalReference: result.data.reference || "",
+        narration: result.data.reason || "",
+        paymentChannel: "paystack",
+        transactionType: TransctionType.debit,
+        transferCode: result.data.transfer_code || "",
+        responseCode: 400,
+        responseMessage: result.message,
+        currency: result.data.currency,
+        transactionDate: parse(result.data.createdAt),
+        transactionStatus: result.data.status || "",
+      });
+      await this._transactionRequestRepository.create(transactionObj);
+      return Result.fail<WalletData>(400, result.message);
+    }
   }
 
   async create(item: WalletData): Promise<Result<any>> {

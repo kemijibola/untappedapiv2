@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { IUser } from "./User";
 import { IContest } from "./Contest";
-import { ITimeStamp } from "./Timestamp";
+import { ITimeStamp, IApproval } from "./Timestamp";
 import { IAppSpec } from "./AppSpec";
 
 export interface EvaluationRating {
@@ -16,7 +16,11 @@ export interface JudgeEvaluation {
   comment: string;
   dateAdded: Date;
 }
-export interface IContestEntry extends ITimeStamp, IAppSpec, mongoose.Document {
+export interface IContestEntry
+  extends ITimeStamp,
+    IApproval,
+    IAppSpec,
+    mongoose.Document {
   user: IUser["_id"];
   contest: IContest["_id"];
   likedBy: string[];
@@ -25,6 +29,7 @@ export interface IContestEntry extends ITimeStamp, IAppSpec, mongoose.Document {
   contestantCode: string;
   entry: string;
   position: EntryPosition;
+  prizeRedeemed: boolean;
   // judgeEvaluations: JudgeEvaluation[];
 }
 

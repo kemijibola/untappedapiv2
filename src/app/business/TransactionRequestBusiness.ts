@@ -1,13 +1,17 @@
 import TransactionRequestRepository from "../repository/TransactionRequestRepository";
-import ITransctionRequestBsiness = require("./interfaces/TransctionRequestBsiness");
+import UserAccountRepository from "../repository/UserAccountRepository";
+import ITransctionRequestBusiness = require("./interfaces/TransctionRequestBsiness");
 import { TransactionRequest } from "../models/interfaces";
 import { Result } from "../../utils/Result";
+import { parse } from "date-fns";
 
-class TransactionRequestBusiness implements ITransctionRequestBsiness {
+class TransactionRequestBusiness implements ITransctionRequestBusiness {
   private _transactionRequestRepository: TransactionRequestRepository;
+  private _userAccountRepository: UserAccountRepository;
 
   constructor() {
     this._transactionRequestRepository = new TransactionRequestRepository();
+    this._userAccountRepository = new UserAccountRepository();
   }
 
   async fetch(condition: any): Promise<Result<TransactionRequest[]>> {
@@ -60,6 +64,42 @@ class TransactionRequestBusiness implements ITransctionRequestBsiness {
       item
     );
     return Result.ok<TransactionRequest>(201, newTransactionRequest);
+  }
+
+  async updateTransactionStatus(
+    transferCode: string,
+    recipientCode: string,
+    amount: number,
+    status: string,
+    responseMessge: string,
+    responseCode: number,
+    responseBody: string,
+    transferredAt: string = ""
+  ): Promise<void> {
+    const transaction = await this._transactionRequestRepository.findByCriteria(
+      { transferCode }
+    );
+    if (transaction) {
+      var recipient = await this._userAccountRepository.findByCriteria({
+        gatewayRecipientCode: recipientCode,
+      });
+
+      if (
+        transaction.user === recipient.user &&
+        amount === transaction.amount
+      ) {
+        transaction.transactionStatus = status;
+        transaction.transactionDate =
+          parse(transferredAt) || transaction.transactionDate;
+        transaction.responseMessage = responseMessge;
+        transaction.responseBody = responseBody;
+        transaction.responseCode = responseCode;
+        await this._transactionRequestRepository.update(
+          transaction._id,
+          transaction
+        );
+      }
+    }
   }
 
   async update(

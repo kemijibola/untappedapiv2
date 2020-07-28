@@ -249,36 +249,36 @@ export class ContestController {
     }
   }
 
-  @post("/:id/disburse")
-  @use(requestValidator)
-  @use(requireAuth)
-  @authorize(canDisbursePrize)
-  async disbursePrize(req: Request, res: Response, next: NextFunction) {
-    try {
-      const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.disbursePayment(req.params.id);
-      if (result.error) {
-        return next(
-          new PlatformError({
-            code: result.responseCode,
-            message: result.error,
-          })
-        );
-      }
-      return res.status(result.responseCode).json({
-        message: "Operation successful",
-        data: result.data,
-      });
-    } catch (err) {
-      console.log(err);
-      return next(
-        new PlatformError({
-          code: 500,
-          message: "Internal Server error occured. Please try again later.",
-        })
-      );
-    }
-  }
+  // @post("/:id/disburse")
+  // @use(requestValidator)
+  // @use(requireAuth)
+  // @authorize(canDisbursePrize)
+  // async disbursePrize(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const contestBusiness = new ContestBusiness();
+  //     const result = await contestBusiness.disbursePayment(req.params.id);
+  //     if (result.error) {
+  //       return next(
+  //         new PlatformError({
+  //           code: result.responseCode,
+  //           message: result.error,
+  //         })
+  //       );
+  //     }
+  //     return res.status(result.responseCode).json({
+  //       message: "Operation successful",
+  //       data: result.data,
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //     return next(
+  //       new PlatformError({
+  //         code: 500,
+  //         message: "Internal Server error occured. Please try again later.",
+  //       })
+  //     );
+  //   }
+  // }
 
   @get("/user/contests")
   @use(requestValidator)

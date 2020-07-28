@@ -49,6 +49,8 @@ var config = require("../../config/keys");
 var ApplicationBusiness_1 = __importDefault(require("../../app/business/ApplicationBusiness"));
 var Result_1 = require("../Result");
 var mongoose = __importStar(require("mongoose"));
+var crypto_js_1 = require("crypto-js");
+var crypto_1 = require("crypto");
 var chunkedUserPermissons = {};
 exports.getSecretByKey = function (keyId) {
     var secret = config.RSA_PRIVATE.filter(function (x) { return x.key === keyId; })[0];
@@ -215,4 +217,32 @@ function isUnique(arr) {
     return true;
 }
 exports.isUnique = isUnique;
+function encrypt(keys, value) {
+    var key = crypto_js_1.enc.Utf8.parse(keys);
+    var iv = crypto_js_1.enc.Utf8.parse(keys);
+    var encrypted = crypto_js_1.AES.encrypt(crypto_js_1.enc.Utf8.parse(value.toString()), key, {
+        keySize: 128 / 8,
+        iv: iv,
+        mode: crypto_js_1.mode.CBC,
+        padding: crypto_js_1.pad.Pkcs7,
+    });
+    return encrypted.toString();
+}
+exports.encrypt = encrypt;
+function decrypt(keys, value) {
+    var key = crypto_js_1.enc.Utf8.parse(keys);
+    var iv = crypto_js_1.enc.Utf8.parse(keys);
+    var decrypted = crypto_js_1.AES.decrypt(value, key, {
+        keySize: 128 / 8,
+        iv: iv,
+        mode: crypto_js_1.mode.CBC,
+        padding: crypto_js_1.pad.Pkcs7,
+    });
+    return decrypted.toString(crypto_js_1.enc.Utf8);
+}
+exports.decrypt = decrypt;
+function signatureHash(secret, data) {
+    return crypto_1.createHmac("sha512", secret).update(data).digest("hex");
+}
+exports.signatureHash = signatureHash;
 //# sourceMappingURL=Helper.js.map

@@ -115,6 +115,8 @@ switch (environment) {
         secret: process.env.PUSHER_SECRET,
         cluster: process.env.PUSHER_CLUSTER,
       },
+      PAYSTACKBASEURL: process.env.PAYSTACKBASEURL,
+      KEY: process.env.KEY,
     };
     break;
   default:

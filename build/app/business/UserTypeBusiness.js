@@ -113,7 +113,7 @@ var UserTypeBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userTypeRepository.findByCriteria({
-                            name: item.name
+                            name: item.name,
                         })];
                     case 1:
                         userType = _a.sent();

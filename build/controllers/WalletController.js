@@ -124,6 +124,75 @@ var WalletController = /** @class */ (function () {
             });
         });
     };
+    WalletController.prototype.transfer = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var amount, amountValue, amountInKobo, walletBusiness, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (!req.body.processor) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide processor",
+                                }))];
+                        }
+                        if (!req.body.walletPin) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide walletPin",
+                                }))];
+                        }
+                        if (!req.body.amount) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide amount",
+                                }))];
+                        }
+                        amount = req.body.amount;
+                        amountValue = 0;
+                        if (!isNaN(Number(amount))) {
+                            amountValue = Number(amount);
+                        }
+                        else {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide valid amount",
+                                }))];
+                        }
+                        if (amountValue < 500) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Amount to withdraw must be greater than 500",
+                                }))];
+                        }
+                        amountInKobo = amountValue * 100;
+                        walletBusiness = new WalletBusiness();
+                        return [4 /*yield*/, walletBusiness.transferFromWallet(req.body.processor, req.body.walletPin, amountInKobo, req.user, req.body.narration)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/details"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -143,6 +212,15 @@ var WalletController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], WalletController.prototype, "postCreate", null);
+    __decorate([
+        decorators_1.post("/transfer"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.requestValidators("processor", "walletPin", "amount"),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], WalletController.prototype, "transfer", null);
     WalletController = __decorate([
         decorators_1.controller("/v1/wallets")
     ], WalletController);

@@ -63,17 +63,133 @@ var Paystack = /** @class */ (function (_super) {
     __extends(Paystack, _super);
     function Paystack() {
         var _this = _super.call(this) || this;
-        _this.payStackVerifyUrl = "https://api.paystack.co/transaction/verify";
+        _this.payStackBaseUrl = config.PAYSTACKBASEURL;
         return _this;
     }
-    Paystack.prototype.verifyPayment = function (referenceNo) {
+    Paystack.prototype.fetchBanks = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var options, verified, err_1;
+            var options, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         options = {
-                            uri: this.payStackVerifyUrl + "/" + referenceNo,
+                            uri: this.payStackBaseUrl + "/bank",
+                            headers: {
+                                Authorization: "Bearer " + config.PAYMENT_SECRETS.paystack_secret,
+                            },
+                            json: true,
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, request.get(options)];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        err_1 = _a.sent();
+                        throw err_1;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Paystack.prototype.verifyAccountNmber = function (accountNumber, bankCode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var options, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = {
+                            uri: this.payStackBaseUrl + "/bank/resolve?account_number=" + accountNumber + "&bank_code=" + bankCode,
+                            headers: {
+                                Authorization: "Bearer " + config.PAYMENT_SECRETS.paystack_secret,
+                            },
+                            json: true,
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, request.get(options)];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        err_2 = _a.sent();
+                        throw err_2;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Paystack.prototype.createTransferRecipient = function (type, name, accountNumber, bankCode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var options, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = {
+                            uri: this.payStackBaseUrl + "/transferrecipient",
+                            headers: {
+                                Authorization: "Bearer " + config.PAYMENT_SECRETS.paystack_secret,
+                            },
+                            json: true,
+                            body: {
+                                type: type,
+                                name: name,
+                                account_number: accountNumber,
+                                bank_code: bankCode,
+                            },
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, request.post(options)];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        err_3 = _a.sent();
+                        throw err_3;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Paystack.prototype.transferFund = function (source, amount, recipient, reason) {
+        return __awaiter(this, void 0, void 0, function () {
+            var options, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = {
+                            uri: this.payStackBaseUrl + "/transfer",
+                            headers: {
+                                Authorization: "Bearer " + config.PAYMENT_SECRETS.paystack_secret,
+                            },
+                            json: true,
+                            body: {
+                                source: source,
+                                amount: amount,
+                                recipient: recipient,
+                                reason: reason,
+                            },
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, request.post(options)];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        err_4 = _a.sent();
+                        throw err_4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Paystack.prototype.verifyPayment = function (referenceNo) {
+        return __awaiter(this, void 0, void 0, function () {
+            var options, verified, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = {
+                            uri: this.payStackBaseUrl + "/transaction/verify/" + referenceNo,
                             headers: {
                                 Authorization: "Bearer " + config.PAYMENT_SECRETS.paystack_secret,
                             },
@@ -117,14 +233,14 @@ var Paystack = /** @class */ (function (_super) {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        err_1 = _a.sent();
+                        err_5 = _a.sent();
                         return [2 /*return*/, Object.assign({
                                 amount: 0,
                                 requestStatus: false,
                                 transactionDate: new Date(),
                                 status: PaymentFactory_1.PaymentProcessorStatus.failed,
                                 reference: referenceNo,
-                                gatewayReponse: err_1,
+                                gatewayReponse: err_5,
                                 channel: "",
                                 ipAddress: "",
                                 requestedAmount: 0,

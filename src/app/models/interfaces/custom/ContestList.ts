@@ -2,11 +2,13 @@ import { IContest } from "../Contest";
 
 export interface IContestContestant {
   entryId: string;
+  contestant: string;
   contestantName: string;
   contestantPhoto: string;
   contestantCode: string;
   contestantTotalVote: number;
   position: string;
+  prizeRedeemed: boolean;
 }
 
 export interface ContestVoteResult {

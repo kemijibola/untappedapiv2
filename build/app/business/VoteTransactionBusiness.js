@@ -226,6 +226,56 @@ var VoteTransactionBusiness = /** @class */ (function () {
             });
         });
     };
+    VoteTransactionBusiness.prototype.fetchTopContestants = function (contest, entries, select) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestants, _i, entries_1, item, entryVoteCount, entry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        contestants = [];
+                        _i = 0, entries_1 = entries;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < entries_1.length)) return [3 /*break*/, 4];
+                        item = entries_1[_i];
+                        return [4 /*yield*/, this._voteTransactionRepository.fetch({
+                                contestId: contest,
+                                contestantCode: item.contestantCode,
+                                voteStatus: interfaces_1.VoteStatus.valid,
+                            })];
+                    case 2:
+                        entryVoteCount = _a.sent();
+                        entry = {
+                            entryId: item._id,
+                            contestant: item.user._id,
+                            contestantName: item.user.fullName || "",
+                            contestantPhoto: item.user.profileImagePath || "",
+                            contestantCode: item.contestantCode,
+                            contestantTotalVote: entryVoteCount.length,
+                            position: item.position,
+                            prizeRedeemed: item.prizeRedeemed,
+                        };
+                        contestants = contestants.concat([entry]);
+                        _a.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        if (contestants.length > 0) {
+                            contestants = contestants.sort(function (a, b) {
+                                return b.contestantTotalVote - a.contestantTotalVote;
+                            });
+                            contestants = contestants.filter(function (contestant, index) {
+                                return index < select;
+                            });
+                            return [2 /*return*/, contestants];
+                        }
+                        console.log("finalist", contestants);
+                        return [2 /*return*/, contestants];
+                }
+            });
+        });
+    };
     VoteTransactionBusiness.prototype.FetchContestResult = function (contest) {
         return __awaiter(this, void 0, void 0, function () {
             var result, contestTotalVote, contestTotalValidVote, contestTotalInvalidVote, contestEntries, _i, contestEntries_1, item, entryVoteCount, entry;
@@ -256,6 +306,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         result.contestTotalInvalidVote = contestTotalInvalidVote.length;
                         return [4 /*yield*/, this._contestEntryRepository.fetchWithUserDetails({
                                 contest: contest._id,
+                                approved: true,
                             })];
                     case 2:
                         contestEntries = _a.sent();
@@ -273,11 +324,13 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         entryVoteCount = _a.sent();
                         entry = {
                             entryId: item._id,
+                            contestant: item.user._id,
                             contestantName: item.user.fullName,
                             contestantPhoto: item.user.profileImagePath || "",
                             contestantCode: item.contestantCode,
                             contestantTotalVote: entryVoteCount.length,
                             position: item.position,
+                            prizeRedeemed: item.prizeRedeemed,
                         };
                         result.entries = result.entries.concat([entry]);
                         _a.label = 5;

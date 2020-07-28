@@ -138,6 +138,47 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
     return Result.ok<boolean>(200, isDeleted);
   }
 
+  async fetchTopContestants(
+    contest: string,
+    entries: IContestEntry[],
+    select: number
+  ): Promise<IContestContestant[]> {
+    var contestants: IContestContestant[] = [];
+    for (let item of entries) {
+      var entryVoteCount: IContestEntry[] = await this._voteTransactionRepository.fetch(
+        {
+          contestId: contest,
+          contestantCode: item.contestantCode,
+          voteStatus: VoteStatus.valid,
+        }
+      );
+      const entry: IContestContestant = {
+        entryId: item._id,
+        contestant: item.user._id,
+        contestantName: item.user.fullName || "",
+        contestantPhoto: item.user.profileImagePath || "",
+        contestantCode: item.contestantCode,
+        contestantTotalVote: entryVoteCount.length,
+        position: item.position,
+        prizeRedeemed: item.prizeRedeemed,
+      };
+      contestants = [...contestants, entry];
+    }
+    if (contestants.length > 0) {
+      contestants = contestants.sort((a, b) => {
+        return b.contestantTotalVote - a.contestantTotalVote;
+      });
+      contestants = contestants.filter(
+        (contestant: IContestContestant, index: number) => {
+          return index < select;
+        }
+      );
+      return contestants;
+    }
+    console.log("finalist", contestants);
+    return contestants;
+  }
+
   async FetchContestResult(contest: IContest): Promise<ContestVoteResult> {
     var result: ContestVoteResult = {
       contestId: contest._id,
@@ -174,6 +215,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
     const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetchWithUserDetails(
       {
         contest: contest._id,
+        approved: true,
       }
     );
 
@@ -187,11 +229,13 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
       );
       const entry: IContestContestant = {
         entryId: item._id,
+        contestant: item.user._id,
         contestantName: item.user.fullName,
         contestantPhoto: item.user.profileImagePath || "",
         contestantCode: item.contestantCode,
         contestantTotalVote: entryVoteCount.length,
         position: item.position,
+        prizeRedeemed: item.prizeRedeemed,
       };
       result.entries = [...result.entries, entry];
     }

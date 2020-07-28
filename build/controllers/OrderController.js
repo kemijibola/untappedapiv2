@@ -95,6 +95,18 @@ var OrderController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        if (!req.body.processor) {
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide processor",
+                                }))];
+                        }
+                        if (!req.body.reference) {
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide reference",
+                                }))];
+                        }
                         paymentFactory = new PaymentFactory_1.PaymentFactory().create(req.body.processor.toLowerCase());
                         return [4 /*yield*/, paymentFactory.verifyPayment(req.body.reference)];
                     case 1:

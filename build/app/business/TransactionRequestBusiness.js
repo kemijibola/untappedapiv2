@@ -38,10 +38,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var TransactionRequestRepository_1 = __importDefault(require("../repository/TransactionRequestRepository"));
+var UserAccountRepository_1 = __importDefault(require("../repository/UserAccountRepository"));
 var Result_1 = require("../../utils/Result");
+var date_fns_1 = require("date-fns");
 var TransactionRequestBusiness = /** @class */ (function () {
     function TransactionRequestBusiness() {
         this._transactionRequestRepository = new TransactionRequestRepository_1.default();
+        this._userAccountRepository = new UserAccountRepository_1.default();
     }
     TransactionRequestBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -116,6 +119,38 @@ var TransactionRequestBusiness = /** @class */ (function () {
                     case 1:
                         newTransactionRequest = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newTransactionRequest)];
+                }
+            });
+        });
+    };
+    TransactionRequestBusiness.prototype.updateTransactionStatus = function (transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody, transferredAt) {
+        if (transferredAt === void 0) { transferredAt = ""; }
+        return __awaiter(this, void 0, void 0, function () {
+            var transaction, recipient;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode })];
+                    case 1:
+                        transaction = _a.sent();
+                        if (!transaction) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this._userAccountRepository.findByCriteria({
+                                gatewayRecipientCode: recipientCode,
+                            })];
+                    case 2:
+                        recipient = _a.sent();
+                        if (!(transaction.user === recipient.user &&
+                            amount === transaction.amount)) return [3 /*break*/, 4];
+                        transaction.transactionStatus = status;
+                        transaction.transactionDate =
+                            date_fns_1.parse(transferredAt) || transaction.transactionDate;
+                        transaction.responseMessage = responseMessge;
+                        transaction.responseBody = responseBody;
+                        transaction.responseCode = responseCode;
+                        return [4 /*yield*/, this._transactionRequestRepository.update(transaction._id, transaction)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

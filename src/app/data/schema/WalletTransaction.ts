@@ -9,13 +9,13 @@ import {
 
 const walletDataSchema: Schema = new Schema(
   {
-    user: {
+    wallet: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "WalletData",
       required: true,
     },
     reference: {
-      type: Number,
+      type: String,
     },
     paymentChannel: {
       type: PaymentChannel,

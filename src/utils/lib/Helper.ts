@@ -7,6 +7,8 @@ import ApplicationBusiness from "../../app/business/ApplicationBusiness";
 import { PlatformError } from "../error";
 import { Result } from "../Result";
 import * as mongoose from "mongoose";
+import { AES, enc, mode, pad } from "crypto-js";
+import { createHmac } from "crypto";
 
 export type ObjectKeyString = { [x: string]: string };
 
@@ -192,4 +194,32 @@ export function isUnique(arr: any): boolean {
     }
   }
   return true;
+}
+
+export function encrypt(keys: any, value: any): string {
+  var key = enc.Utf8.parse(keys);
+  var iv = enc.Utf8.parse(keys);
+  var encrypted = AES.encrypt(enc.Utf8.parse(value.toString()), key, {
+    keySize: 128 / 8,
+    iv: iv,
+    mode: mode.CBC,
+    padding: pad.Pkcs7,
+  });
+  return encrypted.toString();
+}
+
+export function decrypt(keys: any, value: any): string {
+  var key = enc.Utf8.parse(keys);
+  var iv = enc.Utf8.parse(keys);
+  var decrypted = AES.decrypt(value, key, {
+    keySize: 128 / 8,
+    iv: iv,
+    mode: mode.CBC,
+    padding: pad.Pkcs7,
+  });
+  return decrypted.toString(enc.Utf8);
+}
+
+export function signatureHash(secret: string, data: string): string {
+  return createHmac("sha512", secret).update(data).digest("hex");
 }

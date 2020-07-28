@@ -6,13 +6,13 @@ var mongooseConnection = MongodataAccess.mongooseConnection;
 var interfaces_1 = require("../../models/interfaces");
 var TransactionDTO_1 = require("../../models/interfaces/custom/TransactionDTO");
 var walletDataSchema = new mongoose_1.Schema({
-    user: {
+    wallet: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "WalletData",
         required: true,
     },
     reference: {
-        type: Number,
+        type: String,
     },
     paymentChannel: {
         type: interfaces_1.PaymentChannel,

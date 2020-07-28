@@ -16,6 +16,7 @@ import {
 } from "../app/models/interfaces";
 import { PlatformError } from "../utils/error";
 import UserBusiness = require("../app/business/UserBusiness");
+import UserAccountBusiness = require("../app/business/UserAccountBusiness");
 import { ObjectKeyString } from "../utils/lib";
 import { requireAuth } from "../middlewares/auth";
 import { requestValidator } from "../middlewares/ValidateRequest";
@@ -37,6 +38,43 @@ export class UserController {
       }
       const userBusiness = new UserBusiness();
       const result = await userBusiness.fetch(condition);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @get("/user-account")
+  @use(requestValidator)
+  @use(requireAuth)
+  async fetchUserAccount(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let condition = {
+        user: req.user,
+      };
+
+      const userAccountBusiness = new UserAccountBusiness();
+      const result = await userAccountBusiness.findByCriteria(condition);
       if (result.error) {
         return next(
           new PlatformError({

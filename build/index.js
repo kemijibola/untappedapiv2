@@ -31,6 +31,7 @@ app.use(function (error, req, res, next) {
 var port = config.PORT || 5000;
 app.set("port", port);
 CronJob_1.userFilterJob();
+CronJob_1.contestSettlement();
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
 });

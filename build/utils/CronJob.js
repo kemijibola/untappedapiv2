@@ -45,14 +45,30 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var cron = __importStar(require("node-cron"));
 var UserFilter_1 = require("./filtercategory/UserFilter");
+var Reconciliation_1 = require("./contests/disbursement/Reconciliation");
 exports.userFilterJob = function () {
-    cron.schedule("*/1 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
+    cron.schedule("*/30 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
         var report;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     report = UserFilter_1.UserFilter.initReport();
                     return [4 /*yield*/, report.generateReport()];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.contestSettlement = function () {
+    cron.schedule("*/1 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
+        var report;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    report = Reconciliation_1.Reconciliation.init();
+                    return [4 /*yield*/, report.settle()];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

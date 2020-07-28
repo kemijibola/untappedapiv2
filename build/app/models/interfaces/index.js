@@ -9,7 +9,6 @@ __export(require("./ScheduledEmail"));
 __export(require("./Permission"));
 __export(require("./Contest"));
 __export(require("./ContestEntry"));
-__export(require("./Approval"));
 __export(require("./Media"));
 __export(require("./UserFilterCategory"));
 __export(require("./Order"));

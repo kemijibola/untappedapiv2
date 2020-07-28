@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { IEvaluation } from "./Evaluation";
 import { IUser } from "./User";
-import { ITimeStamp } from "./Timestamp";
+import { ITimeStamp, IApproval } from "./Timestamp";
 import { ContestType } from "../../data/schema/Contest";
 import { IUserSocialMedia } from "./Profile";
 import { PaymentStatus } from "./Payment";
@@ -45,6 +45,7 @@ export interface IContest
   extends IOffline,
     IAppSpec,
     ITimeStamp,
+    IApproval,
     mongoose.Document {
   title: string;
   code: string;
@@ -63,8 +64,6 @@ export interface IContest
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
-  prizeRedeemed: boolean;
-  positionsAssigned: boolean;
 }
 
 interface IContestIssues {

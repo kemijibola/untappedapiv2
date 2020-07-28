@@ -62,8 +62,9 @@ const contestSchema: Schema = new Schema(
     paymentStatus: { type: PaymentStatus, default: PaymentStatus.UnPaid },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     issues: [{ type: contestIssueSchema }],
-    prizeRedeemed: { type: Boolean, default: false },
-    positionsAssigned: { type: Boolean, default: false },
+    approved: { type: Boolean, default: false },
+    approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    approvedDate: { type: Date },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",

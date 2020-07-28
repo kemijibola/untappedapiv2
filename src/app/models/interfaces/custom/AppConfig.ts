@@ -29,6 +29,8 @@ export interface AppConfig {
   VERIFICATION_URI: string;
   PAYMENT_SECRETS: PaymentGate;
   PUSHER: Pusher;
+  PAYSTACKBASEURL: string;
+  KEY: string;
 }
 
 export interface PaymentGate {

@@ -32,6 +32,10 @@ var contestEntrySchema = new mongoose_1.Schema({
     entry: { type: String, required: true },
     contestantCode: { type: String, required: true },
     position: { type: interfaces_1.EntryPosition, default: interfaces_1.EntryPosition.participant },
+    prizeRedeemed: { type: Boolean, default: false },
+    approved: { type: Boolean, default: false },
+    approvedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
+    approvedDate: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",

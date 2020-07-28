@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
 var UserBusiness = require("../app/business/UserBusiness");
+var UserAccountBusiness = require("../app/business/UserAccountBusiness");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var UserController = /** @class */ (function () {
@@ -88,9 +89,44 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.fetchUserAccount = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var condition, userAccountBusiness, result, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        condition = {
+                            user: req.user,
+                        };
+                        userAccountBusiness = new UserAccountBusiness();
+                        return [4 /*yield*/, userAccountBusiness.findByCriteria(condition)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserController.prototype.postSuspendAccount = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, userId, currentUser, result, err_2;
+            var userBusiness, userId, currentUser, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -121,7 +157,7 @@ var UserController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 3:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -132,39 +168,6 @@ var UserController = /** @class */ (function () {
         });
     };
     UserController.prototype.postUser = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, user, result, err_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        userBusiness = new UserBusiness();
-                        user = req.user;
-                        return [4 /*yield*/, userBusiness.patch(user, req.body)];
-                    case 1:
-                        result = _a.sent();
-                        if (result.error) {
-                            return [2 /*return*/, next(new error_1.PlatformError({
-                                    code: result.responseCode,
-                                    message: result.error,
-                                }))];
-                        }
-                        return [2 /*return*/, res.status(result.responseCode).json({
-                                message: "Operation successful",
-                                data: result.data,
-                            })];
-                    case 2:
-                        err_3 = _a.sent();
-                        return [2 /*return*/, next(new error_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured. Please try again later.",
-                            }))];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UserController.prototype.patch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var userBusiness, user, result, err_4;
             return __generator(this, function (_a) {
@@ -197,6 +200,39 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.patch = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, user, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness();
+                        user = req.user;
+                        return [4 /*yield*/, userBusiness.patch(user, req.body)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -204,6 +240,14 @@ var UserController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "fetch", null);
+    __decorate([
+        decorators_1.get("/user-account"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "fetchUserAccount", null);
     __decorate([
         decorators_1.post("/suspend"),
         decorators_1.use(ValidateRequest_1.requestValidator),

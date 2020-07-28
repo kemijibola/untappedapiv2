@@ -46,7 +46,6 @@ var CommentRepository_1 = __importDefault(require("../repository/CommentReposito
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
-var date_fns_1 = require("date-fns");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
@@ -251,62 +250,44 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
-    ContestBusiness.prototype.updateEntryPosition = function (item) {
+    // async updateEntryPosition(
+    //   item: CreateEntryPosition
+    // ): Promise<Result<IContestEntry[]>> {
+    //   const contest = await this._contestRepository.findById(item.contestId);
+    //   if (!contest) return Result.fail<IContestEntry[]>(404, "Contest not found");
+    //   if (isFuture(contest.endDate))
+    //     return Result.fail<IContestEntry[]>(400, "Contest still ongoing");
+    //   for (let data of item.positions) {
+    //     const contestantEntry = await this._contestEntryRepository.findByOne({
+    //       _id: data.entryId,
+    //     });
+    //     if (!contestantEntry)
+    //       return Result.fail<IContestEntry[]>(404, "Contestant entry not found");
+    //   }
+    //   if (contest.redeemable.length !== item.positions.length) {
+    //     const winner = contest.redeemable.length > 1 ? "Winners" : "Winner";
+    //     return Result.fail<IContestEntry[]>(
+    //       400,
+    //       `Contest ${contest.title} must have ${contest.redeemable.length} ${winner}`
+    //     );
+    //   }
+    //   var contestEntries: IContestEntry[] = [];
+    //   for (let data of item.positions) {
+    //     const updateObj = await this._contestEntryRepository.patch(data.entryId, {
+    //       position: data.position,
+    //     });
+    //     contestEntries = [...contestEntries, updateObj];
+    //   }
+    //   contest.positionsAssigned = true;
+    //   await contest.save();
+    //   return Result.ok<IContestEntry[]>(200, contestEntries);
+    // }
+    ContestBusiness.prototype.fetchContestEntries = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, _i, _a, data, contestantEntry, winner, contestEntries, _b, _c, data, updateObj;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0: return [4 /*yield*/, this._contestRepository.findById(item.contestId)];
-                    case 1:
-                        contest = _d.sent();
-                        console.log(contest);
-                        if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
-                        if (date_fns_1.isFuture(contest.endDate))
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest still ongoing")];
-                        _i = 0, _a = item.positions;
-                        _d.label = 2;
-                    case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 5];
-                        data = _a[_i];
-                        return [4 /*yield*/, this._contestEntryRepository.findByOne({
-                                _id: data.entryId,
-                            })];
-                    case 3:
-                        contestantEntry = _d.sent();
-                        if (!contestantEntry)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contestant entry not found")];
-                        _d.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5:
-                        if (contest.redeemable.length !== item.positions.length) {
-                            winner = contest.redeemable.length > 1 ? "Winners" : "Winner";
-                            return [2 /*return*/, Result_1.Result.fail(400, "Contest " + contest.title + " must have " + contest.redeemable.length + " " + winner)];
-                        }
-                        contestEntries = [];
-                        _b = 0, _c = item.positions;
-                        _d.label = 6;
-                    case 6:
-                        if (!(_b < _c.length)) return [3 /*break*/, 9];
-                        data = _c[_b];
-                        return [4 /*yield*/, this._contestEntryRepository.patch(data.entryId, {
-                                position: data.position,
-                            })];
-                    case 7:
-                        updateObj = _d.sent();
-                        contestEntries = contestEntries.concat([updateObj]);
-                        _d.label = 8;
-                    case 8:
-                        _b++;
-                        return [3 /*break*/, 6];
-                    case 9:
-                        contest.positionsAssigned = true;
-                        return [4 /*yield*/, contest.save()];
-                    case 10:
-                        _d.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, contestEntries)];
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestEntryRepository.fetch(condition)];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -364,6 +345,8 @@ var ContestBusiness = /** @class */ (function () {
                     case 7:
                         item.contestantCode = contestantCode;
                         item.position = interfaces_1.EntryPosition.participant;
+                        item.approved = false;
+                        item.approvedBy = "";
                         return [4 /*yield*/, this._contestEntryRepository.create(item)];
                     case 8:
                         newContestEntry = _a.sent();

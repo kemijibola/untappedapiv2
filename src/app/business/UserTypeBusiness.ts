@@ -38,7 +38,7 @@ class UserTypeBusiness implements IUserTypeBusiness {
 
   async create(item: IUserType): Promise<Result<IUserType>> {
     const userType = await this._userTypeRepository.findByCriteria({
-      name: item.name
+      name: item.name,
     });
     if (userType === null) {
       item.isActive = false;

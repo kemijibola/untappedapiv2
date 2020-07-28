@@ -15,27 +15,43 @@ const transactionRequestSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
-    reference: {
+    paymentReference: {
+      type: String,
+    },
+    externalReference: {
       type: String,
     },
     narration: {
       type: String,
     },
     paymentChannel: {
-      type: PaymentChannel,
+      type: String,
       required: true,
     },
     transactionType: {
       type: TransctionType,
       required: true,
     },
-    responseCode: {
+    transferCode: {
       type: String,
+    },
+    responseCode: {
+      type: Number,
     },
     responseMessage: {
       type: String,
     },
+    currency: {
+      type: String,
+      required: true,
+    },
     transactionDate: {
+      type: Date,
+    },
+    transactionStatus: {
+      type: String,
+    },
+    responseBody: {
       type: String,
     },
     application: {

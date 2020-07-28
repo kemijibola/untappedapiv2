@@ -540,6 +540,7 @@ class UserBusiness implements IUserBusiness {
 
     //     await schedule(StateMachineArns.EmailStateMachine, new Date(), mailParams);
   }
+  
   async verifyPasswordResetLink(
     request: VerifyResetPasswordRequest
   ): Promise<Result<string>> {

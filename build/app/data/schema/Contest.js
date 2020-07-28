@@ -54,8 +54,9 @@ var contestSchema = new mongoose_1.Schema({
     paymentStatus: { type: interfaces_1.PaymentStatus, default: interfaces_1.PaymentStatus.UnPaid },
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     issues: [{ type: contestIssueSchema }],
-    prizeRedeemed: { type: Boolean, default: false },
-    positionsAssigned: { type: Boolean, default: false },
+    approved: { type: Boolean, default: false },
+    approvedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
+    approvedDate: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",

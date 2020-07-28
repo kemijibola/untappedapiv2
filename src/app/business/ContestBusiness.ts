@@ -49,7 +49,6 @@ class ContestBusiness implements IContestBusiness {
   }
 
   async fetch(condition: any): Promise<Result<IContest[]>> {
-    console.log(condition);
     const contests = await this._contestRepository.fetch(condition);
     return Result.ok<IContest[]>(200, contests);
   }
@@ -219,6 +218,8 @@ class ContestBusiness implements IContestBusiness {
     item.likedBy = [];
     item.paymentStatus = PaymentStatus.UnPaid;
     item.issues = [];
+    item.approved = false;
+    item.approvedBy = "";
     item.code = getRandomId();
 
     const newContest = await this._contestRepository.create(item);
@@ -229,192 +230,191 @@ class ContestBusiness implements IContestBusiness {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Contest not found");
     item.paymentStatus = contest.paymentStatus;
-    item.prizeRedeemed = contest.prizeRedeemed;
+    item.approved = contest.approved;
+    item.approvedBy = contest.approvedBy;
+    item.approvedDate = contest.approvedDate;
     const updateObj = await this._contestRepository.update(contest._id, item);
     return Result.ok<IContest>(200, updateObj);
   }
 
-  async disbursePayment(contestId: string): Promise<Result<IContest>> {
-    var prizeRedeemed = false;
-    const contest = await this._contestRepository.findById(contestId);
-    if (!contest)
-      if (!contest) return Result.fail<IContest>(404, "Contest not found");
-    if (contest.prizeRedeemed)
-      return Result.fail<IContest>(404, "Contest prize has been redeemed");
+  // async disbursePayment(contestId: string): Promise<Result<IContest>> {
+  //   var prizeRedeemed = false;
+  //   const contest = await this._contestRepository.findById(contestId);
+  //   if (!contest)
+  //     if (!contest) return Result.fail<IContest>(404, "Contest not found");
+  //   if (contest.redeemable.length < 1)
+  //     return Result.fail<IContest>(404, "Contest does not have redeemables");
 
-    if (contest.redeemable.length < 1)
-      return Result.fail<IContest>(404, "Contest does not have redeemables");
+  //   if (!contest.positionsAssigned)
+  //     return Result.fail<IContest>(
+  //       400,
+  //       "Please assign positions to contest entries before proceeding"
+  //     );
 
-    if (!contest.positionsAssigned)
-      return Result.fail<IContest>(
-        400,
-        "Please assign positions to contest entries before proceeding"
-      );
+  //   for (let i = 1; i <= contest.redeemable.length; i++) {
+  //     if (i === 1) {
+  //       // credit winner wallet
+  //       const firstPlaceWinner = await this._contestEntryRepository.findByCriteria(
+  //         {
+  //           contest: contest._id,
+  //           position: EntryPosition.firstplace,
+  //         }
+  //       );
 
-    for (let i = 1; i <= contest.redeemable.length; i++) {
-      if (i === 1) {
-        // credit winner wallet
-        const firstPlaceWinner = await this._contestEntryRepository.findByCriteria(
-          {
-            contest: contest._id,
-            position: EntryPosition.firstplace,
-          }
-        );
+  //       if (!firstPlaceWinner)
+  //         return Result.fail<IContest>(
+  //           400,
+  //           "First place winner has not been assigned"
+  //         );
+  //       const contestantWallet = await this._walletDataRepository.findByCriteria(
+  //         {
+  //           user: firstPlaceWinner.user,
+  //         }
+  //       );
 
-        if (!firstPlaceWinner)
-          return Result.fail<IContest>(
-            400,
-            "First place winner has not been assigned"
-          );
-        const contestantWallet = await this._walletDataRepository.findByCriteria(
-          {
-            user: firstPlaceWinner.user,
-          }
-        );
+  //       if (contestantWallet) {
+  //         const prizeMoney = contest.redeemable.filter(
+  //           (x) => x.name === PrizePosition.position1
+  //         )[0];
+  //         contestantWallet.balance = prizeMoney.prizeCash;
 
-        if (contestantWallet) {
-          const prizeMoney = contest.redeemable.filter(
-            (x) => x.name === PrizePosition.position1
-          )[0];
-          contestantWallet.balance = prizeMoney.prizeCash;
+  //         await contestantWallet.save();
+  //         prizeRedeemed = true;
+  //       }
+  //     }
+  //     if (i === 2) {
+  //       const secondPlaceWinner = await this._contestEntryRepository.findByCriteria(
+  //         {
+  //           contest: contest._id,
+  //           position: EntryPosition.secondplace,
+  //         }
+  //       );
 
-          await contestantWallet.save();
-          prizeRedeemed = true;
-        }
-      }
-      if (i === 2) {
-        const secondPlaceWinner = await this._contestEntryRepository.findByCriteria(
-          {
-            contest: contest._id,
-            position: EntryPosition.secondplace,
-          }
-        );
+  //       if (!secondPlaceWinner)
+  //         return Result.fail<IContest>(
+  //           400,
+  //           "Second place winner ha s notbeen assigned"
+  //         );
+  //       const contestantWallet = await this._walletDataRepository.findByCriteria(
+  //         {
+  //           user: secondPlaceWinner.user,
+  //         }
+  //       );
 
-        if (!secondPlaceWinner)
-          return Result.fail<IContest>(
-            400,
-            "Second place winner ha s notbeen assigned"
-          );
-        const contestantWallet = await this._walletDataRepository.findByCriteria(
-          {
-            user: secondPlaceWinner.user,
-          }
-        );
+  //       if (contestantWallet) {
+  //         const prizeMoney = contest.redeemable.filter(
+  //           (x) => x.name === PrizePosition.position2
+  //         )[0];
+  //         contestantWallet.balance = prizeMoney.prizeCash;
 
-        if (contestantWallet) {
-          const prizeMoney = contest.redeemable.filter(
-            (x) => x.name === PrizePosition.position2
-          )[0];
-          contestantWallet.balance = prizeMoney.prizeCash;
+  //         await contestantWallet.save();
+  //         prizeRedeemed = true;
+  //       }
+  //     }
+  //     if (i === 3) {
+  //       const thirdPlaceWinner = await this._contestEntryRepository.findByCriteria(
+  //         {
+  //           contest: contest._id,
+  //           position: EntryPosition.thirdplace,
+  //         }
+  //       );
+  //       if (!thirdPlaceWinner)
+  //         return Result.fail<IContest>(
+  //           400,
+  //           "Third place winner have not been assigned"
+  //         );
 
-          await contestantWallet.save();
-          prizeRedeemed = true;
-        }
-      }
-      if (i === 3) {
-        const thirdPlaceWinner = await this._contestEntryRepository.findByCriteria(
-          {
-            contest: contest._id,
-            position: EntryPosition.thirdplace,
-          }
-        );
-        if (!thirdPlaceWinner)
-          return Result.fail<IContest>(
-            400,
-            "Third place winner have not been assigned"
-          );
+  //       const contestantWallet = await this._walletDataRepository.findByCriteria(
+  //         {
+  //           user: thirdPlaceWinner.user,
+  //         }
+  //       );
 
-        const contestantWallet = await this._walletDataRepository.findByCriteria(
-          {
-            user: thirdPlaceWinner.user,
-          }
-        );
+  //       if (contestantWallet) {
+  //         const prizeMoney = contest.redeemable.filter(
+  //           (x) => x.name === PrizePosition.position3
+  //         )[0];
+  //         contestantWallet.balance = prizeMoney.prizeCash;
 
-        if (contestantWallet) {
-          const prizeMoney = contest.redeemable.filter(
-            (x) => x.name === PrizePosition.position3
-          )[0];
-          contestantWallet.balance = prizeMoney.prizeCash;
+  //         await contestantWallet.save();
+  //         prizeRedeemed = true;
+  //       }
+  //     }
 
-          await contestantWallet.save();
-          prizeRedeemed = true;
-        }
-      }
+  //     if (i === 4) {
+  //       const fourthPlaceWinner = await this._contestEntryRepository.findByCriteria(
+  //         {
+  //           contest: contest._id,
+  //           position: EntryPosition.fourthplace,
+  //         }
+  //       );
+  //       if (!fourthPlaceWinner)
+  //         return Result.fail<IContest>(
+  //           400,
+  //           "Third place winner have not been assigned"
+  //         );
 
-      if (i === 4) {
-        const fourthPlaceWinner = await this._contestEntryRepository.findByCriteria(
-          {
-            contest: contest._id,
-            position: EntryPosition.fourthplace,
-          }
-        );
-        if (!fourthPlaceWinner)
-          return Result.fail<IContest>(
-            400,
-            "Third place winner have not been assigned"
-          );
+  //       const contestantWallet = await this._walletDataRepository.findByCriteria(
+  //         {
+  //           user: fourthPlaceWinner.user,
+  //         }
+  //       );
 
-        const contestantWallet = await this._walletDataRepository.findByCriteria(
-          {
-            user: fourthPlaceWinner.user,
-          }
-        );
+  //       if (contestantWallet) {
+  //         const prizeMoney = contest.redeemable.filter(
+  //           (x) => x.name === PrizePosition.position4
+  //         )[0];
+  //         contestantWallet.balance = prizeMoney.prizeCash;
 
-        if (contestantWallet) {
-          const prizeMoney = contest.redeemable.filter(
-            (x) => x.name === PrizePosition.position4
-          )[0];
-          contestantWallet.balance = prizeMoney.prizeCash;
+  //         await contestantWallet.save();
+  //         prizeRedeemed = true;
+  //       }
+  //     }
 
-          await contestantWallet.save();
-          prizeRedeemed = true;
-        }
-      }
+  //     if (i === 5) {
+  //       const fifthPlaceWinner = await this._contestEntryRepository.findByCriteria(
+  //         {
+  //           contest: contest._id,
+  //           position: EntryPosition.fifthplace,
+  //         }
+  //       );
+  //       if (!fifthPlaceWinner)
+  //         return Result.fail<IContest>(
+  //           400,
+  //           "Third place winner have not been assigned"
+  //         );
 
-      if (i === 5) {
-        const fifthPlaceWinner = await this._contestEntryRepository.findByCriteria(
-          {
-            contest: contest._id,
-            position: EntryPosition.fifthplace,
-          }
-        );
-        if (!fifthPlaceWinner)
-          return Result.fail<IContest>(
-            400,
-            "Third place winner have not been assigned"
-          );
+  //       const contestantWallet = await this._walletDataRepository.findByCriteria(
+  //         {
+  //           user: fifthPlaceWinner.user,
+  //         }
+  //       );
 
-        const contestantWallet = await this._walletDataRepository.findByCriteria(
-          {
-            user: fifthPlaceWinner.user,
-          }
-        );
+  //       if (contestantWallet) {
+  //         const prizeMoney = contest.redeemable.filter(
+  //           (x) => x.name === PrizePosition.position5
+  //         )[0];
+  //         contestantWallet.balance = prizeMoney.prizeCash;
 
-        if (contestantWallet) {
-          const prizeMoney = contest.redeemable.filter(
-            (x) => x.name === PrizePosition.position5
-          )[0];
-          contestantWallet.balance = prizeMoney.prizeCash;
+  //         await contestantWallet.save();
+  //         prizeRedeemed = true;
+  //       }
+  //     }
+  //   }
 
-          await contestantWallet.save();
-          prizeRedeemed = true;
-        }
-      }
-    }
-
-    if (prizeRedeemed) {
-      contest.prizeRedeemed = true;
-      await contest.save();
-    }
-    return Result.ok<IContest>(200, contest);
-  }
-
+  //   if (prizeRedeemed) {
+  //     await contest.save();
+  //   }
+  //   return Result.ok<IContest>(200, contest);
+  // }
 
   async patch(id: string, item: any): Promise<Result<IContest>> {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Contest not found");
     item.paymentStatus = contest.paymentStatus;
-    item.prizeRedeemed = contest.prizeRedeemed;
+    item.approved = contest.approved;
+    item.approvedBy = contest.approvedBy;
+    item.approvedDate = contest.approvedDate;
     const updateObj = await this._contestRepository.update(contest._id, item);
     return Result.ok<IContest>(200, updateObj);
   }

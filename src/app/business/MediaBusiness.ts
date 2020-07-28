@@ -6,11 +6,8 @@ import {
 } from "./../models/interfaces/Media";
 import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
-import { ApprovalOperations, IApproval, IMedia } from "../models/interfaces";
+import { IMedia } from "../models/interfaces";
 import { Result } from "../../utils/Result";
-import { schedule } from "../../handlers/ScheduleTask";
-import { StateMachineArns } from "../models/interfaces/custom/StateMachineArns";
-import { threadId } from "worker_threads";
 
 class MediaBusiness implements IMediaBusiness {
   private _mediaRepository: MediaRepository;

@@ -60,6 +60,24 @@ export class OrderController {
   @use(requireAuth)
   async verifyOrder(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
+      if (!req.body.processor) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide processor",
+          })
+        );
+      }
+
+      if (!req.body.reference) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide reference",
+          })
+        );
+      }
+
       var paymentFactory: AbstractPayment = new PaymentFactory().create(
         req.body.processor.toLowerCase()
       );
