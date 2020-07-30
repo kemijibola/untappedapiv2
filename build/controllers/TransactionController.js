@@ -191,7 +191,7 @@ var TransactionController = /** @class */ (function () {
                         response = req.body;
                         switch (response.event) {
                             case payer_1.PaystackWebhookEvent["transfer.success"]:
-                                return [2 /*return*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 200, JSON.stringify(response.data), response.data.transferred_at)];
+                                return [2 /*return*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at)];
                             case payer_1.PaystackWebhookEvent["transfer.failed"]:
                                 return [2 /*return*/, this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data))];
                             default:
@@ -238,7 +238,7 @@ var TransactionController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], TransactionController.prototype, "resolveAccountNumber", null);
     __decorate([
-        decorators_1.post("/transfer/update"),
+        decorators_1.post("/webhook/transfer/update"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

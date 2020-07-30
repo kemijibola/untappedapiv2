@@ -47,6 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
 var WalletBusiness = require("../app/business/WalletDataBusiness");
+var TransactionRequestBusiness = require("../app/business/TransactionRequestBusiness");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
@@ -193,6 +194,42 @@ var WalletController = /** @class */ (function () {
             });
         });
     };
+    WalletController.prototype.fetchUserTransactions = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var transactionRequestBusiness, result, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        transactionRequestBusiness = new TransactionRequestBusiness();
+                        return [4 /*yield*/, transactionRequestBusiness.fetch({
+                                user: req.user,
+                                transactionStatus: "success",
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_4 = _a.sent();
+                        console.log(err_4);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/details"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -221,6 +258,14 @@ var WalletController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], WalletController.prototype, "transfer", null);
+    __decorate([
+        decorators_1.get("/transactions"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], WalletController.prototype, "fetchUserTransactions", null);
     WalletController = __decorate([
         decorators_1.controller("/v1/wallets")
     ], WalletController);

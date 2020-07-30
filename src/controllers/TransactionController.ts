@@ -183,7 +183,7 @@ export class TransactionController {
     }
   }
 
-  @post("/transfer/update")
+  @post("/webhook/transfer/update")
   async updateTransaction(req: Request, res: Response, next: NextFunction) {
     try {
       const hash = signatureHash(
@@ -193,6 +193,7 @@ export class TransactionController {
       if (hash === req.headers["x-paystack-signature"]) {
         // Retrieve the request's body
         var response: PaystackTransactionFailedResponse = req.body;
+
         switch (response.event) {
           case PaystackWebhookEvent["transfer.success"]:
             return this.sendTransactionSuccess(
@@ -200,7 +201,7 @@ export class TransactionController {
               response.data.recipient.recipient_code,
               response.data.amount,
               response.data.status,
-              "Transaction failed",
+              "Transaction successful",
               200,
               JSON.stringify(response.data),
               response.data.transferred_at
