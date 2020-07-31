@@ -45,7 +45,7 @@ var contestSchema = new mongoose_1.Schema({
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },
-    likedBy: [{ type: String }],
+    likedBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true }],
     entryMediaType: { type: interfaces_1.MediaType, required: true },
     startDate: { type: Date, required: true },
     redeemable: [{ type: redeemableSchema, required: true }],
@@ -55,7 +55,7 @@ var contestSchema = new mongoose_1.Schema({
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     issues: [{ type: contestIssueSchema }],
     approved: { type: Boolean, default: false },
-    approvedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
+    approvedBy: { type: String },
     approvedDate: { type: Date },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,

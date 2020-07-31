@@ -1,1 +1,1 @@
-{"version":3,"file":"Service.js","sourceRoot":"","sources":["../../../../src/app/models/interfaces/Service.ts"],"names":[],"mappings":";;AAcA,IAAY,WAGX;AAHD,WAAY,WAAW;IACrB,kCAAmB,CAAA;IACnB,0CAA2B,CAAA;AAC7B,CAAC,EAHW,WAAW,GAAX,mBAAW,KAAX,mBAAW,QAGtB"}
+{"version":3,"file":"Service.js","sourceRoot":"","sources":["../../../../src/app/models/interfaces/Service.ts"],"names":[],"mappings":";;AAgBA,IAAY,WAGX;AAHD,WAAY,WAAW;IACrB,kCAAmB,CAAA;IACnB,0CAA2B,CAAA;AAC7B,CAAC,EAHW,WAAW,GAAX,mBAAW,KAAX,mBAAW,QAGtB"}

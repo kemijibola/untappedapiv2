@@ -36,7 +36,7 @@ const contestEntrySchema: Schema = new Schema(
     position: { type: EntryPosition, default: EntryPosition.participant },
     prizeRedeemed: { type: Boolean, default: false },
     approved: { type: Boolean, default: false },
-    approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    approvedBy: { type: String },
     approvedDate: { type: Date },
     application: {
       type: Schema.Types.ObjectId,

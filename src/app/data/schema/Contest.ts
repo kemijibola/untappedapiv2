@@ -53,7 +53,7 @@ const contestSchema: Schema = new Schema(
     eligibilityInfo: { type: String },
     submissionRules: { type: String },
     views: { type: Number, default: 0 },
-    likedBy: [{ type: String }],
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
     entryMediaType: { type: MediaType, required: true },
     startDate: { type: Date, required: true },
     redeemable: [{ type: redeemableSchema, required: true }],
@@ -63,7 +63,7 @@ const contestSchema: Schema = new Schema(
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     issues: [{ type: contestIssueSchema }],
     approved: { type: Boolean, default: false },
-    approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    approvedBy: { type: String },
     approvedDate: { type: Date },
     application: {
       type: Schema.Types.ObjectId,

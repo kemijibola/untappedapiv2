@@ -30,6 +30,7 @@ const serviceSchema: Schema = new Schema(
     description: {
       type: String,
     },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",

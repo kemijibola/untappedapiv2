@@ -13,6 +13,8 @@ const mediaItemSchema = new Schema(
     likedBy: [{ type: String }],
     isDeleted: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
+    approvedBy: { type: String },
+    approvedDate: { type: Date },
   },
   { timestamps: true }
 );

@@ -30,6 +30,7 @@ var serviceSchema = new mongoose_1.Schema({
     description: {
         type: String,
     },
+    createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",
