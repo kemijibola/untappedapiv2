@@ -42,6 +42,7 @@ const port = config.PORT || 5000;
 app.set("port", port);
 
 userFilterJob();
+
 contestSettlement();
 
 app.listen(port, () => {

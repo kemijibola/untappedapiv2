@@ -63,6 +63,7 @@ var Reconciliation = /** @class */ (function () {
                             })];
                     case 1:
                         result = _b.sent();
+                        console.log(result);
                         if (result.data) {
                             for (_i = 0, _a = result.data; _i < _a.length; _i++) {
                                 contest = _a[_i];

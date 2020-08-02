@@ -44,6 +44,9 @@ export class Reconciliation {
         approved: true,
         endDate: { $gte: startOfToday(), $lte: new Date() },
       });
+
+      console.log(result);
+
       if (result.data) {
         for (let contest of result.data) {
           if (isFuture(contest.endDate)) return;

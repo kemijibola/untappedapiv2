@@ -308,7 +308,6 @@ class ContestBusiness implements IContestEntryBusiness {
         404,
         `Could not update contest entry.Contest entry with Id ${id} not found`
       );
-    item.position = contestEntry.position;
     const updateObj = await this._contestEntryRepository.update(
       contestEntry._id,
       item
@@ -323,7 +322,6 @@ class ContestBusiness implements IContestEntryBusiness {
         404,
         `Could not update contest entry.Contest entry with Id ${id} not found`
       );
-    item.position = contestEntry.position;
     const updateObj = await this._contestEntryRepository.update(
       contestEntry._id,
       item

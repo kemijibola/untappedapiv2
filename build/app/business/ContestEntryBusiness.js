@@ -365,7 +365,6 @@ var ContestBusiness = /** @class */ (function () {
                         contestEntry = _a.sent();
                         if (!contestEntry)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest entry.Contest entry with Id " + id + " not found")];
-                        item.position = contestEntry.position;
                         return [4 /*yield*/, this._contestEntryRepository.update(contestEntry._id, item)];
                     case 2:
                         updateObj = _a.sent();
@@ -384,7 +383,6 @@ var ContestBusiness = /** @class */ (function () {
                         contestEntry = _a.sent();
                         if (!contestEntry)
                             return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest entry.Contest entry with Id " + id + " not found")];
-                        item.position = contestEntry.position;
                         return [4 /*yield*/, this._contestEntryRepository.update(contestEntry._id, item)];
                     case 2:
                         updateObj = _a.sent();
