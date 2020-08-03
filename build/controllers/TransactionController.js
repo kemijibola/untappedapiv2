@@ -95,11 +95,11 @@ var TransactionController = /** @class */ (function () {
     };
     TransactionController.prototype.resolveAccountNumber = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var paymentFactory, result, userAccountBusiness, userAccountObj, transferRecipient, userAccountObj_1, userAccount, err_2;
+            var paymentFactory, result, userAccountBusiness, userAccountObj, transferRecipient, userAccountObj_1, userAccount, err_2, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 7]);
+                        _a.trys.push([0, 9, , 10]);
                         if (!req.body.processor) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
@@ -119,10 +119,13 @@ var TransactionController = /** @class */ (function () {
                                 }))];
                         }
                         paymentFactory = new PaymentFactory_1.PaymentFactory().create(req.body.processor.toLowerCase());
-                        return [4 /*yield*/, paymentFactory.verifyAccountNmber(req.body.accountNumber, req.body.bankCode)];
+                        _a.label = 1;
                     case 1:
+                        _a.trys.push([1, 7, , 8]);
+                        return [4 /*yield*/, paymentFactory.verifyAccountNmber(req.body.accountNumber, req.body.bankCode)];
+                    case 2:
                         result = _a.sent();
-                        if (!result.status) return [3 /*break*/, 5];
+                        if (!result.status) return [3 /*break*/, 6];
                         userAccountBusiness = new UserAccountBusiness();
                         userAccountObj = Object.assign({
                             user: req.user,
@@ -130,13 +133,11 @@ var TransactionController = /** @class */ (function () {
                             accountName: result.data.account_name,
                             bankId: result.data.bank_id,
                         });
-                        console.log("user account", userAccountObj);
-                        if (!(req.body.processor === payer_1.PaymentGatewayType.paystack)) return [3 /*break*/, 5];
+                        if (!(req.body.processor === payer_1.PaymentGatewayType.paystack)) return [3 /*break*/, 6];
                         return [4 /*yield*/, paymentFactory.createTransferRecipient("nuban", userAccountObj.accountName, userAccountObj.accountNumber, req.body.bankCode)];
-                    case 2:
+                    case 3:
                         transferRecipient = _a.sent();
-                        console.log("transfer recipient", transferRecipient);
-                        if (!transferRecipient.status) return [3 /*break*/, 4];
+                        if (!transferRecipient.status) return [3 /*break*/, 5];
                         userAccountObj_1 = Object.assign({
                             user: req.user,
                             accountNumber: result.data.account_number,
@@ -155,28 +156,34 @@ var TransactionController = /** @class */ (function () {
                                 })];
                         }
                         return [4 /*yield*/, userAccountBusiness.create(userAccountObj_1)];
-                    case 3:
+                    case 4:
                         userAccount = _a.sent();
                         return [2 /*return*/, res.status(200).json({
                                 message: "User account created successfully",
                                 data: userAccount.data,
                             })];
-                    case 4: return [2 /*return*/, res.status(400).json({
+                    case 5: return [2 /*return*/, res.status(400).json({
                             message: transferRecipient.message,
                             status: transferRecipient.status,
                         })];
-                    case 5: return [2 /*return*/, res.status(400).json({
+                    case 6: return [2 /*return*/, res.status(400).json({
                             message: result.message,
                             status: result.status,
                         })];
-                    case 6:
+                    case 7:
                         err_2 = _a.sent();
-                        console.log(err_2);
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                code: 400,
+                                message: err_2.error.message,
+                            }))];
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 7: return [2 /*return*/];
+                    case 10: return [2 /*return*/];
                 }
             });
         });

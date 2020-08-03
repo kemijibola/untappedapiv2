@@ -107,73 +107,78 @@ export class TransactionController {
         req.body.processor.toLowerCase()
       );
 
-      const result = await paymentFactory.verifyAccountNmber(
-        req.body.accountNumber,
-        req.body.bankCode
-      );
-      if (result.status) {
-        const userAccountBusiness = new UserAccountBusiness();
-        const userAccountObj: IUserAccount = Object.assign({
-          user: req.user,
-          accountNumber: result.data.account_number,
-          accountName: result.data.account_name,
-          bankId: result.data.bank_id,
-        });
+      try {
+        const result = await paymentFactory.verifyAccountNmber(
+          req.body.accountNumber,
+          req.body.bankCode
+        );
+        if (result.status) {
+          const userAccountBusiness = new UserAccountBusiness();
+          const userAccountObj: IUserAccount = Object.assign({
+            user: req.user,
+            accountNumber: result.data.account_number,
+            accountName: result.data.account_name,
+            bankId: result.data.bank_id,
+          });
 
-        console.log("user account", userAccountObj);
+          if (req.body.processor === PaymentGatewayType.paystack) {
+            const transferRecipient = await paymentFactory.createTransferRecipient(
+              "nuban",
+              userAccountObj.accountName,
+              userAccountObj.accountNumber,
+              req.body.bankCode
+            );
+            if (transferRecipient.status) {
+              const userAccountObj = Object.assign({
+                user: req.user,
+                accountNumber: result.data.account_number,
+                bankName: transferRecipient.data.details.bank_name,
+                accountName: result.data.account_name,
+                bankId: result.data.bank_id,
+                gatewayRecipientCode: transferRecipient.data.recipient_code,
+                currency: transferRecipient.data.currency,
+                bankCode: transferRecipient.data.details.bank_code,
+              });
 
-        if (req.body.processor === PaymentGatewayType.paystack) {
-          const transferRecipient = await paymentFactory.createTransferRecipient(
-            "nuban",
-            userAccountObj.accountName,
-            userAccountObj.accountNumber,
-            req.body.bankCode
-          );
-          console.log("transfer recipient", transferRecipient);
-          if (transferRecipient.status) {
-            const userAccountObj = Object.assign({
-              user: req.user,
-              accountNumber: result.data.account_number,
-              bankName: transferRecipient.data.details.bank_name,
-              accountName: result.data.account_name,
-              bankId: result.data.bank_id,
-              gatewayRecipientCode: transferRecipient.data.recipient_code,
-              currency: transferRecipient.data.currency,
-              bankCode: transferRecipient.data.details.bank_code,
-            });
+              if (
+                !transferRecipient.data.active ||
+                transferRecipient.data.is_deleted
+              ) {
+                return res.status(400).json({
+                  message:
+                    "Your account is inactive. Please reach out to your bank",
+                  data: userAccountObj,
+                });
+              }
 
-            if (
-              !transferRecipient.data.active ||
-              transferRecipient.data.is_deleted
-            ) {
+              const userAccount = await userAccountBusiness.create(
+                userAccountObj
+              );
+              return res.status(200).json({
+                message: "User account created successfully",
+                data: userAccount.data,
+              });
+            } else {
               return res.status(400).json({
-                message:
-                  "Your account is inactive. Please reach out to your bank",
-                data: userAccountObj,
+                message: transferRecipient.message,
+                status: transferRecipient.status,
               });
             }
-
-            const userAccount = await userAccountBusiness.create(
-              userAccountObj
-            );
-            return res.status(200).json({
-              message: "User account created successfully",
-              data: userAccount.data,
-            });
-          } else {
-            return res.status(400).json({
-              message: transferRecipient.message,
-              status: transferRecipient.status,
-            });
           }
         }
+        return res.status(400).json({
+          message: result.message,
+          status: result.status,
+        });
+      } catch (err) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: err.error.message,
+          })
+        );
       }
-      return res.status(400).json({
-        message: result.message,
-        status: result.status,
-      });
     } catch (err) {
-      console.log(err);
       return next(
         new PlatformError({
           code: 500,
