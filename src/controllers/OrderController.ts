@@ -86,8 +86,6 @@ export class OrderController {
         req.body.reference
       );
 
-      console.log(verifiedPayment);
-
       const orderBusiness = new OrderBusiness();
       const result = await orderBusiness.updatePayment(
         verifiedPayment,

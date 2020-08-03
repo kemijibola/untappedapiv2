@@ -45,16 +45,25 @@ export class TransactionController {
         );
       }
 
-      var paymentFactory: AbstractPayment = new PaymentFactory().create(
-        req.body.processor.toLowerCase()
-      );
+      try {
+        var paymentFactory: AbstractPayment = new PaymentFactory().create(
+          req.body.processor.toLowerCase()
+        );
 
-      const result = await paymentFactory.fetchBanks();
-      if (result.status) {
-        return res.status(200).json({
-          message: result.message,
-          data: result.data,
-        });
+        const result = await paymentFactory.fetchBanks();
+        if (result.status) {
+          return res.status(200).json({
+            message: result.message,
+            data: result.data,
+          });
+        }
+      } catch (err) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: err.error.message,
+          })
+        );
       }
     } catch (err) {
       console.log(err);
@@ -144,11 +153,13 @@ export class TransactionController {
                 !transferRecipient.data.active ||
                 transferRecipient.data.is_deleted
               ) {
-                return res.status(400).json({
-                  message:
-                    "Your account is inactive. Please reach out to your bank",
-                  data: userAccountObj,
-                });
+                return next(
+                  new PlatformError({
+                    code: 400,
+                    message:
+                      "Your account is inactive. Please reach out to your bank",
+                  })
+                );
               }
 
               const userAccount = await userAccountBusiness.create(
@@ -159,17 +170,21 @@ export class TransactionController {
                 data: userAccount.data,
               });
             } else {
-              return res.status(400).json({
-                message: transferRecipient.message,
-                status: transferRecipient.status,
-              });
+              return next(
+                new PlatformError({
+                  code: 400,
+                  message: transferRecipient.message,
+                })
+              );
             }
           }
         }
-        return res.status(400).json({
-          message: result.message,
-          status: result.status,
-        });
+        return next(
+          new PlatformError({
+            code: 400,
+            message: result.message,
+          })
+        );
       } catch (err) {
         return next(
           new PlatformError({
@@ -198,7 +213,6 @@ export class TransactionController {
       if (hash === req.headers["x-paystack-signature"]) {
         // Retrieve the request's body
         var response: PaystackTransactionFailedResponse = req.body;
-
         switch (response.event) {
           case PaystackWebhookEvent["transfer.success"]:
             return this.sendTransactionSuccess(
@@ -227,7 +241,6 @@ export class TransactionController {
       }
       res.send(200);
     } catch (err) {
-      console.log(err);
       return next(
         new PlatformError({
           code: 500,

@@ -111,7 +111,6 @@ var OrderController = /** @class */ (function () {
                         return [4 /*yield*/, paymentFactory.verifyPayment(req.body.reference)];
                     case 1:
                         verifiedPayment = _a.sent();
-                        console.log(verifiedPayment);
                         orderBusiness = new OrderBusiness();
                         return [4 /*yield*/, orderBusiness.updatePayment(verifiedPayment, req.params.id)];
                     case 2:

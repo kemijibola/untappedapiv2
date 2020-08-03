@@ -59,20 +59,23 @@ var TransactionController = /** @class */ (function () {
     }
     TransactionController.prototype.fetchBanks = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var paymentFactory, result, err_1;
+            var paymentFactory, result, err_1, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 5, , 6]);
                         if (!req.body.processor) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
                                     message: "Please provide processor",
                                 }))];
                         }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
                         paymentFactory = new PaymentFactory_1.PaymentFactory().create(req.body.processor.toLowerCase());
                         return [4 /*yield*/, paymentFactory.fetchBanks()];
-                    case 1:
+                    case 2:
                         result = _a.sent();
                         if (result.status) {
                             return [2 /*return*/, res.status(200).json({
@@ -80,22 +83,29 @@ var TransactionController = /** @class */ (function () {
                                     data: result.data,
                                 })];
                         }
-                        return [3 /*break*/, 3];
-                    case 2:
+                        return [3 /*break*/, 4];
+                    case 3:
                         err_1 = _a.sent();
-                        console.log(err_1);
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                code: 400,
+                                message: err_1.error.message,
+                            }))];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        err_2 = _a.sent();
+                        console.log(err_2);
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 3: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
     };
     TransactionController.prototype.resolveAccountNumber = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var paymentFactory, result, userAccountBusiness, userAccountObj, transferRecipient, userAccountObj_1, userAccount, err_2, err_3;
+            var paymentFactory, result, userAccountBusiness, userAccountObj, transferRecipient, userAccountObj_1, userAccount, err_3, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -150,10 +160,10 @@ var TransactionController = /** @class */ (function () {
                         });
                         if (!transferRecipient.data.active ||
                             transferRecipient.data.is_deleted) {
-                            return [2 /*return*/, res.status(400).json({
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                    code: 400,
                                     message: "Your account is inactive. Please reach out to your bank",
-                                    data: userAccountObj_1,
-                                })];
+                                }))];
                         }
                         return [4 /*yield*/, userAccountBusiness.create(userAccountObj_1)];
                     case 4:
@@ -162,23 +172,23 @@ var TransactionController = /** @class */ (function () {
                                 message: "User account created successfully",
                                 data: userAccount.data,
                             })];
-                    case 5: return [2 /*return*/, res.status(400).json({
+                    case 5: return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                            code: 400,
                             message: transferRecipient.message,
-                            status: transferRecipient.status,
-                        })];
-                    case 6: return [2 /*return*/, res.status(400).json({
+                        }))];
+                    case 6: return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                            code: 400,
                             message: result.message,
-                            status: result.status,
-                        })];
+                        }))];
                     case 7:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 400,
-                                message: err_2.error.message,
+                                message: err_3.error.message,
                             }))];
                     case 8: return [3 /*break*/, 10];
                     case 9:
-                        err_3 = _a.sent();
+                        err_4 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -208,7 +218,6 @@ var TransactionController = /** @class */ (function () {
                     res.send(200);
                 }
                 catch (err) {
-                    console.log(err);
                     return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                             code: 500,
                             message: "Internal Server error occured. Please try again later.",
