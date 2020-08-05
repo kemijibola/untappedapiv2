@@ -125,8 +125,8 @@ switch (environment) {
         };
         break;
     default:
-        // Object.seal(development);
-        // module.exports = development;
+        Object.seal(development);
+        module.exports = development;
         break;
 }
 //# sourceMappingURL=keys.js.map
