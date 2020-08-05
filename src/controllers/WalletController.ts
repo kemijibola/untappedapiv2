@@ -200,7 +200,7 @@ export class WalletController {
   ) {
     try {
       const transactionRequestBusiness = new TransactionRequestBusiness();
-      const result = await transactionRequestBusiness.fetch({
+      const result = await transactionRequestBusiness.fetchTransactions({
         user: req.user,
         transactionStatus: "success",
       });

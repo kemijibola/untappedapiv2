@@ -202,7 +202,7 @@ var WalletController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         transactionRequestBusiness = new TransactionRequestBusiness();
-                        return [4 /*yield*/, transactionRequestBusiness.fetch({
+                        return [4 /*yield*/, transactionRequestBusiness.fetchTransactions({
                                 user: req.user,
                                 transactionStatus: "success",
                             })];

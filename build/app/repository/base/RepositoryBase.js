@@ -118,6 +118,23 @@ var RepositoryBase = /** @class */ (function () {
                 .exec();
         });
     };
+    RepositoryBase.prototype.fetchTransactionsOrderedByDate = function (condition) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._model
+                .find(condition, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            })
+                .sort({
+                createdAt: -1,
+            })
+                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .exec();
+        });
+    };
     RepositoryBase.prototype.fetchContestEntryPaginated = function (condition, page, perPage) {
         var _this = this;
         if (page === void 0) { page = 1; }

@@ -116,7 +116,6 @@ var OrderController = /** @class */ (function () {
                     case 2:
                         result = _a.sent();
                         if (result.error) {
-                            orderBusiness;
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
                                     message: result.error,

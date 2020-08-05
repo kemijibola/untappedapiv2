@@ -108,6 +108,21 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  fetchTransactionsOrderedByDate(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .sort({
+          createdAt: -1,
+        })
+        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
   fetchContestEntryPaginated(
     condition: any,
     page = 1,

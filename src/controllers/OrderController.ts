@@ -93,7 +93,6 @@ export class OrderController {
       );
 
       if (result.error) {
-        orderBusiness;
         return next(
           new PlatformError({
             code: result.responseCode,
@@ -115,4 +114,6 @@ export class OrderController {
       );
     }
   }
+
+  
 }

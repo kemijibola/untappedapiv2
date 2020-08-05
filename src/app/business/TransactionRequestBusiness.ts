@@ -21,6 +21,15 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
     return Result.ok<TransactionRequest[]>(200, transationRequests);
   }
 
+  async fetchTransactions(
+    condition: any
+  ): Promise<Result<TransactionRequest[]>> {
+    const transationRequests = await this._transactionRequestRepository.fetchTransactionsOrderedByDate(
+      condition
+    );
+    return Result.ok<TransactionRequest[]>(200, transationRequests);
+  }
+
   async findById(id: string): Promise<Result<TransactionRequest>> {
     if (!id) return Result.fail<TransactionRequest>(400, "Bad request");
     const transactionRequest = await this._transactionRequestRepository.findById(
