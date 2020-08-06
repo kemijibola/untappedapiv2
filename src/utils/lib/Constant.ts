@@ -71,7 +71,7 @@ export const AcceptedVideoExt: ObjectKeyString = {
 };
 
 function getIssuer(): string {
-  return config.ISSUER?.toLocaleUpperCase() || "http://localhost:8900";
+  return config.ISSUER || "http://localhost:8900";
 }
 
 function getAuthExpiration(): number {
