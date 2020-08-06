@@ -13,11 +13,11 @@ switch (environment) {
     // Object.seal(ci);
     // module.exports = ci;
     break;
-  case Environment.PRODUCTION:
+  case Environment.STAGING:
     // Object.seal(production);
     // module.exports = production;
     break;
-  case Environment.STAGING:
+  case Environment.PRODUCTION:
     module.exports = {
       NODE_ENV: process.env.NODE_ENV,
       RSA_PUBLIC: [

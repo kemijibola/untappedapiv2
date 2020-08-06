@@ -41,9 +41,9 @@ app.use(function (
 const port = config.PORT || 5000;
 app.set("port", port);
 
-// userFilterJob();
+userFilterJob();
 
-// contestSettlement();
+contestSettlement();
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);
