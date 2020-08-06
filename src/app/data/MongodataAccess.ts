@@ -45,11 +45,10 @@ class MongodataAccess {
   private static get dbUri(): string {
     let dbUri: string = "";
     switch (config.NODE_ENV) {
-      case Environment.PRODUCTION:
-        dbUri = "";
-        break;
-      case Environment.STAGING:
+      case Environment.production:
         dbUri = `mongodb://${config.DATABASE_USER}:${config.DATABASE_PASSWORD}@${config.DATABASE_HOST}:${config.DATABASE_PORT}/${config.DATABASE_NAME}`;
+        break;
+      case Environment.staging:
         break;
       default:
         // dbUri = `mongodb://${config.DATABASE_USER}:${config.DATABASE_PASSWORD}@${config.DATABASE_HOST}:${config.DATABASE_PORT}/${config.DATABASE_NAME}`;

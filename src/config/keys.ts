@@ -9,15 +9,15 @@ dotenv.config();
 let environment: string = process.env.NODE_ENV || "";
 
 switch (environment) {
-  case Environment.CI:
+  case Environment.ci:
     // Object.seal(ci);
     // module.exports = ci;
     break;
-  case Environment.STAGING:
+  case Environment.staging:
     // Object.seal(production);
     // module.exports = production;
     break;
-  case Environment.PRODUCTION:
+  case Environment.production:
     module.exports = {
       NODE_ENV: process.env.NODE_ENV,
       RSA_PUBLIC: [

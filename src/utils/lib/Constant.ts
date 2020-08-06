@@ -17,7 +17,7 @@ export const audioExtentions: string[] = [
   "aac",
   "ogg",
   "flac",
-  "alac"
+  "alac",
 ];
 export const videoExtensions: string[] = [
   "mp4",
@@ -30,7 +30,7 @@ export const videoExtensions: string[] = [
   "vob",
   "mpeg",
   "wav",
-  "lxf"
+  "lxf",
 ];
 export const imageExtensions: string[] = [
   "jpeg",
@@ -45,7 +45,7 @@ export const imageExtensions: string[] = [
   "svg",
   "bat",
   "heif",
-  "bpg"
+  "bpg",
 ];
 
 export const AcceptedImageExt: ObjectKeyString = {
@@ -53,25 +53,25 @@ export const AcceptedImageExt: ObjectKeyString = {
   jpeg: "image",
   jpg: "image",
   gif: "image",
-  svg: "image"
+  svg: "image",
 };
 
 export const AcceptedAudioExt: ObjectKeyString = {
   mp3: "audio",
   wma: "audio",
   webm: "audio",
-  wav: "audio"
+  wav: "audio",
 };
 export const AcceptedVideoExt: ObjectKeyString = {
   mp4: "video",
   mpeg: "video",
   avi: "video",
   flv: "video",
-  "3gp": "video"
+  "3gp": "video",
 };
 
 function getIssuer(): string {
-  return config.ISSUER.toLowerCase() || "http://localhost:8900";
+  return config.ISSUER?.toLocaleUpperCase() || "http://localhost:8900";
 }
 
 function getAuthExpiration(): number {
