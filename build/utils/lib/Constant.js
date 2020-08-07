@@ -16,7 +16,7 @@ exports.audioExtentions = [
     "aac",
     "ogg",
     "flac",
-    "alac"
+    "alac",
 ];
 exports.videoExtensions = [
     "mp4",
@@ -29,7 +29,7 @@ exports.videoExtensions = [
     "vob",
     "mpeg",
     "wav",
-    "lxf"
+    "lxf",
 ];
 exports.imageExtensions = [
     "jpeg",
@@ -44,30 +44,30 @@ exports.imageExtensions = [
     "svg",
     "bat",
     "heif",
-    "bpg"
+    "bpg",
 ];
 exports.AcceptedImageExt = {
     png: "image",
     jpeg: "image",
     jpg: "image",
     gif: "image",
-    svg: "image"
+    svg: "image",
 };
 exports.AcceptedAudioExt = {
     mp3: "audio",
     wma: "audio",
     webm: "audio",
-    wav: "audio"
+    wav: "audio",
 };
 exports.AcceptedVideoExt = {
     mp4: "video",
     mpeg: "video",
     avi: "video",
     flv: "video",
-    "3gp": "video"
+    "3gp": "video",
 };
 function getIssuer() {
-    return config.ISSUER.toLowerCase() || "http://localhost:8900";
+    return config.ISSUER || "http://localhost:8900";
 }
 function getAuthExpiration() {
     return config.AUTH_EXPIRESIN || 43200;

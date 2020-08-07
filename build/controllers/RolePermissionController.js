@@ -48,6 +48,7 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var RolePermissionBusiness = require("../app/business/RolePermissionBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var auth_1 = require("../middlewares/auth");
 exports.roles = ["canViewProfessionals", "canViewTalents"];
 var RolePermissionController = /** @class */ (function () {
@@ -86,8 +87,6 @@ var RolePermissionController = /** @class */ (function () {
             });
         });
     };
-    RolePermissionController.prototype.update = function () { };
-    RolePermissionController.prototype.delete = function () { };
     RolePermissionController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var rolePermissionBusiness, result, err_2;
@@ -120,23 +119,20 @@ var RolePermissionController = /** @class */ (function () {
             });
         });
     };
-    RolePermissionController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.use(auth_1.requireAuth)
-        // @authorize(canCreateRolePermission)
-        ,
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateRolePermission),
         decorators_1.requestValidators("role", "permission", "userType"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], RolePermissionController.prototype, "create", null);
     __decorate([
-        decorators_1.get("/")
-        // @use(requireAuth)
-        ,
-        decorators_1.authorize.apply(void 0, exports.roles),
+        decorators_1.get("/"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canViewRolePermission),
         decorators_1.use(ValidateRequest_1.requestValidator),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

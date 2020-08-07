@@ -117,7 +117,7 @@ var PermissionBusiness = /** @class */ (function () {
                     case 0:
                         console.log("here");
                         return [4 /*yield*/, this._permissionRepository.findByCriteria({
-                                name: item.name
+                                name: item.name,
                             })];
                     case 1:
                         permission = _a.sent();
@@ -127,7 +127,7 @@ var PermissionBusiness = /** @class */ (function () {
                     case 2:
                         newPermission = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newPermission)];
-                    case 3: return [2 /*return*/, Result_1.Result.fail(400, permission.name + " already exist.")];
+                    case 3: return [2 /*return*/, Result_1.Result.fail(409, permission.name + " already exist.")];
                 }
             });
         });

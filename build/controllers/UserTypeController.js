@@ -121,9 +121,6 @@ var UserTypeController = /** @class */ (function () {
             });
         });
     };
-    UserTypeController.prototype.update = function () { };
-    UserTypeController.prototype.delete = function () { };
-    UserTypeController.prototype.findById = function () { };
     __decorate([
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.get("/"),

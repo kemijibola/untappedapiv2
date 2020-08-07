@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var ApplicationError_1 = require("./../../utils/error/ApplicationError");
 var mongoose_1 = __importDefault(require("mongoose"));
 var Environment_1 = require("../models/interfaces/custom/Environment");
 var config = module.require("../../config/keys");
@@ -19,11 +20,19 @@ var MongodataAccess = /** @class */ (function () {
         });
         mongoose_1.default.Promise = global.Promise;
         MongodataAccess.setMongoProperty();
-        this.mongooseInstance = mongoose_1.default.connect(this.dbUri, {
-            useNewUrlParser: true,
-            useCreateIndex: true,
-        });
-        return this.mongooseInstance;
+        try {
+            this.mongooseInstance = mongoose_1.default.connect(this.dbUri, {
+                useNewUrlParser: true,
+                useCreateIndex: true,
+            });
+            return this.mongooseInstance;
+        }
+        catch (err) {
+            throw new ApplicationError_1.PlatformError({
+                code: 500,
+                message: "An unexpected error occured, Please try again",
+            });
+        }
     };
     MongodataAccess.setMongoProperty = function () {
         //m ongoose.set("useFindAndModify", false);
@@ -36,16 +45,16 @@ var MongodataAccess = /** @class */ (function () {
         get: function () {
             var dbUri = "";
             switch (config.NODE_ENV) {
-                case Environment_1.Environment.PRODUCTION:
-                    dbUri = "";
-                    break;
-                case Environment_1.Environment.STAGING:
+                case Environment_1.Environment.production:
                     dbUri = "mongodb://" + config.DATABASE_USER + ":" + config.DATABASE_PASSWORD + "@" + config.DATABASE_HOST + ":" + config.DATABASE_PORT + "/" + config.DATABASE_NAME;
+                    break;
+                case Environment_1.Environment.staging:
                     break;
                 default:
                     // dbUri = `mongodb://${config.DATABASE_USER}:${config.DATABASE_PASSWORD}@${config.DATABASE_HOST}:${config.DATABASE_PORT}/${config.DATABASE_NAME}`;
                     dbUri = config.DATABASE_HOST + "/" + config.DATABASE_NAME;
             }
+            console.log(dbUri);
             return dbUri;
         },
         enumerable: true,

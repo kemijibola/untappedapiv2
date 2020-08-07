@@ -48,6 +48,7 @@ export const canDeleteService = "canDeleteService";
 
 export const canUpdateUser = "canUpdateUser";
 export const canCreateUser = "canCreateUser";
+export const canViewUser = "canViewUser";
 
 export const canCreateUserType = "canCreateUserType";
 export const canUpdateUserType = "canUpdateUserType";
@@ -58,6 +59,7 @@ export const canUpdatePermission = "canUpdatePermission";
 export const canDeletePermission = "canDeletePermission";
 
 export const canCreateRolePermission = "canCreateRolePermission";
+export const canViewRolePermission = "canViewRolePermission";
 export const canUpdateRolePermission = "canUpdateRolePermission";
 export const canDeleteRolePermission = "canDeleteRolePermission";
 

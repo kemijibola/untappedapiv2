@@ -7,8 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
-// http://untappedpool.com/v1/contest-list
-// http://untappedpool.com/v1/contest-list?user='userId'
 var ContestListController = /** @class */ (function () {
     function ContestListController() {
     }

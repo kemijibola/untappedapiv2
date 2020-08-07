@@ -120,9 +120,6 @@ var ServiceController = /** @class */ (function () {
             });
         });
     };
-    ServiceController.prototype.update = function () { };
-    ServiceController.prototype.delete = function () { };
-    ServiceController.prototype.findById = function () { };
     __decorate([
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.get("/"),

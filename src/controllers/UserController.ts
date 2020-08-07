@@ -9,27 +9,20 @@ import {
   authorize,
 } from "../decorators";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
-import {
-  IUserModel,
-  ImageEditRequest,
-  AccountStatus,
-} from "../app/models/interfaces";
 import { PlatformError } from "../utils/error";
 import UserBusiness = require("../app/business/UserBusiness");
 import UserAccountBusiness = require("../app/business/UserAccountBusiness");
 import { ObjectKeyString } from "../utils/lib";
 import { requireAuth } from "../middlewares/auth";
 import { requestValidator } from "../middlewares/ValidateRequest";
-import {
-  canCreateUserType,
-  canCreateUser,
-} from "../utils/lib/PermissionConstant";
+import { canViewUser } from "../utils/lib/PermissionConstant";
 
 @controller("/v1/users")
 export class UserController {
   @get("/")
   @use(requestValidator)
-  // @use(requireAuth)
+  @use(requireAuth)
+  @authorize(canViewUser)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       let condition: ObjectKeyString = {};

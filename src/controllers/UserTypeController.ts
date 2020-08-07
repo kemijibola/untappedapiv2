@@ -79,7 +79,4 @@ export class UserTypeController {
       );
     }
   }
-  update(): void {}
-  delete(): void {}
-  findById(): void {}
 }

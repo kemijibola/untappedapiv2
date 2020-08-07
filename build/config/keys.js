@@ -8,21 +8,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Environment_1 = require("../app/models/interfaces/custom/Environment");
+var development = __importStar(require("./development.json"));
 // import * as ci from "./ci.json";
 // import * as production from "./production.json";
 var dotenv = __importStar(require("dotenv"));
 dotenv.config();
 var environment = process.env.NODE_ENV || "";
 switch (environment) {
-    case Environment_1.Environment.CI:
+    case Environment_1.Environment.ci:
         // Object.seal(ci);
         // module.exports = ci;
         break;
-    case Environment_1.Environment.PRODUCTION:
+    case Environment_1.Environment.staging:
         // Object.seal(production);
         // module.exports = production;
         break;
-    case Environment_1.Environment.STAGING:
+    case Environment_1.Environment.production:
         module.exports = {
             NODE_ENV: process.env.NODE_ENV,
             RSA_PUBLIC: [
@@ -124,8 +125,8 @@ switch (environment) {
         };
         break;
     default:
-        // Object.seal(development);
-        // module.exports = development;
+        Object.seal(development);
+        module.exports = development;
         break;
 }
 //# sourceMappingURL=keys.js.map

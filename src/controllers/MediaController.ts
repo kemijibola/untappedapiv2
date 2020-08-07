@@ -19,26 +19,12 @@ import {
   IVideo,
   IMediaItem,
 } from "../app/models/interfaces";
-import {
-  audioExtentions,
-  videoExtensions,
-  imageExtensions,
-  ObjectKeyString,
-} from "../utils/lib";
 import { PlatformError } from "../utils/error";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { requireAuth } from "../middlewares/auth";
 import uuid = require("uuid");
 import { requestValidator } from "../middlewares/ValidateRequest";
 
-// SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
-// SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
-// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=videos&upload=single
-// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=images&upload=all
-// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=audios&upload=multiple
-
-// SAMPLE POST ROUTE:: http://localhost:8900/medias?type=audio
-// SAMPLE PUT ROUTE:: http://localhost:8900/medias/:id?type=audio
 @controller("/v1/media")
 export class MediaController {
   @use(requireAuth)
@@ -199,7 +185,6 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
   @get("/me/preview")
   @use(requestValidator)
   @use(requireAuth)
@@ -286,7 +271,6 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
   @get("/talent/:id/portfolio")
   @use(requestValidator)
   async fetchPreviewList(req: Request, res: Response, next: NextFunction) {
@@ -368,7 +352,6 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
   @get("/me")
   @use(requestValidator)
   @use(requireAuth)
@@ -451,7 +434,6 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET ALL LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
   @get("/")
   @use(requestValidator)
   async fetchList(req: Request, res: Response, next: NextFunction) {
@@ -530,7 +512,6 @@ export class MediaController {
     }
   }
 
-  // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
   @use(requestValidator)
   @get("/:id")
   async fetch(req: Request, res: Response, next: NextFunction) {

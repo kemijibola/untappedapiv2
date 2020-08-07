@@ -14,7 +14,10 @@ import RolePermissionBusiness = require("../app/business/RolePermissionBusiness"
 // import { requireAuth } from '../middlewares/auth';
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { requestValidator } from "../middlewares/ValidateRequest";
-import { canCreateRolePermission } from "../utils/lib/PermissionConstant";
+import {
+  canCreateRolePermission,
+  canViewRolePermission,
+} from "../utils/lib/PermissionConstant";
 import { requireAuth } from "../middlewares/auth";
 
 export const roles = ["canViewProfessionals", "canViewTalents"];
@@ -23,7 +26,7 @@ export class RolePermissionController {
   @post("/")
   @use(requestValidator)
   @use(requireAuth)
-  // @authorize(canCreateRolePermission)
+  @authorize(canCreateRolePermission)
   @requestValidators("role", "permission", "userType")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
@@ -51,11 +54,10 @@ export class RolePermissionController {
       );
     }
   }
-  update(): void {}
-  delete(): void {}
+
   @get("/")
-  // @use(requireAuth)
-  @authorize(...roles)
+  @use(requireAuth)
+  @authorize(canViewRolePermission)
   @use(requestValidator)
   async fetch(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
@@ -82,5 +84,4 @@ export class RolePermissionController {
       );
     }
   }
-  findById(): void {}
 }

@@ -80,7 +80,4 @@ export class ServiceController {
       );
     }
   }
-  update(): void {}
-  delete(): void {}
-  findById(): void {}
 }

@@ -6,7 +6,7 @@ import {
   requestValidators,
   post,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import { IRole } from "../app/models/interfaces";
 import RoleBusiness = require("../app/business/RoleBusiness");
@@ -26,19 +26,19 @@ export class RoleController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
@@ -58,24 +58,21 @@ export class RoleController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
   }
-  update(): void {}
-  delete(): void {}
-  findById(): void {}
 }

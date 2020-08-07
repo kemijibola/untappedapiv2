@@ -47,14 +47,14 @@ class PermissionBusiness implements IPermissionBusiness {
   async create(item: IPermission): Promise<Result<IPermission>> {
     console.log("here");
     const permission = await this._permissionRepository.findByCriteria({
-      name: item.name
+      name: item.name,
     });
     if (permission === null) {
       item.isActive = false;
       const newPermission = await this._permissionRepository.create(item);
       return Result.ok<IPermission>(201, newPermission);
     }
-    return Result.fail<IPermission>(400, `${permission.name} already exist.`);
+    return Result.fail<IPermission>(409, `${permission.name} already exist.`);
   }
 
   async update(id: string, item: IPermission): Promise<Result<IPermission>> {

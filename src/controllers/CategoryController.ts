@@ -5,7 +5,7 @@ import {
   requestValidators,
   get,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import { ICategory } from "../app/models/interfaces";
 import CategoryBusiness from "../app/business/CategoryBusiness";
@@ -26,19 +26,19 @@ export class CategoryController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again."
+          message: "Internal Server error occured. Please try again.",
         })
       );
     }
@@ -58,24 +58,21 @@ export class CategoryController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: result.error
+            message: result.error,
           })
         );
       }
       return res.status(201).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: "Internal Server error occured. Please try again later."
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }
   }
-  update(): void {}
-  delete(): void {}
-  findById(): void {}
 }

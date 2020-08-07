@@ -86,10 +86,6 @@ var PermissionController = /** @class */ (function () {
             });
         });
     };
-    PermissionController.prototype.update = function () { };
-    PermissionController.prototype.delete = function () { };
-    PermissionController.prototype.fetch = function () { };
-    PermissionController.prototype.findById = function () { };
     __decorate([
         decorators_1.post("/"),
         decorators_1.requestValidators("name"),

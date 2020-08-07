@@ -96,8 +96,6 @@ export class CommentController {
     }
   }
 
-  // http://127.0.0.1:8900/v1/comments/5e7cc6214002a142f8a92ce3/like
-
   @put("/:id/unLike")
   @use(requestValidator)
   @use(requireAuth)

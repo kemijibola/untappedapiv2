@@ -57,10 +57,6 @@ var CountryController = /** @class */ (function () {
             });
         });
     };
-    CountryController.prototype.update = function () { };
-    CountryController.prototype.delete = function () { };
-    CountryController.prototype.fetch = function () { };
-    CountryController.prototype.findById = function () { };
     __decorate([
         decorators_1.post('/'),
         decorators_1.requestValidators('name'),

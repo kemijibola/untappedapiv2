@@ -105,6 +105,7 @@ export class WalletController {
   @use(requestValidator)
   @requestValidators("processor", "walletPin", "amount")
   @use(requireAuth)
+  @authorize(canCreateWallet)
   async transfer(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       if (!req.body.processor) {
@@ -193,6 +194,7 @@ export class WalletController {
   @get("/transactions")
   @use(requestValidator)
   @use(requireAuth)
+  @authorize(canViewWallet)
   async fetchUserTransactions(
     req: RequestWithUser,
     res: Response,

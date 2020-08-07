@@ -1,3 +1,4 @@
+import { PlatformError } from "./../../utils/error/ApplicationError";
 import mongoose from "mongoose";
 // import Mongoose = require("mongoose");
 import { Connection } from "../models/interfaces/custom/Connection";
@@ -25,12 +26,18 @@ class MongodataAccess {
 
     mongoose.Promise = global.Promise;
     MongodataAccess.setMongoProperty();
-
-    this.mongooseInstance = mongoose.connect(this.dbUri, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-    });
-    return this.mongooseInstance;
+    try {
+      this.mongooseInstance = mongoose.connect(this.dbUri, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+      });
+      return this.mongooseInstance;
+    } catch (err) {
+      throw new PlatformError({
+        code: 500,
+        message: "An unexpected error occured, Please try again",
+      });
+    }
   }
 
   private static setMongoProperty() {
@@ -54,6 +61,7 @@ class MongodataAccess {
         // dbUri = `mongodb://${config.DATABASE_USER}:${config.DATABASE_PASSWORD}@${config.DATABASE_HOST}:${config.DATABASE_PORT}/${config.DATABASE_NAME}`;
         dbUri = `${config.DATABASE_HOST}/${config.DATABASE_NAME}`;
     }
+    console.log(dbUri);
     return dbUri;
   }
 }

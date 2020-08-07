@@ -254,6 +254,7 @@ var WalletController = /** @class */ (function () {
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.requestValidators("processor", "walletPin", "amount"),
         decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateWallet),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
@@ -262,6 +263,7 @@ var WalletController = /** @class */ (function () {
         decorators_1.get("/transactions"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canViewWallet),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

@@ -2,7 +2,6 @@ import {
   IContestContestant,
   ContestVoteResult,
 } from "./../models/interfaces/custom/ContestList";
-import { ContestListController } from "./../../controllers/ContestListController";
 import VoteTransactionRepository from "../repository/VoteTransactionRepository";
 import IVoteTransactionBusiness = require("./interfaces/VoteTransactionBusiness");
 import {

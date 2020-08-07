@@ -133,7 +133,6 @@ var CommentController = /** @class */ (function () {
             });
         });
     };
-    // http://127.0.0.1:8900/v1/comments/5e7cc6214002a142f8a92ce3/like
     CommentController.prototype.postCommentUnLike = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var commentBusiness, comment, userId, userHasLiked, result, err_3;

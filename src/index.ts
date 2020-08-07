@@ -13,6 +13,7 @@ import { IError } from "./utils/error/GlobalError";
 import cors from "cors";
 // import SocketIo = require('./socket/SocketIo');
 import { userFilterJob, contestSettlement } from "./utils/CronJob";
+import { PlatformError } from "./utils/error";
 
 const app = express();
 app.use(bodyParser.json());
@@ -36,6 +37,15 @@ app.use(function (
   next: NextFunction
 ) {
   errorHandler(error, req, res, next);
+});
+
+process.on("unhandledRejection", function (err) {
+  console.log(err);
+  // sendInTheCalvary(err);
+  throw new PlatformError({
+    code: 500,
+    message: "An unexpected error occured, Please try again",
+  });
 });
 
 const port = config.PORT || 5000;

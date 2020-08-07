@@ -64,13 +64,9 @@ var UserFilterCategoryBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._userFilterCategoryRepository.fetch(query)];
                     case 1:
                         userFilterCategories = _a.sent();
-                        console.log("line 30", query);
-                        console.log("line 31", userFilterCategories);
                         if (condition.categoryId) {
-                            console.log("categoryId found");
                             userFilterCategories = userFilterCategories.reduce(function (theMap, theItem) {
                                 var found = theItem.categoryTypes.filter(function (x) { return x.category.toString() === condition.categoryId; })[0];
-                                console.log("category found", found);
                                 if (found) {
                                     theMap = theMap.concat([theItem]);
                                 }

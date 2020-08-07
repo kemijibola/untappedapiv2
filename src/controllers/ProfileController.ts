@@ -22,7 +22,6 @@ import * as _ from "underscore";
 
 @controller("/v1/profiles")
 export class ProfileController {
-  // http://localhost:8900/v1/profile?userType=id&withdetails=true
   @use(requireAuth)
   @get("/")
   @use(requestValidator)
@@ -204,7 +203,6 @@ export class ProfileController {
     }
   }
 
-  // like talent profile
   @post("/talent/like")
   @use(requestValidator)
   @requestValidators("userId")

@@ -31,16 +31,12 @@ class UserFilterCategoryBusiness implements IUserFilterCategoryBusiness {
       query
     );
 
-    console.log("line 30", query);
-    console.log("line 31", userFilterCategories);
     if (condition.categoryId) {
-      console.log("categoryId found");
       userFilterCategories = userFilterCategories.reduce(
         (theMap: IUserFilterCategory[], theItem: IUserFilterCategory) => {
           var found = theItem.categoryTypes.filter(
             (x) => x.category.toString() === condition.categoryId
           )[0];
-          console.log("category found", found);
           if (found) {
             theMap = [...theMap, theItem];
           }

@@ -50,13 +50,6 @@ var interfaces_1 = require("../app/models/interfaces");
 var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
-// SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=single
-// SAMPLE GET ROUTE:: http://localhost:9000?user=1234&medias?type=all&upload=all
-// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=videos&upload=single
-// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=images&upload=all
-// SAMPLE GET ROUTE:: http://localhost:9000?medias?type=audios&upload=multiple
-// SAMPLE POST ROUTE:: http://localhost:8900/medias?type=audio
-// SAMPLE PUT ROUTE:: http://localhost:8900/medias/:id?type=audio
 var MediaController = /** @class */ (function () {
     function MediaController() {
     }
@@ -208,7 +201,6 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
     MediaController.prototype.fetchUserPreviewList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_4;
@@ -280,7 +272,6 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
     MediaController.prototype.fetchPreviewList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_5;
@@ -353,7 +344,6 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    // SAMPLE GET USER MEDIA LIST ROUTE:: http://localhost:8900/medias?mediaType=audio&uploadType=all
     MediaController.prototype.fetchUserList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_6;
@@ -425,7 +415,6 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    // SAMPLE GET ALL LIST ROUTE:: http://localhost:8900/medias?type=audio&upload_type=all
     MediaController.prototype.fetchList = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var uploadType, systemUploadTypes, mediaType, systemMediaTypes, condition, mediaBusiness, result, err_7;
@@ -495,7 +484,6 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    // SAMPLE GET SINGLE MEDIA ROUTE:: http://localhost:8900/medias/:id
     MediaController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var mediaBusiness, condition, result, err_8;

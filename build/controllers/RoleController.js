@@ -67,18 +67,18 @@ var RoleController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -100,27 +100,24 @@ var RoleController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: result.error
+                                    message: result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured. Please try again later."
+                                message: "Internal Server error occured. Please try again later.",
                             }))];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    RoleController.prototype.update = function () { };
-    RoleController.prototype.delete = function () { };
-    RoleController.prototype.findById = function () { };
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),

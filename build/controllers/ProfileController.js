@@ -60,7 +60,6 @@ var _ = __importStar(require("underscore"));
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
-    // http://localhost:8900/v1/profile?userType=id&withdetails=true
     ProfileController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var condition, profileBusiness, result, err_1;
@@ -255,7 +254,6 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
-    // like talent profile
     ProfileController.prototype.postTalentLike = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var profileBusiness, talentProfile, userHasLiked, result, err_6;

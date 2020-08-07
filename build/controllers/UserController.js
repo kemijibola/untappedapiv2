@@ -50,6 +50,7 @@ var UserBusiness = require("../app/business/UserBusiness");
 var UserAccountBusiness = require("../app/business/UserAccountBusiness");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -236,6 +237,8 @@ var UserController = /** @class */ (function () {
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canViewUser),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

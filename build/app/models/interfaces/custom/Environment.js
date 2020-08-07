@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Environment;
 (function (Environment) {
-    Environment["CI"] = "CI";
-    Environment["PRODUCTION"] = "PRODUCTION";
-    Environment["STAGING"] = "STAGING";
+    Environment["ci"] = "ci";
+    Environment["production"] = "production";
+    Environment["staging"] = "staging";
 })(Environment = exports.Environment || (exports.Environment = {}));
 //# sourceMappingURL=Environment.js.map

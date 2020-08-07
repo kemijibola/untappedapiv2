@@ -47,8 +47,4 @@ export class PermissionController {
       );
     }
   }
-  update(): void {}
-  delete(): void {}
-  fetch(): void {}
-  findById(): void {}
 }
