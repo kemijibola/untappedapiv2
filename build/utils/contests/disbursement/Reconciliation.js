@@ -63,7 +63,6 @@ var Reconciliation = /** @class */ (function () {
                             })];
                     case 1:
                         result = _b.sent();
-                        console.log(result);
                         if (result.data) {
                             for (_i = 0, _a = result.data; _i < _a.length; _i++) {
                                 contest = _a[_i];
@@ -75,7 +74,6 @@ var Reconciliation = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         err_1 = _b.sent();
-                        console.log(err_1);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
@@ -110,7 +108,6 @@ var Reconciliation = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 3:
                         err_2 = _a.sent();
-                        console.log(err_2);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }
@@ -285,7 +282,6 @@ var Reconciliation = /** @class */ (function () {
                     case 32: return [3 /*break*/, 34];
                     case 33:
                         err_3 = _a.sent();
-                        console.log(err_3);
                         return [3 /*break*/, 34];
                     case 34: return [2 /*return*/];
                 }
@@ -366,8 +362,6 @@ var Reconciliation = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         err_6 = _a.sent();
-                        // log error
-                        console.log(err_6);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

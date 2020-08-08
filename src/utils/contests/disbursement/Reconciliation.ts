@@ -32,7 +32,6 @@ export class Reconciliation {
       await this.fetchRecentlyEndedContest({});
     } catch (err) {
       // log error
-      console.log(err);
     }
   }
 
@@ -45,17 +44,13 @@ export class Reconciliation {
         endDate: { $gte: startOfToday(), $lte: new Date() },
       });
 
-      console.log(result);
-
       if (result.data) {
         for (let contest of result.data) {
           if (isFuture(contest.endDate)) return;
           this.fetchContestFinalist(contest);
         }
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   private fetchContestFinalist = async (contest: IContest): Promise<void> => {
@@ -79,9 +74,7 @@ export class Reconciliation {
         }
       }
       if (!prizeRedeemed) this.updateEntryPosition(contest, contestFinalist);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   private updateEntryPosition = async (
@@ -280,9 +273,7 @@ export class Reconciliation {
           }
         }
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   private createTransaction = async (

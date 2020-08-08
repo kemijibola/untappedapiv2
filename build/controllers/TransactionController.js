@@ -202,7 +202,6 @@ var TransactionController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var hash, response;
             return __generator(this, function (_a) {
-                console.log("called");
                 try {
                     hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
                     if (hash === req.headers["x-paystack-signature"]) {

@@ -30,7 +30,6 @@ app.use(function (error, req, res, next) {
     ErrorMiddleware_1.errorHandler(error, req, res, next);
 });
 process.on("unhandledRejection", function (err) {
-    console.log(err);
     // sendInTheCalvary(err);
     throw new error_1.PlatformError({
         code: 500,

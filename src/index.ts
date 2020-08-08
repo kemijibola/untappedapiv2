@@ -40,7 +40,6 @@ app.use(function (
 });
 
 process.on("unhandledRejection", function (err) {
-  console.log(err);
   // sendInTheCalvary(err);
   throw new PlatformError({
     code: 500,
