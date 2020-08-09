@@ -52,16 +52,17 @@ var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
 var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var date_fns_1 = require("date-fns");
+var config = module.require("../config/keys");
 var ContestController = /** @class */ (function () {
     function ContestController() {
     }
     ContestController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, mediaType, systemMediaTypes, prizePositions, _i, _a, prize, contestBusiness, result, err_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var item, mediaType, systemMediaTypes, prizePositions, _i, _a, prize, _b, _c, prize, contestBusiness, result, err_1;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
+                        _d.trys.push([0, 2, , 3]);
                         item = req.body;
                         if (date_fns_1.isAfter(Date.now(), item.startDate)) {
                             return [2 /*return*/, next(new error_1.PlatformError({
@@ -105,11 +106,20 @@ var ContestController = /** @class */ (function () {
                                     }))];
                             }
                         }
+                        for (_b = 0, _c = item.redeemable; _b < _c.length; _b++) {
+                            prize = _c[_b];
+                            if (prize.prizeCash < config.MiNIMUM_PRIZE_CASH) {
+                                return [2 /*return*/, next(new error_1.PlatformError({
+                                        code: 400,
+                                        message: "Minimum prize cash must be NGN " + config.MiNIMUM_PRIZE_CASH,
+                                    }))];
+                            }
+                        }
                         item.createdBy = req.user;
                         contestBusiness = new ContestBusiness();
                         return [4 /*yield*/, contestBusiness.create(item)];
                     case 1:
-                        result = _b.sent();
+                        result = _d.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: result.responseCode,
@@ -121,7 +131,7 @@ var ContestController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_1 = _b.sent();
+                        err_1 = _d.sent();
                         console.log(err_1);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,

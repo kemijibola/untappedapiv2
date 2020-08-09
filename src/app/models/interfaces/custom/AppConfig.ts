@@ -31,6 +31,7 @@ export interface AppConfig {
   PUSHER: Pusher;
   PAYSTACKBASEURL: string;
   KEY: string;
+  MiNIMUM_PRIZE_CASH: number;
 }
 
 export interface PaymentGate {

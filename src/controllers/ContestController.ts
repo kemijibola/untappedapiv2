@@ -26,6 +26,8 @@ import {
 } from "../utils/lib/PermissionConstant";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { differenceInDays, isAfter, startOfToday, endOfToday } from "date-fns";
+import { AppConfig } from "../app/models/interfaces/custom/AppConfig";
+const config: AppConfig = module.require("../config/keys");
 
 @controller("/v1/contests")
 export class ContestController {
@@ -102,6 +104,17 @@ export class ContestController {
             new PlatformError({
               code: 400,
               message: "Invalid prize position",
+            })
+          );
+        }
+      }
+
+      for (let prize of item.redeemable) {
+        if (prize.prizeCash < config.MiNIMUM_PRIZE_CASH) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: `Minimum prize cash must be NGN ${config.MiNIMUM_PRIZE_CASH}`,
             })
           );
         }

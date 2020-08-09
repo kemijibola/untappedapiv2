@@ -526,7 +526,7 @@ var UserBusiness = /** @class */ (function () {
                         })];
                     case 1:
                         user = _a.sent();
-                        if (!user) return [3 /*break*/, 4];
+                        if (!user) return [3 /*break*/, 6];
                         request = {
                             user: user,
                             audience: audience,
@@ -555,7 +555,8 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, user.save()];
                     case 5:
                         _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, "Reset password link has been sent successfully.")];
+                        _a.label = 6;
+                    case 6: return [2 /*return*/, Result_1.Result.ok(200, "If an account exist for " + email + ", you will receive password reset instructions.")];
                 }
             });
         });

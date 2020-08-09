@@ -515,14 +515,14 @@ class UserBusiness implements IUserBusiness {
         const recievers: string[] = [user.email];
         await this.sendMail(recievers, "Reset Your Password", emailBody);
       }
-    }
 
-    user.passwordResetRequested = true;
-    await user.save();
+      user.passwordResetRequested = true;
+      await user.save();
+    }
 
     return Result.ok<string>(
       200,
-      "Reset password link has been sent successfully."
+      `If an account exist for ${email}, you will receive password reset instructions.`
     );
   }
 
@@ -540,7 +540,7 @@ class UserBusiness implements IUserBusiness {
 
     //     await schedule(StateMachineArns.EmailStateMachine, new Date(), mailParams);
   }
-  
+
   async verifyPasswordResetLink(
     request: VerifyResetPasswordRequest
   ): Promise<Result<string>> {
