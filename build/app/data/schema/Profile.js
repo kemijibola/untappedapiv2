@@ -16,7 +16,7 @@ var physicalStatisticsSchema = new mongoose_1.Schema({
 var profileSchema = new mongoose_1.Schema({
     name: { type: String },
     rcNumber: { type: String },
-    location: { type: String, required: true },
+    location: { type: String },
     formattedAddres: { type: String },
     phoneNumbers: [{ type: String }],
     user: {
@@ -24,7 +24,7 @@ var profileSchema = new mongoose_1.Schema({
         ref: "User",
         required: true,
     },
-    shortBio: { type: String, required: true, minlength: 80, maxlength: 1500 },
+    shortBio: { type: String, minlength: 80, maxlength: 250 },
     categoryTypes: [
         {
             type: mongoose_1.Schema.Types.ObjectId,

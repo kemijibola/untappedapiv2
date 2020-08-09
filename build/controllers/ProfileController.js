@@ -187,6 +187,21 @@ var ProfileController = /** @class */ (function () {
                             item.location = req.body.userAddress.address.location;
                             item.formattedAddres = req.body.userAddress.address.formattedAddres;
                         }
+                        if (!item.location || !item.formattedAddres) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide location",
+                                }))];
+                        }
+                        if (item.shortBio) {
+                            if (item.shortBio.trim().length < 80 ||
+                                item.shortBio.trim().length > 250) {
+                                return [2 /*return*/, next(new error_1.PlatformError({
+                                        code: 400,
+                                        message: "Short bio length must be greater than 80 and less that 250",
+                                    }))];
+                            }
+                        }
                         item.user = req.user;
                         profileBusiness = new ProfileBusiness();
                         return [4 /*yield*/, profileBusiness.create(item)];

@@ -211,7 +211,6 @@ class UserBusiness implements IUserBusiness {
         email: params.email.toLowerCase(),
       };
       const user = await this.findUserByEmail(criteria);
-
       if (!user)
         return Result.fail<IAuthData>(401, "Invalid username/password");
 
@@ -513,7 +512,11 @@ class UserBusiness implements IUserBusiness {
         );
 
         const recievers: string[] = [user.email];
-        await this.sendMail(recievers, "Reset Your Password", emailBody);
+        await this.sendMail(
+          recievers,
+          "Reset password instructions",
+          emailBody
+        );
       }
 
       user.passwordResetRequested = true;

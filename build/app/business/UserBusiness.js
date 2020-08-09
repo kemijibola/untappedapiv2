@@ -546,7 +546,7 @@ var UserBusiness = /** @class */ (function () {
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(forgotPasswordEmailPlaceHolder);
                         recievers = [user.email];
-                        return [4 /*yield*/, this.sendMail(recievers, "Reset Your Password", emailBody)];
+                        return [4 /*yield*/, this.sendMail(recievers, "Reset password instructions", emailBody)];
                     case 3:
                         _a.sent();
                         _a.label = 4;

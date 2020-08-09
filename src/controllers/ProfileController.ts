@@ -140,6 +140,30 @@ export class ProfileController {
         item.location = req.body.userAddress.address.location;
         item.formattedAddres = req.body.userAddress.address.formattedAddres;
       }
+
+      if (!item.location || !item.formattedAddres) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide location",
+          })
+        );
+      }
+
+      if (item.shortBio) {
+        if (
+          item.shortBio.trim().length < 80 ||
+          item.shortBio.trim().length > 250
+        ) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message:
+                "Short bio length must be greater than 80 and less that 250",
+            })
+          );
+        }
+      }
       item.user = req.user;
       const profileBusiness = new ProfileBusiness();
       const result = await profileBusiness.create(item);

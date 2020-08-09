@@ -23,7 +23,7 @@ const profileSchema: Schema = new Schema(
   {
     name: { type: String },
     rcNumber: { type: String },
-    location: { type: String, required: true },
+    location: { type: String },
     formattedAddres: { type: String },
     phoneNumbers: [{ type: String }],
     user: {
@@ -31,7 +31,7 @@ const profileSchema: Schema = new Schema(
       ref: "User",
       required: true,
     },
-    shortBio: { type: String, required: true, minlength: 80, maxlength: 1500 },
+    shortBio: { type: String, minlength: 80, maxlength: 250 },
     categoryTypes: [
       {
         type: Schema.Types.ObjectId,
