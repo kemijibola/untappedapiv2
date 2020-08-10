@@ -62,7 +62,7 @@ class RepositoryBase<T extends mongoose.Document>
           else resolve(result);
         })
         .populate("user", "_id fullName")
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -75,7 +75,7 @@ class RepositoryBase<T extends mongoose.Document>
           else resolve(result);
         })
         .populate("user", "_id fullName profileImagePath")
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -90,7 +90,7 @@ class RepositoryBase<T extends mongoose.Document>
         .populate("user", "_id fullName profileImagePath")
         .populate("likedBy", "_id fullName")
         .populate("replies.user", "_id fullName profileImagePath")
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -103,7 +103,7 @@ class RepositoryBase<T extends mongoose.Document>
           else resolve(result);
         })
         .populate("contest", "_id title bannerImage views likedBy")
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -118,7 +118,7 @@ class RepositoryBase<T extends mongoose.Document>
         .sort({
           createdAt: -1,
         })
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -140,7 +140,7 @@ class RepositoryBase<T extends mongoose.Document>
         .sort({
           createdAt: -1,
         })
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -153,7 +153,7 @@ class RepositoryBase<T extends mongoose.Document>
           else resolve(result);
         })
         .limit(limit)
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -170,7 +170,7 @@ class RepositoryBase<T extends mongoose.Document>
         .sort({
           endDate: "desc",
         })
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -187,7 +187,7 @@ class RepositoryBase<T extends mongoose.Document>
         .sort({
           createdAt: -1,
         })
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }
@@ -199,7 +199,7 @@ class RepositoryBase<T extends mongoose.Document>
           if (error) reject(error);
           else resolve(result);
         })
-        // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .cacheDocQueries({ collectionName: this._model.collection.name })
         .exec();
     });
   }

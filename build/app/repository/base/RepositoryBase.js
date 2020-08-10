@@ -67,7 +67,7 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .populate("user", "_id fullName")
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -82,7 +82,7 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .populate("user", "_id fullName profileImagePath")
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -99,7 +99,7 @@ var RepositoryBase = /** @class */ (function () {
                 .populate("user", "_id fullName profileImagePath")
                 .populate("likedBy", "_id fullName")
                 .populate("replies.user", "_id fullName profileImagePath")
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -114,7 +114,7 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .populate("contest", "_id title bannerImage views likedBy")
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -131,7 +131,7 @@ var RepositoryBase = /** @class */ (function () {
                 .sort({
                 createdAt: -1,
             })
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -153,7 +153,7 @@ var RepositoryBase = /** @class */ (function () {
                 .sort({
                 createdAt: -1,
             })
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -169,7 +169,7 @@ var RepositoryBase = /** @class */ (function () {
                     resolve(result);
             })
                 .limit(limit)
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -190,7 +190,7 @@ var RepositoryBase = /** @class */ (function () {
                 .sort({
                 endDate: "desc",
             })
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -211,7 +211,7 @@ var RepositoryBase = /** @class */ (function () {
                 .sort({
                 createdAt: -1,
             })
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
@@ -225,7 +225,7 @@ var RepositoryBase = /** @class */ (function () {
                 else
                     resolve(result);
             })
-                // .cacheDocQueries({ collectionName: this._model.collection.name })
+                .cacheDocQueries({ collectionName: _this._model.collection.name })
                 .exec();
         });
     };
