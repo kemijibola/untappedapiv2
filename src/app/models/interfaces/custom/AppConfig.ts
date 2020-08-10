@@ -8,6 +8,9 @@ export interface AppConfig {
   PORT: number;
   REDIS_HOST: string;
   REDIS_PORT: number;
+  REDIS_USER: string;
+  REDIS_PASSWORD: string;
+  REDIS_URI: string;
   RSA_PUBLIC: RsaSecret[];
   RSA_PRIVATE: RsaSecret[];
   DATABASE_HOST: string;
@@ -32,6 +35,7 @@ export interface AppConfig {
   PAYSTACKBASEURL: string;
   KEY: string;
   MiNIMUM_PRIZE_CASH: number;
+  NODE_APP_INSTANCE: number;
 }
 
 export interface PaymentGate {

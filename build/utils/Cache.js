@@ -43,7 +43,7 @@ var redis_1 = __importDefault(require("redis"));
 var RedisClustr = require("redis-clustr");
 var util_1 = __importDefault(require("util"));
 var config = module.require("../config/keys");
-var cacheAddress = config.REDIS_HOST + ":" + config.REDIS_PORT || "127.0.0.1:6379";
+var cacheAddress = config.REDIS_URI;
 var client = redis_1.default.createClient(cacheAddress);
 client.hget = util_1.default.promisify(client.hget);
 var exec = mongoose_1.default.Query.prototype.exec;
@@ -83,7 +83,7 @@ mongoose_1.default.Query.prototype.exec = function () {
                         return [2 /*return*/, exec.apply(this, args)];
                     }
                     key = JSON.stringify(Object.assign({}, this.getQuery(), {
-                        collection: this.collectionName
+                        collection: this.collectionName,
                     }));
                     return [4 /*yield*/, client.hget(this.hashKey, key)];
                 case 1:

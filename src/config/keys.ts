@@ -1,5 +1,5 @@
 import { Environment } from "../app/models/interfaces/custom/Environment";
-// import * as development from "./development.json";
+import * as development from "./development.json";
 // import * as ci from "./ci.json";
 // import * as production from "./production.json";
 
@@ -56,6 +56,9 @@ switch (environment) {
       DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
       REDIS_HOST: process.env.REDIS_HOST,
       REDIS_PORT: process.env.REDIS_PORT,
+      REDIS_USER: process.env.REDIS_USER,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+      REDIS_URI: process.env.REDIS_URI,
       ISSUER: process.env.ISSUER,
       AUTH_EXPIRESIN: process.env.AUTH_EXPIRESIN,
       MAIL_EXPIRESIN: process.env.MAIL_EXPIRESIN,
@@ -118,10 +121,11 @@ switch (environment) {
       PAYSTACKBASEURL: process.env.PAYSTACKBASEURL,
       KEY: process.env.KEY,
       MiNIMUM_PRIZE_CASH: process.env.MiNIMUM_PRIZE_CASH,
+      NODE_APP_INSTANCE: process.env.NODE_APP_INSTANCE,
     };
     break;
   default:
-    // Object.seal(development);
-    // module.exports = development;
+    Object.seal(development);
+    module.exports = development;
     break;
 }

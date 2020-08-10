@@ -5,7 +5,7 @@ import "./controllers";
 
 import { AppConfig } from "./app/models/interfaces/custom/AppConfig";
 const config: AppConfig = module.require("./config/keys");
-// module.require("./utils/Cache");
+module.require("./utils/Cache");
 // module.require("./utils/filtercategory/UserFilter");
 import * as cron from "node-cron";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
@@ -14,8 +14,6 @@ import cors from "cors";
 // import SocketIo = require('./socket/SocketIo');
 import { userFilterJob, contestSettlement } from "./utils/CronJob";
 import { PlatformError } from "./utils/error";
-/// <reference path="typings/tsd.d.ts" />
-import * as cluster from "cluster";
 
 const app = express();
 app.use(bodyParser.json());
@@ -44,10 +42,9 @@ process.on("unhandledRejection", function (err) {
 const port = config.PORT || 5000;
 app.set("port", port);
 
-if (cluster.isMaster) {
-  // only master should run cron job
+const instance: string = process.env.NODE_APP_INSTANCE || "";
+if (instance === "0") {
   userFilterJob();
-
   contestSettlement();
 }
 

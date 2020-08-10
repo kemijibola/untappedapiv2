@@ -8,6 +8,7 @@ var body_parser_1 = __importDefault(require("body-parser"));
 var AppRouter_1 = require("./AppRouter");
 require("./controllers");
 var config = module.require("./config/keys");
+module.require("./utils/Cache");
 var ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 var cors_1 = __importDefault(require("cors"));
 // import SocketIo = require('./socket/SocketIo');
@@ -17,14 +18,6 @@ var app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(cors_1.default());
-// app.use(function(req: Request, res: Response, next: NextFunction) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept'
-//   );
-//   next();
-// });
 app.use(AppRouter_1.AppRouter.getInstance);
 app.use(function (error, req, res, next) {
     ErrorMiddleware_1.errorHandler(error, req, res, next);
@@ -38,8 +31,11 @@ process.on("unhandledRejection", function (err) {
 });
 var port = config.PORT || 5000;
 app.set("port", port);
-CronJob_1.userFilterJob();
-CronJob_1.contestSettlement();
+var instance = process.env.NODE_APP_INSTANCE || "";
+if (instance === "0") {
+    CronJob_1.userFilterJob();
+    CronJob_1.contestSettlement();
+}
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
 });

@@ -21,8 +21,7 @@ declare module "mongoose" {
   }
 }
 
-const cacheAddress =
-  `${config.REDIS_HOST}:${config.REDIS_PORT}` || "127.0.0.1:6379";
+const cacheAddress = config.REDIS_URI;
 
 const client: any = redis.createClient(cacheAddress);
 
@@ -30,14 +29,14 @@ client.hget = util.promisify(client.hget);
 
 const exec: any = mongoose.Query.prototype.exec;
 
-mongoose.Query.prototype.cache = function(options: any = {}) {
+mongoose.Query.prototype.cache = function (options: any = {}) {
   this.useCache = true;
   this.hashKey = JSON.stringify(options.key || "");
   this.collectionName = options.collectionName;
   return this;
 };
 
-mongoose.Query.prototype.cacheDocQuery = function(options: any = {}) {
+mongoose.Query.prototype.cacheDocQuery = function (options: any = {}) {
   this.useCache = true;
   this.hashKey = JSON.stringify(options.key || "");
   this.collectionName = options.collectionName;
@@ -45,7 +44,7 @@ mongoose.Query.prototype.cacheDocQuery = function(options: any = {}) {
   return this;
 };
 
-mongoose.Query.prototype.cacheDocQueries = function(options = {}) {
+mongoose.Query.prototype.cacheDocQueries = function (options = {}) {
   const { collectionName } = options;
   this.useCache = true;
   this.hashKey = JSON.stringify(options.key || "");
@@ -53,14 +52,14 @@ mongoose.Query.prototype.cacheDocQueries = function(options = {}) {
   return this;
 };
 
-mongoose.Query.prototype.exec = async function(...args: any[]) {
+mongoose.Query.prototype.exec = async function (...args: any[]) {
   if (!this.useCache) {
     return exec.apply(this, args);
   }
 
   const key = JSON.stringify(
     Object.assign({}, this.getQuery(), {
-      collection: this.collectionName
+      collection: this.collectionName,
     })
   );
 

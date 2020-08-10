@@ -62,7 +62,7 @@ exports.userFilterJob = function () {
     }); });
 };
 exports.contestSettlement = function () {
-    cron.schedule("*/1 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
+    cron.schedule("* 1 * * *", function () { return __awaiter(_this, void 0, void 0, function () {
         var report;
         return __generator(this, function (_a) {
             switch (_a.label) {
