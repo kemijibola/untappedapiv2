@@ -21,8 +21,6 @@ import { canViewUser } from "../utils/lib/PermissionConstant";
 export class UserController {
   @get("/")
   @use(requestValidator)
-  @use(requireAuth)
-  @authorize(canViewUser)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       let condition: ObjectKeyString = {};
