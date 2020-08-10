@@ -10,7 +10,7 @@ export const userFilterJob = () => {
 };
 
 export const contestSettlement = () => {
-  cron.schedule("*/1 * * * *", async () => {
+  cron.schedule("* 1 * * *", async () => {
     var report = Reconciliation.init();
     await report.settle();
   });
