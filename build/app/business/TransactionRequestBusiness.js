@@ -143,7 +143,7 @@ var TransactionRequestBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("got here");
+                        console.log("got here", recipientCode);
                         return [4 /*yield*/, this._userAccountRepository.findByCriteria({
                                 gatewayRecipientCode: recipientCode,
                             })];

@@ -85,7 +85,7 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
     responseBody: string,
     transferredAt: string = ""
   ): Promise<boolean> {
-    console.log("got here");
+    console.log("got here", recipientCode);
     var recipient = await this._userAccountRepository.findByCriteria({
       gatewayRecipientCode: recipientCode,
     });
