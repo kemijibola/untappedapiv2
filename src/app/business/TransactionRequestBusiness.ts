@@ -92,11 +92,11 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
       const transaction = await this._transactionRequestRepository.findByCriteria(
         { transferCode, user: recipient.user }
       );
-      console.log(amount);
+
       if (transaction.amount === amount / 100) {
         transaction.transactionStatus = status;
         transaction.transactionDate =
-          parse(transferredAt) || transaction.transactionDate;
+          new Date(transferredAt) || transaction.transactionDate;
         transaction.responseMessage = responseMessge;
         transaction.responseBody = responseBody;
         transaction.responseCode = responseCode;

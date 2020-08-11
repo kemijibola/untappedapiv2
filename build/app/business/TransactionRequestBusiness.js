@@ -40,7 +40,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var TransactionRequestRepository_1 = __importDefault(require("../repository/TransactionRequestRepository"));
 var UserAccountRepository_1 = __importDefault(require("../repository/UserAccountRepository"));
 var Result_1 = require("../../utils/Result");
-var date_fns_1 = require("date-fns");
 var TransactionRequestBusiness = /** @class */ (function () {
     function TransactionRequestBusiness() {
         this._transactionRequestRepository = new TransactionRequestRepository_1.default();
@@ -151,11 +150,10 @@ var TransactionRequestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode, user: recipient.user })];
                     case 2:
                         transaction = _a.sent();
-                        console.log(amount);
                         if (!(transaction.amount === amount / 100)) return [3 /*break*/, 4];
                         transaction.transactionStatus = status;
                         transaction.transactionDate =
-                            date_fns_1.parse(transferredAt) || transaction.transactionDate;
+                            new Date(transferredAt) || transaction.transactionDate;
                         transaction.responseMessage = responseMessge;
                         transaction.responseBody = responseBody;
                         transaction.responseCode = responseCode;
