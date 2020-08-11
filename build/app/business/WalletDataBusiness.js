@@ -163,7 +163,7 @@ var WalletBusiness = /** @class */ (function () {
     };
     WalletBusiness.prototype.transferFromWallet = function (processor, pin, amount, user, narration) {
         return __awaiter(this, void 0, void 0, function () {
-            var userWallet, walletPin, decrypted, walletBalance, walletBalanceInKobo, userAccount, recipientCode, paymentFactory, result, walletBalance_1, newWalletBalance, transactionObj, transactionObj;
+            var userWallet, walletPin, decrypted, walletBalance, walletBalanceInKobo, userAccount, recipientCode, paymentFactory, result, walletBalance_1, newWalletBalance, transactionObj, transactionObj, err_1, transactionObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._walletDataRepository.findByCriteria({ user: user })];
@@ -190,15 +190,18 @@ var WalletBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(404, "User account not found. Please setup account before proceeding.")];
                         recipientCode = userAccount.gatewayRecipientCode || "";
                         paymentFactory = new PaymentFactory_1.PaymentFactory().create(processor.toLowerCase());
-                        return [4 /*yield*/, paymentFactory.transferFund("balance", amount, recipientCode, narration || "Wallet transfer on " + new Date())];
+                        _a.label = 3;
                     case 3:
+                        _a.trys.push([3, 10, , 12]);
+                        return [4 /*yield*/, paymentFactory.transferFund("balance", amount, recipientCode, narration || "Wallet transfer on " + new Date())];
+                    case 4:
                         result = _a.sent();
-                        if (!result.status) return [3 /*break*/, 6];
+                        if (!result.status) return [3 /*break*/, 7];
                         walletBalance_1 = userWallet.balance;
                         newWalletBalance = walletBalance_1 - amount / 100;
                         userWallet.balance = newWalletBalance;
                         return [4 /*yield*/, userWallet.save()];
-                    case 4:
+                    case 5:
                         _a.sent();
                         transactionObj = Object.assign({
                             user: userWallet.user,
@@ -216,10 +219,10 @@ var WalletBusiness = /** @class */ (function () {
                             transactionStatus: result.data.status,
                         });
                         return [4 /*yield*/, this._transactionRequestRepository.create(transactionObj)];
-                    case 5:
+                    case 6:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, userWallet)];
-                    case 6:
+                    case 7:
                         transactionObj = Object.assign({
                             user: userWallet.user,
                             amount: result.data.amount / 100 || amount,
@@ -235,9 +238,31 @@ var WalletBusiness = /** @class */ (function () {
                             transactionStatus: result.data.status || "",
                         });
                         return [4 /*yield*/, this._transactionRequestRepository.create(transactionObj)];
-                    case 7:
+                    case 8:
                         _a.sent();
                         return [2 /*return*/, Result_1.Result.fail(400, result.message)];
+                    case 9: return [3 /*break*/, 12];
+                    case 10:
+                        err_1 = _a.sent();
+                        transactionObj = Object.assign({
+                            user: userWallet.user,
+                            amount: err_1.body.amount,
+                            externalReference: "",
+                            narration: err_1.body.narration || "",
+                            paymentChannel: "paystack",
+                            transactionType: TransactionDTO_1.TransctionType.debit,
+                            transferCode: "",
+                            responseCode: err_1.statusCode,
+                            responseMessage: err_1.error.message,
+                            currency: "NGN",
+                            transactionDate: new Date(),
+                            transactionStatus: "failed",
+                        });
+                        return [4 /*yield*/, this._transactionRequestRepository.create(transactionObj)];
+                    case 11:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.fail(400, "We are unable to process your request at this time.")];
+                    case 12: return [2 /*return*/];
                 }
             });
         });

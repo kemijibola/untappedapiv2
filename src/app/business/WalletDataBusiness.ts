@@ -125,54 +125,75 @@ class WalletBusiness implements IWalletDataBusiness {
     var paymentFactory: AbstractPayment = new PaymentFactory().create(
       processor.toLowerCase()
     );
+    try {
+      const result = await paymentFactory.transferFund(
+        "balance",
+        amount,
+        recipientCode,
+        narration || `Wallet transfer on ${new Date()}`
+      );
+      if (result.status) {
+        const walletBalance: any = userWallet.balance;
+        const newWalletBalance = walletBalance - amount / 100;
+        userWallet.balance = newWalletBalance;
+        await userWallet.save();
 
-    const result = await paymentFactory.transferFund(
-      "balance",
-      amount,
-      recipientCode,
-      narration || `Wallet transfer on ${new Date()}`
-    );
-    if (result.status) {
-      const walletBalance: any = userWallet.balance;
-      const newWalletBalance = walletBalance - amount / 100;
-      userWallet.balance = newWalletBalance;
-      await userWallet.save();
-
-      // log transaction
+        // log transaction
+        const transactionObj: TransactionRequest = Object.assign({
+          user: userWallet.user,
+          amount: result.data.amount / 100,
+          paymentReference: generateRandomNumber(12),
+          externalReference: result.data.reference,
+          narration: result.data.reason,
+          paymentChannel: "paystack",
+          transactionType: TransctionType.debit,
+          transferCode: result.data.transfer_code,
+          responseCode: 200,
+          responseMessage: result.message,
+          currency: result.data.currency,
+          transactionDate: parse(result.data.createdAt),
+          transactionStatus: result.data.status,
+        });
+        await this._transactionRequestRepository.create(transactionObj);
+        return Result.ok<WalletData>(201, userWallet);
+      } else {
+        const transactionObj: TransactionRequest = Object.assign({
+          user: userWallet.user,
+          amount: result.data.amount / 100 || amount,
+          externalReference: result.data.reference || "",
+          narration: result.data.reason || "",
+          paymentChannel: "paystack",
+          transactionType: TransctionType.debit,
+          transferCode: result.data.transfer_code || "",
+          responseCode: 400,
+          responseMessage: result.message,
+          currency: result.data.currency,
+          transactionDate: parse(result.data.createdAt),
+          transactionStatus: result.data.status || "",
+        });
+        await this._transactionRequestRepository.create(transactionObj);
+        return Result.fail<WalletData>(400, result.message);
+      }
+    } catch (err) {
       const transactionObj: TransactionRequest = Object.assign({
         user: userWallet.user,
-        amount: result.data.amount / 100,
-        paymentReference: generateRandomNumber(12),
-        externalReference: result.data.reference,
-        narration: result.data.reason,
+        amount: err.body.amount,
+        externalReference: "",
+        narration: err.body.narration || "",
         paymentChannel: "paystack",
         transactionType: TransctionType.debit,
-        transferCode: result.data.transfer_code,
-        responseCode: 200,
-        responseMessage: result.message,
-        currency: result.data.currency,
-        transactionDate: parse(result.data.createdAt),
-        transactionStatus: result.data.status,
+        transferCode: "",
+        responseCode: err.statusCode,
+        responseMessage: err.error.message,
+        currency: "NGN",
+        transactionDate: new Date(),
+        transactionStatus: "failed",
       });
       await this._transactionRequestRepository.create(transactionObj);
-      return Result.ok<WalletData>(201, userWallet);
-    } else {
-      const transactionObj: TransactionRequest = Object.assign({
-        user: userWallet.user,
-        amount: result.data.amount / 100 || amount,
-        externalReference: result.data.reference || "",
-        narration: result.data.reason || "",
-        paymentChannel: "paystack",
-        transactionType: TransctionType.debit,
-        transferCode: result.data.transfer_code || "",
-        responseCode: 400,
-        responseMessage: result.message,
-        currency: result.data.currency,
-        transactionDate: parse(result.data.createdAt),
-        transactionStatus: result.data.status || "",
-      });
-      await this._transactionRequestRepository.create(transactionObj);
-      return Result.fail<WalletData>(400, result.message);
+      return Result.fail<WalletData>(
+        400,
+        "We are unable to process your request at this time."
+      );
     }
   }
 
