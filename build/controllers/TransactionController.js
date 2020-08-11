@@ -209,9 +209,9 @@ var TransactionController = /** @class */ (function () {
                         if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 2];
                         response = req.body;
                         transactionRequestBusiness = new TransactionRequestBusiness();
-                        return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, response.data.status === "transfer.success"
+                        return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, response.event === "transfer.success"
                                 ? "Transaction Successful"
-                                : response.data.status, response.data.status === "transfer.success" ? 200 : 400, JSON.stringify(response.data), response.data.status === "transfer.success"
+                                : response.data.status, response.event === "transfer.success" ? 200 : 400, JSON.stringify(response.data), response.event === "transfer.success"
                                 ? response.data.transferred_at
                                 : "")];
                     case 1:

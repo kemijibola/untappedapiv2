@@ -220,12 +220,12 @@ export class TransactionController {
           response.data.recipient.recipient_code,
           response.data.amount,
           response.data.status,
-          response.data.status === "transfer.success"
+          response.event === "transfer.success"
             ? "Transaction Successful"
             : response.data.status,
-          response.data.status === "transfer.success" ? 200 : 400,
+          response.event === "transfer.success" ? 200 : 400,
           JSON.stringify(response.data),
-          response.data.status === "transfer.success"
+          response.event === "transfer.success"
             ? response.data.transferred_at
             : ""
         );

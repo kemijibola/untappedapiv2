@@ -98,6 +98,10 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
         transaction.responseMessage = responseMessge;
         transaction.responseBody = responseBody;
         transaction.responseCode = responseCode;
+        transaction.transactionDate =
+          transferredAt === ""
+            ? new Date(transferredAt)
+            : transaction.transactionDate;
         await this._transactionRequestRepository.update(
           transaction._id,
           transaction

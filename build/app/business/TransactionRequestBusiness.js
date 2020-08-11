@@ -155,6 +155,10 @@ var TransactionRequestBusiness = /** @class */ (function () {
                         transaction.responseMessage = responseMessge;
                         transaction.responseBody = responseBody;
                         transaction.responseCode = responseCode;
+                        transaction.transactionDate =
+                            transferredAt === ""
+                                ? new Date(transferredAt)
+                                : transaction.transactionDate;
                         return [4 /*yield*/, this._transactionRequestRepository.update(transaction._id, transaction)];
                     case 3:
                         _a.sent();
