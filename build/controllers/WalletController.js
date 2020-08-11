@@ -52,6 +52,7 @@ var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var auth_1 = require("../middlewares/auth");
 var TransactionDTO_1 = require("../app/models/interfaces/custom/TransactionDTO");
+var lib_1 = require("../utils/lib");
 var WalletController = /** @class */ (function () {
     function WalletController() {
     }
@@ -230,6 +231,33 @@ var WalletController = /** @class */ (function () {
             });
         });
     };
+    WalletController.prototype.fetchSecure = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var key;
+            return __generator(this, function (_a) {
+                try {
+                    key = lib_1.walletKey();
+                    if (!key) {
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 404,
+                                message: "Secure key not found",
+                            }))];
+                    }
+                    return [2 /*return*/, res.status(200).json({
+                            message: "Operation successful",
+                            data: key,
+                        })];
+                }
+                catch (err) {
+                    return [2 /*return*/, next(new error_1.PlatformError({
+                            code: 500,
+                            message: "Internal Server error occured. Please try again later.",
+                        }))];
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/details"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -268,6 +296,15 @@ var WalletController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], WalletController.prototype, "fetchUserTransactions", null);
+    __decorate([
+        decorators_1.get("/secure"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateWallet),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], WalletController.prototype, "fetchSecure", null);
     WalletController = __decorate([
         decorators_1.controller("/v1/wallets")
     ], WalletController);

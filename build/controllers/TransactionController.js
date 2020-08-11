@@ -200,40 +200,32 @@ var TransactionController = /** @class */ (function () {
     };
     TransactionController.prototype.updateTransaction = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var hash, response, err_5;
+            var hash, response, transactionRequestBusiness, result, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 7]);
+                        _a.trys.push([0, 3, , 4]);
                         console.log("update request gotten", 1);
                         hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
-                        if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 5];
+                        if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 2];
                         response = req.body;
-                        console.log(response.event);
-                        console.log(response.data);
-                        if (!(response.event === "transfer.success")) return [3 /*break*/, 2];
-                        console.log("got here");
-                        return [4 /*yield*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at)];
+                        transactionRequestBusiness = new TransactionRequestBusiness();
+                        return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, response.data.status === "transfer.success"
+                                ? "Transaction Successful"
+                                : response.data.status, response.data.status === "transfer.success" ? 200 : 400, JSON.stringify(response.data), response.data.status === "transfer.success"
+                                ? response.data.transferred_at
+                                : "")];
                     case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        if (!(response.event === "transfer.failed")) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data))];
+                        result = _a.sent();
+                        return [2 /*return*/, res.send(200)];
+                    case 2: return [3 /*break*/, 4];
                     case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4:
-                        res.send(200);
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
                         err_5 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 7: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

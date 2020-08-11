@@ -24,6 +24,7 @@ import {
 import { AppConfig } from "../app/models/interfaces/custom/AppConfig";
 import { signatureHash } from "../utils/lib/Helper";
 import { PaymentProviderStatus } from "../app/models/interfaces/custom/TransactionDTO";
+import { canCreateWallet } from "../utils/lib/PermissionConstant";
 const config: AppConfig = require("../config/keys");
 
 @controller("/v1/transactions")
@@ -214,33 +215,22 @@ export class TransactionController {
       if (hash === req.headers["x-paystack-signature"]) {
         // Retrieve the request's body
         var response: PaystackTransactionFailedResponse = req.body;
-        console.log(response.event);
-        console.log(response.data);
-        if (response.event === "transfer.success") {
-          console.log("got here");
-          await this.sendTransactionSuccess(
-            response.data.transfer_code,
-            response.data.recipient.recipient_code,
-            response.data.amount,
-            response.data.status,
-            "Transaction successful",
-            200,
-            JSON.stringify(response.data),
-            response.data.transferred_at
-          );
-        }
-        if (response.event === "transfer.failed") {
-          await this.sendTransactionFailed(
-            response.data.transfer_code,
-            response.data.recipient.recipient_code,
-            response.data.amount,
-            response.data.status,
-            "Transaction failed",
-            400,
-            JSON.stringify(response.data)
-          );
-        }
-        res.send(200);
+        const transactionRequestBusiness = new TransactionRequestBusiness();
+        var result = await transactionRequestBusiness.updateTransactionStatus(
+          response.data.transfer_code,
+          response.data.recipient.recipient_code,
+          response.data.amount,
+          response.data.status,
+          response.data.status === "transfer.success"
+            ? "Transaction Successful"
+            : response.data.status,
+          response.data.status === "transfer.success" ? 200 : 400,
+          JSON.stringify(response.data),
+          response.data.status === "transfer.success"
+            ? response.data.transferred_at
+            : ""
+        );
+        return res.send(200);
       }
     } catch (err) {
       return next(

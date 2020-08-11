@@ -223,3 +223,7 @@ export function decrypt(keys: any, value: any): string {
 export function signatureHash(secret: string, data: string): string {
   return createHmac("sha512", secret).update(data).digest("hex");
 }
+
+export function walletKey(): string {
+  return config.KEY;
+}

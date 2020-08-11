@@ -22,7 +22,7 @@ import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
 import { WalletData } from "../app/models/interfaces";
 import { PaymentProviderStatus } from "../app/models/interfaces/custom/TransactionDTO";
-import { encrypt, decrypt } from "../utils/lib";
+import { walletKey } from "../utils/lib";
 
 @controller("/v1/wallets")
 export class WalletController {
@@ -224,6 +224,35 @@ export class WalletController {
         new PlatformError({
           code: 500,
           message: "Internal Server error occured. Please try again.",
+        })
+      );
+    }
+  }
+
+  @get("/secure")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canCreateWallet)
+  async fetchSecure(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      var key = walletKey();
+      if (!key) {
+        return next(
+          new PlatformError({
+            code: 404,
+            message: "Secure key not found",
+          })
+        );
+      }
+      return res.status(200).json({
+        message: "Operation successful",
+        data: key,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }

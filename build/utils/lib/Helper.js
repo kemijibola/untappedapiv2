@@ -245,4 +245,8 @@ function signatureHash(secret, data) {
     return crypto_1.createHmac("sha512", secret).update(data).digest("hex");
 }
 exports.signatureHash = signatureHash;
+function walletKey() {
+    return config.KEY;
+}
+exports.walletKey = walletKey;
 //# sourceMappingURL=Helper.js.map
