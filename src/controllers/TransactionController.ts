@@ -261,16 +261,20 @@ export class TransactionController {
     responseCode: number,
     responseBody: string
   ): Promise<void> {
-    const transactionRequestBusiness = new TransactionRequestBusiness();
-    await transactionRequestBusiness.updateTransactionStatus(
-      transferCode,
-      recipientCode,
-      amount,
-      status,
-      responseMessge,
-      responseCode,
-      responseBody
-    );
+    try {
+      const transactionRequestBusiness = new TransactionRequestBusiness();
+      var result = await transactionRequestBusiness.updateTransactionStatus(
+        transferCode,
+        recipientCode,
+        amount,
+        status,
+        responseMessge,
+        responseCode,
+        responseBody
+      );
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async sendTransactionSuccess(
@@ -283,15 +287,20 @@ export class TransactionController {
     responseBody: string,
     transferredAt: string
   ): Promise<void> {
-    const transactionRequestBusiness = new TransactionRequestBusiness();
-    await transactionRequestBusiness.updateTransactionStatus(
-      transferCode,
-      recipientCode,
-      amount,
-      status,
-      responseMessge,
-      responseCode,
-      responseBody
-    );
+    try {
+      console.log("line 291");
+      const transactionRequestBusiness = new TransactionRequestBusiness();
+      var result = await transactionRequestBusiness.updateTransactionStatus(
+        transferCode,
+        recipientCode,
+        amount,
+        status,
+        responseMessge,
+        responseCode,
+        responseBody
+      );
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

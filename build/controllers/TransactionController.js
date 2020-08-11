@@ -240,30 +240,43 @@ var TransactionController = /** @class */ (function () {
     };
     TransactionController.prototype.sendTransactionFailed = function (transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody) {
         return __awaiter(this, void 0, void 0, function () {
-            var transactionRequestBusiness;
+            var transactionRequestBusiness, result, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         transactionRequestBusiness = new TransactionRequestBusiness();
                         return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody)];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/];
+                        result = _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_6 = _a.sent();
+                        console.log(err_6);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     TransactionController.prototype.sendTransactionSuccess = function (transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody, transferredAt) {
         return __awaiter(this, void 0, void 0, function () {
-            var transactionRequestBusiness;
+            var transactionRequestBusiness, result, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        console.log("line 291");
                         transactionRequestBusiness = new TransactionRequestBusiness();
                         return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody)];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/];
+                        result = _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_7 = _a.sent();
+                        console.log(err_7);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

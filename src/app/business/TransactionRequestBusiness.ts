@@ -84,7 +84,7 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
     responseCode: number,
     responseBody: string,
     transferredAt: string = ""
-  ): Promise<void> {
+  ): Promise<boolean> {
     console.log("got to business", transferCode);
     const transaction = await this._transactionRequestRepository.findByCriteria(
       { transferCode }
@@ -108,8 +108,10 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
           transaction._id,
           transaction
         );
+        return true;
       }
     }
+    return false;
   }
 
   async update(
