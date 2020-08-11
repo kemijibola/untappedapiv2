@@ -240,8 +240,8 @@ export class TransactionController {
             JSON.stringify(response.data)
           );
         }
+        res.send(200);
       }
-      res.send(200);
     } catch (err) {
       return next(
         new PlatformError({

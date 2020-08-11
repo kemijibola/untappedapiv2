@@ -204,10 +204,10 @@ var TransactionController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
+                        _a.trys.push([0, 6, , 7]);
                         console.log("update request gotten", 1);
                         hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
-                        if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 4];
+                        if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 5];
                         response = req.body;
                         console.log(response.event);
                         console.log(response.data);
@@ -225,14 +225,15 @@ var TransactionController = /** @class */ (function () {
                         _a.label = 4;
                     case 4:
                         res.send(200);
-                        return [3 /*break*/, 6];
-                    case 5:
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         err_5 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 6: return [2 /*return*/];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
