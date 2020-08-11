@@ -232,12 +232,7 @@ export class TransactionController {
         return res.sendStatus(200);
       }
     } catch (err) {
-      return next(
-        new PlatformError({
-          code: 500,
-          message: "Internal Server error occured. Please try again later.",
-        })
-      );
+      return res.sendStatus(500);
     }
   }
 

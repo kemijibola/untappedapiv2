@@ -220,10 +220,7 @@ var TransactionController = /** @class */ (function () {
                     case 2: return [3 /*break*/, 4];
                     case 3:
                         err_5 = _a.sent();
-                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                                code: 500,
-                                message: "Internal Server error occured. Please try again later.",
-                            }))];
+                        return [2 /*return*/, res.sendStatus(500)];
                     case 4: return [2 /*return*/];
                 }
             });

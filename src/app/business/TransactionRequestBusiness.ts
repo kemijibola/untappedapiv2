@@ -95,8 +95,6 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
 
       if (transaction.amount === amount / 100) {
         transaction.transactionStatus = status;
-        transaction.transactionDate =
-          new Date(transferredAt) || transaction.transactionDate;
         transaction.responseMessage = responseMessge;
         transaction.responseBody = responseBody;
         transaction.responseCode = responseCode;

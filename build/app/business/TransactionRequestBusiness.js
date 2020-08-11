@@ -152,8 +152,6 @@ var TransactionRequestBusiness = /** @class */ (function () {
                         transaction = _a.sent();
                         if (!(transaction.amount === amount / 100)) return [3 /*break*/, 4];
                         transaction.transactionStatus = status;
-                        transaction.transactionDate =
-                            new Date(transferredAt) || transaction.transactionDate;
                         transaction.responseMessage = responseMessge;
                         transaction.responseBody = responseBody;
                         transaction.responseCode = responseCode;
