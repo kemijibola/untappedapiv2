@@ -218,7 +218,7 @@ export class TransactionController {
         console.log(response.data);
         if (response.event === "transfer.success") {
           console.log("got here");
-          this.sendTransactionSuccess(
+          await this.sendTransactionSuccess(
             response.data.transfer_code,
             response.data.recipient.recipient_code,
             response.data.amount,
@@ -230,7 +230,7 @@ export class TransactionController {
           );
         }
         if (response.event === "transfer.failed") {
-          this.sendTransactionFailed(
+          await this.sendTransactionFailed(
             response.data.transfer_code,
             response.data.recipient.recipient_code,
             response.data.amount,
@@ -252,7 +252,7 @@ export class TransactionController {
     }
   }
 
-  sendTransactionFailed(
+  async sendTransactionFailed(
     transferCode: string,
     recipientCode: string,
     amount: number,
@@ -260,9 +260,9 @@ export class TransactionController {
     responseMessge: string,
     responseCode: number,
     responseBody: string
-  ): void {
+  ): Promise<void> {
     const transactionRequestBusiness = new TransactionRequestBusiness();
-    transactionRequestBusiness.updateTransactionStatus(
+    await transactionRequestBusiness.updateTransactionStatus(
       transferCode,
       recipientCode,
       amount,
@@ -273,7 +273,7 @@ export class TransactionController {
     );
   }
 
-  sendTransactionSuccess(
+  async sendTransactionSuccess(
     transferCode: string,
     recipientCode: string,
     amount: number,
@@ -282,9 +282,9 @@ export class TransactionController {
     responseCode: number,
     responseBody: string,
     transferredAt: string
-  ): void {
+  ): Promise<void> {
     const transactionRequestBusiness = new TransactionRequestBusiness();
-    transactionRequestBusiness.updateTransactionStatus(
+    await transactionRequestBusiness.updateTransactionStatus(
       transferCode,
       recipientCode,
       amount,

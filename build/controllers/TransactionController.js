@@ -200,42 +200,72 @@ var TransactionController = /** @class */ (function () {
     };
     TransactionController.prototype.updateTransaction = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var hash, response;
+            var hash, response, err_5;
             return __generator(this, function (_a) {
-                try {
-                    console.log("update request gotten", 1);
-                    hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
-                    if (hash === req.headers["x-paystack-signature"]) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        console.log("update request gotten", 1);
+                        hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
+                        if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 4];
                         response = req.body;
                         console.log(response.event);
                         console.log(response.data);
-                        if (response.event === "transfer.success") {
-                            console.log("got here");
-                            this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at);
-                        }
-                        if (response.event === "transfer.failed") {
-                            this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data));
-                        }
-                    }
-                    res.send(200);
+                        if (!(response.event === "transfer.success")) return [3 /*break*/, 2];
+                        console.log("got here");
+                        return [4 /*yield*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        if (!(response.event === "transfer.failed")) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data))];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        res.send(200);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        err_5 = _a.sent();
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 6: return [2 /*return*/];
                 }
-                catch (err) {
-                    return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                            code: 500,
-                            message: "Internal Server error occured. Please try again later.",
-                        }))];
-                }
-                return [2 /*return*/];
             });
         });
     };
     TransactionController.prototype.sendTransactionFailed = function (transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody) {
-        var transactionRequestBusiness = new TransactionRequestBusiness();
-        transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody);
+        return __awaiter(this, void 0, void 0, function () {
+            var transactionRequestBusiness;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        transactionRequestBusiness = new TransactionRequestBusiness();
+                        return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     TransactionController.prototype.sendTransactionSuccess = function (transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody, transferredAt) {
-        var transactionRequestBusiness = new TransactionRequestBusiness();
-        transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody);
+        return __awaiter(this, void 0, void 0, function () {
+            var transactionRequestBusiness;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        transactionRequestBusiness = new TransactionRequestBusiness();
+                        return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     __decorate([
         decorators_1.post("/banks"),

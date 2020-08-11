@@ -142,7 +142,9 @@ var TransactionRequestBusiness = /** @class */ (function () {
             var transaction, recipient;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode })];
+                    case 0:
+                        console.log("got to business", transferCode);
+                        return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode })];
                     case 1:
                         transaction = _a.sent();
                         if (!transaction) return [3 /*break*/, 4];

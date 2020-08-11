@@ -85,6 +85,7 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
     responseBody: string,
     transferredAt: string = ""
   ): Promise<void> {
+    console.log("got to business", transferCode);
     const transaction = await this._transactionRequestRepository.findByCriteria(
       { transferCode }
     );
