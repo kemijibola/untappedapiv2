@@ -229,7 +229,7 @@ export class TransactionController {
             ? response.data.transferred_at
             : ""
         );
-        return res.send(200);
+        return res.sendStatus(200);
       }
     } catch (err) {
       return next(

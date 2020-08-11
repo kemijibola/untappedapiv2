@@ -216,7 +216,7 @@ var TransactionController = /** @class */ (function () {
                                 : "")];
                     case 1:
                         result = _a.sent();
-                        return [2 /*return*/, res.send(200)];
+                        return [2 /*return*/, res.sendStatus(200)];
                     case 2: return [3 /*break*/, 4];
                     case 3:
                         err_5 = _a.sent();

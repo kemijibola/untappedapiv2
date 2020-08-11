@@ -85,16 +85,13 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
     responseBody: string,
     transferredAt: string = ""
   ): Promise<boolean> {
-    console.log("got here", recipientCode);
     var recipient = await this._userAccountRepository.findByCriteria({
       gatewayRecipientCode: recipientCode,
     });
-    console.log(recipient);
     if (recipient) {
       const transaction = await this._transactionRequestRepository.findByCriteria(
         { transferCode, user: recipient.user }
       );
-      console.log("transaction", transaction);
       if (transaction.amount === amount) {
         transaction.transactionStatus = status;
         transaction.transactionDate =
@@ -106,6 +103,8 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
           transaction._id,
           transaction
         );
+        console.log(transaction);
+        transaction.save();
         return true;
       }
     }

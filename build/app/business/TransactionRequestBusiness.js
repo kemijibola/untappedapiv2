@@ -142,19 +142,15 @@ var TransactionRequestBusiness = /** @class */ (function () {
             var recipient, transaction;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("got here", recipientCode);
-                        return [4 /*yield*/, this._userAccountRepository.findByCriteria({
-                                gatewayRecipientCode: recipientCode,
-                            })];
+                    case 0: return [4 /*yield*/, this._userAccountRepository.findByCriteria({
+                            gatewayRecipientCode: recipientCode,
+                        })];
                     case 1:
                         recipient = _a.sent();
-                        console.log(recipient);
                         if (!recipient) return [3 /*break*/, 4];
                         return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode, user: recipient.user })];
                     case 2:
                         transaction = _a.sent();
-                        console.log("transaction", transaction);
                         if (!(transaction.amount === amount)) return [3 /*break*/, 4];
                         transaction.transactionStatus = status;
                         transaction.transactionDate =
@@ -165,6 +161,8 @@ var TransactionRequestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._transactionRequestRepository.update(transaction._id, transaction)];
                     case 3:
                         _a.sent();
+                        console.log(transaction);
+                        transaction.save();
                         return [2 /*return*/, true];
                     case 4: return [2 /*return*/, false];
                 }
