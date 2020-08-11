@@ -209,11 +209,11 @@ var TransactionController = /** @class */ (function () {
                         // Retrieve the request's body
                         console.log("update request gotten", 2);
                         response = req.body;
-                        console.log("update request gotten", response.data);
+                        console.log("update request gotten", response);
                         switch (response.event) {
-                            case payer_1.PaystackWebhookEvent["transfer.success"]:
+                            case "transfer.success":
                                 return [2 /*return*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at)];
-                            case payer_1.PaystackWebhookEvent["transfer.failed"]:
+                            case "transfer.failed":
                                 return [2 /*return*/, this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data))];
                             default:
                                 break;

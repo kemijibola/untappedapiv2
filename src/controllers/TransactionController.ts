@@ -217,9 +217,9 @@ export class TransactionController {
 
         var response: PaystackTransactionFailedResponse = req.body;
 
-        console.log("update request gotten", response.data);
+        console.log("update request gotten", response);
         switch (response.event) {
-          case PaystackWebhookEvent["transfer.success"]:
+          case "transfer.success":
             return this.sendTransactionSuccess(
               response.data.transfer_code,
               response.data.recipient.recipient_code,
@@ -230,7 +230,7 @@ export class TransactionController {
               JSON.stringify(response.data),
               response.data.transferred_at
             );
-          case PaystackWebhookEvent["transfer.failed"]:
+          case "transfer.failed":
             return this.sendTransactionFailed(
               response.data.transfer_code,
               response.data.recipient.recipient_code,
