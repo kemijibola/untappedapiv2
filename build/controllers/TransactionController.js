@@ -206,17 +206,13 @@ var TransactionController = /** @class */ (function () {
                     console.log("update request gotten", 1);
                     hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
                     if (hash === req.headers["x-paystack-signature"]) {
-                        // Retrieve the request's body
-                        console.log("update request gotten", 2);
                         response = req.body;
-                        console.log("update request gotten", response);
-                        switch (response.event) {
-                            case "transfer.success":
-                                return [2 /*return*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at)];
-                            case "transfer.failed":
-                                return [2 /*return*/, this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data))];
-                            default:
-                                break;
+                        if (response.event === "transfer.success") {
+                            console.log("got here");
+                            this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at);
+                        }
+                        if (response.event === "transfer.failed") {
+                            this.sendTransactionFailed(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction failed", 400, JSON.stringify(response.data));
                         }
                     }
                     res.send(200);
