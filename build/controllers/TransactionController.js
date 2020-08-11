@@ -207,6 +207,8 @@ var TransactionController = /** @class */ (function () {
                     hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
                     if (hash === req.headers["x-paystack-signature"]) {
                         response = req.body;
+                        console.log(response.event);
+                        console.log(response.data);
                         if (response.event === "transfer.success") {
                             console.log("got here");
                             this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at);

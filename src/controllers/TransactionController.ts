@@ -214,7 +214,8 @@ export class TransactionController {
       if (hash === req.headers["x-paystack-signature"]) {
         // Retrieve the request's body
         var response: PaystackTransactionFailedResponse = req.body;
-
+        console.log(response.event);
+        console.log(response.data);
         if (response.event === "transfer.success") {
           console.log("got here");
           this.sendTransactionSuccess(
