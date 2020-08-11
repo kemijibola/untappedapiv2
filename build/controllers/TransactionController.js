@@ -205,7 +205,6 @@ var TransactionController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        console.log("update request gotten", 1);
                         hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
                         if (!(hash === req.headers["x-paystack-signature"])) return [3 /*break*/, 2];
                         response = req.body;

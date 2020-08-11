@@ -207,7 +207,6 @@ export class TransactionController {
   @post("/webhook/transfer/update")
   async updateTransaction(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("update request gotten", 1);
       const hash = signatureHash(
         config.PAYMENT_SECRETS.paystack_secret,
         JSON.stringify(req.body)

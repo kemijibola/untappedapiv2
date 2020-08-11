@@ -139,22 +139,21 @@ var TransactionRequestBusiness = /** @class */ (function () {
     TransactionRequestBusiness.prototype.updateTransactionStatus = function (transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody, transferredAt) {
         if (transferredAt === void 0) { transferredAt = ""; }
         return __awaiter(this, void 0, void 0, function () {
-            var transaction, recipient;
+            var recipient, transaction;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("got to business", transferCode);
-                        return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode })];
+                    case 0: return [4 /*yield*/, this._userAccountRepository.findByCriteria({
+                            gatewayRecipientCode: recipientCode,
+                        })];
                     case 1:
-                        transaction = _a.sent();
-                        if (!transaction) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this._userAccountRepository.findByCriteria({
-                                gatewayRecipientCode: recipientCode,
-                            })];
-                    case 2:
                         recipient = _a.sent();
-                        if (!(transaction.user === recipient.user &&
-                            amount === transaction.amount)) return [3 /*break*/, 4];
+                        console.log(recipient);
+                        if (!recipient) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode, user: recipient.user })];
+                    case 2:
+                        transaction = _a.sent();
+                        console.log("transaction", transaction);
+                        if (!(transaction.amount === amount)) return [3 /*break*/, 4];
                         transaction.transactionStatus = status;
                         transaction.transactionDate =
                             date_fns_1.parse(transferredAt) || transaction.transactionDate;

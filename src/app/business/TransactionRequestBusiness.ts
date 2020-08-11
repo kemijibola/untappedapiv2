@@ -85,19 +85,16 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
     responseBody: string,
     transferredAt: string = ""
   ): Promise<boolean> {
-    console.log("got to business", transferCode);
-    const transaction = await this._transactionRequestRepository.findByCriteria(
-      { transferCode }
-    );
-    if (transaction) {
-      var recipient = await this._userAccountRepository.findByCriteria({
-        gatewayRecipientCode: recipientCode,
-      });
-
-      if (
-        transaction.user === recipient.user &&
-        amount === transaction.amount
-      ) {
+    var recipient = await this._userAccountRepository.findByCriteria({
+      gatewayRecipientCode: recipientCode,
+    });
+    console.log(recipient);
+    if (recipient) {
+      const transaction = await this._transactionRequestRepository.findByCriteria(
+        { transferCode, user: recipient.user }
+      );
+      console.log("transaction", transaction);
+      if (transaction.amount === amount) {
         transaction.transactionStatus = status;
         transaction.transactionDate =
           parse(transferredAt) || transaction.transactionDate;
