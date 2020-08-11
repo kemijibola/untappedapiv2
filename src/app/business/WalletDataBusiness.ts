@@ -177,9 +177,9 @@ class WalletBusiness implements IWalletDataBusiness {
     } catch (err) {
       const transactionObj: TransactionRequest = Object.assign({
         user: userWallet.user,
-        amount: err.body.amount,
+        amount: amount,
         externalReference: "",
-        narration: err.body.narration || "",
+        narration: narration,
         paymentChannel: "paystack",
         transactionType: TransctionType.debit,
         transferCode: "",

@@ -246,9 +246,9 @@ var WalletBusiness = /** @class */ (function () {
                         err_1 = _a.sent();
                         transactionObj = Object.assign({
                             user: userWallet.user,
-                            amount: err_1.body.amount,
+                            amount: amount,
                             externalReference: "",
-                            narration: err_1.body.narration || "",
+                            narration: narration,
                             paymentChannel: "paystack",
                             transactionType: TransactionDTO_1.TransctionType.debit,
                             transferCode: "",
