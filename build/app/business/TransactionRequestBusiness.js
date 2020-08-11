@@ -142,9 +142,11 @@ var TransactionRequestBusiness = /** @class */ (function () {
             var recipient, transaction;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._userAccountRepository.findByCriteria({
-                            gatewayRecipientCode: recipientCode,
-                        })];
+                    case 0:
+                        console.log("got here");
+                        return [4 /*yield*/, this._userAccountRepository.findByCriteria({
+                                gatewayRecipientCode: recipientCode,
+                            })];
                     case 1:
                         recipient = _a.sent();
                         console.log(recipient);
