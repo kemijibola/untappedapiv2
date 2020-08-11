@@ -151,7 +151,8 @@ var TransactionRequestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._transactionRequestRepository.findByCriteria({ transferCode: transferCode, user: recipient.user })];
                     case 2:
                         transaction = _a.sent();
-                        if (!(transaction.amount === amount)) return [3 /*break*/, 4];
+                        console.log(amount);
+                        if (!(transaction.amount === amount / 100)) return [3 /*break*/, 4];
                         transaction.transactionStatus = status;
                         transaction.transactionDate =
                             date_fns_1.parse(transferredAt) || transaction.transactionDate;
