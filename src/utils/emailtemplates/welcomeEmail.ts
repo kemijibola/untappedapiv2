@@ -390,15 +390,17 @@ export class WelcomeEmail {
                     border-radius: 50%;
                 }
                 .wrapword {
-                    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
-                    white-space: -pre-wrap;      /* Opera 4-6 */
-                    white-space: -o-pre-wrap;    /* Opera 7 */
-                    white-space: pre-wrap;       /* css-3 */
-                    word-wrap: break-word;       /* Internet Explorer 5.5+ */
-                    white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
-                    word-break: break-all;
-                    white-space: normal;
+                  white-space: -moz-pre-wrap !important;
+                  white-space: -pre-wrap !important;
+                  white-space: -o-pre-wrap !important; 
+                  white-space: pre-wrap !important;      
+                  white-space: -webkit-pre-wrap !important;
+                  word-break: break-all !important;
+                  -ms-word-wrap: break-word !important;
+                  white-space: normal !important;
+                  word-wrap: break-word !important;
                 }
+                
                 /**
                 * @tab Footer
                 * @section footer link
@@ -572,7 +574,7 @@ export class WelcomeEmail {
                                         <!-- BEGIN PREHEADER // -->
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templatePreheader">
                                             <div style="height:80px; background-color: #222; display: grid">
-                                                <img style="width: 25px; height: 30px;margin-top: 0.6rem;" src="ft-logo.svg">
+                                                <img style="width: 25px; height: 30px;margin-top: 0.6rem;" src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/ft-logo.svg">
                                                 <span style="color: #fff;font-size: 18px;font-family: AvenirNext-reg;letter-spacing: 2px; font-weight: 400">untapped pool</span>
                                             </div>
                                         </table>
@@ -602,10 +604,9 @@ export class WelcomeEmail {
                                                     
                                                     <p>Thank you for signing up for untapped pool - we’re delighted to have you on board!</p>
                                                     <p>Please click the button below to verify your account, then sign in using your untapped pool email and password. You may also copy and paste the link into your address bar.</p>
-                                                    <a href="" style="
+                                                    <a href="[VerifyToken]" style="
                                                         background: linear-gradient( to bottom, rgba(239, 207, 0, 1) 0%, rgba(0, 172, 176, 1) 100% );
                                                         color: #fff;
-                                                        display: inline-block;
                                                         width: 160px;
                                                         font-size: 14px;
                                                         text-align: center;
@@ -616,7 +617,10 @@ export class WelcomeEmail {
                                                         display: block;
                                                         margin-top: 25px;
                                                     "><span style="text-transform: uppercase;font-family: AvenirNextLTProBold;cursor: pointer;">Confirm Email</span></a>
-                                                    <span class="wrapword" style="margin-top: 2rem">http://localhost:4200/account/confirmation/user_test@mailinator.com/eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQzIn0.eyJ0eXBlIjoiVkVSSUZZIiwiZW1haWwiOiJ1c2VyX3Rlc3RAbWFpbGluYXRvci5jb20iLCJpYXQiOjE1OTYyMDQyNzIsImV4cCI6MTU5NjIxODY3MiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4OTAwL3YxL2FjY291bnQvdmVyaWZ5Iiwic3ViIjoiNWYyNDI0ZjA2MWM5ZDI2Zjg4ODk3YjhkIn0.V7EHu_Oj3v40Q6-WWjXjdD4neHtycLu_I45TMbLHZpzerxhGKFEUliLXxgo8TfjXC7pFOrGJvsYfJzLiX8BWoQ</span>
+                                                    <div style="width: 600px; table-layout:fixed;">
+                                                    <span class="wrapword" style="margin-top: 2rem; display: inline-block;">[FullVerifyToken]</span>
+                                                    </div>
+    
                                                    <p>All the best,</p>
                                                    <p>The <span style="font-family: AvenirNext-reg;letter-spacing: 2px; font-weight: bold">untapped pool</span> team</p>
                                                     
@@ -632,11 +636,11 @@ export class WelcomeEmail {
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateFooter">
                                             <tr>
                                                 <td valign="top" class="footerContent" mc:edit="footer_content00">
-                                                    <a href="[Facebook]"><img src="facebook.svg" alt="Untapped Pool Facebook"></a>
-                                                    <a href="[Twitter]"><img src="twitter.svg" alt="Untapped Pool Twitter"></a>
-                                                    <a href="[Instagram]"><img src="instagram.svg" alt="Untapped Pool Instagram"></a>
-                                                    <a href="[LinkedIn]"><img src="linkedin.svg" alt="Untapped Pool LinkedIn"></a>
-                                                    <a href="[PlatformUrl]"><img src="www.svg" alt="Untapped Pool Webiste"></a>
+                                                    <a href="[Facebook]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/facebook.svg" alt="Untapped Pool Facebook"></a>
+                                                    <a href="[Twitter]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/twitter.svg" alt="Untapped Pool Twitter"></a>
+                                                    <a href="[Instagram]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/instagram.svg" alt="Untapped Pool Instagram"></a>
+                                                    <a href="[LinkedIn]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/linkedin.svg" alt="Untapped Pool LinkedIn"></a>
+                                                    <a href="[PlatformUrl]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/www.svg" alt="Untapped Pool Webiste"></a>
                                                 </td>
                                             </tr>
                                            

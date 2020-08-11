@@ -1,1 +1,1 @@
-{"version":3,"file":"welcomeEmail.js","sourceRoot":"","sources":["../../../src/utils/emailtemplates/welcomeEmail.ts"],"names":[],"mappings":";;AAAA;IAAA;IAgpBA,CAAC;IA/oBC,sBAAkB,wBAAQ;aAA1B;YACE,OAAO,mshCA4oBJ,CAAC;QACN,CAAC;;;OAAA;IACH,mBAAC;AAAD,CAAC,AAhpBD,IAgpBC;AAhpBY,oCAAY"}
+{"version":3,"file":"welcomeEmail.js","sourceRoot":"","sources":["../../../src/utils/emailtemplates/welcomeEmail.ts"],"names":[],"mappings":";;AAAA;IAAA;IAopBA,CAAC;IAnpBC,sBAAkB,wBAAQ;aAA1B;YACE,OAAO,0uhCAgpBJ,CAAC;QACN,CAAC;;;OAAA;IACH,mBAAC;AAAD,CAAC,AAppBD,IAopBC;AAppBY,oCAAY"}

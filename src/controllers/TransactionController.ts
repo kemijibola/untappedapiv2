@@ -206,13 +206,18 @@ export class TransactionController {
   @post("/webhook/transfer/update")
   async updateTransaction(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("update request gotten", 1);
       const hash = signatureHash(
         config.PAYMENT_SECRETS.paystack_secret,
         JSON.stringify(req.body)
       );
       if (hash === req.headers["x-paystack-signature"]) {
         // Retrieve the request's body
+        console.log("update request gotten", 2);
+
         var response: PaystackTransactionFailedResponse = req.body;
+
+        console.log("update request gotten", response.data);
         switch (response.event) {
           case PaystackWebhookEvent["transfer.success"]:
             return this.sendTransactionSuccess(

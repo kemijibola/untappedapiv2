@@ -203,9 +203,13 @@ var TransactionController = /** @class */ (function () {
             var hash, response;
             return __generator(this, function (_a) {
                 try {
+                    console.log("update request gotten", 1);
                     hash = Helper_1.signatureHash(config.PAYMENT_SECRETS.paystack_secret, JSON.stringify(req.body));
                     if (hash === req.headers["x-paystack-signature"]) {
+                        // Retrieve the request's body
+                        console.log("update request gotten", 2);
                         response = req.body;
+                        console.log("update request gotten", response.data);
                         switch (response.event) {
                             case payer_1.PaystackWebhookEvent["transfer.success"]:
                                 return [2 /*return*/, this.sendTransactionSuccess(response.data.transfer_code, response.data.recipient.recipient_code, response.data.amount, response.data.status, "Transaction successful", 200, JSON.stringify(response.data), response.data.transferred_at)];
