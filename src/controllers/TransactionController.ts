@@ -212,7 +212,6 @@ export class TransactionController {
         JSON.stringify(req.body)
       );
       if (hash === req.headers["x-paystack-signature"]) {
-        // Retrieve the request's body
         var response: PaystackTransactionFailedResponse = req.body;
         const transactionRequestBusiness = new TransactionRequestBusiness();
         var result = await transactionRequestBusiness.updateTransactionStatus(

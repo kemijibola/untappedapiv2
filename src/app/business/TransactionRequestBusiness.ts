@@ -106,7 +106,6 @@ class TransactionRequestBusiness implements ITransctionRequestBusiness {
           transaction._id,
           transaction
         );
-        console.log(transaction);
         transaction.save();
         return true;
       }

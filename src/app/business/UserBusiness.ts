@@ -472,7 +472,11 @@ class UserBusiness implements IUserBusiness {
 
       const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
       const recievers: string[] = [newUser.email];
-      await this.sendMail(recievers, "SignUp Welcome Email", emailBody);
+      await this.sendMail(
+        recievers,
+        "Untappedpool.com Email Confirmation",
+        emailBody
+      );
     }
     return Result.ok<bool>(201, true);
   }

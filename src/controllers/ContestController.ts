@@ -121,6 +121,7 @@ export class ContestController {
       }
 
       item.createdBy = req.user;
+      // fetch contest with Title
       const contestBusiness = new ContestBusiness();
       const result = await contestBusiness.create(item);
       if (result.error) {

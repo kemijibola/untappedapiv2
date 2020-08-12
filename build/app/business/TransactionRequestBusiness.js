@@ -162,7 +162,6 @@ var TransactionRequestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._transactionRequestRepository.update(transaction._id, transaction)];
                     case 3:
                         _a.sent();
-                        console.log(transaction);
                         transaction.save();
                         return [2 /*return*/, true];
                     case 4: return [2 /*return*/, false];
