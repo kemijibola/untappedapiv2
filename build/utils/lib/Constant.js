@@ -58,6 +58,8 @@ exports.AcceptedAudioExt = {
     wma: "audio",
     webm: "audio",
     wav: "audio",
+    mp4: "audio",
+    mpeg: "audio",
 };
 exports.AcceptedVideoExt = {
     mp4: "video",

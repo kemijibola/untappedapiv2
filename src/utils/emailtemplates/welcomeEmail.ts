@@ -608,7 +608,10 @@ export class WelcomeEmail {
                                                     <div style="width: 600px; table-layout:fixed;">
                                                     <span class="wrapword" style="margin-top: 2rem; display: inline-block;">[FullVerifyToken]</span>
                                                     </div>
-    
+
+                                                    <br>
+                                                    <br>
+                                                    <br>
                                                    <p>Best wishes,</p>
                                                    <p>The Untapped Pool team</p>
                                                     

@@ -507,7 +507,7 @@ var UserBusiness = /** @class */ (function () {
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
                         recievers = [newUser.email];
-                        return [4 /*yield*/, this.sendMail(recievers, "SignUp Welcome Email", emailBody)];
+                        return [4 /*yield*/, this.sendMail(recievers, "Untappedpool.com Email Confirmation", emailBody)];
                     case 6:
                         _a.sent();
                         _a.label = 7;

@@ -61,6 +61,8 @@ export const AcceptedAudioExt: ObjectKeyString = {
   wma: "audio",
   webm: "audio",
   wav: "audio",
+  mp4: "audio",
+  mpeg: "audio",
 };
 export const AcceptedVideoExt: ObjectKeyString = {
   mp4: "video",
