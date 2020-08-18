@@ -326,6 +326,7 @@ var ContestBusiness = /** @class */ (function () {
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         item.paymentStatus = contest.paymentStatus;
+                        item.views = contest.views;
                         item.approved = contest.approved;
                         item.approvedBy = contest.approvedBy;
                         item.approvedDate = contest.approvedDate;
@@ -348,6 +349,7 @@ var ContestBusiness = /** @class */ (function () {
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
                         item.paymentStatus = contest.paymentStatus;
+                        item.views = contest.views;
                         item.approved = contest.approved;
                         item.approvedBy = contest.approvedBy;
                         item.approvedDate = contest.approvedDate;

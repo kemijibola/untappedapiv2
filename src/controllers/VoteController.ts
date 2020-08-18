@@ -69,6 +69,8 @@ export class VoteController {
             message: "Missing id in request",
           })
         );
+      
+      // const hash = 
       const item: VoteTransaction = Object.assign({
         channelId: req.body.id,
         phone: req.body.phone,

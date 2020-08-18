@@ -225,7 +225,7 @@ var RepositoryBase = /** @class */ (function () {
                 else
                     resolve(result);
             })
-                .cacheDocQueries({ collectionName: _this._model.collection.name })
+                //.cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();
         });
     };

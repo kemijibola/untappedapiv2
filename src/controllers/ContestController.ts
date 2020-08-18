@@ -51,6 +51,20 @@ export class ContestController {
        */
 
       const item: IContest = req.body;
+      if (!item.title)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide contest title",
+          })
+        );
+      if (!item.information)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide contest information",
+          })
+        );
       if (isAfter(Date.now(), item.startDate)) {
         return next(
           new PlatformError({
@@ -147,6 +161,131 @@ export class ContestController {
     }
   }
 
+  @put("/:id")
+  @use(requestValidator)
+  @use(requireAuth)
+  @requestValidators(
+    "title",
+    "information",
+    "startDate",
+    "endDate",
+    "entryMediaType",
+    "redeemable"
+  )
+  @authorize(canCreateContest)
+  async updateContest(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const item: IContest = req.body;
+      if (!item.title)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide contest title",
+          })
+        );
+      if (!item.information)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide contest information",
+          })
+        );
+      if (isAfter(Date.now(), item.startDate)) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Contest start date must be today or a later date",
+          })
+        );
+      }
+      if (differenceInDays(item.startDate, item.endDate) > 14) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Contest duration must not exceed 14 days from start date",
+          })
+        );
+      }
+      const mediaType = item.entryMediaType.toLowerCase();
+      const systemMediaTypes: string[] = Object.values(MediaType);
+      if (!systemMediaTypes.includes(mediaType)) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Contest entry media type is invalid",
+          })
+        );
+      }
+
+      if (item.redeemable.length < 1) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please add at least one winner to contest",
+          })
+        );
+      }
+
+      if (item.redeemable.length > 5) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Contest can not have more than 5 winners",
+          })
+        );
+      }
+
+      const prizePositions: string[] = Object.values(PrizePosition);
+
+      for (let prize of item.redeemable) {
+        if (!prizePositions.includes(prize.name)) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: "Invalid prize position",
+            })
+          );
+        }
+      }
+
+      for (let prize of item.redeemable) {
+        if (prize.prizeCash < config.MiNIMUM_PRIZE_CASH) {
+          return next(
+            new PlatformError({
+              code: 400,
+              message: `Minimum prize cash must be NGN ${config.MiNIMUM_PRIZE_CASH}`,
+            })
+          );
+        }
+      }
+
+      item.createdBy = req.user;
+      // fetch contest with Title
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.update(item._id, item);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(201).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
   @get("/preview/list")
   @use(requestValidator)
   async fetchContestPreviewList(
@@ -213,6 +352,7 @@ export class ContestController {
           })
         );
       }
+      
       return res.status(result.responseCode).json({
         message: "Operation successful",
         data: result.data,
@@ -386,6 +526,48 @@ export class ContestController {
     }
   }
 
+  @put("/:id/page-count")
+  @use(requestValidator)
+  async postPageView(req: Request, res: Response, next: NextFunction) {
+    try {
+      const contestBusiness = new ContestBusiness();
+      const contest = await contestBusiness.findById(req.params.id);
+      if (contest.error) {
+        return next(
+          new PlatformError({
+            code: contest.responseCode,
+            message: contest.error,
+          })
+        );
+      }
+      if (contest.data) {
+        const result = await contestBusiness.patch(req.params.id, {
+          views: contest.data.views++,
+        });
+        if (result.error) {
+          return next(
+            new PlatformError({
+              code: result.responseCode,
+              message: result.error,
+            })
+          );
+        }
+        return res.status(200).json({
+          message: "Operation successful",
+          data: true,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
   @get("/user/contests")
   @use(requestValidator)
   async fetchContestListByUser(
@@ -425,12 +607,8 @@ export class ContestController {
   @use(requireAuth)
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
-      let condition: any;
-      if (req.query.title) {
-        condition = { title: new RegExp("^" + req.query.title + "$", "i") };
-      }
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetch(condition);
+      const result = await contestBusiness.fetch({});
       if (result.error) {
         return next(
           new PlatformError({
@@ -444,6 +622,70 @@ export class ContestController {
         data: result.data,
       });
     } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @get("/validate/title")
+  @use(requestValidator)
+  @use(requireAuth)
+  async checkIfContestTtitleIsAvailable(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      if (!req.query.title) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide contest title",
+          })
+        );
+      }
+      const condition = {
+        title: new RegExp("^" + req.query.title + "$", "i"),
+      };
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.fetch(condition);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      if (result.data) {
+        if (result.data.length) {
+          if (result.data[0].createdBy.toString() === req.user) {
+            return res.status(200).json({
+              message: "Operation successful",
+              isAvailable: true,
+            });
+          } else {
+            return res.status(200).json({
+              message: "Operation successful",
+              isAvailable: false,
+            });
+          }
+        }
+        return res.status(200).json({
+          message: "Operation successful",
+          isAvailable: true,
+        });
+      }
+      return res.status(200).json({
+        message: "Operation successful",
+        isAvailable: true,
+      });
+    } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,

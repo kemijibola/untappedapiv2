@@ -24,7 +24,7 @@ var profileSchema = new mongoose_1.Schema({
         ref: "User",
         required: true,
     },
-    shortBio: { type: String, minlength: 80, maxlength: 1500 },
+    shortBio: { type: String, minlength: 80, maxlength: 2000 },
     categoryTypes: [
         {
             type: mongoose_1.Schema.Types.ObjectId,

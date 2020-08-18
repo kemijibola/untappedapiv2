@@ -230,6 +230,7 @@ class ContestBusiness implements IContestBusiness {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Contest not found");
     item.paymentStatus = contest.paymentStatus;
+    item.views = contest.views;
     item.approved = contest.approved;
     item.approvedBy = contest.approvedBy;
     item.approvedDate = contest.approvedDate;
@@ -241,6 +242,7 @@ class ContestBusiness implements IContestBusiness {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Contest not found");
     item.paymentStatus = contest.paymentStatus;
+    item.views = contest.views;
     item.approved = contest.approved;
     item.approvedBy = contest.approvedBy;
     item.approvedDate = contest.approvedDate;

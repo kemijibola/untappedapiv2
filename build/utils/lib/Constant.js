@@ -1,57 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var config = require("../../config/keys");
-exports.audioExtentions = [
-    "mp3",
-    "3gp",
-    "aax",
-    "wma",
-    "webm",
-    "wav",
-    "voc",
-    "mpc",
-    "gsm",
-    "pcm",
-    "aiff",
-    "aac",
-    "ogg",
-    "flac",
-    "alac",
-];
-exports.videoExtensions = [
-    "mp4",
-    "3gp",
-    "ogg",
-    "wmv",
-    "webm",
-    "flv",
-    "avi",
-    "vob",
-    "mpeg",
-    "wav",
-    "lxf",
-];
-exports.imageExtensions = [
-    "jpeg",
-    "jpg",
-    "exif",
-    "tiff",
-    "gif",
-    "bmp",
-    "png",
-    "ppm",
-    "webp",
-    "svg",
-    "bat",
-    "heif",
-    "bpg",
-];
 exports.AcceptedImageExt = {
     png: "image",
     jpeg: "image",
     jpg: "image",
     gif: "image",
     svg: "image",
+    exif: "image",
+    tiff: "image",
+    bmp: "image",
+    ppm: "image",
+    webp: "image",
+    bat: "image",
+    heif: "image",
+    bpg: "image",
 };
 exports.AcceptedAudioExt = {
     mp3: "audio",
@@ -60,6 +23,16 @@ exports.AcceptedAudioExt = {
     wav: "audio",
     mp4: "audio",
     mpeg: "audio",
+    aax: "audio",
+    voc: "audio",
+    mpc: "audio",
+    gsm: "audio",
+    pcm: "audio",
+    aiff: "audio",
+    aac: "audio",
+    ogg: "audio",
+    flac: "audio",
+    alac: "audio",
 };
 exports.AcceptedVideoExt = {
     mp4: "video",
@@ -67,6 +40,13 @@ exports.AcceptedVideoExt = {
     avi: "video",
     flv: "video",
     "3gp": "video",
+    ogg: "video",
+    wmv: "video",
+    webm: "video",
+    vob: "video",
+    wav: "video",
+    lxf: "video",
+    mkv: "video",
 };
 function getIssuer() {
     return config.ISSUER || "http://localhost:8900";

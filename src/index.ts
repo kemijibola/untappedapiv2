@@ -5,7 +5,7 @@ import "./controllers";
 
 import { AppConfig } from "./app/models/interfaces/custom/AppConfig";
 const config: AppConfig = module.require("./config/keys");
-module.require("./utils/Cache");
+// module.require("./utils/Cache");
 // module.require("./utils/filtercategory/UserFilter");
 import * as cron from "node-cron";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
@@ -42,7 +42,7 @@ process.on("unhandledRejection", function (err) {
 const port = config.PORT || 5000;
 app.set("port", port);
 
-const instance: string = process.env.NODE_APP_INSTANCE || "";
+const instance: string = process.env.NODE_APP_INSTANCE || "0";
 if (instance === "0") {
   userFilterJob();
   contestSettlement();

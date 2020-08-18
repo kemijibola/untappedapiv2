@@ -2,58 +2,20 @@ import { ObjectKeyString } from "./Helper";
 import { AppConfig } from "../../app/models/interfaces/custom/AppConfig";
 const config: AppConfig = require("../../config/keys");
 
-export const audioExtentions: string[] = [
-  "mp3",
-  "3gp",
-  "aax",
-  "wma",
-  "webm",
-  "wav",
-  "voc",
-  "mpc",
-  "gsm",
-  "pcm",
-  "aiff",
-  "aac",
-  "ogg",
-  "flac",
-  "alac",
-];
-export const videoExtensions: string[] = [
-  "mp4",
-  "3gp",
-  "ogg",
-  "wmv",
-  "webm",
-  "flv",
-  "avi",
-  "vob",
-  "mpeg",
-  "wav",
-  "lxf",
-];
-export const imageExtensions: string[] = [
-  "jpeg",
-  "jpg",
-  "exif",
-  "tiff",
-  "gif",
-  "bmp",
-  "png",
-  "ppm",
-  "webp",
-  "svg",
-  "bat",
-  "heif",
-  "bpg",
-];
-
 export const AcceptedImageExt: ObjectKeyString = {
   png: "image",
   jpeg: "image",
   jpg: "image",
   gif: "image",
   svg: "image",
+  exif: "image",
+  tiff: "image",
+  bmp: "image",
+  ppm: "image",
+  webp: "image",
+  bat: "image",
+  heif: "image",
+  bpg: "image",
 };
 
 export const AcceptedAudioExt: ObjectKeyString = {
@@ -63,6 +25,16 @@ export const AcceptedAudioExt: ObjectKeyString = {
   wav: "audio",
   mp4: "audio",
   mpeg: "audio",
+  aax: "audio",
+  voc: "audio",
+  mpc: "audio",
+  gsm: "audio",
+  pcm: "audio",
+  aiff: "audio",
+  aac: "audio",
+  ogg: "audio",
+  flac: "audio",
+  alac: "audio",
 };
 export const AcceptedVideoExt: ObjectKeyString = {
   mp4: "video",
@@ -70,6 +42,13 @@ export const AcceptedVideoExt: ObjectKeyString = {
   avi: "video",
   flv: "video",
   "3gp": "video",
+  ogg: "video",
+  wmv: "video",
+  webm: "video",
+  vob: "video",
+  wav: "video",
+  lxf: "video",
+  mkv: "video",
 };
 
 function getIssuer(): string {
