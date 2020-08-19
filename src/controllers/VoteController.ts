@@ -62,7 +62,7 @@ export class VoteController {
     }
   }
 
-  @post("/f3ca49c97244")
+  @post("/")
   @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
@@ -114,6 +114,7 @@ export class VoteController {
           });
         }
       }
+      return res.status(200);
     } catch (err) {
       return next(
         new PlatformError({

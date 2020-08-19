@@ -140,7 +140,7 @@ var VoteController = /** @class */ (function () {
                                 message: "Operation successful",
                                 data: result.data,
                             })];
-                    case 3: return [3 /*break*/, 5];
+                    case 3: return [2 /*return*/, res.status(200)];
                     case 4:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
@@ -160,7 +160,7 @@ var VoteController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], VoteController.prototype, "fetchContestEntries", null);
     __decorate([
-        decorators_1.post("/f3ca49c97244"),
+        decorators_1.post("/"),
         decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

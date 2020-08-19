@@ -30,6 +30,7 @@ process.on("unhandledRejection", function (err) {
 });
 var port = config.PORT || 5000;
 app.set("port", port);
+console.log(process.env.NODE_APP_INSTANCE);
 var instance = process.env.NODE_APP_INSTANCE || "0";
 if (instance === "0") {
     CronJob_1.userFilterJob();
