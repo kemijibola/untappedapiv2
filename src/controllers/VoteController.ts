@@ -15,9 +15,13 @@ import {
   VoteStatus,
 } from "../app/models/interfaces";
 import VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
+import ApplicationBusiness = require("../app/business/ApplicationBusiness");
 import { requestValidator } from "../middlewares/ValidateRequest";
 import { canCreateUserType } from "../utils/lib/PermissionConstant";
 import ContestBusiness = require("../app/business/ContestBusiness");
+import { signatureHash } from "../utils/lib/Helper";
+import { AppConfig } from "../app/models/interfaces/custom/AppConfig";
+const config: AppConfig = module.require("../config/keys");
 
 @controller("/v1/votes")
 export class VoteController {
@@ -58,10 +62,11 @@ export class VoteController {
     }
   }
 
-  @post("/")
+  @post("/f3ca49c97244")
   @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log(req.headers["x-signature"]);
       if (!req.body.id)
         return next(
           new PlatformError({
@@ -69,33 +74,46 @@ export class VoteController {
             message: "Missing id in request",
           })
         );
-      
-      // const hash = 
-      const item: VoteTransaction = Object.assign({
-        channelId: req.body.id,
-        phone: req.body.phone,
-        network: req.body.network,
-        shortcode: req.body.shortcode,
-        contestantCode: req.body.message,
-        channelType: ChannelType.sms,
+
+      const applicationBusiness = new ApplicationBusiness();
+      var ceaserResult = await applicationBusiness.findByCriteria({
+        audience: config.CEASER,
       });
-
-      const voteBusiness = new VoteTransactionBusiness();
-      const result = await voteBusiness.createSMSVote(item);
-
-      if (result.error) {
-        return next(
-          new PlatformError({
-            code: result.responseCode,
-            message: result.error,
-          })
+      if (ceaserResult.data) {
+        const hash = signatureHash(
+          ceaserResult.data.clientSecret,
+          JSON.stringify(req.body)
         );
-      }
 
-      return res.status(result.responseCode).json({
-        message: "Operation successful",
-        data: result.data,
-      });
+        if (hash === req.headers["x-signature"]) {
+          console.log("vote is about to be processed");
+          const item: VoteTransaction = Object.assign({
+            channelId: req.body.id,
+            phone: req.body.phone,
+            network: req.body.network,
+            shortcode: req.body.shortcode,
+            contestantCode: req.body.message,
+            channelType: ChannelType.sms,
+          });
+
+          const voteBusiness = new VoteTransactionBusiness();
+          const result = await voteBusiness.createSMSVote(item);
+
+          if (result.error) {
+            return next(
+              new PlatformError({
+                code: result.responseCode,
+                message: result.error,
+              })
+            );
+          }
+
+          return res.status(result.responseCode).json({
+            message: "Operation successful",
+            data: result.data,
+          });
+        }
+      }
     } catch (err) {
       return next(
         new PlatformError({

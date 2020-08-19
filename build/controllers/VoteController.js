@@ -48,8 +48,11 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var interfaces_1 = require("../app/models/interfaces");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
+var ApplicationBusiness = require("../app/business/ApplicationBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var ContestBusiness = require("../app/business/ContestBusiness");
+var Helper_1 = require("../utils/lib/Helper");
+var config = module.require("../config/keys");
 var VoteController = /** @class */ (function () {
     function VoteController() {
     }
@@ -94,16 +97,27 @@ var VoteController = /** @class */ (function () {
     };
     VoteController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, voteBusiness, result, err_2;
+            var applicationBusiness, ceaserResult, hash, item, voteBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 4, , 5]);
+                        console.log(req.headers["x-signature"]);
                         if (!req.body.id)
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
                                     message: "Missing id in request",
                                 }))];
+                        applicationBusiness = new ApplicationBusiness();
+                        return [4 /*yield*/, applicationBusiness.findByCriteria({
+                                audience: config.CEASER,
+                            })];
+                    case 1:
+                        ceaserResult = _a.sent();
+                        if (!ceaserResult.data) return [3 /*break*/, 3];
+                        hash = Helper_1.signatureHash(ceaserResult.data.clientSecret, JSON.stringify(req.body));
+                        if (!(hash === req.headers["x-signature"])) return [3 /*break*/, 3];
+                        console.log("vote is about to be processed");
                         item = Object.assign({
                             channelId: req.body.id,
                             phone: req.body.phone,
@@ -114,7 +128,7 @@ var VoteController = /** @class */ (function () {
                         });
                         voteBusiness = new VoteTransactionBusiness();
                         return [4 /*yield*/, voteBusiness.createSMSVote(item)];
-                    case 1:
+                    case 2:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
@@ -126,13 +140,14 @@ var VoteController = /** @class */ (function () {
                                 message: "Operation successful",
                                 data: result.data,
                             })];
-                    case 2:
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 3: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -145,7 +160,7 @@ var VoteController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], VoteController.prototype, "fetchContestEntries", null);
     __decorate([
-        decorators_1.post("/"),
+        decorators_1.post("/f3ca49c97244"),
         decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

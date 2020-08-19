@@ -36,6 +36,7 @@ export interface AppConfig {
   KEY: string;
   MiNIMUM_PRIZE_CASH: number;
   NODE_APP_INSTANCE: number;
+  CEASER: string;
 }
 
 export interface PaymentGate {

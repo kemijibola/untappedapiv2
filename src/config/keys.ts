@@ -119,6 +119,7 @@ switch (environment) {
       PAYSTACKBASEURL: process.env.PAYSTACKBASEURL,
       KEY: process.env.KEY,
       MiNIMUM_PRIZE_CASH: process.env.MiNIMUM_PRIZE_CASH,
+      CEASER_AUDIENCE: process.env.CEASER,
     };
     break;
   default:

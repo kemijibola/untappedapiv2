@@ -8,7 +8,6 @@ var body_parser_1 = __importDefault(require("body-parser"));
 var AppRouter_1 = require("./AppRouter");
 require("./controllers");
 var config = module.require("./config/keys");
-module.require("./utils/Cache");
 var ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 var cors_1 = __importDefault(require("cors"));
 // import SocketIo = require('./socket/SocketIo');
@@ -31,7 +30,7 @@ process.on("unhandledRejection", function (err) {
 });
 var port = config.PORT || 5000;
 app.set("port", port);
-var instance = process.env.NODE_APP_INSTANCE || "";
+var instance = process.env.NODE_APP_INSTANCE || "0";
 if (instance === "0") {
     CronJob_1.userFilterJob();
     CronJob_1.contestSettlement();
