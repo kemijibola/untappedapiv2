@@ -102,7 +102,7 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        console.log(req.headers["x-signature"]);
+                        console.log("from request", req.headers["x-signature"]);
                         if (!req.body.id)
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
@@ -110,12 +110,13 @@ var VoteController = /** @class */ (function () {
                                 }))];
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.findByCriteria({
-                                audience: config.CEASER,
+                                clientId: config.CEASER,
                             })];
                     case 1:
                         ceaserResult = _a.sent();
                         if (!ceaserResult.data) return [3 /*break*/, 3];
                         hash = Helper_1.signatureHash(ceaserResult.data.clientSecret, JSON.stringify(req.body));
+                        console.log("internal hash");
                         if (!(hash === req.headers["x-signature"])) return [3 /*break*/, 3];
                         console.log("vote is about to be processed");
                         item = Object.assign({
@@ -140,7 +141,7 @@ var VoteController = /** @class */ (function () {
                                 message: "Operation successful",
                                 data: result.data,
                             })];
-                    case 3: return [2 /*return*/, res.status(200)];
+                    case 3: return [2 /*return*/, res.sendStatus(200)];
                     case 4:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
@@ -160,7 +161,7 @@ var VoteController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], VoteController.prototype, "fetchContestEntries", null);
     __decorate([
-        decorators_1.post("/"),
+        decorators_1.post("/f3ca49c97244"),
         decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

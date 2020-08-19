@@ -42,7 +42,7 @@ process.on("unhandledRejection", function (err) {
 const port = config.PORT || 5000;
 app.set("port", port);
 
-console.log(process.env.NODE_APP_INSTANCE);
+// console.log(process.env.NODE_APP_INSTANCE);
 
 const instance: string = process.env.NODE_APP_INSTANCE || "0";
 if (instance === "0") {

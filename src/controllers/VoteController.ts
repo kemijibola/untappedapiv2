@@ -62,11 +62,11 @@ export class VoteController {
     }
   }
 
-  @post("/")
+  @post("/f3ca49c97244")
   @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.headers["x-signature"]);
+      console.log("from request", req.headers["x-signature"]);
       if (!req.body.id)
         return next(
           new PlatformError({
@@ -77,14 +77,14 @@ export class VoteController {
 
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
-        audience: config.CEASER,
+        clientId: config.CEASER,
       });
       if (ceaserResult.data) {
         const hash = signatureHash(
           ceaserResult.data.clientSecret,
           JSON.stringify(req.body)
         );
-
+        console.log("internal hash");
         if (hash === req.headers["x-signature"]) {
           console.log("vote is about to be processed");
           const item: VoteTransaction = Object.assign({
@@ -114,7 +114,7 @@ export class VoteController {
           });
         }
       }
-      return res.status(200);
+      return res.sendStatus(200);
     } catch (err) {
       return next(
         new PlatformError({
