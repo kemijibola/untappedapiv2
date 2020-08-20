@@ -102,6 +102,7 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
+                        console.log("was called");
                         console.log("from request", req.headers["x-signature"]);
                         if (!req.body.id)
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
@@ -161,7 +162,7 @@ var VoteController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], VoteController.prototype, "fetchContestEntries", null);
     __decorate([
-        decorators_1.post("/f3ca49c97244"),
+        decorators_1.post("/"),
         decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),

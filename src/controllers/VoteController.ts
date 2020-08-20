@@ -62,10 +62,11 @@ export class VoteController {
     }
   }
 
-  @post("/f3ca49c97244")
+  @post("/")
   @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("was called");
       console.log("from request", req.headers["x-signature"]);
       if (!req.body.id)
         return next(
