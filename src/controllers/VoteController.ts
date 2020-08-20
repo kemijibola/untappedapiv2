@@ -67,6 +67,8 @@ export class VoteController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       console.log(req.body);
+      console.log("hashed sent from info-tek", req.headers["x-signature"]);
+      console.log(JSON.parse(req.body));
       if (
         !req.body.id ||
         !req.body.phone ||
@@ -77,7 +79,6 @@ export class VoteController {
         return res.sendStatus(200);
       var contestKeyPart: string[] = req.body.message.split(" ");
       console.log("contestKeyParts", contestKeyPart);
-      console.log("hashed sent from info-tek", req.headers["x-signature"]);
       if (contestKeyPart.length < 1) return res.sendStatus(200);
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({

@@ -103,6 +103,8 @@ var VoteController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
                         console.log(req.body);
+                        console.log("hashed sent from info-tek", req.headers["x-signature"]);
+                        console.log(JSON.parse(req.body));
                         if (!req.body.id ||
                             !req.body.phone ||
                             !req.body.shortcode ||
@@ -111,7 +113,6 @@ var VoteController = /** @class */ (function () {
                             return [2 /*return*/, res.sendStatus(200)];
                         contestKeyPart = req.body.message.split(" ");
                         console.log("contestKeyParts", contestKeyPart);
-                        console.log("hashed sent from info-tek", req.headers["x-signature"]);
                         if (contestKeyPart.length < 1)
                             return [2 /*return*/, res.sendStatus(200)];
                         applicationBusiness = new ApplicationBusiness();
