@@ -75,11 +75,14 @@ export class VoteController {
       )
         return res.sendStatus(200);
       var contestKeyPart: string[] = req.body.message.split(" ");
+      console.log("contestKeyParts", contestKeyPart);
+      console.log("hashed sent from info-tek", req.headers["x-signature"]);
       if (contestKeyPart.length < 1) return res.sendStatus(200);
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
         audience: `https://${req.body.host}`,
       });
+      console.log("ceaser engine found", ceaserResult);
       if (ceaserResult.data) {
         req.body.host = ceaserResult.data.audience;
         const hash = signatureHash(
@@ -87,6 +90,7 @@ export class VoteController {
           JSON.stringify(req.body)
         );
 
+        console.log("hased", hash);
         if (hash === req.headers["x-signature"]) {
           console.log("vote is about to be processed");
           const item: VoteTransaction = Object.assign({

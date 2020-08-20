@@ -41,9 +41,11 @@ class ApplicationBusiness implements IApplicationBusiness {
   }
 
   async findByCriteria(criteria: any): Promise<Result<IApplication>> {
+    criteria.isActive = true;
     const application = await this._applicationRepository.findByCriteria(
       criteria
     );
+    console.log(application);
     if (!application) {
       return Result.fail<IApplication>(404, `Client not found`);
     }
@@ -53,7 +55,7 @@ class ApplicationBusiness implements IApplicationBusiness {
   async create(item: IApplication): Promise<Result<any>> {
     // TODO:: confirm validity of country id before saving
     const application = await this._applicationRepository.findByCriteria({
-      clientId: item.clientId
+      clientId: item.clientId,
     });
     if (application)
       return Result.fail<IApplication>(

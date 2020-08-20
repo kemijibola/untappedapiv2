@@ -109,6 +109,8 @@ var VoteController = /** @class */ (function () {
                             !req.body.message)
                             return [2 /*return*/, res.sendStatus(200)];
                         contestKeyPart = req.body.message.split(" ");
+                        console.log("contestKeyParts", contestKeyPart);
+                        console.log("hashed sent from info-tek", req.headers["x-signature"]);
                         if (contestKeyPart.length < 1)
                             return [2 /*return*/, res.sendStatus(200)];
                         applicationBusiness = new ApplicationBusiness();
@@ -117,9 +119,11 @@ var VoteController = /** @class */ (function () {
                             })];
                     case 1:
                         ceaserResult = _a.sent();
+                        console.log("ceaser engine found", ceaserResult);
                         if (!ceaserResult.data) return [3 /*break*/, 3];
                         req.body.host = ceaserResult.data.audience;
                         hash = Helper_1.signatureHash(ceaserResult.data.clientSecret, JSON.stringify(req.body));
+                        console.log("hased", hash);
                         if (!(hash === req.headers["x-signature"])) return [3 /*break*/, 3];
                         console.log("vote is about to be processed");
                         item = Object.assign({
