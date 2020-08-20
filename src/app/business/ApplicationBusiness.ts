@@ -45,7 +45,6 @@ class ApplicationBusiness implements IApplicationBusiness {
     const application = await this._applicationRepository.findByCriteria(
       criteria
     );
-    console.log(application);
     if (!application) {
       return Result.fail<IApplication>(404, `Client not found`);
     }

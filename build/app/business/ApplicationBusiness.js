@@ -107,7 +107,6 @@ var ApplicationBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
                     case 1:
                         application = _a.sent();
-                        console.log(application);
                         if (!application) {
                             return [2 /*return*/, Result_1.Result.fail(404, "Client not found")];
                         }
