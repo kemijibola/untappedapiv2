@@ -66,8 +66,8 @@ export class VoteController {
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("apikey from info-tek", req.headers["ApiKey"]);
-      if (!req.headers["ApiKey"]) return res.sendStatus(200);
+      console.log("apikey from info-tek", req.headers["x-signature"]);
+      if (!req.headers["x-signature"]) return res.sendStatus(200);
       if (
         !req.body.id ||
         !req.body.phone ||
@@ -86,7 +86,7 @@ export class VoteController {
       });
       console.log("ceaser engine found", ceaserResult);
       if (ceaserResult.data) {
-        const apiKey: any = req.headers["ApiKey"];
+        const apiKey: any = req.headers["x-signature"];
         var decoded = Buffer.from(apiKey).toString("base64");
         console.log("decoded", decoded);
         if (decoded !== ceaserResult.data.clientSecret)
