@@ -97,14 +97,22 @@ var VoteController = /** @class */ (function () {
     };
     VoteController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var applicationBusiness, ceaserResult, hash, item, voteBusiness, result, err_2;
+            var contestKeyPart, applicationBusiness, ceaserResult, hash, item, voteBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
                         console.log("was called with", req.body);
                         console.log("from request", req.headers["x-signature"]);
-                        if (!req.body.id || !req.body.phone || !req.body.shortcode)
+                        console.log(req.body.message.split(""));
+                        if (!req.body.id ||
+                            !req.body.phone ||
+                            !req.body.shortcode ||
+                            !req.body.message)
+                            return [2 /*return*/, res.sendStatus(200)];
+                        contestKeyPart = req.body.message.split("");
+                        console.log(contestKeyPart[0].toLowerCase());
+                        if (contestKeyPart.length < 1)
                             return [2 /*return*/, res.sendStatus(200)];
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.findByCriteria({
@@ -122,7 +130,10 @@ var VoteController = /** @class */ (function () {
                             phone: req.body.phone,
                             network: req.body.network,
                             shortcode: req.body.shortcode,
-                            contestantCode: req.body.message,
+                            contestantCode: contestKeyPart[1],
+                            keyword: contestKeyPart[0]
+                                ? contestKeyPart[0].toLowerCase()
+                                : "JUNK",
                             channelType: interfaces_1.ChannelType.sms,
                         });
                         voteBusiness = new VoteTransactionBusiness();

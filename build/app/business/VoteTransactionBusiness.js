@@ -137,44 +137,51 @@ var VoteTransactionBusiness = /** @class */ (function () {
     };
     VoteTransactionBusiness.prototype.createSMSVote = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestEntry, newVote_1, contest, newVote_2, newVote_3, newVote;
+            var newVote_1, contestEntry, newVote_2, contest, newVote_3, newVote_4, newVote;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
-                            contestantCode: item.contestantCode,
-                        })];
-                    case 1:
-                        contestEntry = _a.sent();
-                        if (!!contestEntry) return [3 /*break*/, 3];
+                    case 0:
+                        if (!(item.keyword !== config.CONTEST_KEYWORD)) return [3 /*break*/, 2];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
-                    case 2:
+                    case 1:
                         newVote_1 = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_1)];
+                    case 2: return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                            contestantCode: item.contestantCode,
+                        })];
                     case 3:
-                        item.contestId = contestEntry.contest;
-                        return [4 /*yield*/, this._contestRepository.findById(item.contestId)];
-                    case 4:
-                        contest = _a.sent();
-                        if (!!contest) return [3 /*break*/, 6];
+                        contestEntry = _a.sent();
+                        if (!!contestEntry) return [3 /*break*/, 5];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
-                    case 5:
+                    case 4:
                         newVote_2 = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_2)];
+                    case 5:
+                        item.contestId = contestEntry.contest;
+                        return [4 /*yield*/, this._contestRepository.findById(item.contestId)];
                     case 6:
-                        if (!contest) return [3 /*break*/, 8];
-                        if (!date_fns_1.isAfter(Date.now(), contest.endDate)) return [3 /*break*/, 8];
+                        contest = _a.sent();
+                        if (!!contest) return [3 /*break*/, 8];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 7:
                         newVote_3 = _a.sent();
-                        this.FetchContestResult(contest);
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_3)];
                     case 8:
-                        item.voteStatus = interfaces_1.VoteStatus.valid;
+                        if (!contest) return [3 /*break*/, 10];
+                        if (!date_fns_1.isAfter(Date.now(), contest.endDate)) return [3 /*break*/, 10];
+                        item.voteStatus = interfaces_1.VoteStatus.invalid;
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 9:
+                        newVote_4 = _a.sent();
+                        this.FetchContestResult(contest);
+                        return [2 /*return*/, Result_1.Result.ok(201, newVote_4)];
+                    case 10:
+                        item.voteStatus = interfaces_1.VoteStatus.valid;
+                        return [4 /*yield*/, this._voteTransactionRepository.create(item)];
+                    case 11:
                         newVote = _a.sent();
                         this.FetchContestResult(contest);
                         return [2 /*return*/, Result_1.Result.ok(201, newVote)];

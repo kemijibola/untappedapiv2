@@ -24,4 +24,5 @@ export interface VoteTransaction
   contestantCode: string;
   channelType: ChannelType;
   voteStatus: VoteStatus;
+  keyword: string;
 }

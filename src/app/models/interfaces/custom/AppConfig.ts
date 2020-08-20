@@ -37,6 +37,7 @@ export interface AppConfig {
   MiNIMUM_PRIZE_CASH: number;
   NODE_APP_INSTANCE: number;
   CEASER: string;
+  CONTEST_KEYWORD: string;
 }
 
 export interface PaymentGate {

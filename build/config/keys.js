@@ -125,6 +125,7 @@ switch (environment) {
             KEY: process.env.KEY,
             MiNIMUM_PRIZE_CASH: process.env.MiNIMUM_PRIZE_CASH,
             CEASER_AUDIENCE: process.env.CEASER,
+            CONTEST_KEYWORD: process.env.CONTEST_KEYWORD,
         };
         break;
     default:

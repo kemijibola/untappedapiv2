@@ -68,9 +68,17 @@ export class VoteController {
     try {
       console.log("was called with", req.body);
       console.log("from request", req.headers["x-signature"]);
-      if (!req.body.id || !req.body.phone || !req.body.shortcode)
+      console.log(req.body.message.split(""));
+      if (
+        !req.body.id ||
+        !req.body.phone ||
+        !req.body.shortcode ||
+        !req.body.message
+      )
         return res.sendStatus(200);
-
+      var contestKeyPart: string[] = req.body.message.split("");
+      console.log(contestKeyPart[0].toLowerCase());
+      if (contestKeyPart.length < 1) return res.sendStatus(200);
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
         clientId: config.CEASER,
@@ -88,7 +96,10 @@ export class VoteController {
             phone: req.body.phone,
             network: req.body.network,
             shortcode: req.body.shortcode,
-            contestantCode: req.body.message,
+            contestantCode: contestKeyPart[1],
+            keyword: contestKeyPart[0]
+              ? contestKeyPart[0].toLowerCase()
+              : "JUNK",
             channelType: ChannelType.sms,
           });
 
