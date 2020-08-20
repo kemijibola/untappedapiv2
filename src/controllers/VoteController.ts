@@ -66,6 +66,7 @@ export class VoteController {
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log(req.body);
       if (
         !req.body.id ||
         !req.body.phone ||

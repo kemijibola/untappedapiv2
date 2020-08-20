@@ -102,6 +102,7 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
+                        console.log(req.body);
                         if (!req.body.id ||
                             !req.body.phone ||
                             !req.body.shortcode ||
