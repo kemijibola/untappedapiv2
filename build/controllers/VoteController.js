@@ -111,18 +111,17 @@ var VoteController = /** @class */ (function () {
                             !req.body.message)
                             return [2 /*return*/, res.sendStatus(200)];
                         contestKeyPart = req.body.message.split("");
-                        console.log(contestKeyPart[0].toLowerCase());
                         if (contestKeyPart.length < 1)
                             return [2 /*return*/, res.sendStatus(200)];
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.findByCriteria({
-                                clientId: config.CEASER,
+                                clientId: "https://" + req.body.host,
                             })];
                     case 1:
                         ceaserResult = _a.sent();
                         if (!ceaserResult.data) return [3 /*break*/, 3];
+                        req.body.host = ceaserResult.data.audience;
                         hash = Helper_1.signatureHash(ceaserResult.data.clientSecret, JSON.stringify(req.body));
-                        console.log("internal hash");
                         if (!(hash === req.headers["x-signature"])) return [3 /*break*/, 3];
                         console.log("vote is about to be processed");
                         item = Object.assign({

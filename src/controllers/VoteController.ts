@@ -77,18 +77,19 @@ export class VoteController {
       )
         return res.sendStatus(200);
       var contestKeyPart: string[] = req.body.message.split("");
-      console.log(contestKeyPart[0].toLowerCase());
       if (contestKeyPart.length < 1) return res.sendStatus(200);
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
-        clientId: config.CEASER,
+        clientId: `https://${req.body.host}`,
       });
       if (ceaserResult.data) {
+        req.body.host = ceaserResult.data.audience;
+
         const hash = signatureHash(
           ceaserResult.data.clientSecret,
           JSON.stringify(req.body)
         );
-        console.log("internal hash");
+
         if (hash === req.headers["x-signature"]) {
           console.log("vote is about to be processed");
           const item: VoteTransaction = Object.assign({
