@@ -86,8 +86,9 @@ export class VoteController {
       });
       console.log("ceaser engine found", ceaserResult);
       if (ceaserResult.data) {
-        const encodedKey: string = req.headers["ApiKey"].toString() || "";
-        var decoded = Buffer.from(encodedKey).toString("base64");
+        var decoded = Buffer.from(req.headers["ApiKey"]?.toString()).toString(
+          "base64"
+        );
         console.log("decoded", decoded);
         if (decoded !== ceaserResult.data.clientSecret)
           return res.sendStatus(200);
