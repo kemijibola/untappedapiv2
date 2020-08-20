@@ -102,20 +102,18 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        console.log("was called with", req.body);
-                        console.log("from request", req.headers["x-signature"]);
-                        console.log(req.body.message.split(""));
                         if (!req.body.id ||
                             !req.body.phone ||
                             !req.body.shortcode ||
+                            !req.body.host ||
                             !req.body.message)
                             return [2 /*return*/, res.sendStatus(200)];
-                        contestKeyPart = req.body.message.split("");
+                        contestKeyPart = req.body.message.split(" ");
                         if (contestKeyPart.length < 1)
                             return [2 /*return*/, res.sendStatus(200)];
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.findByCriteria({
-                                clientId: "https://" + req.body.host,
+                                audience: "https://" + req.body.host,
                             })];
                     case 1:
                         ceaserResult = _a.sent();

@@ -66,25 +66,22 @@ export class VoteController {
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("was called with", req.body);
-      console.log("from request", req.headers["x-signature"]);
-      console.log(req.body.message.split(""));
       if (
         !req.body.id ||
         !req.body.phone ||
         !req.body.shortcode ||
+        !req.body.host ||
         !req.body.message
       )
         return res.sendStatus(200);
-      var contestKeyPart: string[] = req.body.message.split("");
+      var contestKeyPart: string[] = req.body.message.split(" ");
       if (contestKeyPart.length < 1) return res.sendStatus(200);
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
-        clientId: `https://${req.body.host}`,
+        audience: `https://${req.body.host}`,
       });
       if (ceaserResult.data) {
         req.body.host = ceaserResult.data.audience;
-
         const hash = signatureHash(
           ceaserResult.data.clientSecret,
           JSON.stringify(req.body)
