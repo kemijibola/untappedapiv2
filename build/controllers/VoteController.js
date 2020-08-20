@@ -102,13 +102,10 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        console.log("was called");
+                        console.log("was called with", req.body);
                         console.log("from request", req.headers["x-signature"]);
-                        if (!req.body.id)
-                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
-                                    code: 400,
-                                    message: "Missing id in request",
-                                }))];
+                        if (!req.body.id || !req.body.phone || !req.body.shortcode)
+                            return [2 /*return*/, res.sendStatus(200)];
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.findByCriteria({
                                 clientId: config.CEASER,
@@ -163,7 +160,6 @@ var VoteController = /** @class */ (function () {
     ], VoteController.prototype, "fetchContestEntries", null);
     __decorate([
         decorators_1.post("/"),
-        decorators_1.requestValidators("id", "phone", "network", "shortcode", "message"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)

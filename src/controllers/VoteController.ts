@@ -63,18 +63,13 @@ export class VoteController {
   }
 
   @post("/")
-  @requestValidators("id", "phone", "network", "shortcode", "message")
+  // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("was called");
+      console.log("was called with", req.body);
       console.log("from request", req.headers["x-signature"]);
-      if (!req.body.id)
-        return next(
-          new PlatformError({
-            code: 400,
-            message: "Missing id in request",
-          })
-        );
+      if (!req.body.id || !req.body.phone || !req.body.shortcode)
+        return res.sendStatus(200);
 
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
