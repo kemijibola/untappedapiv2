@@ -41,7 +41,6 @@ class ApplicationBusiness implements IApplicationBusiness {
   }
 
   async findByCriteria(criteria: any): Promise<Result<IApplication>> {
-    criteria.isActive = true;
     const application = await this._applicationRepository.findByCriteria(
       criteria
     );

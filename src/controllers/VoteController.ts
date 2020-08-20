@@ -66,9 +66,8 @@ export class VoteController {
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.body);
-      console.log("hashed sent from info-tek", req.headers["x-signature"]);
-      console.log(JSON.parse(req.body));
+      console.log("apikey from info-tek", req.headers["ApiKey"]);
+      if (!req.headers["ApiKey"]) return res.sendStatus(200);
       if (
         !req.body.id ||
         !req.body.phone ||
@@ -83,50 +82,46 @@ export class VoteController {
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
         audience: `https://${req.body.host}`,
+        isActive: true,
       });
       console.log("ceaser engine found", ceaserResult);
       if (ceaserResult.data) {
-        req.body.host = ceaserResult.data.audience;
-        const hash = signatureHash(
-          ceaserResult.data.clientSecret,
-          JSON.stringify(req.body)
-        );
+        const encodedKey: string = req.headers["ApiKey"].toString() || "";
+        var decoded = Buffer.from(encodedKey).toString("base64");
+        console.log("decoded", decoded);
+        if (decoded !== ceaserResult.data.clientSecret)
+          return res.sendStatus(200);
+        console.log("vote is about to be processed");
+        const item: VoteTransaction = Object.assign({
+          channelId: req.body.id,
+          phone: req.body.phone,
+          network: req.body.network,
+          shortcode: req.body.shortcode,
+          contestantCode: contestKeyPart[1],
+          keyword: contestKeyPart[0] ? contestKeyPart[0].toLowerCase() : "JUNK",
+          channelType: ChannelType.sms,
+        });
 
-        console.log("hased", hash);
-        if (hash === req.headers["x-signature"]) {
-          console.log("vote is about to be processed");
-          const item: VoteTransaction = Object.assign({
-            channelId: req.body.id,
-            phone: req.body.phone,
-            network: req.body.network,
-            shortcode: req.body.shortcode,
-            contestantCode: contestKeyPart[1],
-            keyword: contestKeyPart[0]
-              ? contestKeyPart[0].toLowerCase()
-              : "JUNK",
-            channelType: ChannelType.sms,
-          });
+        const voteBusiness = new VoteTransactionBusiness();
+        const result = await voteBusiness.createSMSVote(item);
 
-          const voteBusiness = new VoteTransactionBusiness();
-          const result = await voteBusiness.createSMSVote(item);
-
-          if (result.error) {
-            return next(
-              new PlatformError({
-                code: result.responseCode,
-                message: result.error,
-              })
-            );
-          }
-
-          return res.status(result.responseCode).json({
-            message: "Operation successful",
-            data: result.data,
-          });
+        if (result.error) {
+          return next(
+            new PlatformError({
+              code: result.responseCode,
+              message: result.error,
+            })
+          );
         }
+
+        return res.status(result.responseCode).json({
+          message: "Operation successful",
+          data: result.data,
+        });
       }
       return res.sendStatus(200);
     } catch (err) {
+      console.log("");
       return next(
         new PlatformError({
           code: 500,

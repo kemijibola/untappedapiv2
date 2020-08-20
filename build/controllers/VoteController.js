@@ -97,14 +97,16 @@ var VoteController = /** @class */ (function () {
     };
     VoteController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var contestKeyPart, applicationBusiness, ceaserResult, hash, item, voteBusiness, result, err_2;
+            var encodedKey, buffer, contestKeyPart, applicationBusiness, ceaserResult, hash, item, voteBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        console.log(req.body);
-                        console.log("hashed sent from info-tek", req.headers["x-signature"]);
-                        console.log(JSON.parse(req.body));
+                        console.log("hashed sent from info-tek", req.headers["ApiKey"]);
+                        if (!req.headers["ApiKey"])
+                            return [2 /*return*/, res.sendStatus(200)];
+                        encodedKey = req.headers["ApiKey"];
+                        buffer = Buffer.from(encodedKey, 'base64');
                         if (!req.body.id ||
                             !req.body.phone ||
                             !req.body.shortcode ||
@@ -156,6 +158,7 @@ var VoteController = /** @class */ (function () {
                     case 3: return [2 /*return*/, res.sendStatus(200)];
                     case 4:
                         err_2 = _a.sent();
+                        console.log("");
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
