@@ -30,7 +30,7 @@ export const canCreateWallet = "canCreateWallet";
 export const canViewWallet = "canViewWallet";
 export const canDeActivateWallet = "canDeActivateWallet";
 
-// ADMIN ROLES
+// ADMIN PERMISSIONS
 export const canCreateApplication = "canCreateApplication";
 export const canViewApplication = "canViewApplication";
 export const canUpdateApplication = "canUpdateApplication";
@@ -72,3 +72,15 @@ export const canDeleteCountry = "canDeleteCountry";
 export const canUpdateEntryPosition = "canUpdateEntryPosition";
 export const canDisbursePrize = "canDisbursePrize";
 export const canViewPendingDisbursement = "canViewPendingDisbursement";
+
+export const canViewPendingMedia = "canViewPendingMedia";
+export const canApproveMedia = "canApproveMedia";
+export const canRejectMedia = "canRejectMedia";
+
+export const canViewPendingContest = "canViewPendingContest";
+export const canApproveContest = "canApproveContest";
+export const canRejectContest = "canRejectContest";
+
+export const canViewPendingEntry = "canViewPendingEntry";
+export const canApproveEntry = "canApproveEntry";
+export const canRejectEntry = "canRejectEntry";

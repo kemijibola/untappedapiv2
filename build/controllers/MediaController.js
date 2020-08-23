@@ -50,6 +50,7 @@ var interfaces_1 = require("../app/models/interfaces");
 var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var MediaController = /** @class */ (function () {
     function MediaController() {
     }
@@ -484,9 +485,41 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
+    MediaController.prototype.fetchPendingMedia = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, result, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.fetchMediaPendingApproval({})];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: "Error occured, " + result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_8 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_8,
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     MediaController.prototype.fetch = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, condition, result, err_8;
+            var mediaBusiness, condition, result, err_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -510,10 +543,10 @@ var MediaController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_8 = _a.sent();
+                        err_9 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_8,
+                                message: "Internal Server error occured." + err_9,
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -522,7 +555,7 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.deleteMedia = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, media, result, err_9;
+            var mediaBusiness, media, result, err_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -559,10 +592,10 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        err_9 = _a.sent();
+                        err_10 = _a.sent();
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_9,
+                                message: "Internal Server error occured." + err_10,
                             }))];
                     case 5: return [2 /*return*/];
                 }
@@ -571,7 +604,7 @@ var MediaController = /** @class */ (function () {
     };
     MediaController.prototype.deleteMediaItem = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaBusiness, media, mediaUser, currentUser, result, err_10;
+            var mediaBusiness, media, mediaUser, currentUser, result, err_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -616,13 +649,79 @@ var MediaController = /** @class */ (function () {
                             })];
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        err_10 = _a.sent();
-                        console.log(err_10);
+                        err_11 = _a.sent();
+                        console.log(err_11);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_10,
+                                message: "Internal Server error occured." + err_11,
                             }))];
                     case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MediaController.prototype.rejectMediaItem = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, result, err_12;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.rejectMedia(req.params.id, req.params.itemId, req.user, req.body.reason)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_12 = _a.sent();
+                        console.log(err_12);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MediaController.prototype.approveMediaItem = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaBusiness, result, err_13;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        mediaBusiness = new MediaBusiness();
+                        return [4 /*yield*/, mediaBusiness.approveMedia(req.params.id, req.params.itemId, req.user)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_13 = _a.sent();
+                        console.log(err_13);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -684,6 +783,14 @@ var MediaController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "fetchList", null);
     __decorate([
+        decorators_1.get("/admin/pending"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.authorize(PermissionConstant_1.canViewPendingMedia),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "fetchPendingMedia", null);
+    __decorate([
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.get("/:id"),
         __metadata("design:type", Function),
@@ -706,6 +813,25 @@ var MediaController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "deleteMediaItem", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.patch("admin/reject/:id/item/:itemId"),
+        decorators_1.authorize(PermissionConstant_1.canRejectMedia),
+        decorators_1.requestValidators("reason"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "rejectMediaItem", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.patch("admin/approve/:id/item/:itemId"),
+        decorators_1.authorize(PermissionConstant_1.canApproveMedia),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "approveMediaItem", null);
     MediaController = __decorate([
         decorators_1.controller("/v1/media")
     ], MediaController);

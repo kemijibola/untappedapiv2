@@ -102,9 +102,7 @@ var ApplicationBusiness = /** @class */ (function () {
             var application;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        criteria.isActive = true;
-                        return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._applicationRepository.findByCriteria(criteria)];
                     case 1:
                         application = _a.sent();
                         if (!application) {

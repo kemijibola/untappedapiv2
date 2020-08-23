@@ -10,6 +10,7 @@ var mediaItemSchema = new mongoose_1.Schema({
     isDeleted: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
     approvedBy: { type: String },
+    rejectionReason: { type: String },
     approvedDate: { type: Date },
 }, { timestamps: true });
 var mediaSchema = new mongoose_1.Schema({

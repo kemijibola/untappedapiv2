@@ -1,1 +1,1 @@
-{"version":3,"file":"changeemail.js","sourceRoot":"","sources":["../../../src/utils/emailtemplates/changeemail.ts"],"names":[],"mappings":";;AAAA;IAAA;IAmpBA,CAAC;IAlpBC,sBAAkB,uBAAQ;aAA1B;YACE,OAAO,k6gCA+oBJ,CAAC;QACN,CAAC;;;OAAA;IACH,kBAAC;AAAD,CAAC,AAnpBD,IAmpBC;AAnpBY,kCAAW"}
+{"version":3,"file":"changeemail.js","sourceRoot":"","sources":["../../../src/utils/emailtemplates/changeemail.ts"],"names":[],"mappings":";;AAAA;IAAA;IAqnBA,CAAC;IApnBC,sBAAkB,uBAAQ;aAA1B;YACE,OAAO,y/6BAinBJ,CAAC;QACN,CAAC;;;OAAA;IACH,kBAAC;AAAD,CAAC,AArnBD,IAqnBC;AArnBY,kCAAW"}

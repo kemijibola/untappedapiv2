@@ -22,7 +22,7 @@ exports.canDeleteRole = "canDeleteRole";
 exports.canCreateWallet = "canCreateWallet";
 exports.canViewWallet = "canViewWallet";
 exports.canDeActivateWallet = "canDeActivateWallet";
-// ADMIN ROLES
+// ADMIN PERMISSIONS
 exports.canCreateApplication = "canCreateApplication";
 exports.canViewApplication = "canViewApplication";
 exports.canUpdateApplication = "canUpdateApplication";
@@ -55,4 +55,13 @@ exports.canDeleteCountry = "canDeleteCountry";
 exports.canUpdateEntryPosition = "canUpdateEntryPosition";
 exports.canDisbursePrize = "canDisbursePrize";
 exports.canViewPendingDisbursement = "canViewPendingDisbursement";
+exports.canViewPendingMedia = "canViewPendingMedia";
+exports.canApproveMedia = "canApproveMedia";
+exports.canRejectMedia = "canRejectMedia";
+exports.canViewPendingContest = "canViewPendingContest";
+exports.canApproveContest = "canApproveContest";
+exports.canRejectContest = "canRejectContest";
+exports.canViewPendingEntry = "canViewPendingEntry";
+exports.canApproveEntry = "canApproveEntry";
+exports.canRejectEntry = "canRejectEntry";
 //# sourceMappingURL=PermissionConstant.js.map

@@ -50,11 +50,10 @@ var GlobalEnum_1 = require("../models/interfaces/custom/GlobalEnum");
 var emailtemplates_1 = require("../../utils/emailtemplates");
 var TemplatePlaceHolder_1 = require("../../utils/lib/TemplatePlaceHolder");
 var config = require("../../config/keys");
-var EmailService_1 = require("../../utils/emailservice/EmailService");
 var UserTypeRepository_1 = __importDefault(require("../repository/UserTypeRepository"));
 var uuid_1 = __importDefault(require("uuid"));
 var date_fns_1 = require("date-fns");
-var Sender_1 = require("../../utils/emailservice/aws/Sender");
+var MailBusiness_1 = require("./MailBusiness");
 var UserBusiness = /** @class */ (function () {
     function UserBusiness() {
         this._currentAuthKey = "";
@@ -454,7 +453,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, isUserTypeValid, userType, defaultRole, newUser, data, token, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, recievers;
+            var user, isUserTypeValid, userType, defaultRole, newUser, data, token, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, recievers, mailer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
@@ -507,7 +506,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
                         recievers = [newUser.email];
-                        return [4 /*yield*/, this.sendMail(recievers, "Untappedpool.com Email Confirmation", emailBody)];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("Oluwakemi (CEO, UntappedPool) <" + config.UNTAPPED_CEO_EMAIL + ">", "UntappedPool Competitions", recievers, "\uD83D\uDC4Bhi " + newUser.fullName + "!", emailBody)];
                     case 6:
                         _a.sent();
                         _a.label = 7;
@@ -518,7 +518,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.forgotPassword = function (email, audience, redirectUrl) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, request, token, forgorPasswordEmailKeyValues, forgoPasswordTemplateString, forgotPasswordEmailPlaceHolder, emailBody, recievers;
+            var user, request, token, forgorPasswordEmailKeyValues, forgoPasswordTemplateString, forgotPasswordEmailPlaceHolder, emailBody, recievers, mailer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
@@ -546,7 +546,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(forgotPasswordEmailPlaceHolder);
                         recievers = [user.email];
-                        return [4 /*yield*/, this.sendMail(recievers, "Reset password instructions", emailBody)];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool <" + config.UNTAPPED_ADMIN_EMAIL + ">", "Untappedpool.com", recievers, "Reset password instructions", emailBody)];
                     case 3:
                         _a.sent();
                         _a.label = 4;
@@ -557,28 +558,6 @@ var UserBusiness = /** @class */ (function () {
                         _a.sent();
                         _a.label = 6;
                     case 6: return [2 /*return*/, Result_1.Result.ok(200, "If an account exist for " + email + ", you will receive password reset instructions.")];
-                }
-            });
-        });
-    };
-    UserBusiness.prototype.sendMail = function (receivers, subject, mailBody) {
-        return __awaiter(this, void 0, void 0, function () {
-            var mailParams, mailer;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        mailParams = {
-                            receivers: receivers.slice(),
-                            subject: subject,
-                            mail: mailBody,
-                            senderEmail: "talents@untappedpool.com",
-                            senderName: "Untapped Pool",
-                        };
-                        mailer = EmailService_1.EmailService.mailer(mailParams);
-                        return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
                 }
             });
         });
@@ -647,7 +626,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.changeEmail = function (userId, newEmail, audience, redirectUrl) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, userExist, request, token, changeEmailKeyValues, changeEmailTemplateString, changeEmailPlaceHolder, emailBody, recievers;
+            var user, userExist, request, token, changeEmailKeyValues, changeEmailTemplateString, changeEmailPlaceHolder, emailBody, recievers, mailer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findById(userId)];
@@ -681,7 +660,8 @@ var UserBusiness = /** @class */ (function () {
                         };
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(changeEmailPlaceHolder);
                         recievers = [newEmail];
-                        return [4 /*yield*/, this.sendMail(recievers, "Verify Your Email Address", emailBody)];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool <" + config.UNTAPPED_ADMIN_EMAIL + ">", "Untappedpool.com", recievers, "Verify Your Email Address", emailBody)];
                     case 4:
                         _a.sent();
                         _a.label = 5;

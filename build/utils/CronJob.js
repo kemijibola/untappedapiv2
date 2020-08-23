@@ -62,7 +62,7 @@ exports.userFilterJob = function () {
     }); });
 };
 exports.contestSettlement = function () {
-    cron.schedule("* 1 * * *", function () { return __awaiter(_this, void 0, void 0, function () {
+    cron.schedule("*/5 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
         var report;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -76,9 +76,4 @@ exports.contestSettlement = function () {
         });
     }); });
 };
-// export const professionalFilterJob = () => {
-//   cron.schedule("*/10 * * * *", async () => {
-//     // var report = UserFilter.
-//   });
-// };
 //# sourceMappingURL=CronJob.js.map

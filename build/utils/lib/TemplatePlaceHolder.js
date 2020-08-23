@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SocialMediaHandles = {
-    Twitter: 'https://www.twitter.com/untappedpool',
-    Facebook: 'https://www.facebook.com/untappedpool',
-    Instagram: 'https://www.instagram.com/official_untappedpool'
+    Twitter: "https://www.twitter.com/untappedpool",
+    Facebook: "https://www.facebook.com/untappedpool",
+    Instagram: "https://www.instagram.com/official_untappedpool",
 };
 var PlaceHolderKey;
 (function (PlaceHolderKey) {
@@ -14,6 +14,9 @@ var PlaceHolderKey;
     PlaceHolderKey["PlatformUrl"] = "[PlatformUrl]";
     PlaceHolderKey["VerifyToken"] = "[VerifyToken]";
     PlaceHolderKey["FullVerifyToken"] = "[FullVerifyToken]";
+    PlaceHolderKey["ContestTitle"] = "[ContestTitle]";
+    PlaceHolderKey["ContestPosition"] = "[Position]";
+    PlaceHolderKey["ContestantWallet"] = "[WalletId]";
 })(PlaceHolderKey = exports.PlaceHolderKey || (exports.PlaceHolderKey = {}));
 function replaceTemplateString(param) {
     var template = param.template;

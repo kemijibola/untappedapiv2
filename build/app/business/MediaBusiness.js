@@ -65,6 +65,26 @@ var MediaBusiness = /** @class */ (function () {
             });
         });
     };
+    MediaBusiness.prototype.fetchMediaPendingApproval = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var medias;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 1:
+                        medias = _a.sent();
+                        if (medias) {
+                            medias.forEach(function (x) {
+                                var mediaItems = x.items.filter(function (y) { return !y.isDeleted && !y.isApproved; });
+                                if (mediaItems.length > 0)
+                                    return x;
+                            });
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, medias)];
+                }
+            });
+        });
+    };
     MediaBusiness.prototype.fetchTalentPortfolioPreview = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             var portfolioPreviews, modified;
@@ -230,14 +250,89 @@ var MediaBusiness = /** @class */ (function () {
             });
         });
     };
+    MediaBusiness.prototype.rejectMedia = function (mediaId, mediaItemId, rejectedBy, rejectionReason) {
+        return __awaiter(this, void 0, void 0, function () {
+            var media, modifiedItems, updateObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.findById(mediaId)];
+                    case 1:
+                        media = _a.sent();
+                        if (!media)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Media not found.")];
+                        modifiedItems = media.items.reduce(function (theMap, theItem) {
+                            if (theItem._id === mediaItemId) {
+                                theMap = Object.assign({
+                                    _id: theItem._id,
+                                    path: theItem.path,
+                                    likedBy: theItem.likedBy,
+                                    createdAt: theItem.createdAt,
+                                    updatedAt: theItem.updatedAt,
+                                    isApproved: theItem.isApproved,
+                                    approvedBy: rejectedBy,
+                                    approvedDate: new Date(),
+                                    rejectionReason: rejectionReason,
+                                });
+                            }
+                            else {
+                                theMap = theMap.concat([theItem]);
+                            }
+                            return theMap;
+                        }, []);
+                        return [4 /*yield*/, this._mediaRepository.patch(media._id, {
+                                items: modifiedItems,
+                            })];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
+    MediaBusiness.prototype.approveMedia = function (mediaId, mediaItemId, approvedBy) {
+        return __awaiter(this, void 0, void 0, function () {
+            var media, modifiedItems, updateObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._mediaRepository.findById(mediaId)];
+                    case 1:
+                        media = _a.sent();
+                        if (!media)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Media not found.")];
+                        modifiedItems = media.items.reduce(function (theMap, theItem) {
+                            if (theItem._id === mediaItemId) {
+                                theMap = Object.assign({
+                                    _id: theItem._id,
+                                    path: theItem.path,
+                                    likedBy: theItem.likedBy,
+                                    createdAt: theItem.createdAt,
+                                    updatedAt: theItem.updatedAt,
+                                    isApproved: true,
+                                    approvedBy: approvedBy,
+                                    approvedDate: new Date(),
+                                });
+                            }
+                            else {
+                                theMap = theMap.concat([theItem]);
+                            }
+                            return theMap;
+                        }, []);
+                        return [4 /*yield*/, this._mediaRepository.patch(media._id, {
+                                items: modifiedItems,
+                            })];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
     MediaBusiness.prototype.update = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
             var media, updateObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("update called");
-                        return [4 /*yield*/, this._mediaRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this._mediaRepository.findById(id)];
                     case 1:
                         media = _a.sent();
                         if (!media)

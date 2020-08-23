@@ -3,7 +3,6 @@ import {
   ServiceType,
   PaymentStatus,
 } from "../../app/models/interfaces";
-import ContestBusiness = require("../../app/business/ContestBusiness");
 import ContestRepository from "../../app/repository/ContestRepository";
 
 export class SettlementHandler {

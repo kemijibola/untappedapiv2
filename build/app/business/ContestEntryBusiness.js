@@ -80,7 +80,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contestEntry = _a.sent();
                         if (!contestEntry)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest entry of Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contestEntry)];
                 }
             });
@@ -98,7 +98,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contestEntry = _a.sent();
                         if (!contestEntry)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest entry not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contestEntry)];
                 }
             });
@@ -113,7 +113,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contestEntry = _a.sent();
                         if (!contestEntry)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest entry not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contestEntry)];
                 }
             });
@@ -135,7 +135,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            Result_1.Result.fail(404, "Contest not found");
+                            Result_1.Result.fail(404, "Competition entry not found");
                         return [4 /*yield*/, this._profileRepository.findByCriteria({
                                 user: userId,
                             })];
@@ -210,6 +210,7 @@ var ContestBusiness = /** @class */ (function () {
                         userContestResults = [];
                         return [4 /*yield*/, this._contestEntryRepository.fetchContestEntryWithContest({
                                 user: userId,
+                                approved: true,
                             })];
                     case 1:
                         userContestEntries = _a.sent();
@@ -282,11 +283,56 @@ var ContestBusiness = /** @class */ (function () {
     //   await contest.save();
     //   return Result.ok<IContestEntry[]>(200, contestEntries);
     // }
+    ContestBusiness.prototype.rejectContestEntry = function (entryId, rejectedBy, rejectionReason) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestEntryRepository.findById(entryId)];
+                    case 1:
+                        contestEntry = _a.sent();
+                        if (!contestEntry)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
+                        return [4 /*yield*/, this._contestEntryRepository.patch(contestEntry._id, {
+                                approved: false,
+                                approvedBy: rejectedBy,
+                                rejectionReason: rejectionReason,
+                                approvedDate: new Date(),
+                            })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.approveContestEntry = function (entryId, approvedBy) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestEntryRepository.findById(entryId)];
+                    case 1:
+                        contestEntry = _a.sent();
+                        if (!contestEntry)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
+                        return [4 /*yield*/, this._contestEntryRepository.patch(contestEntry._id, {
+                                approved: true,
+                                approvedBy: approvedBy,
+                                approvedDate: new Date(),
+                            })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.fetchContestEntries = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._contestEntryRepository.fetch(condition)];
+                    case 0: return [4 /*yield*/, this._contestEntryRepository.fetchWithUserDetails(condition)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -325,7 +371,7 @@ var ContestBusiness = /** @class */ (function () {
                             return [2 /*return*/, Result_1.Result.fail(400, "User is not registered as a Talent")];
                         codeHasBeenAssigned = true;
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         contestantCode = "";
                         _a.label = 5;
                     case 5:
@@ -346,7 +392,6 @@ var ContestBusiness = /** @class */ (function () {
                         item.contestantCode = contestantCode;
                         item.position = interfaces_1.EntryPosition.participant;
                         item.approved = false;
-                        item.approvedBy = "";
                         return [4 /*yield*/, this._contestEntryRepository.create(item)];
                     case 8:
                         newContestEntry = _a.sent();
@@ -364,7 +409,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contestEntry = _a.sent();
                         if (!contestEntry)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest entry.Contest entry with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
                         return [4 /*yield*/, this._contestEntryRepository.update(contestEntry._id, item)];
                     case 2:
                         updateObj = _a.sent();
@@ -382,7 +427,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contestEntry = _a.sent();
                         if (!contestEntry)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Could not update contest entry.Contest entry with Id " + id + " not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition entry not found")];
                         return [4 /*yield*/, this._contestEntryRepository.update(contestEntry._id, item)];
                     case 2:
                         updateObj = _a.sent();

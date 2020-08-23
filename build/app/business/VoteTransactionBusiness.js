@@ -257,6 +257,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                             contestant: item.user._id,
                             contestantName: item.user.fullName || "",
                             contestantPhoto: item.user.profileImagePath || "",
+                            contestantEmail: item.user.email,
                             contestantCode: item.contestantCode,
                             contestantTotalVote: entryVoteCount.length,
                             position: item.position,

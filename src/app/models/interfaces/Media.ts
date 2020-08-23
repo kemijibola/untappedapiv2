@@ -53,6 +53,9 @@ export interface IMediaItem {
   updatedAt?: Date;
   isDeleted?: boolean;
   isApproved?: boolean;
+  approvedBy?: string;
+  approvedDate?: Date;
+  rejectionReason?: string;
 }
 export interface TalentMedia {
   user: string;

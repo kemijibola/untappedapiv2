@@ -20,9 +20,9 @@ export type Sender = (
 
 export class EmailService {
   private receivers: string[] = [];
-  private subject: string = '';
-  private body: string = '';
-  private senderEmail: string = '';
+  private subject: string = "";
+  private body: string = "";
+  private senderEmail: string = "";
   private ccAddresses?: string[] = [];
   private bccAddresses?: string[] = [];
 

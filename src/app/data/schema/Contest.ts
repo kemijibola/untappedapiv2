@@ -65,6 +65,7 @@ const contestSchema: Schema = new Schema(
     approved: { type: Boolean, default: false },
     approvedBy: { type: String },
     approvedDate: { type: Date },
+    rejectionReason: { type: String },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",

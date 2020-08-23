@@ -14,6 +14,7 @@ const mediaItemSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
     approvedBy: { type: String },
+    rejectionReason: { type: String },
     approvedDate: { type: Date },
   },
   { timestamps: true }

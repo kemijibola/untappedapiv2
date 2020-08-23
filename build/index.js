@@ -31,11 +31,13 @@ process.on("unhandledRejection", function (err) {
 var port = config.PORT || 5000;
 app.set("port", port);
 // console.log(process.env.NODE_APP_INSTANCE);
-var instance = process.env.NODE_APP_INSTANCE || "0";
-if (instance === "0") {
-    CronJob_1.userFilterJob();
-    CronJob_1.contestSettlement();
-}
+CronJob_1.userFilterJob();
+CronJob_1.contestSettlement();
+// const instance: string = process.env.NODE_APP_INSTANCE || "0";
+// if (instance === "0") {
+//   userFilterJob();
+//   contestSettlement();
+// }
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
 });

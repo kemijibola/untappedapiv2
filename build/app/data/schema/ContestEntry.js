@@ -36,6 +36,7 @@ var contestEntrySchema = new mongoose_1.Schema({
     approved: { type: Boolean, default: false },
     approvedBy: { type: String },
     approvedDate: { type: Date },
+    rejectionReason: { type: String },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",

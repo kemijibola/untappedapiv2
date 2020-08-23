@@ -44,11 +44,14 @@ app.set("port", port);
 
 // console.log(process.env.NODE_APP_INSTANCE);
 
-const instance: string = process.env.NODE_APP_INSTANCE || "0";
-if (instance === "0") {
-  userFilterJob();
-  contestSettlement();
-}
+userFilterJob();
+contestSettlement();
+
+// const instance: string = process.env.NODE_APP_INSTANCE || "0";
+// if (instance === "0") {
+//   userFilterJob();
+//   contestSettlement();
+// }
 
 app.listen(port, () => {
   console.log(`Untapped Pool app successfully started on ${port}`);

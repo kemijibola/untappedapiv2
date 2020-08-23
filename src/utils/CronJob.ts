@@ -10,13 +10,8 @@ export const userFilterJob = () => {
 };
 
 export const contestSettlement = () => {
-  cron.schedule("* 1 * * *", async () => {
+  cron.schedule("*/5 * * * *", async () => {
     var report = Reconciliation.init();
     await report.settle();
   });
 };
-// export const professionalFilterJob = () => {
-//   cron.schedule("*/10 * * * *", async () => {
-//     // var report = UserFilter.
-//   });
-// };

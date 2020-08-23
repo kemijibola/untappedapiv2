@@ -44,10 +44,7 @@ class ContestBusiness implements IContestEntryBusiness {
     if (!id) return Result.fail<IContestEntry>(400, "Bad request.");
     const contestEntry = await this._contestEntryRepository.findById(id);
     if (!contestEntry)
-      return Result.fail<IContestEntry>(
-        404,
-        `Contest entry of Id ${id} not found`
-      );
+      return Result.fail<IContestEntry>(404, "Competition entry not found");
     return Result.ok<IContestEntry>(200, contestEntry);
   }
 
@@ -57,7 +54,7 @@ class ContestBusiness implements IContestEntryBusiness {
       condition
     );
     if (!contestEntry)
-      return Result.fail<IContestEntry>(404, `Contest entry not found`);
+      return Result.fail<IContestEntry>(404, "Competition entry not found");
     return Result.ok<IContestEntry>(200, contestEntry);
   }
 
@@ -66,7 +63,7 @@ class ContestBusiness implements IContestEntryBusiness {
       criteria
     );
     if (!contestEntry)
-      return Result.fail<IContestEntry>(404, "Contest entry not found");
+      return Result.fail<IContestEntry>(404, "Competition entry not found");
     return Result.ok<IContestEntry>(200, contestEntry);
   }
 
@@ -83,7 +80,8 @@ class ContestBusiness implements IContestEntryBusiness {
     };
 
     const contest = await this._contestRepository.findById(contestId);
-    if (!contest) Result.fail<IContestEntry>(404, "Contest not found");
+    if (!contest)
+      Result.fail<IContestEntry>(404, "Competition entry not found");
 
     const contestantProfile = await this._profileRepository.findByCriteria({
       user: userId,
@@ -168,6 +166,7 @@ class ContestBusiness implements IContestEntryBusiness {
     const userContestEntries: IContestEntry[] = await this._contestEntryRepository.fetchContestEntryWithContest(
       {
         user: userId,
+        approved: true,
       }
     );
 
@@ -238,8 +237,40 @@ class ContestBusiness implements IContestEntryBusiness {
   //   return Result.ok<IContestEntry[]>(200, contestEntries);
   // }
 
+  async rejectContestEntry(
+    entryId: string,
+    rejectedBy: string,
+    rejectionReason: string
+  ): Promise<Result<boolean>> {
+    const contestEntry = await this._contestEntryRepository.findById(entryId);
+    if (!contestEntry)
+      return Result.fail<boolean>(404, "Competition entry not found");
+    await this._contestEntryRepository.patch(contestEntry._id, {
+      approved: false,
+      approvedBy: rejectedBy,
+      rejectionReason,
+      approvedDate: new Date(),
+    });
+    return Result.ok<true>(200, true);
+  }
+
+  async approveContestEntry(
+    entryId: string,
+    approvedBy: string
+  ): Promise<Result<boolean>> {
+    const contestEntry = await this._contestEntryRepository.findById(entryId);
+    if (!contestEntry)
+      return Result.fail<boolean>(404, "Competition entry not found");
+    await this._contestEntryRepository.patch(contestEntry._id, {
+      approved: true,
+      approvedBy,
+      approvedDate: new Date(),
+    });
+    return Result.ok<true>(200, true);
+  }
+
   async fetchContestEntries(condition: any): Promise<IContestEntry[]> {
-    return await this._contestEntryRepository.fetch(condition);
+    return await this._contestEntryRepository.fetchWithUserDetails(condition);
   }
 
   async create(item: IContestEntry): Promise<Result<IContestEntry>> {
@@ -276,7 +307,8 @@ class ContestBusiness implements IContestEntryBusiness {
       );
 
     let codeHasBeenAssigned = true;
-    if (!contest) return Result.fail<IContestEntry>(404, "Contest not found");
+    if (!contest)
+      return Result.fail<IContestEntry>(404, "Competition not found");
     let contestantCode = "";
     while (codeHasBeenAssigned) {
       contestantCode = `${contestant.fullName.substring(
@@ -293,7 +325,6 @@ class ContestBusiness implements IContestEntryBusiness {
     item.contestantCode = contestantCode;
     item.position = EntryPosition.participant;
     item.approved = false;
-    item.approvedBy = "";
     const newContestEntry = await this._contestEntryRepository.create(item);
     return Result.ok<IContestEntry>(201, newContestEntry);
   }
@@ -304,10 +335,7 @@ class ContestBusiness implements IContestEntryBusiness {
   ): Promise<Result<IContestEntry>> {
     const contestEntry = await this._contestEntryRepository.findById(id);
     if (!contestEntry)
-      return Result.fail<IContestEntry>(
-        404,
-        `Could not update contest entry.Contest entry with Id ${id} not found`
-      );
+      return Result.fail<IContestEntry>(404, "Competition entry not found");
     const updateObj = await this._contestEntryRepository.update(
       contestEntry._id,
       item
@@ -318,10 +346,7 @@ class ContestBusiness implements IContestEntryBusiness {
   async patch(id: string, item: any): Promise<Result<IContestEntry>> {
     const contestEntry = await this._contestEntryRepository.findById(id);
     if (!contestEntry)
-      return Result.fail<IContestEntry>(
-        404,
-        `Could not update contest entry.Contest entry with Id ${id} not found`
-      );
+      return Result.fail<IContestEntry>(404, "Competition entry not found");
     const updateObj = await this._contestEntryRepository.update(
       contestEntry._id,
       item

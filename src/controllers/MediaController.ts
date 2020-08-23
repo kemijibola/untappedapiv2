@@ -8,6 +8,7 @@ import {
   put,
   del,
   patch,
+  authorize,
 } from "../decorators";
 import MediaBusiness = require("../app/business/MediaBusiness");
 import {
@@ -24,6 +25,11 @@ import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler"
 import { requireAuth } from "../middlewares/auth";
 import uuid = require("uuid");
 import { requestValidator } from "../middlewares/ValidateRequest";
+import {
+  canViewPendingMedia,
+  canApproveMedia,
+  canRejectMedia,
+} from "../utils/lib/PermissionConstant";
 
 @controller("/v1/media")
 export class MediaController {
@@ -512,6 +518,35 @@ export class MediaController {
     }
   }
 
+  @get("/admin/pending")
+  @use(requestValidator)
+  @authorize(canViewPendingMedia)
+  async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
+    try {
+      const mediaBusiness = new MediaBusiness();
+      const result = await mediaBusiness.fetchMediaPendingApproval({});
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: `Error occured, ${result.error}`,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Media Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: `Internal Server error occured.${err}`,
+        })
+      );
+    }
+  }
+
   @use(requestValidator)
   @get("/:id")
   async fetch(req: Request, res: Response, next: NextFunction) {
@@ -658,6 +693,86 @@ export class MediaController {
         new PlatformError({
           code: 500,
           message: `Internal Server error occured.${err}`,
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @use(requestValidator)
+  @patch("admin/reject/:id/item/:itemId")
+  @authorize(canRejectMedia)
+  @requestValidators("reason")
+  async rejectMediaItem(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const mediaBusiness = new MediaBusiness();
+      const result = await mediaBusiness.rejectMedia(
+        req.params.id,
+        req.params.itemId,
+        req.user,
+        req.body.reason
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @use(requestValidator)
+  @patch("admin/approve/:id/item/:itemId")
+  @authorize(canApproveMedia)
+  async approveMediaItem(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const mediaBusiness = new MediaBusiness();
+      const result = await mediaBusiness.approveMedia(
+        req.params.id,
+        req.params.itemId,
+        req.user
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
         })
       );
     }

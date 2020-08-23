@@ -5,6 +5,7 @@ export interface IContestContestant {
   contestant: string;
   contestantName: string;
   contestantPhoto: string;
+  contestantEmail?: string;
   contestantCode: string;
   contestantTotalVote: number;
   position: string;

@@ -38,8 +38,14 @@ export interface AppConfig {
   NODE_APP_INSTANCE: number;
   CEASER: string;
   CONTEST_KEYWORD: string;
+  UNTAPPED_SUPPORT_EMAIL: string;
+  UNTAPPED_TALENT_EMAIL: string;
+  UNTAPPED_PROFESSIONAL_EMAIL: string;
+  UNTAPPED_BILLING_EMAIL: string;
+  UNTAPPED_COMPETITION_EMAIL: string;
+  UNTAPPED_CEO_EMAIL: string;
+  UNTAPPED_ADMIN_EMAIL: string;
 }
-
 export interface PaymentGate {
   paystack_secret: string;
 }

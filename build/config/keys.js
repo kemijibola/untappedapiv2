@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Environment_1 = require("../app/models/interfaces/custom/Environment");
-// import * as development from "./development.json";
+var development = __importStar(require("./development.json"));
 var dotenv = __importStar(require("dotenv"));
 dotenv.config();
 var environment = process.env.NODE_ENV || "";
@@ -126,11 +126,18 @@ switch (environment) {
             MiNIMUM_PRIZE_CASH: process.env.MiNIMUM_PRIZE_CASH,
             CEASER_AUDIENCE: process.env.CEASER,
             CONTEST_KEYWORD: process.env.CONTEST_KEYWORD,
+            UNTAPPED_SUPPORT_EMAIL: process.env.UNTAPPED_SUPPORT_EMAIL,
+            UNTAPPED_TALENT_EMAIL: process.env.UNTAPPED_TALENT_EMAIL,
+            UNTAPPED_PROFESSIONAL_EMAIL: process.env.UNTAPPED_PROFESSIONAL_EMAIL,
+            UNTAPPED_BILLING_EMAIL: process.env.UNTAPPED_BILLING_EMAIL,
+            UNTAPPED_COMPETITION_EMAIL: process.env.UNTAPPED_COMPETITION_EMAIL,
+            UNTAPPED_CEO_EMAIL: process.env.UNTAPPED_CEO_EMAIL,
+            UNTAPPED_ADMIN_EMAIL: process.env.UNTAPPED_ADMIN_EMAIL,
         };
         break;
     default:
-        // Object.seal(development);
-        // module.exports = development;
+        Object.seal(development);
+        module.exports = development;
         break;
 }
 //# sourceMappingURL=keys.js.map

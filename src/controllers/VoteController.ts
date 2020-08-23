@@ -67,6 +67,9 @@ export class VoteController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       console.log("apikey from info-tek", req.headers["x-signature"]);
+      const vote: any = req.headers["x-signature"];
+      var decoded = Buffer.from(vote, "base64").toString();
+      console.log("decoded", decoded);
       if (!req.headers["x-signature"]) return res.sendStatus(200);
       if (
         !req.body.id ||

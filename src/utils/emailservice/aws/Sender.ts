@@ -19,7 +19,6 @@ export const ses: Sender = async (
   ccAddresses?: string[],
   bccAddresses?: string[]
 ): Promise<any> => {
-  
   const charset = "UTF-8";
   const params = {
     Destination: {

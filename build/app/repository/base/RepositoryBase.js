@@ -96,7 +96,7 @@ var RepositoryBase = /** @class */ (function () {
                 else
                     resolve(result);
             })
-                .populate("user", "_id fullName profileImagePath")
+                .populate("user", "_id fullName email profileImagePath")
                 .populate("likedBy", "_id fullName")
                 .populate("replies.user", "_id fullName profileImagePath")
                 // .cacheDocQueries({ collectionName: this._model.collection.name })

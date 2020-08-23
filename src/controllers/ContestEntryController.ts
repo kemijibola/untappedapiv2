@@ -7,6 +7,7 @@ import {
   authorize,
   get,
   put,
+  patch,
 } from "../decorators";
 import {
   IContestEntry,
@@ -18,6 +19,9 @@ import { requireAuth } from "../middlewares/auth";
 import {
   canUpdateEntryPosition,
   canEnterContest,
+  canViewPendingEntry,
+  canApproveEntry,
+  canRejectEntry,
 } from "../utils/lib/PermissionConstant";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import ContestEntryBusiness = require("../app/business/ContestEntryBusiness");
@@ -98,6 +102,37 @@ export class ContestEntryController {
     }
   }
 
+  @get("/admin/contest-entry/pending")
+  @use(requestValidator)
+  @authorize(canViewPendingEntry)
+  async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
+    try {
+      const contestEntryBusiness = new ContestEntryBusiness();
+      const result = await contestEntryBusiness.fetch({
+        approved: false,
+      });
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: `Error occured, ${result.error}`,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Media Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: `Internal Server error occured.${err}`,
+        })
+      );
+    }
+  }
+
   @post("/")
   @use(requestValidator)
   @use(requireAuth)
@@ -144,6 +179,83 @@ export class ContestEntryController {
         data: result.data,
       });
     } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @use(requestValidator)
+  @patch("admin/approve/:id")
+  @authorize(canApproveEntry)
+  async approveEntry(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const contestEntryBusiness = new ContestEntryBusiness();
+      const result = await contestEntryBusiness.approveContestEntry(
+        req.params.id,
+        req.user
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @use(requestValidator)
+  @patch("admin/reject/:id")
+  @authorize(canRejectEntry)
+  @requestValidators("reason")
+  async rejectEntry(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      if (!req.body.reason)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide rejection reason",
+          })
+        );
+      const contestEntryBusiness = new ContestEntryBusiness();
+      const result = await contestEntryBusiness.rejectContestEntry(
+        req.params.id,
+        req.user,
+        req.body.reason
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
       return next(
         new PlatformError({
           code: 500,

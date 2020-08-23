@@ -30,7 +30,10 @@ export interface IContestEntry
   entry: string;
   position: EntryPosition;
   prizeRedeemed: boolean;
-  // judgeEvaluations: JudgeEvaluation[];
+  approved: boolean;
+  approvedBy?: string;
+  approvedDate?: Date;
+  rejectionReason?: string;
 }
 
 export enum EligibilityStatus {

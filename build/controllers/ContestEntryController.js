@@ -118,9 +118,43 @@ var ContestEntryController = /** @class */ (function () {
             });
         });
     };
+    ContestEntryController.prototype.fetchPendingMedia = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntryBusiness, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        contestEntryBusiness = new ContestEntryBusiness();
+                        return [4 /*yield*/, contestEntryBusiness.fetch({
+                                approved: false,
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: "Error occured, " + result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_3 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_3,
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ContestEntryController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, contestEntryBusiness, result, err_3;
+            var item, contestEntryBusiness, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -157,7 +191,78 @@ var ContestEntryController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_3 = _a.sent();
+                        err_4 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ContestEntryController.prototype.approveEntry = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntryBusiness, result, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        contestEntryBusiness = new ContestEntryBusiness();
+                        return [4 /*yield*/, contestEntryBusiness.approveContestEntry(req.params.id, req.user)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_5 = _a.sent();
+                        console.log(err_5);
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ContestEntryController.prototype.rejectEntry = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntryBusiness, result, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (!req.body.reason)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide rejection reason",
+                                }))];
+                        contestEntryBusiness = new ContestEntryBusiness();
+                        return [4 /*yield*/, contestEntryBusiness.rejectContestEntry(req.params.id, req.user, req.body.reason)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_6 = _a.sent();
+                        console.log(err_6);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
@@ -184,6 +289,14 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "fetchUserContestList", null);
     __decorate([
+        decorators_1.get("/admin/contest-entry/pending"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.authorize(PermissionConstant_1.canViewPendingEntry),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestEntryController.prototype, "fetchPendingMedia", null);
+    __decorate([
         decorators_1.post("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.use(auth_1.requireAuth),
@@ -193,6 +306,25 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.patch("admin/approve/:id"),
+        decorators_1.authorize(PermissionConstant_1.canApproveEntry),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestEntryController.prototype, "approveEntry", null);
+    __decorate([
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.patch("admin/reject/:id"),
+        decorators_1.authorize(PermissionConstant_1.canRejectEntry),
+        decorators_1.requestValidators("reason"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ContestEntryController.prototype, "rejectEntry", null);
     ContestEntryController = __decorate([
         decorators_1.controller("/v1/contest-entries")
     ], ContestEntryController);

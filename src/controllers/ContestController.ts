@@ -7,6 +7,7 @@ import {
   authorize,
   get,
   put,
+  patch,
 } from "../decorators";
 import {
   IContest,
@@ -23,6 +24,8 @@ import {
   canCreateContest,
   canDisbursePrize,
   canViewPendingDisbursement,
+  canViewPendingContest,
+  canApproveContest,
 } from "../utils/lib/PermissionConstant";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { differenceInDays, isAfter, startOfToday, endOfToday } from "date-fns";
@@ -299,9 +302,9 @@ export class ContestController {
       let reqSize = req.query.size || 10;
       const size = parseInt(reqSize);
 
-      //change condition to paid contests
-      TODO: let condition = {
-        // paymentStatus: PaymentStatus.Completed,
+      let condition = {
+        paymentStatus: PaymentStatus.Completed,
+        approved: true,
       };
       const contestBusiness = new ContestBusiness();
       const result = await contestBusiness.fetchContestList(
@@ -352,7 +355,7 @@ export class ContestController {
           })
         );
       }
-      
+
       return res.status(result.responseCode).json({
         message: "Operation successful",
         data: result.data,
@@ -362,6 +365,35 @@ export class ContestController {
         new PlatformError({
           code: 500,
           message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @get("/admin/contest/pending")
+  @use(requestValidator)
+  @authorize(canViewPendingContest)
+  async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
+    try {
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.fetch({ approved: false });
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: `Error occured, ${result.error}`,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Media Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: `Internal Server error occured.${err}`,
         })
       );
     }
@@ -683,6 +715,87 @@ export class ContestController {
       return res.status(200).json({
         message: "Operation successful",
         isAvailable: true,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @use(requestValidator)
+  @patch("admin/approve/:id")
+  @authorize(canApproveContest)
+  async approveContest(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.approveContest(
+        req.params.id,
+        req.user
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @use(requireAuth)
+  @use(requestValidator)
+  @patch("admin/reject/:id")
+  @authorize(canApproveContest)
+  @requestValidators("reason")
+  async rejectContest(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      if (!req.body.reason)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide rejection reason",
+          })
+        );
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.rejectContest(
+        req.params.id,
+        req.user,
+        req.body.reason
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
       });
     } catch (err) {
       console.log(err);

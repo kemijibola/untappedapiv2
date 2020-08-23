@@ -8,6 +8,7 @@ import MediaRepository from "../repository/MediaRepository";
 import IMediaBusiness = require("./interfaces/MediaBusiness");
 import { IMedia } from "../models/interfaces";
 import { Result } from "../../utils/Result";
+import { stringList } from "aws-sdk/clients/datapipeline";
 
 class MediaBusiness implements IMediaBusiness {
   private _mediaRepository: MediaRepository;
@@ -25,7 +26,17 @@ class MediaBusiness implements IMediaBusiness {
         if (mediaItems.length > 0) return x;
       });
     }
+    return Result.ok<IMedia[]>(200, medias);
+  }
 
+  async fetchMediaPendingApproval(condition: any): Promise<Result<IMedia[]>> {
+    const medias: IMedia[] = await this._mediaRepository.fetch(condition);
+    if (medias) {
+      medias.forEach((x) => {
+        const mediaItems = x.items.filter((y) => !y.isDeleted && !y.isApproved);
+        if (mediaItems.length > 0) return x;
+      });
+    }
     return Result.ok<IMedia[]>(200, medias);
   }
 
@@ -145,8 +156,76 @@ class MediaBusiness implements IMediaBusiness {
     return Result.ok<IMedia>(201, newMedia);
   }
 
+  async rejectMedia(
+    mediaId: string,
+    mediaItemId: string,
+    rejectedBy: string,
+    rejectionReason: string
+  ): Promise<Result<boolean>> {
+    const media = await this._mediaRepository.findById(mediaId);
+    if (!media) return Result.fail<boolean>(404, "Media not found.");
+    const modifiedItems = media.items.reduce(
+      (theMap: IMediaItem[], theItem: IMediaItem) => {
+        if (theItem._id === mediaItemId) {
+          theMap = Object.assign({
+            _id: theItem._id,
+            path: theItem.path,
+            likedBy: theItem.likedBy,
+            createdAt: theItem.createdAt,
+            updatedAt: theItem.updatedAt,
+            isApproved: theItem.isApproved,
+            approvedBy: rejectedBy,
+            approvedDate: new Date(),
+            rejectionReason: rejectionReason,
+          });
+        } else {
+          theMap = [...theMap, theItem];
+        }
+        return theMap;
+      },
+      []
+    );
+    const updateObj = await this._mediaRepository.patch(media._id, {
+      items: modifiedItems,
+    });
+    return Result.ok<boolean>(200, true);
+  }
+
+  async approveMedia(
+    mediaId: string,
+    mediaItemId: string,
+    approvedBy: string
+  ): Promise<Result<boolean>> {
+    const media = await this._mediaRepository.findById(mediaId);
+    if (!media) return Result.fail<boolean>(404, "Media not found.");
+
+    const modifiedItems = media.items.reduce(
+      (theMap: IMediaItem[], theItem: IMediaItem) => {
+        if (theItem._id === mediaItemId) {
+          theMap = Object.assign({
+            _id: theItem._id,
+            path: theItem.path,
+            likedBy: theItem.likedBy,
+            createdAt: theItem.createdAt,
+            updatedAt: theItem.updatedAt,
+            isApproved: true,
+            approvedBy: approvedBy,
+            approvedDate: new Date(),
+          });
+        } else {
+          theMap = [...theMap, theItem];
+        }
+        return theMap;
+      },
+      []
+    );
+    const updateObj = await this._mediaRepository.patch(media._id, {
+      items: modifiedItems,
+    });
+    return Result.ok<boolean>(200, true);
+  }
+
   async update(id: string, item: IMedia): Promise<Result<IMedia>> {
-    console.log("update called");
     const media = await this._mediaRepository.findById(id);
     if (!media) return Result.fail<IMedia>(404, "Media not found.");
 

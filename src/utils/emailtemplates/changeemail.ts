@@ -35,7 +35,7 @@ export class ChangeEmail {
                 * @theme page
                 */
                 body, #bodyTable{
-                    /*@editable*/ background-color:#DEE0E2;
+                    /*@editable*/ background-color:#fff;
                 }
     
                 /**
@@ -571,18 +571,6 @@ export class ChangeEmail {
                             <table border="0" cellpadding="0" cellspacing="0" id="templateContainer">
                                 <tr>
                                     <td align="center" valign="top">
-                                        <!-- BEGIN PREHEADER // -->
-                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templatePreheader">
-                                            <div style="height:80px; background-color: #222; display: grid">
-                                                <img style="width: 25px; height: 30px;margin-top: 0.6rem;" src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/ft-logo.svg">
-                                                <span style="color: #fff;font-size: 18px;font-family: AvenirNext-reg;letter-spacing: 2px; font-weight: 400">untapped pool</span>
-                                            </div>
-                                        </table>
-                                        <!-- // END PREHEADER -->
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center" valign="top">
                                         <!-- BEGIN HEADER // -->
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateHeader">
                                             <tr>
@@ -620,31 +608,13 @@ export class ChangeEmail {
                                                     <span class="wrapword" style="margin-top: 2rem; display: inline-block;">[FullVerifyToken]</span>
                                                     </div>
     
-                                                   <p>All the best,</p>
-                                                   <p>The <span style="font-family: AvenirNext-reg;letter-spacing: 2px; font-weight: bold">untapped pool</span> team</p>
+                                                   <p>Best wishes,</p>
+                                                   <p>The UntappedPool team</p>
                                                     
                                                 </td>
                                             </tr>
                                         </table>
                                         <!-- // END BODY -->
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center" valign="top">
-                                        <!-- BEGIN FOOTER // -->
-                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateFooter">
-                                            <tr>
-                                                <td valign="top" class="footerContent" mc:edit="footer_content00">
-                                                    <a href="[Facebook]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/facebook.svg" alt="Untapped Pool Facebook"></a>
-                                                    <a href="[Twitter]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/twitter.svg" alt="Untapped Pool Twitter"></a>
-                                                    <a href="[Instagram]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/instagram.svg" alt="Untapped Pool Instagram"></a>
-                                                    <a href="[LinkedIn]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/linkedin.svg" alt="Untapped Pool LinkedIn"></a>
-                                                    <a href="[PlatformUrl]"><img src="https://untapped-pool-assets.s3-eu-west-1.amazonaws.com/images/www.svg" alt="Untapped Pool Webiste"></a>
-                                                </td>
-                                            </tr>
-                                           
-                                        </table>
-                                        <!-- // END FOOTER -->
                                     </td>
                                 </tr>
                             </table>

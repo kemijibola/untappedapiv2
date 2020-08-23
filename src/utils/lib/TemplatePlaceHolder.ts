@@ -1,16 +1,19 @@
 export const SocialMediaHandles = {
-  Twitter: 'https://www.twitter.com/untappedpool',
-  Facebook: 'https://www.facebook.com/untappedpool',
-  Instagram: 'https://www.instagram.com/official_untappedpool'
+  Twitter: "https://www.twitter.com/untappedpool",
+  Facebook: "https://www.facebook.com/untappedpool",
+  Instagram: "https://www.instagram.com/official_untappedpool",
 };
 export enum PlaceHolderKey {
-  Twitter = '[Twitter]',
-  Facebook = '[Facebook]',
-  Instagram = '[Instagram]',
-  Name = '[Name]',
-  PlatformUrl = '[PlatformUrl]',
-  VerifyToken = '[VerifyToken]',
-  FullVerifyToken = '[FullVerifyToken]'
+  Twitter = "[Twitter]",
+  Facebook = "[Facebook]",
+  Instagram = "[Instagram]",
+  Name = "[Name]",
+  PlatformUrl = "[PlatformUrl]",
+  VerifyToken = "[VerifyToken]",
+  FullVerifyToken = "[FullVerifyToken]",
+  ContestTitle = "[ContestTitle]",
+  ContestPosition = "[Position]",
+  ContestantWallet = "[WalletId]",
 }
 
 export interface TemplateKeyValue {

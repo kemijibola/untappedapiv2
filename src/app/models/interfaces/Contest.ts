@@ -64,6 +64,10 @@ export interface IContest
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
+  approved: boolean;
+  approvedBy?: string;
+  approvedDate?: Date;
+  rejectionReason?: string;
 }
 
 interface IContestIssues {

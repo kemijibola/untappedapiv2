@@ -19,6 +19,16 @@ import {
 import { generateRandomNumber } from "../../lib/Helper";
 import { EmailService, IEmail } from "../../emailservice/EmailService";
 import { ses } from "../../emailservice/aws/Sender";
+import { ContestWinner } from "../../emailtemplates/contestwinner";
+import {
+  TemplateKeyValue,
+  PlaceHolderKey,
+  TemplatePlaceHolder,
+  replaceTemplateString,
+} from "../../lib/TemplatePlaceHolder";
+import { MailBusiness } from "../../../app/business/MailBusiness";
+import { AppConfig } from "../../../app/models/interfaces/custom/AppConfig";
+const config: AppConfig = module.require("../../../config/keys");
 
 export class Reconciliation {
   constructor() {}
@@ -55,6 +65,7 @@ export class Reconciliation {
 
   private fetchContestFinalist = async (contest: IContest): Promise<void> => {
     try {
+      console.log("called");
       var prizeRedeemed = false;
       const contestEntryBusiness = new ContestEntryBusiness();
       const voteTransactionBusiness = new VoteTransactionBusiness();
@@ -63,6 +74,7 @@ export class Reconciliation {
         contest: contest._id,
         approved: true,
       });
+      console.log("entries", contestEntries);
       const contestFinalist = await voteTransactionBusiness.fetchTopContestants(
         contest._id,
         contestEntries,
@@ -84,6 +96,7 @@ export class Reconciliation {
     try {
       const contestEntryBusiness = new ContestEntryBusiness();
       const walletBusiness = new WalletBusiness();
+      const contestWinnerTemplateString: string = ContestWinner.template;
       for (let i = 0; i < contestants.length; i++) {
         if (i === 0 && !contestants[i].prizeRedeemed) {
           await contestEntryBusiness.patch(contestants[i].entryId, {
@@ -121,6 +134,31 @@ export class Reconciliation {
                 `1st Place - ${contest.title}`
               );
               // send mail to winner
+              const welcomeEmailKeyValues: TemplateKeyValue[] = this.ContestWinnerKeyValue(
+                contestants[i].contestantName,
+                contest.title,
+                "1st Place",
+                contestantWallet.data.walletNumber
+              );
+              const contestWinnerPlaceHolder: TemplatePlaceHolder = {
+                template: contestWinnerTemplateString,
+                placeholders: welcomeEmailKeyValues,
+              };
+
+              const emailBody: string = replaceTemplateString(
+                contestWinnerPlaceHolder
+              );
+              const contestantEmail: string =
+                contestants[i].contestantEmail || "";
+              const recievers: string[] = [contestantEmail];
+              const mailer = MailBusiness.init();
+              await mailer.sendMail(
+                `UntappedPool Competitions <${config.UNTAPPED_COMPETITION_EMAIL}>`,
+                "UntappedPool Competitions",
+                recievers,
+                `Untappedpool.com - ${contest.title}`,
+                emailBody
+              );
             }
           }
         }
@@ -157,6 +195,33 @@ export class Reconciliation {
                 contestantWallet.data.user,
                 prizeMoney.prizeCash,
                 `2nd Place - ${contest.title}`
+              );
+
+              // send mail to winner
+              const welcomeEmailKeyValues: TemplateKeyValue[] = this.ContestWinnerKeyValue(
+                contestants[i].contestantName,
+                contest.title,
+                "2nd Place",
+                contestantWallet.data.walletNumber
+              );
+              const contestWinnerPlaceHolder: TemplatePlaceHolder = {
+                template: contestWinnerTemplateString,
+                placeholders: welcomeEmailKeyValues,
+              };
+
+              const emailBody: string = replaceTemplateString(
+                contestWinnerPlaceHolder
+              );
+              const contestantEmail: string =
+                contestants[i].contestantEmail || "";
+              const recievers: string[] = [contestantEmail];
+              const mailer = MailBusiness.init();
+              await mailer.sendMail(
+                `UntappedPool Competitions <${config.UNTAPPED_COMPETITION_EMAIL}>`,
+                "UntappedPool Competitions",
+                recievers,
+                `Untappedpool.com - ${contest.title}`,
+                emailBody
               );
             }
           }
@@ -195,6 +260,33 @@ export class Reconciliation {
                 prizeMoney.prizeCash,
                 `3rd Place - ${contest.title}`
               );
+
+              // send mail to winner
+              const welcomeEmailKeyValues: TemplateKeyValue[] = this.ContestWinnerKeyValue(
+                contestants[i].contestantName,
+                contest.title,
+                "3rd Place",
+                contestantWallet.data.walletNumber
+              );
+              const contestWinnerPlaceHolder: TemplatePlaceHolder = {
+                template: contestWinnerTemplateString,
+                placeholders: welcomeEmailKeyValues,
+              };
+
+              const emailBody: string = replaceTemplateString(
+                contestWinnerPlaceHolder
+              );
+              const contestantEmail: string =
+                contestants[i].contestantEmail || "";
+              const recievers: string[] = [contestantEmail];
+              const mailer = MailBusiness.init();
+              await mailer.sendMail(
+                `UntappedPool Competitions <${config.UNTAPPED_COMPETITION_EMAIL}>`,
+                "UntappedPool Competitions",
+                recievers,
+                `Untappedpool.com - ${contest.title}`,
+                emailBody
+              );
             }
           }
         }
@@ -231,6 +323,32 @@ export class Reconciliation {
                 contestantWallet.data.user,
                 prizeMoney.prizeCash,
                 `4th Place - ${contest.title}`
+              );
+
+              const welcomeEmailKeyValues: TemplateKeyValue[] = this.ContestWinnerKeyValue(
+                contestants[i].contestantName,
+                contest.title,
+                "4th Place",
+                contestantWallet.data.walletNumber
+              );
+              const contestWinnerPlaceHolder: TemplatePlaceHolder = {
+                template: contestWinnerTemplateString,
+                placeholders: welcomeEmailKeyValues,
+              };
+
+              const emailBody: string = replaceTemplateString(
+                contestWinnerPlaceHolder
+              );
+              const contestantEmail: string =
+                contestants[i].contestantEmail || "";
+              const recievers: string[] = [contestantEmail];
+              const mailer = MailBusiness.init();
+              await mailer.sendMail(
+                `UntappedPool Competitions <${config.UNTAPPED_COMPETITION_EMAIL}>`,
+                "UntappedPool Competitions",
+                recievers,
+                `Untappedpool.com - ${contest.title}`,
+                emailBody
               );
             }
           }
@@ -269,6 +387,32 @@ export class Reconciliation {
                 prizeMoney.prizeCash,
                 `5th Place - ${contest.title}`
               );
+
+              const welcomeEmailKeyValues: TemplateKeyValue[] = this.ContestWinnerKeyValue(
+                contestants[i].contestantName,
+                contest.title,
+                "5th Place",
+                contestantWallet.data.walletNumber
+              );
+              const contestWinnerPlaceHolder: TemplatePlaceHolder = {
+                template: contestWinnerTemplateString,
+                placeholders: welcomeEmailKeyValues,
+              };
+
+              const emailBody: string = replaceTemplateString(
+                contestWinnerPlaceHolder
+              );
+              const contestantEmail: string =
+                contestants[i].contestantEmail || "";
+              const recievers: string[] = [contestantEmail];
+              const mailer = MailBusiness.init();
+              await mailer.sendMail(
+                `UntappedPool Competitions <${config.UNTAPPED_COMPETITION_EMAIL}>`,
+                "UntappedPool Competitions",
+                recievers,
+                `Untappedpool.com - ${contest.title}`,
+                emailBody
+              );
             }
           }
         }
@@ -302,24 +446,29 @@ export class Reconciliation {
     }
   };
 
-  private sendMail = async (
-    receivers: string[],
-    subject: string,
-    mailBody: string
-  ): Promise<void> => {
-    try {
-      const mailParams: IEmail = {
-        receivers: [...receivers],
-        subject,
-        mail: mailBody,
-        senderEmail: "contest@untappedpool.com",
-        senderName: "Untapped Pool",
-      };
-
-      const mailer = EmailService.mailer(mailParams);
-      await mailer.sendMail(ses);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  private ContestWinnerKeyValue(
+    winnerName: string,
+    contestTitle: string,
+    position: string,
+    walletId: string
+  ): TemplateKeyValue[] {
+    return [
+      {
+        key: PlaceHolderKey.Name,
+        value: winnerName,
+      },
+      {
+        key: PlaceHolderKey.ContestTitle,
+        value: contestTitle,
+      },
+      {
+        key: PlaceHolderKey.ContestPosition,
+        value: position,
+      },
+      {
+        key: PlaceHolderKey.ContestantWallet,
+        value: walletId,
+      },
+    ];
+  }
 }

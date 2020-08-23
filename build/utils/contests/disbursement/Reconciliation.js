@@ -44,8 +44,10 @@ var date_fns_1 = require("date-fns");
 var interfaces_1 = require("../../../app/models/interfaces");
 var TransactionDTO_1 = require("../../../app/models/interfaces/custom/TransactionDTO");
 var Helper_1 = require("../../lib/Helper");
-var EmailService_1 = require("../../emailservice/EmailService");
-var Sender_1 = require("../../emailservice/aws/Sender");
+var contestwinner_1 = require("../../emailtemplates/contestwinner");
+var TemplatePlaceHolder_1 = require("../../lib/TemplatePlaceHolder");
+var MailBusiness_1 = require("../../../app/business/MailBusiness");
+var config = module.require("../../../config/keys");
 var Reconciliation = /** @class */ (function () {
     function Reconciliation() {
         var _this = this;
@@ -85,6 +87,7 @@ var Reconciliation = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        console.log("called");
                         prizeRedeemed = false;
                         contestEntryBusiness = new ContestEntryBusiness();
                         voteTransactionBusiness = new VoteTransactionBusiness();
@@ -94,6 +97,7 @@ var Reconciliation = /** @class */ (function () {
                             })];
                     case 1:
                         contestEntries = _a.sent();
+                        console.log("entries", contestEntries);
                         return [4 /*yield*/, voteTransactionBusiness.fetchTopContestants(contest._id, contestEntries, contest.redeemable.length)];
                     case 2:
                         contestFinalist = _a.sent();
@@ -114,18 +118,19 @@ var Reconciliation = /** @class */ (function () {
             });
         }); };
         this.updateEntryPosition = function (contest, contestants) { return __awaiter(_this, void 0, void 0, function () {
-            var contestEntryBusiness, walletBusiness, i, contestantWallet, prizeMoney, walletBalance, contestantWallet, prizeMoney, walletBalance, contestantWallet, prizeMoney, walletBalance, contestantWallet, prizeMoney, walletBalance, contestantWallet, prizeMoney, walletBalance, err_3;
+            var contestEntryBusiness, walletBusiness, contestWinnerTemplateString, i, contestantWallet, prizeMoney, walletBalance, welcomeEmailKeyValues, contestWinnerPlaceHolder, emailBody, contestantEmail, recievers, mailer, contestantWallet, prizeMoney, walletBalance, welcomeEmailKeyValues, contestWinnerPlaceHolder, emailBody, contestantEmail, recievers, mailer, contestantWallet, prizeMoney, walletBalance, welcomeEmailKeyValues, contestWinnerPlaceHolder, emailBody, contestantEmail, recievers, mailer, contestantWallet, prizeMoney, walletBalance, welcomeEmailKeyValues, contestWinnerPlaceHolder, emailBody, contestantEmail, recievers, mailer, contestantWallet, prizeMoney, walletBalance, welcomeEmailKeyValues, contestWinnerPlaceHolder, emailBody, contestantEmail, recievers, mailer, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 33, , 34]);
+                        _a.trys.push([0, 38, , 39]);
                         contestEntryBusiness = new ContestEntryBusiness();
                         walletBusiness = new WalletBusiness();
+                        contestWinnerTemplateString = contestwinner_1.ContestWinner.template;
                         i = 0;
                         _a.label = 1;
                     case 1:
-                        if (!(i < contestants.length)) return [3 /*break*/, 32];
-                        if (!(i === 0 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 7];
+                        if (!(i < contestants.length)) return [3 /*break*/, 37];
+                        if (!(i === 0 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 8];
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 position: interfaces_1.EntryPosition.firstplace,
                             })];
@@ -136,8 +141,8 @@ var Reconciliation = /** @class */ (function () {
                             })];
                     case 3:
                         contestantWallet = _a.sent();
-                        if (!contestantWallet.data) return [3 /*break*/, 7];
-                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 7];
+                        if (!contestantWallet.data) return [3 /*break*/, 8];
+                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 8];
                         prizeMoney = contest.redeemable.filter(function (x) { return x.name === interfaces_1.PrizePosition.position1; })[0];
                         walletBalance = contestantWallet.data.balance;
                         contestantWallet.data.balance =
@@ -155,135 +160,195 @@ var Reconciliation = /** @class */ (function () {
                     case 6:
                         // create transaction request
                         _a.sent();
-                        _a.label = 7;
+                        welcomeEmailKeyValues = this.ContestWinnerKeyValue(contestants[i].contestantName, contest.title, "1st Place", contestantWallet.data.walletNumber);
+                        contestWinnerPlaceHolder = {
+                            template: contestWinnerTemplateString,
+                            placeholders: welcomeEmailKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(contestWinnerPlaceHolder);
+                        contestantEmail = contestants[i].contestantEmail || "";
+                        recievers = [contestantEmail];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool Competitions <" + config.UNTAPPED_COMPETITION_EMAIL + ">", "UntappedPool Competitions", recievers, "Untappedpool.com - " + contest.title, emailBody)];
                     case 7:
-                        if (!(i === 1 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 13];
+                        _a.sent();
+                        _a.label = 8;
+                    case 8:
+                        if (!(i === 1 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 15];
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 position: interfaces_1.EntryPosition.secondplace,
                             })];
-                    case 8:
+                    case 9:
                         _a.sent();
                         return [4 /*yield*/, walletBusiness.findByCriteria({
                                 user: contestants[i].contestant,
                             })];
-                    case 9:
+                    case 10:
                         contestantWallet = _a.sent();
-                        if (!contestantWallet.data) return [3 /*break*/, 13];
-                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 13];
+                        if (!contestantWallet.data) return [3 /*break*/, 15];
+                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 15];
                         prizeMoney = contest.redeemable.filter(function (x) { return x.name === interfaces_1.PrizePosition.position2; })[0];
                         walletBalance = contestantWallet.data.balance;
                         contestantWallet.data.balance =
                             walletBalance + prizeMoney.prizeCash;
                         return [4 /*yield*/, walletBusiness.update(contestantWallet.data._id, contestantWallet.data)];
-                    case 10:
+                    case 11:
                         _a.sent();
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 prizeRedeemed: true,
                             })];
-                    case 11:
-                        _a.sent();
-                        return [4 /*yield*/, this.createTransaction(contestantWallet.data.user, prizeMoney.prizeCash, "2nd Place - " + contest.title)];
                     case 12:
                         _a.sent();
-                        _a.label = 13;
+                        return [4 /*yield*/, this.createTransaction(contestantWallet.data.user, prizeMoney.prizeCash, "2nd Place - " + contest.title)];
                     case 13:
-                        if (!(i === 2 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 19];
+                        _a.sent();
+                        welcomeEmailKeyValues = this.ContestWinnerKeyValue(contestants[i].contestantName, contest.title, "2nd Place", contestantWallet.data.walletNumber);
+                        contestWinnerPlaceHolder = {
+                            template: contestWinnerTemplateString,
+                            placeholders: welcomeEmailKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(contestWinnerPlaceHolder);
+                        contestantEmail = contestants[i].contestantEmail || "";
+                        recievers = [contestantEmail];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool Competitions <" + config.UNTAPPED_COMPETITION_EMAIL + ">", "UntappedPool Competitions", recievers, "Untappedpool.com - " + contest.title, emailBody)];
+                    case 14:
+                        _a.sent();
+                        _a.label = 15;
+                    case 15:
+                        if (!(i === 2 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 22];
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 position: interfaces_1.EntryPosition.thirdplace,
                             })];
-                    case 14:
+                    case 16:
                         _a.sent();
                         return [4 /*yield*/, walletBusiness.findByCriteria({
                                 user: contestants[i].contestant,
                             })];
-                    case 15:
+                    case 17:
                         contestantWallet = _a.sent();
-                        if (!contestantWallet.data) return [3 /*break*/, 19];
-                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 19];
+                        if (!contestantWallet.data) return [3 /*break*/, 22];
+                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 22];
                         prizeMoney = contest.redeemable.filter(function (x) { return x.name === interfaces_1.PrizePosition.position3; })[0];
                         walletBalance = contestantWallet.data.balance;
                         contestantWallet.data.balance =
                             walletBalance + prizeMoney.prizeCash;
                         return [4 /*yield*/, walletBusiness.update(contestantWallet.data._id, contestantWallet.data)];
-                    case 16:
+                    case 18:
                         _a.sent();
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 prizeRedeemed: true,
                             })];
-                    case 17:
+                    case 19:
                         _a.sent();
                         return [4 /*yield*/, this.createTransaction(contestantWallet.data.user, prizeMoney.prizeCash, "3rd Place - " + contest.title)];
-                    case 18:
+                    case 20:
                         _a.sent();
-                        _a.label = 19;
-                    case 19:
-                        if (!(i === 3 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 25];
+                        welcomeEmailKeyValues = this.ContestWinnerKeyValue(contestants[i].contestantName, contest.title, "3rd Place", contestantWallet.data.walletNumber);
+                        contestWinnerPlaceHolder = {
+                            template: contestWinnerTemplateString,
+                            placeholders: welcomeEmailKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(contestWinnerPlaceHolder);
+                        contestantEmail = contestants[i].contestantEmail || "";
+                        recievers = [contestantEmail];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool Competitions <" + config.UNTAPPED_COMPETITION_EMAIL + ">", "UntappedPool Competitions", recievers, "Untappedpool.com - " + contest.title, emailBody)];
+                    case 21:
+                        _a.sent();
+                        _a.label = 22;
+                    case 22:
+                        if (!(i === 3 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 29];
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 position: interfaces_1.EntryPosition.fourthplace,
                             })];
-                    case 20:
+                    case 23:
                         _a.sent();
                         return [4 /*yield*/, walletBusiness.findByCriteria({
                                 user: contestants[i].contestant,
                             })];
-                    case 21:
+                    case 24:
                         contestantWallet = _a.sent();
-                        if (!contestantWallet.data) return [3 /*break*/, 25];
-                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 25];
+                        if (!contestantWallet.data) return [3 /*break*/, 29];
+                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 29];
                         prizeMoney = contest.redeemable.filter(function (x) { return x.name === interfaces_1.PrizePosition.position4; })[0];
                         walletBalance = contestantWallet.data.balance;
                         contestantWallet.data.balance =
                             walletBalance + prizeMoney.prizeCash;
                         return [4 /*yield*/, walletBusiness.update(contestantWallet.data._id, contestantWallet.data)];
-                    case 22:
+                    case 25:
                         _a.sent();
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 prizeRedeemed: true,
                             })];
-                    case 23:
+                    case 26:
                         _a.sent();
                         return [4 /*yield*/, this.createTransaction(contestantWallet.data.user, prizeMoney.prizeCash, "4th Place - " + contest.title)];
-                    case 24:
+                    case 27:
                         _a.sent();
-                        _a.label = 25;
-                    case 25:
-                        if (!(i === 4 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 31];
+                        welcomeEmailKeyValues = this.ContestWinnerKeyValue(contestants[i].contestantName, contest.title, "4th Place", contestantWallet.data.walletNumber);
+                        contestWinnerPlaceHolder = {
+                            template: contestWinnerTemplateString,
+                            placeholders: welcomeEmailKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(contestWinnerPlaceHolder);
+                        contestantEmail = contestants[i].contestantEmail || "";
+                        recievers = [contestantEmail];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool Competitions <" + config.UNTAPPED_COMPETITION_EMAIL + ">", "UntappedPool Competitions", recievers, "Untappedpool.com - " + contest.title, emailBody)];
+                    case 28:
+                        _a.sent();
+                        _a.label = 29;
+                    case 29:
+                        if (!(i === 4 && !contestants[i].prizeRedeemed)) return [3 /*break*/, 36];
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 position: interfaces_1.EntryPosition.fifthplace,
                             })];
-                    case 26:
+                    case 30:
                         _a.sent();
                         return [4 /*yield*/, walletBusiness.findByCriteria({
                                 user: contestants[i].contestant,
                             })];
-                    case 27:
+                    case 31:
                         contestantWallet = _a.sent();
-                        if (!contestantWallet.data) return [3 /*break*/, 31];
-                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 31];
+                        if (!contestantWallet.data) return [3 /*break*/, 36];
+                        if (!(contestantWallet.data.status === TransactionDTO_1.PaymentProviderStatus.activated)) return [3 /*break*/, 36];
                         prizeMoney = contest.redeemable.filter(function (x) { return x.name === interfaces_1.PrizePosition.position5; })[0];
                         walletBalance = contestantWallet.data.balance;
                         contestantWallet.data.balance =
                             walletBalance + prizeMoney.prizeCash;
                         return [4 /*yield*/, walletBusiness.update(contestantWallet.data._id, contestantWallet.data)];
-                    case 28:
+                    case 32:
                         _a.sent();
                         return [4 /*yield*/, contestEntryBusiness.patch(contestants[i].entryId, {
                                 prizeRedeemed: true,
                             })];
-                    case 29:
+                    case 33:
                         _a.sent();
                         return [4 /*yield*/, this.createTransaction(contestantWallet.data.user, prizeMoney.prizeCash, "5th Place - " + contest.title)];
-                    case 30:
+                    case 34:
                         _a.sent();
-                        _a.label = 31;
-                    case 31:
+                        welcomeEmailKeyValues = this.ContestWinnerKeyValue(contestants[i].contestantName, contest.title, "5th Place", contestantWallet.data.walletNumber);
+                        contestWinnerPlaceHolder = {
+                            template: contestWinnerTemplateString,
+                            placeholders: welcomeEmailKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(contestWinnerPlaceHolder);
+                        contestantEmail = contestants[i].contestantEmail || "";
+                        recievers = [contestantEmail];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("UntappedPool Competitions <" + config.UNTAPPED_COMPETITION_EMAIL + ">", "UntappedPool Competitions", recievers, "Untappedpool.com - " + contest.title, emailBody)];
+                    case 35:
+                        _a.sent();
+                        _a.label = 36;
+                    case 36:
                         i++;
                         return [3 /*break*/, 1];
-                    case 32: return [3 /*break*/, 34];
-                    case 33:
+                    case 37: return [3 /*break*/, 39];
+                    case 38:
                         err_3 = _a.sent();
-                        return [3 /*break*/, 34];
-                    case 34: return [2 /*return*/];
+                        return [3 /*break*/, 39];
+                    case 39: return [2 /*return*/];
                 }
             });
         }); };
@@ -319,39 +384,13 @@ var Reconciliation = /** @class */ (function () {
                 }
             });
         }); };
-        this.sendMail = function (receivers, subject, mailBody) { return __awaiter(_this, void 0, void 0, function () {
-            var mailParams, mailer, err_5;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        mailParams = {
-                            receivers: receivers.slice(),
-                            subject: subject,
-                            mail: mailBody,
-                            senderEmail: "contest@untappedpool.com",
-                            senderName: "Untapped Pool",
-                        };
-                        mailer = EmailService_1.EmailService.mailer(mailParams);
-                        return [4 /*yield*/, mailer.sendMail(Sender_1.ses)];
-                    case 1:
-                        _a.sent();
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_5 = _a.sent();
-                        console.log(err_5);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        }); };
     }
     Reconciliation.init = function () {
         return new Reconciliation();
     };
     Reconciliation.prototype.settle = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var err_6;
+            var err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -361,12 +400,32 @@ var Reconciliation = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        err_6 = _a.sent();
+                        err_5 = _a.sent();
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
+    };
+    Reconciliation.prototype.ContestWinnerKeyValue = function (winnerName, contestTitle, position, walletId) {
+        return [
+            {
+                key: TemplatePlaceHolder_1.PlaceHolderKey.Name,
+                value: winnerName,
+            },
+            {
+                key: TemplatePlaceHolder_1.PlaceHolderKey.ContestTitle,
+                value: contestTitle,
+            },
+            {
+                key: TemplatePlaceHolder_1.PlaceHolderKey.ContestPosition,
+                value: position,
+            },
+            {
+                key: TemplatePlaceHolder_1.PlaceHolderKey.ContestantWallet,
+                value: walletId,
+            },
+        ];
     };
     return Reconciliation;
 }());

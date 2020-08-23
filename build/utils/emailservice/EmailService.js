@@ -38,9 +38,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var EmailService = /** @class */ (function () {
     function EmailService(params) {
         this.receivers = [];
-        this.subject = '';
-        this.body = '';
-        this.senderEmail = '';
+        this.subject = "";
+        this.body = "";
+        this.senderEmail = "";
         this.ccAddresses = [];
         this.bccAddresses = [];
         this.receivers = params.receivers;

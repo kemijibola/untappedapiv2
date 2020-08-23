@@ -94,7 +94,9 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (!contest.approved)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contest)];
                 }
             });
@@ -106,7 +108,6 @@ var ContestBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("called");
                         result = [];
                         return [4 /*yield*/, this._contestRepository.fetchWithLimit({
                                 endDate: { $gte: new Date() },
@@ -150,7 +151,9 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (!contest.approved)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         return [4 /*yield*/, this._contestEntryRepository.fetchWithUser({
                                 contest: contest._id,
                             })];
@@ -203,6 +206,7 @@ var ContestBusiness = /** @class */ (function () {
                         userContestResults = [];
                         return [4 /*yield*/, this._contestRepository.fetch({
                                 paymentStatus: interfaces_1.PaymentStatus.Completed,
+                                approved: true,
                             })];
                     case 1:
                         userContests = _b.sent();
@@ -266,7 +270,9 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (!contest.approved)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contest)];
                 }
             });
@@ -281,7 +287,9 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (!contest.approved)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         return [2 /*return*/, Result_1.Result.ok(200, contest)];
                 }
             });
@@ -298,7 +306,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (contest) {
-                            return [2 /*return*/, Result_1.Result.fail(409, "Contest with title " + item.title + " already exist")];
+                            return [2 /*return*/, Result_1.Result.fail(409, "Competition with title " + item.title + " already exist")];
                         }
                         item.views = 0;
                         item.likedBy = [];
@@ -324,7 +332,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         item.paymentStatus = contest.paymentStatus;
                         item.views = contest.views;
                         item.approved = contest.approved;
@@ -347,7 +355,7 @@ var ContestBusiness = /** @class */ (function () {
                     case 1:
                         contest = _a.sent();
                         if (!contest)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Contest not found")];
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         item.paymentStatus = contest.paymentStatus;
                         item.views = contest.views;
                         item.approved = contest.approved;
@@ -357,6 +365,51 @@ var ContestBusiness = /** @class */ (function () {
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.rejectContest = function (contestId, rejectedBy, rejectionReason) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contest;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestRepository.findById(contestId)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        return [4 /*yield*/, this._contestRepository.patch(contest._id, {
+                                approved: false,
+                                approvedBy: rejectedBy,
+                                rejectionReason: rejectionReason,
+                                approvedDate: new Date(),
+                            })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.approveContest = function (contestId, approvedBy) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contest, updateObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestRepository.findById(contestId)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        return [4 /*yield*/, this._contestRepository.patch(contest._id, {
+                                approved: true,
+                                approvedBy: approvedBy,
+                                approvedDate: new Date(),
+                            })];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
         });

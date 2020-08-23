@@ -73,6 +73,7 @@ import UserTypeRepository from "../repository/UserTypeRepository";
 import uuid from "uuid";
 import { addSeconds, getDate, addHours } from "date-fns";
 import { ses } from "../../utils/emailservice/aws/Sender";
+import { MailBusiness } from "./MailBusiness";
 
 class UserBusiness implements IUserBusiness {
   private _currentAuthKey = "";
@@ -472,9 +473,12 @@ class UserBusiness implements IUserBusiness {
 
       const emailBody: string = replaceTemplateString(welcomeEmailPlaceHolder);
       const recievers: string[] = [newUser.email];
-      await this.sendMail(
+      const mailer = MailBusiness.init();
+      await mailer.sendMail(
+        `Oluwakemi (CEO, UntappedPool) <${config.UNTAPPED_CEO_EMAIL}>`,
+        "UntappedPool Competitions",
         recievers,
-        "Untappedpool.com Email Confirmation",
+        `👋hi ${newUser.fullName}!`,
         emailBody
       );
     }
@@ -516,7 +520,10 @@ class UserBusiness implements IUserBusiness {
         );
 
         const recievers: string[] = [user.email];
-        await this.sendMail(
+        const mailer = MailBusiness.init();
+        await mailer.sendMail(
+          `UntappedPool <${config.UNTAPPED_ADMIN_EMAIL}>`,
+          "Untappedpool.com",
           recievers,
           "Reset password instructions",
           emailBody
@@ -531,21 +538,6 @@ class UserBusiness implements IUserBusiness {
       200,
       `If an account exist for ${email}, you will receive password reset instructions.`
     );
-  }
-
-  async sendMail(receivers: string[], subject: string, mailBody: string) {
-    const mailParams: IEmail = {
-      receivers: [...receivers],
-      subject,
-      mail: mailBody,
-      senderEmail: "talents@untappedpool.com",
-      senderName: "Untapped Pool",
-    };
-
-    const mailer = EmailService.mailer(mailParams);
-    await mailer.sendMail(ses);
-
-    //     await schedule(StateMachineArns.EmailStateMachine, new Date(), mailParams);
   }
 
   async verifyPasswordResetLink(
@@ -637,7 +629,14 @@ class UserBusiness implements IUserBusiness {
       };
       const emailBody: string = replaceTemplateString(changeEmailPlaceHolder);
       const recievers: string[] = [newEmail];
-      await this.sendMail(recievers, "Verify Your Email Address", emailBody);
+      const mailer = MailBusiness.init();
+      await mailer.sendMail(
+        `UntappedPool <${config.UNTAPPED_ADMIN_EMAIL}>`,
+        "Untappedpool.com",
+        recievers,
+        "Verify Your Email Address",
+        emailBody
+      );
     }
     return Result.ok<boolean>(200, true);
   }
