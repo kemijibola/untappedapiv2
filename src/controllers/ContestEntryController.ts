@@ -102,7 +102,7 @@ export class ContestEntryController {
     }
   }
 
-  @get("/admin/contest-entry/pending")
+  @get("/admin/pending")
   @use(requestValidator)
   @authorize(canViewPendingEntry)
   async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
@@ -188,9 +188,9 @@ export class ContestEntryController {
     }
   }
 
+  @put("admin/approve/:id")
   @use(requireAuth)
   @use(requestValidator)
-  @patch("admin/approve/:id")
   @authorize(canApproveEntry)
   async approveEntry(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
@@ -222,9 +222,9 @@ export class ContestEntryController {
     }
   }
 
+  @put("admin/reject/:id")
   @use(requireAuth)
   @use(requestValidator)
-  @patch("admin/reject/:id")
   @authorize(canRejectEntry)
   @requestValidators("reason")
   async rejectEntry(req: RequestWithUser, res: Response, next: NextFunction) {

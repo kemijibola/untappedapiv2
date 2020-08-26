@@ -30,14 +30,17 @@ class MediaBusiness implements IMediaBusiness {
   }
 
   async fetchMediaPendingApproval(condition: any): Promise<Result<IMedia[]>> {
+    let mediaPendingApproval: IMedia[] = [];
     const medias: IMedia[] = await this._mediaRepository.fetch(condition);
     if (medias) {
-      medias.forEach((x) => {
-        const mediaItems = x.items.filter((y) => !y.isDeleted && !y.isApproved);
-        if (mediaItems.length > 0) return x;
-      });
+      for (let media of medias) {
+        media.items = media.items.filter((x) => !x.isDeleted && !x.isApproved);
+        if (media.items.length > 0) {
+          mediaPendingApproval = [...mediaPendingApproval, media];
+        }
+      }
     }
-    return Result.ok<IMedia[]>(200, medias);
+    return Result.ok<IMedia[]>(200, mediaPendingApproval);
   }
 
   async fetchTalentPortfolioPreview(
@@ -166,18 +169,20 @@ class MediaBusiness implements IMediaBusiness {
     if (!media) return Result.fail<boolean>(404, "Media not found.");
     const modifiedItems = media.items.reduce(
       (theMap: IMediaItem[], theItem: IMediaItem) => {
-        if (theItem._id === mediaItemId) {
-          theMap = Object.assign({
-            _id: theItem._id,
-            path: theItem.path,
-            likedBy: theItem.likedBy,
-            createdAt: theItem.createdAt,
-            updatedAt: theItem.updatedAt,
-            isApproved: theItem.isApproved,
-            approvedBy: rejectedBy,
-            approvedDate: new Date(),
-            rejectionReason: rejectionReason,
-          });
+        if (theItem._id == mediaItemId) {
+          theMap.push(
+            Object.assign({
+              _id: theItem._id,
+              path: theItem.path,
+              likedBy: theItem.likedBy,
+              createdAt: theItem.createdAt,
+              updatedAt: theItem.updatedAt,
+              isApproved: theItem.isApproved,
+              approvedBy: rejectedBy,
+              approvedDate: new Date(),
+              rejectionReason: rejectionReason,
+            })
+          );
         } else {
           theMap = [...theMap, theItem];
         }
@@ -185,7 +190,7 @@ class MediaBusiness implements IMediaBusiness {
       },
       []
     );
-    const updateObj = await this._mediaRepository.patch(media._id, {
+    await this._mediaRepository.patch(media._id, {
       items: modifiedItems,
     });
     return Result.ok<boolean>(200, true);
@@ -201,17 +206,19 @@ class MediaBusiness implements IMediaBusiness {
 
     const modifiedItems = media.items.reduce(
       (theMap: IMediaItem[], theItem: IMediaItem) => {
-        if (theItem._id === mediaItemId) {
-          theMap = Object.assign({
-            _id: theItem._id,
-            path: theItem.path,
-            likedBy: theItem.likedBy,
-            createdAt: theItem.createdAt,
-            updatedAt: theItem.updatedAt,
-            isApproved: true,
-            approvedBy: approvedBy,
-            approvedDate: new Date(),
-          });
+        if (theItem._id == mediaItemId) {
+          theMap.push(
+            Object.assign({
+              _id: theItem._id,
+              path: theItem.path,
+              likedBy: theItem.likedBy,
+              createdAt: theItem.createdAt,
+              updatedAt: theItem.updatedAt,
+              isApproved: true,
+              approvedBy: approvedBy,
+              approvedDate: new Date(),
+            })
+          );
         } else {
           theMap = [...theMap, theItem];
         }
@@ -219,7 +226,8 @@ class MediaBusiness implements IMediaBusiness {
       },
       []
     );
-    const updateObj = await this._mediaRepository.patch(media._id, {
+
+    await this._mediaRepository.patch(media._id, {
       items: modifiedItems,
     });
     return Result.ok<boolean>(200, true);

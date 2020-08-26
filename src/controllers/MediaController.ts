@@ -519,6 +519,7 @@ export class MediaController {
   }
 
   @get("/admin/pending")
+  @use(requireAuth)
   @use(requestValidator)
   @authorize(canViewPendingMedia)
   async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
@@ -698,23 +699,30 @@ export class MediaController {
     }
   }
 
+  @put("/admin/approve/:id")
   @use(requireAuth)
   @use(requestValidator)
-  @patch("admin/reject/:id/item/:itemId")
-  @authorize(canRejectMedia)
-  @requestValidators("reason")
-  async rejectMediaItem(
+  @authorize(canApproveMedia)
+  @requestValidators("itemId")
+  async approveMediaItem(
     req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
       const mediaBusiness = new MediaBusiness();
-      const result = await mediaBusiness.rejectMedia(
+      if (!req.body.itemId)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide itemId",
+          })
+        );
+
+      const result = await mediaBusiness.approveMedia(
         req.params.id,
-        req.params.itemId,
-        req.user,
-        req.body.reason
+        req.body.itemId,
+        req.user
       );
       if (result.error) {
         return next(
@@ -739,21 +747,37 @@ export class MediaController {
     }
   }
 
+  @put("/admin/reject/:id")
   @use(requireAuth)
   @use(requestValidator)
-  @patch("admin/approve/:id/item/:itemId")
-  @authorize(canApproveMedia)
-  async approveMediaItem(
+  @authorize(canRejectMedia)
+  @requestValidators("reason")
+  async rejectMediaItem(
     req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
+      if (!req.body.itemId)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide itemId",
+          })
+        );
+      if (!req.body.reason)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide rejection reason",
+          })
+        );
       const mediaBusiness = new MediaBusiness();
-      const result = await mediaBusiness.approveMedia(
+      const result = await mediaBusiness.rejectMedia(
         req.params.id,
-        req.params.itemId,
-        req.user
+        req.body.itemId,
+        req.user,
+        req.body.reason
       );
       if (result.error) {
         return next(

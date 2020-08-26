@@ -61,7 +61,6 @@ export async function requireAuth(
     );
 
     if (decoded.error) {
-      console.log(decoded.error);
       return next(
         new PlatformError({
           code: 401,

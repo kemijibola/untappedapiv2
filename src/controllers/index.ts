@@ -20,3 +20,4 @@ export * from "./ContestEntryController";
 export * from "./WalletController";
 export * from "./TransactionController";
 export * from "./MailController";
+export * from "./ApprovalController";

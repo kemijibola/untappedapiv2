@@ -72,7 +72,6 @@ function requireAuth(req, res, next) {
                 case 1:
                     decoded = _a.sent();
                     if (decoded.error) {
-                        console.log(decoded.error);
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 401,
                                 message: "Invalid token.",

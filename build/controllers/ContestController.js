@@ -329,7 +329,7 @@ var ContestController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetch({ approved: false })];
+                        return [4 /*yield*/, contestBusiness.fetch({ approved: false, paymentStatus: interfaces_1.PaymentStatus.Completed })];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -773,7 +773,7 @@ var ContestController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "fetchContestDetailsById", null);
     __decorate([
-        decorators_1.get("/admin/contest/pending"),
+        decorators_1.get("/admin/pending"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canViewPendingContest),
         __metadata("design:type", Function),
@@ -836,18 +836,18 @@ var ContestController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "checkIfContestTtitleIsAvailable", null);
     __decorate([
+        decorators_1.put("admin/approve/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.patch("admin/approve/:id"),
         decorators_1.authorize(PermissionConstant_1.canApproveContest),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestController.prototype, "approveContest", null);
     __decorate([
+        decorators_1.put("admin/reject/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.patch("admin/reject/:id"),
         decorators_1.authorize(PermissionConstant_1.canApproveContest),
         decorators_1.requestValidators("reason"),
         __metadata("design:type", Function),

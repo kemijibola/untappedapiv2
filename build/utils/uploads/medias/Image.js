@@ -102,7 +102,7 @@ var Image = /** @class */ (function (_super) {
                         options = {
                             signatureVersion: "v4",
                             region: config.APP_BUCKET.region,
-                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+                            endpoint: "untapped-pool-image-prod.s3-accelerate.amazonaws.com",
                             useAccelerateEndpoint: true,
                         };
                         client = new AWS.S3(options);

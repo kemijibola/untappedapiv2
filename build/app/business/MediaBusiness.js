@@ -67,20 +67,24 @@ var MediaBusiness = /** @class */ (function () {
     };
     MediaBusiness.prototype.fetchMediaPendingApproval = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var medias;
+            var mediaPendingApproval, medias, _i, medias_1, media;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._mediaRepository.fetch(condition)];
+                    case 0:
+                        mediaPendingApproval = [];
+                        return [4 /*yield*/, this._mediaRepository.fetch(condition)];
                     case 1:
                         medias = _a.sent();
                         if (medias) {
-                            medias.forEach(function (x) {
-                                var mediaItems = x.items.filter(function (y) { return !y.isDeleted && !y.isApproved; });
-                                if (mediaItems.length > 0)
-                                    return x;
-                            });
+                            for (_i = 0, medias_1 = medias; _i < medias_1.length; _i++) {
+                                media = medias_1[_i];
+                                media.items = media.items.filter(function (x) { return !x.isDeleted && !x.isApproved; });
+                                if (media.items.length > 0) {
+                                    mediaPendingApproval = mediaPendingApproval.concat([media]);
+                                }
+                            }
                         }
-                        return [2 /*return*/, Result_1.Result.ok(200, medias)];
+                        return [2 /*return*/, Result_1.Result.ok(200, mediaPendingApproval)];
                 }
             });
         });
@@ -252,7 +256,7 @@ var MediaBusiness = /** @class */ (function () {
     };
     MediaBusiness.prototype.rejectMedia = function (mediaId, mediaItemId, rejectedBy, rejectionReason) {
         return __awaiter(this, void 0, void 0, function () {
-            var media, modifiedItems, updateObj;
+            var media, modifiedItems;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._mediaRepository.findById(mediaId)];
@@ -261,8 +265,8 @@ var MediaBusiness = /** @class */ (function () {
                         if (!media)
                             return [2 /*return*/, Result_1.Result.fail(404, "Media not found.")];
                         modifiedItems = media.items.reduce(function (theMap, theItem) {
-                            if (theItem._id === mediaItemId) {
-                                theMap = Object.assign({
+                            if (theItem._id == mediaItemId) {
+                                theMap.push(Object.assign({
                                     _id: theItem._id,
                                     path: theItem.path,
                                     likedBy: theItem.likedBy,
@@ -272,7 +276,7 @@ var MediaBusiness = /** @class */ (function () {
                                     approvedBy: rejectedBy,
                                     approvedDate: new Date(),
                                     rejectionReason: rejectionReason,
-                                });
+                                }));
                             }
                             else {
                                 theMap = theMap.concat([theItem]);
@@ -283,7 +287,7 @@ var MediaBusiness = /** @class */ (function () {
                                 items: modifiedItems,
                             })];
                     case 2:
-                        updateObj = _a.sent();
+                        _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });
@@ -291,7 +295,7 @@ var MediaBusiness = /** @class */ (function () {
     };
     MediaBusiness.prototype.approveMedia = function (mediaId, mediaItemId, approvedBy) {
         return __awaiter(this, void 0, void 0, function () {
-            var media, modifiedItems, updateObj;
+            var media, modifiedItems;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._mediaRepository.findById(mediaId)];
@@ -300,8 +304,8 @@ var MediaBusiness = /** @class */ (function () {
                         if (!media)
                             return [2 /*return*/, Result_1.Result.fail(404, "Media not found.")];
                         modifiedItems = media.items.reduce(function (theMap, theItem) {
-                            if (theItem._id === mediaItemId) {
-                                theMap = Object.assign({
+                            if (theItem._id == mediaItemId) {
+                                theMap.push(Object.assign({
                                     _id: theItem._id,
                                     path: theItem.path,
                                     likedBy: theItem.likedBy,
@@ -310,7 +314,7 @@ var MediaBusiness = /** @class */ (function () {
                                     isApproved: true,
                                     approvedBy: approvedBy,
                                     approvedDate: new Date(),
-                                });
+                                }));
                             }
                             else {
                                 theMap = theMap.concat([theItem]);
@@ -321,7 +325,7 @@ var MediaBusiness = /** @class */ (function () {
                                 items: modifiedItems,
                             })];
                     case 2:
-                        updateObj = _a.sent();
+                        _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, true)];
                 }
             });

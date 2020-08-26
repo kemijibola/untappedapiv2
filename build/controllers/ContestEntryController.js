@@ -289,7 +289,7 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "fetchUserContestList", null);
     __decorate([
-        decorators_1.get("/admin/contest-entry/pending"),
+        decorators_1.get("/admin/pending"),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canViewPendingEntry),
         __metadata("design:type", Function),
@@ -307,18 +307,18 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
     __decorate([
+        decorators_1.put("admin/approve/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.patch("admin/approve/:id"),
         decorators_1.authorize(PermissionConstant_1.canApproveEntry),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "approveEntry", null);
     __decorate([
+        decorators_1.put("admin/reject/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.patch("admin/reject/:id"),
         decorators_1.authorize(PermissionConstant_1.canRejectEntry),
         decorators_1.requestValidators("reason"),
         __metadata("design:type", Function),

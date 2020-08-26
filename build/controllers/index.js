@@ -25,4 +25,5 @@ __export(require("./ContestEntryController"));
 __export(require("./WalletController"));
 __export(require("./TransactionController"));
 __export(require("./MailController"));
+__export(require("./ApprovalController"));
 //# sourceMappingURL=index.js.map

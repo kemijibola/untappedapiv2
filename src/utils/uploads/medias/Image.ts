@@ -14,7 +14,6 @@ import { ObjectKeyString, AcceptedImageExt } from "../../lib";
 import uuid = require("uuid");
 import { ImageEditRequest } from "../../../app/models/interfaces";
 const config: AppConfig = module.require("../../../config/keys");
-import btoa from "btoa";
 
 AWS.config.update({
   accessKeyId: config.IMAGE_BUCKET.access_key_id,
@@ -55,7 +54,7 @@ export class Image extends AbstractMedia {
       const options = {
         signatureVersion: "v4",
         region: config.APP_BUCKET.region, // same as your bucket
-        endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
+        endpoint: "untapped-pool-image-prod.s3-accelerate.amazonaws.com",
         useAccelerateEndpoint: true,
       };
 

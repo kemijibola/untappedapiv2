@@ -370,13 +370,13 @@ export class ContestController {
     }
   }
 
-  @get("/admin/contest/pending")
+  @get("/admin/pending")
   @use(requestValidator)
   @authorize(canViewPendingContest)
   async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
     try {
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetch({ approved: false });
+      const result = await contestBusiness.fetch({ approved: false, paymentStatus: PaymentStatus.Completed});
       if (result.error) {
         return next(
           new PlatformError({
@@ -727,9 +727,9 @@ export class ContestController {
     }
   }
 
+  @put("admin/approve/:id")
   @use(requireAuth)
   @use(requestValidator)
-  @patch("admin/approve/:id")
   @authorize(canApproveContest)
   async approveContest(
     req: RequestWithUser,
@@ -765,9 +765,9 @@ export class ContestController {
     }
   }
 
+  @put("admin/reject/:id")
   @use(requireAuth)
   @use(requestValidator)
-  @patch("admin/reject/:id")
   @authorize(canApproveContest)
   @requestValidators("reason")
   async rejectContest(req: RequestWithUser, res: Response, next: NextFunction) {

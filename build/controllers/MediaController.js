@@ -660,7 +660,7 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    MediaController.prototype.rejectMediaItem = function (req, res, next) {
+    MediaController.prototype.approveMediaItem = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var mediaBusiness, result, err_12;
             return __generator(this, function (_a) {
@@ -668,7 +668,12 @@ var MediaController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         mediaBusiness = new MediaBusiness();
-                        return [4 /*yield*/, mediaBusiness.rejectMedia(req.params.id, req.params.itemId, req.user, req.body.reason)];
+                        if (!req.body.itemId)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide itemId",
+                                }))];
+                        return [4 /*yield*/, mediaBusiness.approveMedia(req.params.id, req.body.itemId, req.user)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -693,15 +698,25 @@ var MediaController = /** @class */ (function () {
             });
         });
     };
-    MediaController.prototype.approveMediaItem = function (req, res, next) {
+    MediaController.prototype.rejectMediaItem = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var mediaBusiness, result, err_13;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        if (!req.body.itemId)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide itemId",
+                                }))];
+                        if (!req.body.reason)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide rejection reason",
+                                }))];
                         mediaBusiness = new MediaBusiness();
-                        return [4 /*yield*/, mediaBusiness.approveMedia(req.params.id, req.params.itemId, req.user)];
+                        return [4 /*yield*/, mediaBusiness.rejectMedia(req.params.id, req.body.itemId, req.user, req.body.reason)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {
@@ -784,6 +799,7 @@ var MediaController = /** @class */ (function () {
     ], MediaController.prototype, "fetchList", null);
     __decorate([
         decorators_1.get("/admin/pending"),
+        decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canViewPendingMedia),
         __metadata("design:type", Function),
@@ -814,24 +830,25 @@ var MediaController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "deleteMediaItem", null);
     __decorate([
+        decorators_1.put("/admin/approve/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.patch("admin/reject/:id/item/:itemId"),
+        decorators_1.authorize(PermissionConstant_1.canApproveMedia),
+        decorators_1.requestValidators("itemId"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], MediaController.prototype, "approveMediaItem", null);
+    __decorate([
+        decorators_1.put("/admin/reject/:id"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canRejectMedia),
         decorators_1.requestValidators("reason"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], MediaController.prototype, "rejectMediaItem", null);
-    __decorate([
-        decorators_1.use(auth_1.requireAuth),
-        decorators_1.use(ValidateRequest_1.requestValidator),
-        decorators_1.patch("admin/approve/:id/item/:itemId"),
-        decorators_1.authorize(PermissionConstant_1.canApproveMedia),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Object, Function]),
-        __metadata("design:returntype", Promise)
-    ], MediaController.prototype, "approveMediaItem", null);
     MediaController = __decorate([
         decorators_1.controller("/v1/media")
     ], MediaController);
