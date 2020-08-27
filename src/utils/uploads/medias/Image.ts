@@ -54,8 +54,6 @@ export class Image extends AbstractMedia {
       const options = {
         signatureVersion: "v4",
         region: config.APP_BUCKET.region, // same as your bucket
-        endpoint: "untapped-pool-image-prod.s3-accelerate.amazonaws.com",
-        useAccelerateEndpoint: true,
       };
 
       const client: AWS.S3 = new AWS.S3(options);
@@ -117,8 +115,6 @@ export class Image extends AbstractMedia {
           const options = {
             signatureVersion: "v4",
             region: config.IMAGE_BUCKET.region,
-            endpoint: config.IMAGE_BUCKET.accelerate_endpoint,
-            useAccelerateEndpoint: true,
           };
 
           const client: AWS.S3 = new AWS.S3(options);

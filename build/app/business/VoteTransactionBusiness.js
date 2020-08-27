@@ -148,7 +148,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         newVote_1 = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_1)];
                     case 2: return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
-                            contestantCode: item.contestantCode,
+                            contestantCode: item.contestantCode.toUpperCase(),
                         })];
                     case 3:
                         contestEntry = _a.sent();

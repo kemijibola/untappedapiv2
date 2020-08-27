@@ -103,12 +103,13 @@ export class ContestEntryController {
   }
 
   @get("/admin/pending")
+  @use(requireAuth)
   @use(requestValidator)
   @authorize(canViewPendingEntry)
   async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
     try {
       const contestEntryBusiness = new ContestEntryBusiness();
-      const result = await contestEntryBusiness.fetch({
+      const result = await contestEntryBusiness.fetchPendingContess({
         approved: false,
       });
       if (result.error) {
@@ -188,7 +189,7 @@ export class ContestEntryController {
     }
   }
 
-  @put("admin/approve/:id")
+  @put("/admin/approve/:id")
   @use(requireAuth)
   @use(requestValidator)
   @authorize(canApproveEntry)
@@ -222,7 +223,7 @@ export class ContestEntryController {
     }
   }
 
-  @put("admin/reject/:id")
+  @put("/admin/reject/:id")
   @use(requireAuth)
   @use(requestValidator)
   @authorize(canRejectEntry)

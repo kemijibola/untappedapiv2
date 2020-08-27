@@ -54,8 +54,6 @@ export class Audio extends AbstractMedia {
       const options = {
         signatureVersion: "v4",
         region: config.APP_BUCKET.region, // same as your bucket
-        endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
-        useAccelerateEndpoint: true,
       };
 
       const client: AWS.S3 = new AWS.S3(options);
@@ -114,8 +112,6 @@ export class Audio extends AbstractMedia {
           const options = {
             signatureVersion: "v4",
             region: config.AUDIO_BUCKET.region,
-            endpoint: config.AUDIO_BUCKET.accelerate_endpoint,
-            useAccelerateEndpoint: true,
           };
 
           const client: AWS.S3 = new AWS.S3(options);

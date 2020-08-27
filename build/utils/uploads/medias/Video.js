@@ -102,8 +102,6 @@ var Video = /** @class */ (function (_super) {
                         options = {
                             signatureVersion: "v4",
                             region: config.APP_BUCKET.region,
-                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
-                            useAccelerateEndpoint: true,
                         };
                         client = new AWS.S3(options);
                         return [4 /*yield*/, client.upload(params).promise()];
@@ -166,9 +164,7 @@ var Video = /** @class */ (function (_super) {
                                         };
                                         options = {
                                             signatureVersion: "v4",
-                                            region: config.VIDEO_BUCKET.region,
-                                            endpoint: config.VIDEO_BUCKET.accelerate_endpoint,
-                                            useAccelerateEndpoint: true,
+                                            region: config.VIDEO_BUCKET.region
                                         };
                                         client = new AWS.S3(options);
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {

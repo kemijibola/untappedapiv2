@@ -40,6 +40,13 @@ class ContestBusiness implements IContestEntryBusiness {
     return Result.ok<IContestEntry[]>(200, contestEntries);
   }
 
+  async fetchPendingContess(condition: any): Promise<Result<IContestEntry[]>> {
+    const contestEntries = await this._contestEntryRepository.fetchContestEntryWithContest(
+      condition
+    );
+    return Result.ok<IContestEntry[]>(200, contestEntries);
+  }
+
   async findById(id: string): Promise<Result<IContestEntry>> {
     if (!id) return Result.fail<IContestEntry>(400, "Bad request.");
     const contestEntry = await this._contestEntryRepository.findById(id);
@@ -313,7 +320,7 @@ class ContestBusiness implements IContestEntryBusiness {
     while (codeHasBeenAssigned) {
       contestantCode = `${contestant.fullName.substring(
         0,
-        2
+        1
       )}${generateRandomNumber(2)}`.toUpperCase();
       const contestCode = await this._contestEntryRepository.findByCriteria({
         contest: contest._id,

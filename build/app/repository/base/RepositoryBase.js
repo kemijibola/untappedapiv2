@@ -113,7 +113,7 @@ var RepositoryBase = /** @class */ (function () {
                 else
                     resolve(result);
             })
-                .populate("contest", "_id title bannerImage views likedBy")
+                .populate("contest", "_id title entryMediaType bannerImage views likedBy")
                 // .cacheDocQueries({ collectionName: this._model.collection.name })
                 .exec();
         });

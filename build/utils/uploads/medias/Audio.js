@@ -102,8 +102,6 @@ var Audio = /** @class */ (function (_super) {
                         options = {
                             signatureVersion: "v4",
                             region: config.APP_BUCKET.region,
-                            endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
-                            useAccelerateEndpoint: true,
                         };
                         client = new AWS.S3(options);
                         return [4 /*yield*/, client.upload(params).promise()];
@@ -167,8 +165,6 @@ var Audio = /** @class */ (function (_super) {
                                         options = {
                                             signatureVersion: "v4",
                                             region: config.AUDIO_BUCKET.region,
-                                            endpoint: config.AUDIO_BUCKET.accelerate_endpoint,
-                                            useAccelerateEndpoint: true,
                                         };
                                         client = new AWS.S3(options);
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {

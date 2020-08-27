@@ -126,7 +126,7 @@ var ContestEntryController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         contestEntryBusiness = new ContestEntryBusiness();
-                        return [4 /*yield*/, contestEntryBusiness.fetch({
+                        return [4 /*yield*/, contestEntryBusiness.fetchPendingContess({
                                 approved: false,
                             })];
                     case 1:
@@ -290,6 +290,7 @@ var ContestEntryController = /** @class */ (function () {
     ], ContestEntryController.prototype, "fetchUserContestList", null);
     __decorate([
         decorators_1.get("/admin/pending"),
+        decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canViewPendingEntry),
         __metadata("design:type", Function),
@@ -307,7 +308,7 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "create", null);
     __decorate([
-        decorators_1.put("admin/approve/:id"),
+        decorators_1.put("/admin/approve/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canApproveEntry),
@@ -316,7 +317,7 @@ var ContestEntryController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ContestEntryController.prototype, "approveEntry", null);
     __decorate([
-        decorators_1.put("admin/reject/:id"),
+        decorators_1.put("/admin/reject/:id"),
         decorators_1.use(auth_1.requireAuth),
         decorators_1.use(ValidateRequest_1.requestValidator),
         decorators_1.authorize(PermissionConstant_1.canRejectEntry),

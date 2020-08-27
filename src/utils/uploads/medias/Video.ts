@@ -54,8 +54,6 @@ export class Video extends AbstractMedia {
       const options = {
         signatureVersion: "v4",
         region: config.APP_BUCKET.region, // same as your bucket
-        endpoint: "untapped-platform-bucket.s3-accelerate.amazonaws.com",
-        useAccelerateEndpoint: true,
       };
 
       const client: AWS.S3 = new AWS.S3(options);
@@ -113,9 +111,7 @@ export class Video extends AbstractMedia {
           };
           const options = {
             signatureVersion: "v4",
-            region: config.VIDEO_BUCKET.region,
-            endpoint: config.VIDEO_BUCKET.accelerate_endpoint,
-            useAccelerateEndpoint: true,
+            region: config.VIDEO_BUCKET.region
           };
 
           const client: AWS.S3 = new AWS.S3(options);

@@ -371,12 +371,16 @@ export class ContestController {
   }
 
   @get("/admin/pending")
+  @use(requireAuth)
   @use(requestValidator)
   @authorize(canViewPendingContest)
   async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
     try {
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetch({ approved: false, paymentStatus: PaymentStatus.Completed});
+      const result = await contestBusiness.fetch({
+        approved: false,
+        paymentStatus: PaymentStatus.Completed,
+      });
       if (result.error) {
         return next(
           new PlatformError({
@@ -401,6 +405,7 @@ export class ContestController {
 
   @get("/pending/disbursement")
   @use(requestValidator)
+  @use(requireAuth)
   @use(requireAuth)
   @authorize(canViewPendingDisbursement)
   async fetchContestPendingDisbursement(
@@ -727,7 +732,7 @@ export class ContestController {
     }
   }
 
-  @put("admin/approve/:id")
+  @put("/admin/approve/:id")
   @use(requireAuth)
   @use(requestValidator)
   @authorize(canApproveContest)
@@ -765,7 +770,7 @@ export class ContestController {
     }
   }
 
-  @put("admin/reject/:id")
+  @put("/admin/reject/:id")
   @use(requireAuth)
   @use(requestValidator)
   @authorize(canApproveContest)

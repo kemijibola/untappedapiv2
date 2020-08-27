@@ -68,6 +68,19 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.fetchPendingContess = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestEntries;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestEntryRepository.fetchContestEntryWithContest(condition)];
+                    case 1:
+                        contestEntries = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, contestEntries)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var contestEntry;
@@ -376,7 +389,7 @@ var ContestBusiness = /** @class */ (function () {
                         _a.label = 5;
                     case 5:
                         if (!codeHasBeenAssigned) return [3 /*break*/, 7];
-                        contestantCode = ("" + contestant.fullName.substring(0, 2) + lib_1.generateRandomNumber(2)).toUpperCase();
+                        contestantCode = ("" + contestant.fullName.substring(0, 1) + lib_1.generateRandomNumber(2)).toUpperCase();
                         return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
                                 contest: contest._id,
                                 contestantCode: contestantCode,

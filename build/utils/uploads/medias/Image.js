@@ -102,8 +102,6 @@ var Image = /** @class */ (function (_super) {
                         options = {
                             signatureVersion: "v4",
                             region: config.APP_BUCKET.region,
-                            endpoint: "untapped-pool-image-prod.s3-accelerate.amazonaws.com",
-                            useAccelerateEndpoint: true,
                         };
                         client = new AWS.S3(options);
                         return [4 /*yield*/, client.upload(params).promise()];
@@ -168,8 +166,6 @@ var Image = /** @class */ (function (_super) {
                                         options = {
                                             signatureVersion: "v4",
                                             region: config.IMAGE_BUCKET.region,
-                                            endpoint: config.IMAGE_BUCKET.accelerate_endpoint,
-                                            useAccelerateEndpoint: true,
                                         };
                                         client = new AWS.S3(options);
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {

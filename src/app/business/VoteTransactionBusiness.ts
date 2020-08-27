@@ -87,7 +87,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
       return Result.ok<VoteTransaction>(201, newVote);
     }
     var contestEntry = await this._contestEntryRepository.findByCriteria({
-      contestantCode: item.contestantCode,
+      contestantCode: item.contestantCode.toUpperCase(),
     });
     if (!contestEntry) {
       item.voteStatus = VoteStatus.invalid;
