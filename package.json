@@ -7,7 +7,7 @@
     "build-ts": "tsc",
     "start:build": "tsc -w",
     "start:run": "nodemon build/index.js",
-    "start": "concurrently npm:start:*",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "postinstall": "npm run build-ts",
     "deploy": "sls deploy -v",
     "invoke": "sls invoke -f ScheduleTask -l -p ./data/task-request.json",
