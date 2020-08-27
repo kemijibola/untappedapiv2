@@ -1,5 +1,5 @@
 import { Environment } from "../app/models/interfaces/custom/Environment";
-import * as development from "./development.json";
+// import * as development from "./development.json";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -131,7 +131,7 @@ switch (environment) {
     };
     break;
   default:
-    Object.seal(development);
-    module.exports = development;
+    // Object.seal(development);
+    // module.exports = development;
     break;
 }
