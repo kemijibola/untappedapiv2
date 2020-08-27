@@ -153,13 +153,13 @@ export class ProfileController {
       if (item.shortBio) {
         if (
           item.shortBio.trim().length < 80 ||
-          item.shortBio.trim().length > 250
+          item.shortBio.trim().length > 2000
         ) {
           return next(
             new PlatformError({
               code: 400,
               message:
-                "Short bio length must be greater than 80 and less that 250",
+                "Short bio length must be greater than 80 and less that 2000",
             })
           );
         }

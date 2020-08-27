@@ -195,10 +195,10 @@ var ProfileController = /** @class */ (function () {
                         }
                         if (item.shortBio) {
                             if (item.shortBio.trim().length < 80 ||
-                                item.shortBio.trim().length > 250) {
+                                item.shortBio.trim().length > 2000) {
                                 return [2 /*return*/, next(new error_1.PlatformError({
                                         code: 400,
-                                        message: "Short bio length must be greater than 80 and less that 250",
+                                        message: "Short bio length must be greater than 80 and less that 2000",
                                     }))];
                             }
                         }
