@@ -16,7 +16,7 @@ import {
 import { Result } from "../../utils/Result";
 import { generateRandomNumber, ObjectKeyString } from "../../utils/lib";
 import { IUserContestListAnalysis } from "../models/interfaces/custom/ContestList";
-import { isFuture } from "date-fns";
+import { isFuture, isPast } from "date-fns";
 
 class ContestBusiness implements IContestEntryBusiness {
   private _contestEntryRepository: ContestEntryRepository;
@@ -316,6 +316,8 @@ class ContestBusiness implements IContestEntryBusiness {
     let codeHasBeenAssigned = true;
     if (!contest)
       return Result.fail<IContestEntry>(404, "Competition not found");
+    if (isPast(contest.endDate))
+      return Result.fail<IContestEntry>(400, "Competition has ended");
     let contestantCode = "";
     while (codeHasBeenAssigned) {
       contestantCode = `${contestant.fullName.substring(

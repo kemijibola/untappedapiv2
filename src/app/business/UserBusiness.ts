@@ -19,6 +19,7 @@ import {
   IRefreshToken,
   IRefreshTokenViewModel,
   AccountStatus,
+  IRegisterAdmin,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import {
@@ -415,6 +416,39 @@ class UserBusiness implements IUserBusiness {
     }
   }
 
+  async registerAdmin(item: IRegisterAdmin): Promise<Result<boolean>> {
+    const user: IUserModel = await this._userRepository.findByCriteria({
+      email: item.email,
+    });
+    if (user) {
+      return Result.fail<boolean>(
+        409,
+        `There is a user registered with this email: ${item.email}`
+      );
+    }
+    const isUserTypeValid = validateObjectId(item.userType);
+    if (!isUserTypeValid) {
+      return Result.fail<boolean>(400, "Invalid UserType");
+    }
+    const userType = await this._userTypeRepository.findById(item.userType);
+    if (userType === null)
+      return Result.fail<boolean>(400, "UserType not found");
+
+    if (!userType.isAdmin) return Result.fail<boolean>(400, "Invalid UserType");
+    for (let role of item.roles) {
+      const roleResult = await this._roleRepository.findById(role);
+      if (!roleResult)
+        return Result.fail<boolean>(404, `Role ${role} not found`);
+
+      if (!roleResult.isActive)
+        return Result.fail<boolean>(400, `Role ${role} not activated`);
+    }
+    item.isEmailConfirmed = true;
+    item.isProfileCompleted = true;
+    const newUser: IUserModel = await this._userRepository.registerAdmin(item);
+    return Result.ok<bool>(201, true);
+  }
+
   async register(item: IRegister): Promise<Result<boolean>> {
     const user: IUserModel = await this._userRepository.findByCriteria({
       email: item.email,
@@ -434,6 +468,9 @@ class UserBusiness implements IUserBusiness {
     if (userType === null) {
       return Result.fail<boolean>(400, "UserType not found");
     }
+
+    if (userType.isAdmin)
+      return Result.fail<boolean>(400, "User can't be assigned userType");
 
     // assign default role to user
     const defaultRole = await this._roleRepository.findByCriteria({
@@ -722,6 +759,7 @@ class UserBusiness implements IUserBusiness {
     if (!user) return Result.fail<IUserModel>(404, "User not found");
 
     item.isEmailConfirmed = user.isEmailConfirmed;
+    item.isProfileCompleted = user.isProfileCompleted;
     item.status = user.status;
     item.userType = user.userType;
     item.email = user.email;
@@ -735,6 +773,16 @@ class UserBusiness implements IUserBusiness {
     item.roles = [...user.roles];
 
     const updateObj = await this._userRepository.update(user._id, item);
+    return Result.ok<IUserModel>(200, updateObj);
+  }
+
+  async updateUserProfileStatus(id: string): Promise<Result<IUserModel>> {
+    const user = await this._userRepository.findById(id);
+    if (!user) return Result.fail<IUserModel>(404, "User not found");
+
+    const updateObj = await this._userRepository.patch(user._id, {
+      isProfileCompleted: true,
+    });
     return Result.ok<IUserModel>(200, updateObj);
   }
 
@@ -753,6 +801,7 @@ class UserBusiness implements IUserBusiness {
     if (!user) return Result.fail<IUserModel>(404, "User not found");
 
     item.isEmailConfirmed = user.isEmailConfirmed;
+    item.isProfileCompleted = user.isProfileCompleted;
     item.status = user.status;
     item.userType = user.userType;
     item.email = user.email;

@@ -49,6 +49,16 @@ export interface IRegister {
   roles: string[];
 }
 
+export interface IRegisterAdmin {
+  fullName: string;
+  email: string;
+  password: string;
+  userType: string;
+  roles: string[];
+  isEmailConfirmed: boolean;
+  isProfileCompleted: boolean;
+}
+
 export interface IDestinationUrl {
   destinationUrl: string;
 }

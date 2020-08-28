@@ -7,6 +7,7 @@ import {
   get,
   use,
   put,
+  authorize,
 } from "../decorators";
 import IBaseController from "./interfaces/base/BaseController";
 import ProfileRepository = require("../app/repository/ProfileRepository");
@@ -19,6 +20,7 @@ import { PlatformError } from "../utils/error";
 import { requireAuth } from "../middlewares/auth";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import * as _ from "underscore";
+import { canViewTalents } from "../utils/lib/PermissionConstant";
 
 @controller("/v1/profiles")
 export class ProfileController {
@@ -370,6 +372,38 @@ export class ProfileController {
         new PlatformError({
           code: 500,
           message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @get("/admin/talents/pending")
+  @use(requireAuth)
+  @use(requestValidator)
+  @authorize(canViewTalents)
+  async fetchPendingMedia(req: Request, res: Response, next: NextFunction) {
+    try {
+      const profileBusiness = new ProfileBusiness();
+      const result = await profileBusiness.fetchPendingTalentProfile({
+        isProfileCompleted: false,
+      });
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: `Error occured, ${result.error}`,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Media Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: `Internal Server error occured.${err}`,
         })
       );
     }

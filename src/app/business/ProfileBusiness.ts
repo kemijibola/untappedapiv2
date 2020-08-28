@@ -1,16 +1,24 @@
 import ProfileRepository from "../repository/ProfileRepository";
 import UserRepository from "../repository/UserRepository";
+import MediaRepository from "../repository/MediaRepository";
 import IProfileBusiness = require("./interfaces/ProfileBusiness");
-import { IProfile } from "../models/interfaces";
+import {
+  IProfile,
+  IUserModel,
+  TalentProfile,
+  IMedia,
+} from "../models/interfaces";
 import { Result } from "../../utils/Result";
 
 class ProfileBusiness implements IProfileBusiness {
   private _profileRepository: ProfileRepository;
   private _userRepository: UserRepository;
+  private _mediaRepository: MediaRepository;
 
   constructor() {
     this._profileRepository = new ProfileRepository();
     this._userRepository = new UserRepository();
+    this._mediaRepository = new MediaRepository();
   }
 
   async fetch(condition: any): Promise<Result<IProfile[]>> {
@@ -26,6 +34,47 @@ class ProfileBusiness implements IProfileBusiness {
     else return Result.ok<IProfile>(200, profile);
   }
 
+  async fetchPendingTalentProfile(
+    condition: any
+  ): Promise<Result<TalentProfile[]>> {
+    let talentProfiles: TalentProfile[] = [];
+    const talentsPendingApproval: IUserModel[] = await this._userRepository.fetch(
+      condition
+    );
+
+    for (let talent of talentsPendingApproval) {
+      const profile = await this._profileRepository.findByCriteria({
+        user: talent._id,
+      });
+
+      if (profile) {
+        const modified: TalentProfile = {
+          talentId: talent._id,
+          talentName: talent.fullName,
+          profilePicture: talent.profileImagePath || "",
+          emailConfirmed: talent.isEmailConfirmed,
+          portfolioApproved: false,
+          dateJoined: talent.createdAt,
+          shortBio: profile.shortBio || "",
+          phoneNumber: profile.phoneNumbers ? profile.phoneNumbers[0] : "",
+        };
+
+        const talentMedias: IMedia[] = await this._mediaRepository.fetch({
+          user: profile.user,
+        });
+        if (talentMedias.length > 0) {
+          for (let media of talentMedias) {
+            modified.portfolioApproved =
+              media.items.filter((x) => x.approvedBy).length > 0;
+            if (modified.portfolioApproved) break;
+          }
+        }
+
+        talentProfiles = [...talentProfiles, modified];
+      }
+    }
+    return Result.ok<TalentProfile[]>(200, talentProfiles);
+  }
   async findOne(condition: any): Promise<Result<IProfile>> {
     if (!condition) return Result.fail<IProfile>(400, "Bad request");
     const profile = await this._profileRepository.findByOne(condition);

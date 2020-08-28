@@ -57,6 +57,7 @@ var error_1 = require("../utils/error");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var _ = __importStar(require("underscore"));
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ProfileController = /** @class */ (function () {
     function ProfileController() {
     }
@@ -390,6 +391,40 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
+    ProfileController.prototype.fetchPendingMedia = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profileBusiness, result, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        profileBusiness = new ProfileBusiness();
+                        return [4 /*yield*/, profileBusiness.fetchPendingTalentProfile({
+                                isProfileCompleted: false,
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: "Error occured, " + result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Media Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_8 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured." + err_8,
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.use(auth_1.requireAuth),
         decorators_1.get("/"),
@@ -454,6 +489,15 @@ var ProfileController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], ProfileController.prototype, "postTalentUnLike", null);
+    __decorate([
+        decorators_1.get("/admin/talents/pending"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.authorize(PermissionConstant_1.canViewTalents),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], ProfileController.prototype, "fetchPendingMedia", null);
     ProfileController = __decorate([
         decorators_1.controller("/v1/profiles")
     ], ProfileController);

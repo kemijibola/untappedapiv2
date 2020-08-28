@@ -35,12 +35,23 @@ var UserRepository = /** @class */ (function (_super) {
             });
         });
     };
+    UserRepository.prototype.registerAdmin = function (user) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.userModel.create(user, function (error, result) {
+                if (error)
+                    reject(error);
+                else
+                    resolve(result);
+            });
+        });
+    };
     UserRepository.prototype.userTypeByUser = function (user) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.userModel
                 .findById(user)
-                .populate('userType', 'name', function (error, result) {
+                .populate("userType", "name", function (error, result) {
                 if (error)
                     reject(error);
                 else

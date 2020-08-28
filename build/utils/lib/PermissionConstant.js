@@ -64,4 +64,6 @@ exports.canRejectContest = "canRejectContest";
 exports.canViewPendingEntry = "canViewPendingEntry";
 exports.canApproveEntry = "canApproveEntry";
 exports.canRejectEntry = "canRejectEntry";
+exports.canApproveTalentProfile = "canApproveTalentProfile";
+exports.canViewTalents = "canViewTalents";
 //# sourceMappingURL=PermissionConstant.js.map

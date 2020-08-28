@@ -84,3 +84,5 @@ export const canRejectContest = "canRejectContest";
 export const canViewPendingEntry = "canViewPendingEntry";
 export const canApproveEntry = "canApproveEntry";
 export const canRejectEntry = "canRejectEntry";
+export const canApproveTalentProfile = "canApproveTalentProfile";
+export const canViewTalents = "canViewTalents";

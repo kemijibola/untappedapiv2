@@ -44,12 +44,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var PermissionConstant_1 = require("./../utils/lib/PermissionConstant");
 var decorators_1 = require("../decorators");
 var error_1 = require("../utils/error");
 var UserBusiness = require("../app/business/UserBusiness");
 var UserAccountBusiness = require("../app/business/UserAccountBusiness");
 var auth_1 = require("../middlewares/auth");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_2 = require("../utils/lib/PermissionConstant");
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -233,6 +235,77 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.postUpdateUserProfile = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, user, result, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (!req.body.userId)
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: 400,
+                                    message: "Please provide userId",
+                                }))];
+                        userBusiness = new UserBusiness();
+                        user = req.user;
+                        return [4 /*yield*/, userBusiness.updateUserProfileStatus(req.body.userId)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_6 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserController.prototype.postCreateAdmin = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userBusiness, user, result, err_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        userBusiness = new UserBusiness();
+                        user = req.user;
+                        return [4 /*yield*/, userBusiness.registerAdmin(req.body)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error) {
+                            return [2 /*return*/, next(new error_1.PlatformError({
+                                    code: result.responseCode,
+                                    message: result.error,
+                                }))];
+                        }
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_7 = _a.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     __decorate([
         decorators_1.get("/"),
         decorators_1.use(ValidateRequest_1.requestValidator),
@@ -272,6 +345,28 @@ var UserController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], UserController.prototype, "patch", null);
+    __decorate([
+        decorators_1.patch("/admin/approve"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canApproveTalentProfile),
+        decorators_1.requestValidators("userId"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "postUpdateUserProfile", null);
+    __decorate([
+        decorators_1.post("/admin/create"),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_2.canCreateUser),
+        decorators_1.requestValidators("email", "password", "fullName", "userType", "roles"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], UserController.prototype, "postCreateAdmin", null);
     UserController = __decorate([
         decorators_1.controller("/v1/users")
     ], UserController);

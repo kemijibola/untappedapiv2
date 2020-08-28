@@ -40,3 +40,14 @@ export interface IProfile extends ITimeStamp, IAppSpec, mongoose.Document {
   additionalSocial?: string[];
   physicalStats?: IPhysicalStatistics;
 }
+
+export interface TalentProfile {
+  talentId: string;
+  talentName: string;
+  emailConfirmed: boolean;
+  portfolioApproved: boolean;
+  shortBio: string;
+  profilePicture: string
+  phoneNumber: string;
+  dateJoined: Date;
+}

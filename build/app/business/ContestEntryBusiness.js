@@ -46,6 +46,7 @@ var CommentRepository_1 = __importDefault(require("../repository/CommentReposito
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
+var date_fns_1 = require("date-fns");
 var ContestBusiness = /** @class */ (function () {
     function ContestBusiness() {
         this._contestEntryRepository = new ContestEntryRepository_1.default();
@@ -385,6 +386,8 @@ var ContestBusiness = /** @class */ (function () {
                         codeHasBeenAssigned = true;
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (date_fns_1.isPast(contest.endDate))
+                            return [2 /*return*/, Result_1.Result.fail(400, "Competition has ended")];
                         contestantCode = "";
                         _a.label = 5;
                     case 5:

@@ -37,12 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
-var RoleRepository_1 = __importDefault(require("../repository/RoleRepository"));
-var ScheduledEmailRepository_1 = __importDefault(require("../repository/ScheduledEmailRepository"));
-var RolePermissionRepository_1 = __importDefault(require("../repository/RolePermissionRepository"));
-var PermissionRepository_1 = __importDefault(require("../repository/PermissionRepository"));
-var RefreshTokenRepository_1 = __importDefault(require("../repository/RefreshTokenRepository"));
+var UserRepository_1 = __importDefault(require("../../repository/UserRepository"));
+var RoleRepository_1 = __importDefault(require("../../repository/RoleRepository"));
+var ScheduledEmailRepository_1 = __importDefault(require("../../repository/ScheduledEmailRepository"));
+var RolePermissionRepository_1 = __importDefault(require("../../repository/RolePermissionRepository"));
+var PermissionRepository_1 = __importDefault(require("../../repository/PermissionRepository"));
+var RefreshTokenRepository_1 = __importDefault(require("../../repository/RefreshTokenRepository"));
 var interfaces_1 = require("../models/interfaces");
 var Result_1 = require("../../utils/Result");
 var lib_1 = require("../../utils/lib");
@@ -451,57 +451,6 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
-    UserBusiness.prototype.registerAdmin = function (item) {
-        return __awaiter(this, void 0, void 0, function () {
-            var user, isUserTypeValid, userType, _i, _a, role, roleResult, newUser;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this._userRepository.findByCriteria({
-                            email: item.email,
-                        })];
-                    case 1:
-                        user = _b.sent();
-                        if (user) {
-                            return [2 /*return*/, Result_1.Result.fail(409, "There is a user registered with this email: " + item.email)];
-                        }
-                        isUserTypeValid = lib_1.validateObjectId(item.userType);
-                        if (!isUserTypeValid) {
-                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid UserType")];
-                        }
-                        return [4 /*yield*/, this._userTypeRepository.findById(item.userType)];
-                    case 2:
-                        userType = _b.sent();
-                        if (userType === null)
-                            return [2 /*return*/, Result_1.Result.fail(400, "UserType not found")];
-                        if (!userType.isAdmin)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Invalid UserType")];
-                        _i = 0, _a = item.roles;
-                        _b.label = 3;
-                    case 3:
-                        if (!(_i < _a.length)) return [3 /*break*/, 6];
-                        role = _a[_i];
-                        return [4 /*yield*/, this._roleRepository.findById(role)];
-                    case 4:
-                        roleResult = _b.sent();
-                        if (!roleResult)
-                            return [2 /*return*/, Result_1.Result.fail(404, "Role " + role + " not found")];
-                        if (!roleResult.isActive)
-                            return [2 /*return*/, Result_1.Result.fail(400, "Role " + role + " not activated")];
-                        _b.label = 5;
-                    case 5:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 6:
-                        item.isEmailConfirmed = true;
-                        item.isProfileCompleted = true;
-                        return [4 /*yield*/, this._userRepository.registerAdmin(item)];
-                    case 7:
-                        newUser = _b.sent();
-                        return [2 /*return*/, Result_1.Result.ok(201, true)];
-                }
-            });
-        });
-    };
     UserBusiness.prototype.register = function (item) {
         return __awaiter(this, void 0, void 0, function () {
             var user, isUserTypeValid, userType, defaultRole, newUser, data, token, welcomeEmailKeyValues, welcomeTemplateString, welcomeEmailPlaceHolder, emailBody, recievers, mailer;
@@ -829,7 +778,6 @@ var UserBusiness = /** @class */ (function () {
                         if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         item.isEmailConfirmed = user.isEmailConfirmed;
-                        item.isProfileCompleted = user.isProfileCompleted;
                         item.status = user.status;
                         item.userType = user.userType;
                         item.email = user.email;
@@ -842,26 +790,6 @@ var UserBusiness = /** @class */ (function () {
                         item.status = user.status;
                         item.roles = user.roles.slice();
                         return [4 /*yield*/, this._userRepository.update(user._id, item)];
-                    case 2:
-                        updateObj = _a.sent();
-                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
-                }
-            });
-        });
-    };
-    UserBusiness.prototype.updateUserProfileStatus = function (id) {
-        return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._userRepository.findById(id)];
-                    case 1:
-                        user = _a.sent();
-                        if (!user)
-                            return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
-                        return [4 /*yield*/, this._userRepository.patch(user._id, {
-                                isProfileCompleted: true,
-                            })];
                     case 2:
                         updateObj = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
@@ -900,7 +828,6 @@ var UserBusiness = /** @class */ (function () {
                         if (!user)
                             return [2 /*return*/, Result_1.Result.fail(404, "User not found")];
                         item.isEmailConfirmed = user.isEmailConfirmed;
-                        item.isProfileCompleted = user.isProfileCompleted;
                         item.status = user.status;
                         item.userType = user.userType;
                         item.email = user.email;

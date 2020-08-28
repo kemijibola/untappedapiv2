@@ -44,10 +44,11 @@ var RolePermissionBusiness_1 = __importDefault(require("../../app/business/RoleP
 function authorizePermission(permissions) {
     return function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var permissionMap, userBusiness, rolePermissionBusiness, user, userRole, userPermissions, _i, _a, item, canProceed, i;
+            var permissionMap, userBusiness, rolePermissionBusiness, user, userRole, userPermissions, _i, _a, item, canProceed, i, err_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        _b.trys.push([0, 4, , 5]);
                         if (!(permissions.length > 0)) return [3 /*break*/, 3];
                         permissionMap = {};
                         userBusiness = new UserBusiness_1.default();
@@ -57,15 +58,17 @@ function authorizePermission(permissions) {
                         user = _b.sent();
                         userRole = user.data ? user.data.roles[0] : "";
                         return [4 /*yield*/, rolePermissionBusiness.fetchWithPermission({
-                                role: userRole
+                                role: userRole,
                             })];
                     case 2:
                         userPermissions = _b.sent();
                         if (userPermissions.data) {
                             for (_i = 0, _a = userPermissions.data; _i < _a.length; _i++) {
                                 item = _a[_i];
-                                if (!permissionMap[item.permission.name])
-                                    permissionMap[item.permission.name] = item.permission.name;
+                                if (item.permission) {
+                                    if (!permissionMap[item.permission.name])
+                                        permissionMap[item.permission.name] = item.permission.name;
+                                }
                             }
                         }
                         canProceed = false;
@@ -77,10 +80,17 @@ function authorizePermission(permissions) {
                         if (!canProceed)
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 403,
-                                    message: "You are not authorized to make this request."
+                                    message: "You are not authorized to make this request.",
                                 }))];
                         _b.label = 3;
-                    case 3: return [2 /*return*/, next()];
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        err_1 = _b.sent();
+                        return [2 /*return*/, next(new error_1.PlatformError({
+                                code: 403,
+                                message: "An unexpected error occured. Please try again.",
+                            }))];
+                    case 5: return [2 /*return*/, next()];
                 }
             });
         });

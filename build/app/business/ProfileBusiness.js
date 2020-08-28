@@ -39,11 +39,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var ProfileRepository_1 = __importDefault(require("../repository/ProfileRepository"));
 var UserRepository_1 = __importDefault(require("../repository/UserRepository"));
+var MediaRepository_1 = __importDefault(require("../repository/MediaRepository"));
 var Result_1 = require("../../utils/Result");
 var ProfileBusiness = /** @class */ (function () {
     function ProfileBusiness() {
         this._profileRepository = new ProfileRepository_1.default();
         this._userRepository = new UserRepository_1.default();
+        this._mediaRepository = new MediaRepository_1.default();
     }
     ProfileBusiness.prototype.fetch = function (condition) {
         return __awaiter(this, void 0, void 0, function () {
@@ -74,6 +76,61 @@ var ProfileBusiness = /** @class */ (function () {
                         else
                             return [2 /*return*/, Result_1.Result.ok(200, profile)];
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProfileBusiness.prototype.fetchPendingTalentProfile = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var talentProfiles, talentsPendingApproval, _i, talentsPendingApproval_1, talent, profile, modified, talentMedias, _a, talentMedias_1, media;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        talentProfiles = [];
+                        return [4 /*yield*/, this._userRepository.fetch(condition)];
+                    case 1:
+                        talentsPendingApproval = _b.sent();
+                        _i = 0, talentsPendingApproval_1 = talentsPendingApproval;
+                        _b.label = 2;
+                    case 2:
+                        if (!(_i < talentsPendingApproval_1.length)) return [3 /*break*/, 6];
+                        talent = talentsPendingApproval_1[_i];
+                        return [4 /*yield*/, this._profileRepository.findByCriteria({
+                                user: talent._id,
+                            })];
+                    case 3:
+                        profile = _b.sent();
+                        if (!profile) return [3 /*break*/, 5];
+                        modified = {
+                            talentId: talent._id,
+                            talentName: talent.fullName,
+                            profilePicture: talent.profileImagePath || "",
+                            emailConfirmed: talent.isEmailConfirmed,
+                            portfolioApproved: false,
+                            dateJoined: talent.createdAt,
+                            shortBio: profile.shortBio || "",
+                            phoneNumber: profile.phoneNumbers ? profile.phoneNumbers[0] : "",
+                        };
+                        return [4 /*yield*/, this._mediaRepository.fetch({
+                                user: profile.user,
+                            })];
+                    case 4:
+                        talentMedias = _b.sent();
+                        if (talentMedias.length > 0) {
+                            for (_a = 0, talentMedias_1 = talentMedias; _a < talentMedias_1.length; _a++) {
+                                media = talentMedias_1[_a];
+                                modified.portfolioApproved =
+                                    media.items.filter(function (x) { return x.approvedBy; }).length > 0;
+                                if (modified.portfolioApproved)
+                                    break;
+                            }
+                        }
+                        talentProfiles = talentProfiles.concat([modified]);
+                        _b.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 6: return [2 /*return*/, Result_1.Result.ok(200, talentProfiles)];
                 }
             });
         });
