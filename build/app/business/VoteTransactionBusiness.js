@@ -141,6 +141,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        console.log(item);
                         if (!(item.keyword !== config.CONTEST_KEYWORD)) return [3 /*break*/, 2];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];

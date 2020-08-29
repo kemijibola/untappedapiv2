@@ -66,62 +66,48 @@ export class VoteController {
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("apikey from info-tek", req.headers["x-signature"]);
-      const vote: any = req.headers["x-signature"];
-      var decoded = Buffer.from(vote, "base64").toString();
-      console.log("decoded", decoded);
-      if (!req.headers["x-signature"]) return res.sendStatus(400);
+      // console.log("apikey from info-tek", req.headers["x-signature"]);
+      const apiKey: any = req.headers["x-signature"];
+      if (!apiKey) return res.sendStatus(400);
       if (
         !req.body.id ||
         !req.body.phone ||
         !req.body.shortcode ||
-        !req.body.host ||
+        !req.body.network ||
         !req.body.message
       )
         return res.sendStatus(400);
       var contestKeyPart: string[] = req.body.message.split(" ");
-      console.log("contestKeyParts", contestKeyPart);
-      if (contestKeyPart.length < 1) return res.sendStatus(400);
-      const applicationBusiness = new ApplicationBusiness();
-      var ceaserResult = await applicationBusiness.findByCriteria({
-        audience: `https://${req.body.host}`,
-        isActive: true,
+      if (contestKeyPart.length < 2) return res.sendStatus(400);
+
+      var decoded = Buffer.from(apiKey, "base64").toString();
+      if (decoded !== config.CEASER_SECRET) return res.sendStatus(400);
+      const item: VoteTransaction = Object.assign({
+        channelId: req.body.id,
+        phone: req.body.phone,
+        network: req.body.network,
+        shortcode: req.body.shortcode,
+        contestantCode: contestKeyPart[1].toUpperCase(),
+        keyword: contestKeyPart[0] ? contestKeyPart[0].toLowerCase() : "JUNK",
+        channelType: ChannelType.sms,
       });
-      console.log("ceaser engine found", ceaserResult);
-      if (ceaserResult.data) {
-        const apiKey: any = req.headers["x-signature"];
-        var decoded = Buffer.from(apiKey).toString("base64");
-        console.log("decoded", decoded);
-        if (decoded !== ceaserResult.data.clientSecret)
-          return res.sendStatus(400);
-        console.log("vote is about to be processed");
-        const item: VoteTransaction = Object.assign({
-          channelId: req.body.id,
-          phone: req.body.phone,
-          network: req.body.network,
-          shortcode: req.body.shortcode,
-          contestantCode: contestKeyPart[1],
-          keyword: contestKeyPart[0] ? contestKeyPart[0].toLowerCase() : "JUNK",
-          channelType: ChannelType.sms,
-        });
 
-        const voteBusiness = new VoteTransactionBusiness();
-        const result = await voteBusiness.createSMSVote(item);
+      const voteBusiness = new VoteTransactionBusiness();
+      const result = await voteBusiness.createSMSVote(item);
 
-        if (result.error) {
-          return next(
-            new PlatformError({
-              code: result.responseCode,
-              message: result.error,
-            })
-          );
-        }
-
-        return res.status(result.responseCode).json({
-          message: "Operation successful",
-          data: result.data,
-        });
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
       }
+
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
       return res.sendStatus(200);
     } catch (err) {
       console.log("");

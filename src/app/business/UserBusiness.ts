@@ -55,13 +55,6 @@ import {
   replaceTemplateString,
 } from "../../utils/lib/TemplatePlaceHolder";
 const config: AppConfig = require("../../config/keys");
-// import { scheduleEmail } from '../../utils/emailservice/ScheduleEmail';
-import { schedule } from "../../handlers/ScheduleTask";
-import { IEmail, EmailService } from "../../utils/emailservice/EmailService";
-import { UserSchema } from "../data/schema/User";
-import { StateMachineArns } from "../models/interfaces/custom/StateMachineArns";
-import { PlatformError } from "../../utils/error";
-import { EntityNotFoundError } from "../../utils/error/EntityNotFound";
 import {
   ConfirmEmailRequest,
   TokenResult,
@@ -73,7 +66,6 @@ import {
 import UserTypeRepository from "../repository/UserTypeRepository";
 import uuid from "uuid";
 import { addSeconds, getDate, addHours } from "date-fns";
-import { ses } from "../../utils/emailservice/aws/Sender";
 import { MailBusiness } from "./MailBusiness";
 
 class UserBusiness implements IUserBusiness {
@@ -265,15 +257,15 @@ class UserBusiness implements IUserBusiness {
 
       const typeOfUser = await this._userTypeRepository.findById(user.userType);
 
-      const rfToken: IRefreshToken = Object.assign({
-        token: uuid(),
-        application: refreshTokenParams.application,
-        ownerId: user._id,
-      });
+      // const rfToken: IRefreshToken = Object.assign({
+      //   token: uuid(),
+      //   application: refreshTokenParams.application,
+      //   ownerId: user._id,
+      // });
 
-      const newUserRefreshToken = await this._refreshTokenRepository.create(
-        rfToken
-      );
+      // const newUserRefreshToken = await this._refreshTokenRepository.create(
+      //   rfToken
+      // );
 
       const userToken: TokenResult = await user.generateToken(
         privateKey,
@@ -287,7 +279,7 @@ class UserBusiness implements IUserBusiness {
 
       const authData: IAuthData = {
         access_token: userToken.data,
-        refresh_token: newUserRefreshToken.token,
+        refresh_token: uuid(),
         rolePermissions: this.chunkedUserPermissons,
         token_expires: tokenExpiration,
         user_data: {

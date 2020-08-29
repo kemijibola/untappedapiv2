@@ -48,7 +48,6 @@ var ApplicationError_1 = require("../utils/error/ApplicationError");
 var decorators_1 = require("../decorators");
 var interfaces_1 = require("../app/models/interfaces");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
-var ApplicationBusiness = require("../app/business/ApplicationBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
 var ContestBusiness = require("../app/business/ContestBusiness");
 var config = module.require("../config/keys");
@@ -96,54 +95,38 @@ var VoteController = /** @class */ (function () {
     };
     VoteController.prototype.create = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var vote, decoded, contestKeyPart, applicationBusiness, ceaserResult, apiKey, decoded, item, voteBusiness, result, err_2;
+            var apiKey, contestKeyPart, decoded, item, voteBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
-                        console.log("apikey from info-tek", req.headers["x-signature"]);
-                        vote = req.headers["x-signature"];
-                        decoded = Buffer.from(vote, "base64").toString();
-                        console.log("decoded", decoded);
-                        if (!req.headers["x-signature"])
+                        _a.trys.push([0, 2, , 3]);
+                        apiKey = req.headers["x-signature"];
+                        if (!apiKey)
                             return [2 /*return*/, res.sendStatus(400)];
                         if (!req.body.id ||
                             !req.body.phone ||
                             !req.body.shortcode ||
-                            !req.body.host ||
+                            !req.body.network ||
                             !req.body.message)
                             return [2 /*return*/, res.sendStatus(400)];
                         contestKeyPart = req.body.message.split(" ");
-                        console.log("contestKeyParts", contestKeyPart);
-                        if (contestKeyPart.length < 1)
+                        if (contestKeyPart.length < 2)
                             return [2 /*return*/, res.sendStatus(400)];
-                        applicationBusiness = new ApplicationBusiness();
-                        return [4 /*yield*/, applicationBusiness.findByCriteria({
-                                audience: "https://" + req.body.host,
-                                isActive: true,
-                            })];
-                    case 1:
-                        ceaserResult = _a.sent();
-                        console.log("ceaser engine found", ceaserResult);
-                        if (!ceaserResult.data) return [3 /*break*/, 3];
-                        apiKey = req.headers["x-signature"];
-                        decoded = Buffer.from(apiKey).toString("base64");
-                        console.log("decoded", decoded);
-                        if (decoded !== ceaserResult.data.clientSecret)
+                        decoded = Buffer.from(apiKey, "base64").toString();
+                        if (decoded !== config.CEASER_SECRET)
                             return [2 /*return*/, res.sendStatus(400)];
-                        console.log("vote is about to be processed");
                         item = Object.assign({
                             channelId: req.body.id,
                             phone: req.body.phone,
                             network: req.body.network,
                             shortcode: req.body.shortcode,
-                            contestantCode: contestKeyPart[1],
+                            contestantCode: contestKeyPart[1].toUpperCase(),
                             keyword: contestKeyPart[0] ? contestKeyPart[0].toLowerCase() : "JUNK",
                             channelType: interfaces_1.ChannelType.sms,
                         });
                         voteBusiness = new VoteTransactionBusiness();
                         return [4 /*yield*/, voteBusiness.createSMSVote(item)];
-                    case 2:
+                    case 1:
                         result = _a.sent();
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
@@ -155,15 +138,14 @@ var VoteController = /** @class */ (function () {
                                 message: "Operation successful",
                                 data: result.data,
                             })];
-                    case 3: return [2 /*return*/, res.sendStatus(200)];
-                    case 4:
+                    case 2:
                         err_2 = _a.sent();
                         console.log("");
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
                                 message: "Internal Server error occured. Please try again later.",
                             }))];
-                    case 5: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

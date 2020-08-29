@@ -174,7 +174,7 @@ var UserBusiness = /** @class */ (function () {
     };
     UserBusiness.prototype.login = function (params, refreshTokenParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, rfToken, newUserRefreshToken, userToken, tokenExpiration, authData;
+            var criteria, user, passwordMatched, _i, _a, role, permissions, signInOptions, payload, privateKey, typeOfUser, userToken, tokenExpiration, authData;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -238,23 +238,15 @@ var UserBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._userTypeRepository.findById(user.userType)];
                     case 9:
                         typeOfUser = _c.sent();
-                        rfToken = Object.assign({
-                            token: uuid_1.default(),
-                            application: refreshTokenParams.application,
-                            ownerId: user._id,
-                        });
-                        return [4 /*yield*/, this._refreshTokenRepository.create(rfToken)];
-                    case 10:
-                        newUserRefreshToken = _c.sent();
                         return [4 /*yield*/, user.generateToken(privateKey, signInOptions, payload)];
-                    case 11:
+                    case 10:
                         userToken = _c.sent();
                         tokenExpiration = date_fns_1.addHours(new Date(), this._authExpiration);
                         if (userToken.error)
                             return [2 /*return*/, Result_1.Result.fail(401, "Invalid token.")];
                         authData = {
                             access_token: userToken.data,
-                            refresh_token: newUserRefreshToken.token,
+                            refresh_token: uuid_1.default(),
                             rolePermissions: this.chunkedUserPermissons,
                             token_expires: tokenExpiration,
                             user_data: {

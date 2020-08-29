@@ -86,6 +86,7 @@ var UploadController = /** @class */ (function () {
                         item = req.body;
                         item.action = action;
                         item.uploader = req.user;
+                        console.log(item.mediaType);
                         mediaFactory = new MediaMakerFactory_1.MediaMakerFactory().create(item.mediaType.toLowerCase());
                         return [4 /*yield*/, mediaFactory.getPresignedUrl(item)];
                     case 1:

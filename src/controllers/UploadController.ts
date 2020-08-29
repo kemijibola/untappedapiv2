@@ -71,6 +71,7 @@ export class UploadController {
       item.action = action;
       item.uploader = req.user;
 
+      console.log(item.mediaType);
       var mediaFactory: AbstractMedia = new MediaMakerFactory().create(
         item.mediaType.toLowerCase()
       );
