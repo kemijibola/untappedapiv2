@@ -42,8 +42,8 @@ process.on("unhandledRejection", function (err) {
 const port = config.PORT || 5000;
 app.set("port", port);
 
-const instance: number = config.NODE_APP_INSTANCE || 0;
-if (instance === 0) {
+const instance: string = config.NODE_APP_INSTANCE || "0";
+if (instance === "0") {
   userFilterJob();
   contestSettlement();
 }

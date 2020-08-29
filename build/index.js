@@ -30,8 +30,8 @@ process.on("unhandledRejection", function (err) {
 });
 var port = config.PORT || 5000;
 app.set("port", port);
-var instance = config.NODE_APP_INSTANCE || 0;
-if (instance === 0) {
+var instance = config.NODE_APP_INSTANCE || "0";
+if (instance === "0") {
     CronJob_1.userFilterJob();
     CronJob_1.contestSettlement();
 }

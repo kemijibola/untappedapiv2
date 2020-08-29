@@ -35,7 +35,7 @@ export interface AppConfig {
   PAYSTACKBASEURL: string;
   KEY: string;
   MiNIMUM_PRIZE_CASH: number;
-  NODE_APP_INSTANCE: number;
+  NODE_APP_INSTANCE: string;
   CEASER: string;
   CONTEST_KEYWORD: string;
   UNTAPPED_SUPPORT_EMAIL: string;
