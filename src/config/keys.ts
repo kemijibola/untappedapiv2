@@ -129,6 +129,7 @@ switch (environment) {
       UNTAPPED_CEO_EMAIL: process.env.UNTAPPED_CEO_EMAIL,
       UNTAPPED_ADMIN_EMAIL: process.env.UNTAPPED_ADMIN_EMAIL,
       NODE_APP_INSTANCE: process.env.NODE_APP_INSTANCE,
+      CEASER_SECRET: process.env.CEASER_SECRET,
     };
     break;
   default:
