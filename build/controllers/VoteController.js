@@ -112,9 +112,11 @@ var VoteController = /** @class */ (function () {
                             !req.body.message)
                             return [2 /*return*/, res.sendStatus(400)];
                         contestKeyPart = req.body.message.split(" ");
+                        console.log("line 83", contestKeyPart);
                         if (contestKeyPart.length < 2)
                             return [2 /*return*/, res.sendStatus(400)];
                         decoded = Buffer.from(apiKey, "base64").toString();
+                        console.log("decoded", decoded);
                         if (decoded !== config.CEASER_SECRET)
                             return [2 /*return*/, res.sendStatus(400)];
                         item = Object.assign({

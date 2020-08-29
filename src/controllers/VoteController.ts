@@ -80,9 +80,11 @@ export class VoteController {
       )
         return res.sendStatus(400);
       var contestKeyPart: string[] = req.body.message.split(" ");
+      console.log("line 83", contestKeyPart);
       if (contestKeyPart.length < 2) return res.sendStatus(400);
 
       var decoded = Buffer.from(apiKey, "base64").toString();
+      console.log("decoded", decoded);
       if (decoded !== config.CEASER_SECRET) return res.sendStatus(400);
       const item: VoteTransaction = Object.assign({
         channelId: req.body.id,
