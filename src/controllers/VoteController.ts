@@ -66,8 +66,10 @@ export class VoteController {
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("incoming request", req.body);
       // console.log("apikey from info-tek", req.headers["x-signature"]);
       const apiKey: any = req.headers["x-signature"];
+      console.log("apiKey", apiKey);
       if (!apiKey) return res.sendStatus(400);
       if (
         !req.body.id ||
