@@ -3,7 +3,7 @@ import { UserFilter } from "./filtercategory/UserFilter";
 import { Reconciliation } from "./contests/disbursement/Reconciliation";
 
 export const userFilterJob = () => {
-  cron.schedule("*/30 * * * *", async () => {
+  cron.schedule("*/2 * * * *", async () => {
     var report = UserFilter.initReport();
     await report.generateReport();
   });

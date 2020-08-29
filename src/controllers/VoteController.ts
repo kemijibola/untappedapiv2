@@ -70,7 +70,7 @@ export class VoteController {
       const vote: any = req.headers["x-signature"];
       var decoded = Buffer.from(vote, "base64").toString();
       console.log("decoded", decoded);
-      if (!req.headers["x-signature"]) return res.sendStatus(200);
+      if (!req.headers["x-signature"]) return res.sendStatus(400);
       if (
         !req.body.id ||
         !req.body.phone ||
@@ -78,10 +78,10 @@ export class VoteController {
         !req.body.host ||
         !req.body.message
       )
-        return res.sendStatus(200);
+        return res.sendStatus(400);
       var contestKeyPart: string[] = req.body.message.split(" ");
       console.log("contestKeyParts", contestKeyPart);
-      if (contestKeyPart.length < 1) return res.sendStatus(200);
+      if (contestKeyPart.length < 1) return res.sendStatus(400);
       const applicationBusiness = new ApplicationBusiness();
       var ceaserResult = await applicationBusiness.findByCriteria({
         audience: `https://${req.body.host}`,
@@ -93,7 +93,7 @@ export class VoteController {
         var decoded = Buffer.from(apiKey).toString("base64");
         console.log("decoded", decoded);
         if (decoded !== ceaserResult.data.clientSecret)
-          return res.sendStatus(200);
+          return res.sendStatus(400);
         console.log("vote is about to be processed");
         const item: VoteTransaction = Object.assign({
           channelId: req.body.id,

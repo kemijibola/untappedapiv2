@@ -45,6 +45,7 @@ export interface AppConfig {
   UNTAPPED_COMPETITION_EMAIL: string;
   UNTAPPED_CEO_EMAIL: string;
   UNTAPPED_ADMIN_EMAIL: string;
+  CEASER_SECRET: string;
 }
 export interface PaymentGate {
   paystack_secret: string;

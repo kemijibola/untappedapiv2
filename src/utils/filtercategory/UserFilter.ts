@@ -50,6 +50,8 @@ export class UserFilter {
       if (result.data) {
         let talents = await this.fetchUsers({
           userType: result.data._id,
+          isProfileCompleted: true,
+          status: AccountStatus.ACTIVATED,
         });
         let users: Talent[] = [];
 
@@ -115,6 +117,8 @@ export class UserFilter {
       if (result.data) {
         let professionals = await this.fetchUsers({
           userType: result.data._id,
+          isEmailConfirmed: true,
+          status: AccountStatus.ACTIVATED,
         });
 
         let users: Professional[] = [];
@@ -191,9 +195,6 @@ export class UserFilter {
   private fetchUsers = async (
     condition: UserListRequest
   ): Promise<IUserModel[]> => {
-    condition.isEmailConfirmed = true;
-    condition.isProfileCompleted = true;
-    condition.status = AccountStatus.ACTIVATED;
     const userBusiness = new UserBusiness();
     const usersModel = await userBusiness.fetch(condition);
     return usersModel.data ? usersModel.data : [];

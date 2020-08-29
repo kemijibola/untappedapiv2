@@ -47,7 +47,7 @@ var cron = __importStar(require("node-cron"));
 var UserFilter_1 = require("./filtercategory/UserFilter");
 var Reconciliation_1 = require("./contests/disbursement/Reconciliation");
 exports.userFilterJob = function () {
-    cron.schedule("*/30 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
+    cron.schedule("*/2 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
         var report;
         return __generator(this, function (_a) {
             switch (_a.label) {

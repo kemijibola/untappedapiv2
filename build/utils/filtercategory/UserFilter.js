@@ -62,6 +62,8 @@ var UserFilter = /** @class */ (function () {
                         if (!result.data) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.fetchUsers({
                                 userType: result.data._id,
+                                isProfileCompleted: true,
+                                status: interfaces_1.AccountStatus.ACTIVATED,
                             })];
                     case 2:
                         talents = _b.sent();
@@ -163,6 +165,8 @@ var UserFilter = /** @class */ (function () {
                         if (!result.data) return [3 /*break*/, 11];
                         return [4 /*yield*/, this.fetchUsers({
                                 userType: result.data._id,
+                                isEmailConfirmed: true,
+                                status: interfaces_1.AccountStatus.ACTIVATED,
                             })];
                     case 2:
                         professionals = _b.sent();
@@ -259,9 +263,6 @@ var UserFilter = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        condition.isEmailConfirmed = true;
-                        condition.isProfileCompleted = true;
-                        condition.status = interfaces_1.AccountStatus.ACTIVATED;
                         userBusiness = new UserBusiness();
                         return [4 /*yield*/, userBusiness.fetch(condition)];
                     case 1:

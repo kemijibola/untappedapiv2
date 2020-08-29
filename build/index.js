@@ -33,11 +33,11 @@ app.set("port", port);
 // console.log(process.env.NODE_APP_INSTANCE);
 CronJob_1.userFilterJob();
 CronJob_1.contestSettlement();
-// const instance: string = process.env.NODE_APP_INSTANCE || "0";
-// if (instance === "0") {
-//   userFilterJob();
-//   contestSettlement();
-// }
+var instance = process.env.NODE_APP_INSTANCE || "0";
+if (instance === "0") {
+    CronJob_1.userFilterJob();
+    CronJob_1.contestSettlement();
+}
 app.listen(port, function () {
     console.log("Untapped Pool app successfully started on " + port);
 });

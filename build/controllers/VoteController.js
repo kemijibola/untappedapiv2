@@ -106,17 +106,17 @@ var VoteController = /** @class */ (function () {
                         decoded = Buffer.from(vote, "base64").toString();
                         console.log("decoded", decoded);
                         if (!req.headers["x-signature"])
-                            return [2 /*return*/, res.sendStatus(200)];
+                            return [2 /*return*/, res.sendStatus(400)];
                         if (!req.body.id ||
                             !req.body.phone ||
                             !req.body.shortcode ||
                             !req.body.host ||
                             !req.body.message)
-                            return [2 /*return*/, res.sendStatus(200)];
+                            return [2 /*return*/, res.sendStatus(400)];
                         contestKeyPart = req.body.message.split(" ");
                         console.log("contestKeyParts", contestKeyPart);
                         if (contestKeyPart.length < 1)
-                            return [2 /*return*/, res.sendStatus(200)];
+                            return [2 /*return*/, res.sendStatus(400)];
                         applicationBusiness = new ApplicationBusiness();
                         return [4 /*yield*/, applicationBusiness.findByCriteria({
                                 audience: "https://" + req.body.host,
@@ -130,7 +130,7 @@ var VoteController = /** @class */ (function () {
                         decoded = Buffer.from(apiKey).toString("base64");
                         console.log("decoded", decoded);
                         if (decoded !== ceaserResult.data.clientSecret)
-                            return [2 /*return*/, res.sendStatus(200)];
+                            return [2 /*return*/, res.sendStatus(400)];
                         console.log("vote is about to be processed");
                         item = Object.assign({
                             channelId: req.body.id,
