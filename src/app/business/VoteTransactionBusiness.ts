@@ -81,7 +81,6 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
   }
 
   async createSMSVote(item: VoteTransaction): Promise<Result<VoteTransaction>> {
-    console.log(item);
     if (item.keyword !== config.CONTEST_KEYWORD) {
       item.voteStatus = VoteStatus.invalid;
       const newVote = await this._voteTransactionRepository.create(item);
