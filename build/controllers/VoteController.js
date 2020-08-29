@@ -100,7 +100,9 @@ var VoteController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        console.log("incoming request", req.body);
                         apiKey = req.headers["x-signature"];
+                        console.log("apiKey", apiKey);
                         if (!apiKey)
                             return [2 /*return*/, res.sendStatus(400)];
                         if (!req.body.id ||
