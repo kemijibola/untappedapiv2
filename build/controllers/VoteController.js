@@ -116,8 +116,8 @@ var VoteController = /** @class */ (function () {
                         if (contestKeyPart.length < 2)
                             return [2 /*return*/, res.sendStatus(400)];
                         decoded = Buffer.from(apiKey, "base64").toString();
-                        console.log("decoded", decoded);
-                        if (decoded !== config.CEASER_SECRET)
+                        console.log("ceaser secret", config.CEASER_SECRET);
+                        if (decoded.localeCompare(config.CEASER_SECRET))
                             return [2 /*return*/, res.sendStatus(400)];
                         item = Object.assign({
                             channelId: req.body.id,
