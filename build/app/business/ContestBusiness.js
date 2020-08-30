@@ -346,6 +346,29 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.patchCount = function (id, item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contest, updateObj;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestRepository.findById(id)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        item.paymentStatus = contest.paymentStatus;
+                        item.views = item.views;
+                        item.approved = contest.approved;
+                        item.approvedBy = contest.approvedBy;
+                        item.approvedDate = contest.approvedDate;
+                        return [4 /*yield*/, this._contestRepository.update(contest._id, item)];
+                    case 2:
+                        updateObj = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.patch = function (id, item) {
         return __awaiter(this, void 0, void 0, function () {
             var contest, updateObj;

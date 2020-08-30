@@ -514,8 +514,8 @@ var ContestController = /** @class */ (function () {
                                 }))];
                         }
                         if (!contest.data) return [3 /*break*/, 3];
-                        return [4 /*yield*/, contestBusiness.patch(req.params.id, {
-                                views: contest.data.views++,
+                        return [4 /*yield*/, contestBusiness.patchCount(req.params.id, {
+                                views: contest.data.views + 1,
                             })];
                     case 2:
                         result = _a.sent();
@@ -584,7 +584,10 @@ var ContestController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         contestBusiness = new ContestBusiness();
-                        return [4 /*yield*/, contestBusiness.fetch({})];
+                        return [4 /*yield*/, contestBusiness.fetch({
+                                approved: true,
+                                paymentStatus: interfaces_1.PaymentStatus.Completed,
+                            })];
                     case 1:
                         result = _a.sent();
                         if (result.error) {

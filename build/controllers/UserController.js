@@ -237,7 +237,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.postUpdateUserProfile = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var userBusiness, user, result, err_6;
+            var userBusiness, user, audience, result, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -249,7 +249,8 @@ var UserController = /** @class */ (function () {
                                 }))];
                         userBusiness = new UserBusiness();
                         user = req.user;
-                        return [4 /*yield*/, userBusiness.updateUserProfileStatus(req.body.userId)];
+                        audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
+                        return [4 /*yield*/, userBusiness.updateUserProfileStatus(req.body.userId, audience)];
                     case 1:
                         result = _a.sent();
                         if (result.error) {

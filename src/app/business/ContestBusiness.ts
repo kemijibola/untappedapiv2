@@ -246,6 +246,18 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<IContest>(200, updateObj);
   }
 
+  async patchCount(id: string, item: any): Promise<Result<IContest>> {
+    const contest = await this._contestRepository.findById(id);
+    if (!contest) return Result.fail<IContest>(404, "Competition not found");
+    item.paymentStatus = contest.paymentStatus;
+    item.views = item.views;
+    item.approved = contest.approved;
+    item.approvedBy = contest.approvedBy;
+    item.approvedDate = contest.approvedDate;
+    const updateObj = await this._contestRepository.update(contest._id, item);
+    return Result.ok<IContest>(200, updateObj);
+  }
+
   async patch(id: string, item: any): Promise<Result<IContest>> {
     const contest = await this._contestRepository.findById(id);
     if (!contest) return Result.fail<IContest>(404, "Competition not found");

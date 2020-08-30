@@ -17,6 +17,7 @@ var PlaceHolderKey;
     PlaceHolderKey["ContestTitle"] = "[ContestTitle]";
     PlaceHolderKey["ContestPosition"] = "[Position]";
     PlaceHolderKey["ContestantWallet"] = "[WalletId]";
+    PlaceHolderKey["UserWalletUrl"] = "[UserWalletUrl]";
 })(PlaceHolderKey = exports.PlaceHolderKey || (exports.PlaceHolderKey = {}));
 function replaceTemplateString(param) {
     var template = param.template;

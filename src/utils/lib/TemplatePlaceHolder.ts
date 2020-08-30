@@ -14,6 +14,7 @@ export enum PlaceHolderKey {
   ContestTitle = "[ContestTitle]",
   ContestPosition = "[Position]",
   ContestantWallet = "[WalletId]",
+  UserWalletUrl = "[UserWalletUrl]",
 }
 
 export interface TemplateKeyValue {

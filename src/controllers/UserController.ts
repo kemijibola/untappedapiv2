@@ -215,8 +215,10 @@ export class UserController {
 
       const userBusiness = new UserBusiness();
       const user = req.user;
+      const audience = req.appUser ? req.appUser.audience.toLowerCase() : "";
       const result = await userBusiness.updateUserProfileStatus(
-        req.body.userId
+        req.body.userId,
+        audience
       );
       if (result.error) {
         return next(

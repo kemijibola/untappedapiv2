@@ -46,6 +46,7 @@ import {
   WelcomeEmail,
   ForgotPasswordEmail,
   ChangeEmail,
+  ProfileActived,
 } from "../../utils/emailtemplates";
 import {
   TemplatePlaceHolder,
@@ -768,13 +769,41 @@ class UserBusiness implements IUserBusiness {
     return Result.ok<IUserModel>(200, updateObj);
   }
 
-  async updateUserProfileStatus(id: string): Promise<Result<IUserModel>> {
+  async updateUserProfileStatus(
+    id: string,
+    audience: string
+  ): Promise<Result<IUserModel>> {
     const user = await this._userRepository.findById(id);
     if (!user) return Result.fail<IUserModel>(404, "User not found");
 
     const updateObj = await this._userRepository.patch(user._id, {
       isProfileCompleted: true,
     });
+
+    const profileActivatedKeyValues: TemplateKeyValue[] = this.UserWalletKeyValue(
+      user.fullName,
+      `${audience}/user/${user.email.split("@")[0]}?tab=wallet`
+    );
+
+    const profileActivatedTemplateString: string = ProfileActived.template;
+
+    const profileActivatedPlaceHolder: TemplatePlaceHolder = {
+      template: profileActivatedTemplateString,
+      placeholders: profileActivatedKeyValues,
+    };
+
+    const emailBody: string = replaceTemplateString(
+      profileActivatedPlaceHolder
+    );
+    const recievers: string[] = [user.email];
+    const mailer = MailBusiness.init();
+    await mailer.sendMail(
+      `Seyifunmi from UntappedPool <${config.UNTAPPED_ADMIN_EMAIL}>`,
+      "Your profile is live",
+      recievers,
+      "Your profile is live on www.untappedpool.com",
+      emailBody
+    );
     return Result.ok<IUserModel>(200, updateObj);
   }
 
@@ -852,6 +881,21 @@ class UserBusiness implements IUserBusiness {
     ];
   }
 
+  private UserWalletKeyValue(
+    fullName: string,
+    userWalletUrl: string
+  ): TemplateKeyValue[] {
+    return [
+      {
+        key: PlaceHolderKey.Name,
+        value: fullName,
+      },
+      {
+        key: PlaceHolderKey.UserWalletUrl,
+        value: userWalletUrl,
+      },
+    ];
+  }
   // async fetchResourceByName(destinationUrl: string): Promise<IResource> {
   //   return await this._resourceRepository.findByCriteria({
   //     name: destinationUrl

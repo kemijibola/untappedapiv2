@@ -841,9 +841,9 @@ var UserBusiness = /** @class */ (function () {
             });
         });
     };
-    UserBusiness.prototype.updateUserProfileStatus = function (id) {
+    UserBusiness.prototype.updateUserProfileStatus = function (id, audience) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, updateObj;
+            var user, updateObj, profileActivatedKeyValues, profileActivatedTemplateString, profileActivatedPlaceHolder, emailBody, recievers, mailer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._userRepository.findById(id)];
@@ -856,6 +856,18 @@ var UserBusiness = /** @class */ (function () {
                             })];
                     case 2:
                         updateObj = _a.sent();
+                        profileActivatedKeyValues = this.UserWalletKeyValue(user.fullName, audience + "/user/" + user.email.split("@")[0] + "?tab=wallet");
+                        profileActivatedTemplateString = emailtemplates_1.ProfileActived.template;
+                        profileActivatedPlaceHolder = {
+                            template: profileActivatedTemplateString,
+                            placeholders: profileActivatedKeyValues,
+                        };
+                        emailBody = TemplatePlaceHolder_1.replaceTemplateString(profileActivatedPlaceHolder);
+                        recievers = [user.email];
+                        mailer = MailBusiness_1.MailBusiness.init();
+                        return [4 /*yield*/, mailer.sendMail("Seyifunmi from UntappedPool <" + config.UNTAPPED_ADMIN_EMAIL + ">", "Your profile is live", recievers, "Your profile is live on www.untappedpool.com", emailBody)];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(200, updateObj)];
                 }
             });
@@ -954,6 +966,18 @@ var UserBusiness = /** @class */ (function () {
             {
                 key: TemplatePlaceHolder_1.PlaceHolderKey.FullVerifyToken,
                 value: verificationUrl,
+            },
+        ];
+    };
+    UserBusiness.prototype.UserWalletKeyValue = function (fullName, userWalletUrl) {
+        return [
+            {
+                key: TemplatePlaceHolder_1.PlaceHolderKey.Name,
+                value: fullName,
+            },
+            {
+                key: TemplatePlaceHolder_1.PlaceHolderKey.UserWalletUrl,
+                value: userWalletUrl,
             },
         ];
     };

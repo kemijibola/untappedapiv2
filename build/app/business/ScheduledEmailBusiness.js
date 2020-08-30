@@ -56,7 +56,7 @@ var ScheduleEmailBusiness = /** @class */ (function () {
                         return [2 /*return*/, Result_1.Result.ok(200, scheduledEmails)];
                     case 2:
                         err_1 = _a.sent();
-                        throw new Error("InternalServer error occured." + err_1.message);
+                        throw new Error("Internal Server error occured." + err_1.message);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -70,7 +70,7 @@ var ScheduleEmailBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!id)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._scheduledEmailRepository.findById(id)];
                     case 1:
                         scheduledEmail = _a.sent();
@@ -95,7 +95,7 @@ var ScheduleEmailBusiness = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         if (!condition)
-                            return [2 /*return*/, Result_1.Result.fail(400, 'Bad request')];
+                            return [2 /*return*/, Result_1.Result.fail(400, "Bad request")];
                         return [4 /*yield*/, this._scheduledEmailRepository.findById(condition)];
                     case 1:
                         scheduledEmail = _a.sent();

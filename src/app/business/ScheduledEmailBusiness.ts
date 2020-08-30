@@ -1,7 +1,7 @@
-import ScheduledEmailRepository from '../repository/ScheduledEmailRepository';
-import IScheduledEmailBusiness = require('./interfaces/ScheduledEmailBusiness');
-import { IScheduledEmail } from '../models/interfaces';
-import { Result } from '../../utils/Result';
+import ScheduledEmailRepository from "../repository/ScheduledEmailRepository";
+import IScheduledEmailBusiness = require("./interfaces/ScheduledEmailBusiness");
+import { IScheduledEmail } from "../models/interfaces";
+import { Result } from "../../utils/Result";
 
 class ScheduleEmailBusiness implements IScheduledEmailBusiness {
   private _scheduledEmailRepository: ScheduledEmailRepository;
@@ -17,13 +17,13 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
       );
       return Result.ok<IScheduledEmail[]>(200, scheduledEmails);
     } catch (err) {
-      throw new Error(`InternalServer error occured.${err.message}`);
+      throw new Error(`Internal Server error occured.${err.message}`);
     }
   }
 
   async findById(id: string): Promise<Result<IScheduledEmail>> {
     try {
-      if (!id) return Result.fail<IScheduledEmail>(400, 'Bad request');
+      if (!id) return Result.fail<IScheduledEmail>(400, "Bad request");
       const scheduledEmail = await this._scheduledEmailRepository.findById(id);
       if (!scheduledEmail)
         return Result.fail<IScheduledEmail>(
@@ -38,7 +38,7 @@ class ScheduleEmailBusiness implements IScheduledEmailBusiness {
 
   async findOne(condition: any): Promise<Result<IScheduledEmail>> {
     try {
-      if (!condition) return Result.fail<IScheduledEmail>(400, 'Bad request');
+      if (!condition) return Result.fail<IScheduledEmail>(400, "Bad request");
       const scheduledEmail = await this._scheduledEmailRepository.findById(
         condition
       );

@@ -6,4 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./welcomeEmail"));
 __export(require("./forgotPasswordMail"));
 __export(require("./changeemail"));
+__export(require("./profileActivated"));
 //# sourceMappingURL=index.js.map

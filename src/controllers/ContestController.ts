@@ -578,8 +578,8 @@ export class ContestController {
         );
       }
       if (contest.data) {
-        const result = await contestBusiness.patch(req.params.id, {
-          views: contest.data.views++,
+        const result = await contestBusiness.patchCount(req.params.id, {
+          views: contest.data.views + 1,
         });
         if (result.error) {
           return next(
@@ -645,7 +645,10 @@ export class ContestController {
   async fetch(req: Request, res: Response, next: NextFunction) {
     try {
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetch({});
+      const result = await contestBusiness.fetch({
+        approved: true,
+        paymentStatus: PaymentStatus.Completed,
+      });
       if (result.error) {
         return next(
           new PlatformError({
