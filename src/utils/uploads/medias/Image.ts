@@ -67,7 +67,6 @@ export class Image extends AbstractMedia {
       signedUrls.presignedUrl = [...signedUrls.presignedUrl, signedUrl];
       return Result.ok<SignedUrl>(200, signedUrls);
     } catch (err) {
-      console.log(err);
       throw new Error("Internal server error occured");
     }
   }

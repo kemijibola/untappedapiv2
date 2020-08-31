@@ -11,16 +11,16 @@ var MediaMakerFactory = /** @class */ (function () {
         if (fileType === "image") {
             return new Image_1.Image();
         }
-        else if (fileType === "audio") {
+        if (fileType === "audio") {
             return new Audio_1.Audio();
         }
-        else if (fileType === "video") {
+        if (fileType === "video") {
             return new Video_1.Video();
         }
         else {
             throw new error_1.PlatformError({
                 code: 400,
-                message: "mediaType is invalid."
+                message: "mediaType is invalid.",
             });
         }
     };

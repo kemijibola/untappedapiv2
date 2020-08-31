@@ -10,14 +10,16 @@ export class MediaMakerFactory {
   create(fileType: string): AbstractMedia {
     if (fileType === "image") {
       return new Image();
-    } else if (fileType === "audio") {
+    }
+    if (fileType === "audio") {
       return new Audio();
-    } else if (fileType === "video") {
+    }
+    if (fileType === "video") {
       return new Video();
     } else {
       throw new PlatformError({
         code: 400,
-        message: "mediaType is invalid."
+        message: "mediaType is invalid.",
       });
     }
   }

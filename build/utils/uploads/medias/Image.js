@@ -116,7 +116,6 @@ var Image = /** @class */ (function (_super) {
                         return [2 /*return*/, Result_1.Result.ok(200, signedUrls)];
                     case 3:
                         err_1 = _b.sent();
-                        console.log(err_1);
                         throw new Error("Internal server error occured");
                     case 4: return [2 /*return*/];
                 }

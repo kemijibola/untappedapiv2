@@ -70,11 +70,10 @@ export class UploadController {
       const item: IUploadFileRequest = req.body;
       item.action = action;
       item.uploader = req.user;
-
-      
       var mediaFactory: AbstractMedia = new MediaMakerFactory().create(
         item.mediaType.toLowerCase()
       );
+      
       const result = await mediaFactory.getPresignedUrl(item);
       if (result.error) {
         return next(
@@ -89,6 +88,7 @@ export class UploadController {
         data: result.data,
       });
     } catch (err) {
+      console.log(err);
       if (err.code === 400) {
         return next(
           new PlatformError({
@@ -106,6 +106,11 @@ export class UploadController {
     }
   }
 
+  // @use(requestValidator)
+  // @requestValidators("component", "files", "mediaType")
+  // @use(requireAuth)
+  // @authorize(canUploadGigs, canUploadProfileImage)
+
   @post("/uploads/thumbnail")
   @use(requestValidator)
   @requestValidators("encodedImage")
@@ -117,6 +122,7 @@ export class UploadController {
     next: NextFunction
   ) {
     try {
+      console.log("called");
       if (req.body.encodedImage.length < 1) {
         return next(
           new PlatformError({
