@@ -73,7 +73,7 @@ export class UploadController {
       var mediaFactory: AbstractMedia = new MediaMakerFactory().create(
         item.mediaType.toLowerCase()
       );
-      
+
       const result = await mediaFactory.getPresignedUrl(item);
       if (result.error) {
         return next(
@@ -105,11 +105,6 @@ export class UploadController {
       );
     }
   }
-
-  // @use(requestValidator)
-  // @requestValidators("component", "files", "mediaType")
-  // @use(requireAuth)
-  // @authorize(canUploadGigs, canUploadProfileImage)
 
   @post("/uploads/thumbnail")
   @use(requestValidator)
