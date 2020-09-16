@@ -6,7 +6,7 @@ import {
   requestValidators,
   post,
   use,
-  authorize
+  authorize,
 } from "../decorators";
 import { IApplication } from "../app/models/interfaces";
 import ApplicationBusiness = require("../app/business/ApplicationBusiness");
@@ -15,7 +15,7 @@ import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
 import {
   canCreatePermission,
-  canCreateApplication
+  canCreateApplication,
 } from "../utils/lib/PermissionConstant";
 import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
 import { isValid, addDays } from "date-fns";
@@ -36,19 +36,19 @@ export class ApplicationController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: `Error occured. ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }
@@ -69,7 +69,6 @@ export class ApplicationController {
     try {
       const item: IApplication = req.body;
       // refreshTokenExpiresIn is expressed in days 1,2,3,4
-      console.log(item.refreshTokenExpiresIn);
       const newDate = addDays(new Date(), item.refreshTokenExpiresIn);
 
       if (!isValid(newDate))
@@ -77,7 +76,7 @@ export class ApplicationController {
           new PlatformError({
             code: 400,
             message:
-              "refreshTokenExpiresIn is invalid, expects a numeric value."
+              "refreshTokenExpiresIn is invalid, expects a numeric value.",
           })
         );
       if (item.refreshTokenExpiresIn > 7) {
@@ -85,7 +84,7 @@ export class ApplicationController {
           new PlatformError({
             code: 400,
             message:
-              "refreshTokenExpiresIn can not be valid for more than 7 days"
+              "refreshTokenExpiresIn can not be valid for more than 7 days",
           })
         );
       }
@@ -96,19 +95,19 @@ export class ApplicationController {
         return next(
           new PlatformError({
             code: result.responseCode,
-            message: `Error occured. ${result.error}`
+            message: `Error occured. ${result.error}`,
           })
         );
       }
       return res.status(result.responseCode).json({
         message: "Operation successful",
-        data: result.data
+        data: result.data,
       });
     } catch (err) {
       return next(
         new PlatformError({
           code: 500,
-          message: `Internal Server error occured.${err}`
+          message: `Internal Server error occured.${err}`,
         })
       );
     }

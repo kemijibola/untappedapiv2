@@ -90,14 +90,12 @@ mongoose_1.default.Query.prototype.exec = function () {
                     cacheValue = _a.sent();
                     // If we do, return that
                     if (cacheValue) {
-                        console.log("from cache...");
                         return [2 /*return*/, JSON.parse(cacheValue)];
                     }
                     return [4 /*yield*/, exec.apply(this, args)];
                 case 2:
                     result = _a.sent();
                     client.hset(this.hashKey, key, JSON.stringify(result));
-                    console.log("from db", result);
                     return [2 /*return*/, result];
             }
         });

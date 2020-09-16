@@ -102,7 +102,6 @@ var UploadController = /** @class */ (function () {
                             })];
                     case 2:
                         err_1 = _a.sent();
-                        console.log(err_1);
                         if (err_1.code === 400) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: err_1.code,
@@ -118,10 +117,6 @@ var UploadController = /** @class */ (function () {
             });
         });
     };
-    // @use(requestValidator)
-    // @requestValidators("component", "files", "mediaType")
-    // @use(requireAuth)
-    // @authorize(canUploadGigs, canUploadProfileImage)
     UploadController.prototype.getThumbNailPresignedUrl = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var mediaFactory, result, err_2;
@@ -129,7 +124,6 @@ var UploadController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        console.log("called");
                         if (req.body.encodedImage.length < 1) {
                             return [2 /*return*/, next(new error_1.PlatformError({
                                     code: 400,

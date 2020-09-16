@@ -33,6 +33,10 @@ export interface IJudge {
   judgeProfileImage: string;
   yearsOfExperience: number;
 }
+
+export interface IContestantCode {
+  contestantCodes: string[];
+}
 export interface IOffline {
   maxContestant?: number;
   grandFinaleDate?: Date;
@@ -46,6 +50,7 @@ export interface IContest
     IAppSpec,
     ITimeStamp,
     IApproval,
+    IContestantCode,
     mongoose.Document {
   title: string;
   code: string;
@@ -60,11 +65,13 @@ export interface IContest
   views: number;
   likedBy: string[];
   evaluations: string[];
+  numberOfParticipants: number;
   redeemable: IRedeemable[];
   createdBy: IUser["_id"];
   paymentStatus: PaymentStatus;
   issues?: IContestIssues[];
   approved: boolean;
+  isSmsOnly: boolean;
   approvedBy?: string;
   approvedDate?: Date;
   rejectionReason?: string;

@@ -114,11 +114,9 @@ var PermissionBusiness = /** @class */ (function () {
             var permission, newPermission;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("here");
-                        return [4 /*yield*/, this._permissionRepository.findByCriteria({
-                                name: item.name,
-                            })];
+                    case 0: return [4 /*yield*/, this._permissionRepository.findByCriteria({
+                            name: item.name,
+                        })];
                     case 1:
                         permission = _a.sent();
                         if (!(permission === null)) return [3 /*break*/, 3];

@@ -552,7 +552,7 @@ var UserBusiness = /** @class */ (function () {
                         emailBody = TemplatePlaceHolder_1.replaceTemplateString(welcomeEmailPlaceHolder);
                         recievers = [newUser.email];
                         mailer = MailBusiness_1.MailBusiness.init();
-                        return [4 /*yield*/, mailer.sendMail("Oluwakemi (CEO, UntappedPool) <" + config.UNTAPPED_CEO_EMAIL + ">", "UntappedPool Competitions", recievers, "\uD83D\uDC4Bhi " + newUser.fullName + "!", emailBody)];
+                        return [4 /*yield*/, mailer.sendMail("Oluwakemi (CEO, UntappedPool) <" + config.UNTAPPED_CEO_EMAIL + ">", "UntappedPool Competitions", recievers, "Welcome to UntappedPool, " + newUser.fullName + "! \uD83D\uDC4B", emailBody)];
                     case 6:
                         _a.sent();
                         _a.label = 7;

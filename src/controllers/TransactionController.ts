@@ -271,7 +271,6 @@ export class TransactionController {
     transferredAt: string
   ): Promise<void> {
     try {
-      console.log("line 291");
       const transactionRequestBusiness = new TransactionRequestBusiness();
       var result = await transactionRequestBusiness.updateTransactionStatus(
         transferCode,

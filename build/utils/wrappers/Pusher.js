@@ -18,7 +18,6 @@ var PusherHelper = /** @class */ (function () {
         return new PusherHelper();
     };
     PusherHelper.prototype.publish = function (channel, event, data) {
-        console.log("pusher message", data);
         this.pusher.trigger(channel, event, data);
     };
     return PusherHelper;

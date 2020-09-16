@@ -45,7 +45,6 @@ class PermissionBusiness implements IPermissionBusiness {
   }
 
   async create(item: IPermission): Promise<Result<IPermission>> {
-    console.log("here");
     const permission = await this._permissionRepository.findByCriteria({
       name: item.name,
     });

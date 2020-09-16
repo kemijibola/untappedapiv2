@@ -157,9 +157,7 @@ var OrderBusiness = /** @class */ (function () {
             var orderObj, transactionDate, user, additionalInfo, updateObj, service, settlement, additionalInfo, additionalInfo, additionalInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log(processorResponse);
-                        return [4 /*yield*/, this._orderRepository.findById(orderId)];
+                    case 0: return [4 /*yield*/, this._orderRepository.findById(orderId)];
                     case 1:
                         orderObj = _a.sent();
                         if (!orderObj)

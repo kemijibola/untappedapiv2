@@ -354,7 +354,7 @@ var ContestBusiness = /** @class */ (function () {
     };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var contest, contestant, alreadyVoted, userType, codeHasBeenAssigned, contestantCode, contestCode, newContestEntry;
+            var contest, contestant, alreadyVoted, userType, codeHasBeenAssigned, contestTitleChar, contestantCode, contestCode, newContestEntry;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this._contestRepository.findById(item.contest)];
@@ -384,6 +384,7 @@ var ContestBusiness = /** @class */ (function () {
                         if (contestant.userType != userType._id.toString())
                             return [2 /*return*/, Result_1.Result.fail(400, "User is not registered as a Talent")];
                         codeHasBeenAssigned = true;
+                        contestTitleChar = contest.title.substring(0, 1);
                         if (!contest)
                             return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
                         if (date_fns_1.isPast(contest.endDate))
@@ -392,7 +393,7 @@ var ContestBusiness = /** @class */ (function () {
                         _a.label = 5;
                     case 5:
                         if (!codeHasBeenAssigned) return [3 /*break*/, 7];
-                        contestantCode = ("" + contestant.fullName.substring(0, 1) + lib_1.generateRandomNumber(2)).toUpperCase();
+                        contestantCode = ("" + contestTitleChar + lib_1.generateRandomNumber(3)).toUpperCase();
                         return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
                                 contest: contest._id,
                                 contestantCode: contestantCode,

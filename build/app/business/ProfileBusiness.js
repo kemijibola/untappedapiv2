@@ -175,9 +175,7 @@ var ProfileBusiness = /** @class */ (function () {
             var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("user profile", criteria);
-                        return [4 /*yield*/, this._profileRepository.findByCriteria(criteria)];
+                    case 0: return [4 /*yield*/, this._profileRepository.findByCriteria(criteria)];
                     case 1:
                         profile = _a.sent();
                         if (!profile)

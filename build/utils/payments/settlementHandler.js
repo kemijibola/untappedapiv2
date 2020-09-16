@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var interfaces_1 = require("../../app/models/interfaces");
 var ContestRepository_1 = __importDefault(require("../../app/repository/ContestRepository"));
+var Helper_1 = require("../lib/Helper");
 var SettlementHandler = /** @class */ (function () {
     function SettlementHandler() {
         this._contestRepository = new ContestRepository_1.default();
@@ -61,6 +62,7 @@ var SettlementHandler = /** @class */ (function () {
                         if (updateObj) {
                             this._contestRepository.patch(item, {
                                 paymentStatus: interfaces_1.PaymentStatus.Completed,
+                                code: Helper_1.getRandomId(),
                             });
                         }
                         _a.label = 2;

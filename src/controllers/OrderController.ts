@@ -85,7 +85,6 @@ export class OrderController {
       const verifiedPayment = await paymentFactory.verifyPayment(
         req.body.reference
       );
-
       const orderBusiness = new OrderBusiness();
       const result = await orderBusiness.updatePayment(
         verifiedPayment,
@@ -114,6 +113,4 @@ export class OrderController {
       );
     }
   }
-
-  
 }

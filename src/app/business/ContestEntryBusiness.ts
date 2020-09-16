@@ -14,7 +14,11 @@ import {
   CreateEntryPosition,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
-import { generateRandomNumber, ObjectKeyString } from "../../utils/lib";
+import {
+  generateRandomNumber,
+  ObjectKeyString,
+  generateCustomChar,
+} from "../../utils/lib";
 import { IUserContestListAnalysis } from "../models/interfaces/custom/ContestList";
 import { isFuture, isPast } from "date-fns";
 
@@ -314,16 +318,16 @@ class ContestBusiness implements IContestEntryBusiness {
       );
 
     let codeHasBeenAssigned = true;
+    const contestTitleChar = contest.title.substring(0, 1);
     if (!contest)
       return Result.fail<IContestEntry>(404, "Competition not found");
     if (isPast(contest.endDate))
       return Result.fail<IContestEntry>(400, "Competition has ended");
     let contestantCode = "";
     while (codeHasBeenAssigned) {
-      contestantCode = `${contestant.fullName.substring(
-        0,
-        1
-      )}${generateRandomNumber(2)}`.toUpperCase();
+      contestantCode = `${contestTitleChar}${generateRandomNumber(
+        3
+      )}`.toUpperCase();
       const contestCode = await this._contestEntryRepository.findByCriteria({
         contest: contest._id,
         contestantCode,

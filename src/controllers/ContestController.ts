@@ -14,8 +14,10 @@ import {
   MediaType,
   PaymentStatus,
   PrizePosition,
+  IContestEntry,
 } from "../app/models/interfaces";
 import ContestBusiness = require("../app/business/ContestBusiness");
+import ContestEntryBusiness = require("../app/business/ContestEntryBusiness");
 import { PlatformError } from "../utils/error";
 import { requestValidator } from "../middlewares/ValidateRequest";
 import { requireAuth } from "../middlewares/auth";
@@ -149,6 +151,75 @@ export class ContestController {
           })
         );
       }
+      return res.status(201).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  @post("/sms-vote/competition")
+  @use(requestValidator)
+  @use(requireAuth)
+  @requestValidators("title", "startDate", "endDate", "numberOfParticipants")
+  @authorize(canCreateContest)
+  async createSMSVoteOnlyCompetition(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      /**
+       * If eligibleCategories is [], means contest is open to all categories
+       *
+       */
+
+      const item: IContest = req.body;
+      if (!item.title)
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Please provide competition title",
+          })
+        );
+      if (isAfter(Date.now(), item.startDate)) {
+        return next(
+          new PlatformError({
+            code: 400,
+            message: "Contest start date must be today or a later date",
+          })
+        );
+      }
+
+      if (item.numberOfParticipants < 2)
+        return next(
+          new PlatformError({
+            code: 400,
+            message:
+              "Please provide at least 2 participants for the competition",
+          })
+        );
+
+      item.createdBy = req.user;
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.createSMSVoteCompetition(item);
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+
       return res.status(201).json({
         message: "Operation successful",
         data: result.data,
@@ -305,6 +376,7 @@ export class ContestController {
       let condition = {
         paymentStatus: PaymentStatus.Completed,
         approved: true,
+        isSmsOnly: false,
       };
       const contestBusiness = new ContestBusiness();
       const result = await contestBusiness.fetchContestList(
@@ -380,6 +452,7 @@ export class ContestController {
       const result = await contestBusiness.fetch({
         approved: false,
         paymentStatus: PaymentStatus.Completed,
+        isSmsOnly: false,
       });
       if (result.error) {
         return next(
@@ -607,15 +680,17 @@ export class ContestController {
 
   @get("/user/contests")
   @use(requestValidator)
-  async fetchContestListByUser(
+  @use(requireAuth)
+  async fetchAllContestByProfessional(
     req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const userId: string = req.user;
       const contestBusiness = new ContestBusiness();
-      const result = await contestBusiness.fetchContestListByUser(userId);
+      const result = await contestBusiness.paginatedFetch({
+        createdBy: req.user,
+      });
       if (result.error) {
         return next(
           new PlatformError({
@@ -629,7 +704,6 @@ export class ContestController {
         data: result.data,
       });
     } catch (err) {
-      console.log("got here");
       return next(
         new PlatformError({
           code: 500,
@@ -638,6 +712,76 @@ export class ContestController {
       );
     }
   }
+
+  @get("/:id/participants")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canCreateContest)
+  async fetchContestParticipants(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const contestBusiness = new ContestBusiness();
+      const result = await contestBusiness.fetchContestParticipants(
+        req.params.id,
+        req.user
+      );
+      if (result.error) {
+        return next(
+          new PlatformError({
+            code: result.responseCode,
+            message: result.error,
+          })
+        );
+      }
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
+  // @get("/user/contests")
+  // @use(requestValidator)
+  // async fetchContestListByUser(
+  //   req: RequestWithUser,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const userId: string = req.user;
+  //     const contestBusiness = new ContestBusiness();
+  //     const result = await contestBusiness.fetchContestListByUser(userId);
+  //     if (result.error) {
+  //       return next(
+  //         new PlatformError({
+  //           code: result.responseCode,
+  //           message: result.error,
+  //         })
+  //       );
+  //     }
+  //     return res.status(result.responseCode).json({
+  //       message: "Operation successful",
+  //       data: result.data,
+  //     });
+  //   } catch (err) {
+  //     return next(
+  //       new PlatformError({
+  //         code: 500,
+  //         message: "Internal Server error occured. Please try again later.",
+  //       })
+  //     );
+  //   }
+  // }
 
   @get("/")
   @use(requestValidator)
@@ -648,6 +792,7 @@ export class ContestController {
       const result = await contestBusiness.fetch({
         approved: true,
         paymentStatus: PaymentStatus.Completed,
+        isSmsOnly: false,
       });
       if (result.error) {
         return next(
@@ -702,28 +847,25 @@ export class ContestController {
         );
       }
       if (result.data) {
-        if (result.data.length) {
-          if (result.data[0].createdBy.toString() === req.user) {
-            return res.status(200).json({
-              message: "Operation successful",
-              isAvailable: true,
-            });
-          } else {
+        if (result.data.length > 0) {
+          if (result.data[0].code) {
             return res.status(200).json({
               message: "Operation successful",
               isAvailable: false,
             });
+          } else {
+            return res.status(200).json({
+              message: "Operation successful",
+              isAvailable: true,
+              contestId: result.data[0]._id,
+            });
           }
-        }
-        return res.status(200).json({
-          message: "Operation successful",
-          isAvailable: true,
-        });
+        } else
+          return res.status(200).json({
+            message: "Operation successfu",
+            isAvailable: true,
+          });
       }
-      return res.status(200).json({
-        message: "Operation successful",
-        isAvailable: true,
-      });
     } catch (err) {
       console.log(err);
       return next(

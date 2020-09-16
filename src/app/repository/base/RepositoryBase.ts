@@ -111,6 +111,7 @@ class RepositoryBase<T extends mongoose.Document>
     });
   }
 
+  
   fetchTransactionsOrderedByDate(condition: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._model
@@ -174,6 +175,21 @@ class RepositoryBase<T extends mongoose.Document>
           endDate: "desc",
         })
         // .cacheDocQueries({ collectionName: this._model.collection.name })
+        .exec();
+    });
+  }
+
+  fetchOrderByCreatedDate(condition: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._model
+        .find(condition, (error: any, result: any) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        //.cacheDocQueries({ collectionName: this._model.collection.name })
+        .sort({
+          createdAt: "desc",
+        })
         .exec();
     });
   }

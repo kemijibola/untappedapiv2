@@ -65,7 +65,6 @@ export class Reconciliation {
 
   private fetchContestFinalist = async (contest: IContest): Promise<void> => {
     try {
-      console.log("called");
       var prizeRedeemed = false;
       const contestEntryBusiness = new ContestEntryBusiness();
       const voteTransactionBusiness = new VoteTransactionBusiness();
@@ -74,7 +73,7 @@ export class Reconciliation {
         contest: contest._id,
         approved: true,
       });
-      console.log("entries", contestEntries);
+
       const contestFinalist = await voteTransactionBusiness.fetchTopContestants(
         contest._id,
         contestEntries,

@@ -162,12 +162,21 @@ exports.generateInvoiceNo = generateInvoiceNo;
 function generateRandomNumber(size) {
     var otp = "";
     var possible = "0123456789";
-    for (var i = 0; i <= size; i++) {
+    for (var i = 0; i < size; i++) {
         otp += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return otp;
 }
 exports.generateRandomNumber = generateRandomNumber;
+function generateCustomChar(size) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ";
+    for (var i = 0; i < size; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+}
+exports.generateCustomChar = generateCustomChar;
 function generateAutoPassword() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789abcdefghijklmnopqrstuvwxyz";

@@ -87,7 +87,6 @@ var Reconciliation = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        console.log("called");
                         prizeRedeemed = false;
                         contestEntryBusiness = new ContestEntryBusiness();
                         voteTransactionBusiness = new VoteTransactionBusiness();
@@ -97,7 +96,6 @@ var Reconciliation = /** @class */ (function () {
                             })];
                     case 1:
                         contestEntries = _a.sent();
-                        console.log("entries", contestEntries);
                         return [4 /*yield*/, voteTransactionBusiness.fetchTopContestants(contest._id, contestEntries, contest.redeemable.length)];
                     case 2:
                         contestFinalist = _a.sent();

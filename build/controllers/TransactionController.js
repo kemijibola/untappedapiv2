@@ -254,7 +254,6 @@ var TransactionController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        console.log("line 291");
                         transactionRequestBusiness = new TransactionRequestBusiness();
                         return [4 /*yield*/, transactionRequestBusiness.updateTransactionStatus(transferCode, recipientCode, amount, status, responseMessge, responseCode, responseBody)];
                     case 1:

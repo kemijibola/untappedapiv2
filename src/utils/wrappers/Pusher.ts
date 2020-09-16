@@ -18,7 +18,6 @@ class PusherHelper {
   }
 
   publish(channel: string, event: string, data: any): void {
-    console.log("pusher message", data);
     this.pusher.trigger(channel, event, data);
   }
 }

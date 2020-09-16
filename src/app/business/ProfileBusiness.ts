@@ -90,7 +90,6 @@ class ProfileBusiness implements IProfileBusiness {
   }
 
   async findByCriteria(criteria: any): Promise<Result<IProfile>> {
-    console.log("user profile", criteria);
     const profile = await this._profileRepository.findByCriteria(criteria);
     if (!profile) return Result.fail<IProfile>(404, "Profile not found");
     return Result.ok<IProfile>(200, profile);

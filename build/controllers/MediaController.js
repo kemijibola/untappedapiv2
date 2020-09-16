@@ -112,7 +112,6 @@ var MediaController = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         updateObj = req.body;
                         updateObj.user = req.user;
-                        console.log(updateObj);
                         mediaBusiness = new MediaBusiness();
                         return [4 /*yield*/, mediaBusiness.updateExistingMedia(req.params.id, updateObj)];
                     case 1:
@@ -175,7 +174,6 @@ var MediaController = /** @class */ (function () {
                         req.body.mediaType = mediaType;
                         newMedia = req.body;
                         newMedia.user = req.user;
-                        console.log(newMedia);
                         mediaBusiness = new MediaBusiness();
                         return [4 /*yield*/, mediaBusiness.create(newMedia)];
                     case 1:
@@ -293,7 +291,6 @@ var MediaController = /** @class */ (function () {
                                 }))];
                         }
                         uploadType = req.query.uploadType.toLowerCase();
-                        console.log(uploadType);
                         systemUploadTypes = Object.values(interfaces_1.MediaUploadType);
                         if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
                             return [2 /*return*/, next(new error_1.PlatformError({

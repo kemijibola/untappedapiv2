@@ -82,7 +82,6 @@ class OrderBusiness implements IOrderBusiness {
     processorResponse: PaymentGatewayResponse,
     orderId: string
   ): Promise<Result<IOrder>> {
-    console.log(processorResponse);
     const orderObj = await this._orderRepository.findById(orderId);
     if (!orderObj) return Result.fail<IOrder>(404, "Order not found");
 

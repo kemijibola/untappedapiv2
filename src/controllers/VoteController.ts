@@ -17,10 +17,15 @@ import {
 import VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
 import ApplicationBusiness = require("../app/business/ApplicationBusiness");
 import { requestValidator } from "../middlewares/ValidateRequest";
-import { canCreateUserType } from "../utils/lib/PermissionConstant";
+import {
+  canCreateContest,
+  canCreateUserType,
+} from "../utils/lib/PermissionConstant";
 import ContestBusiness = require("../app/business/ContestBusiness");
 import { signatureHash } from "../utils/lib/Helper";
 import { AppConfig } from "../app/models/interfaces/custom/AppConfig";
+import { RequestWithUser } from "../app/models/interfaces/custom/RequestHandler";
+import { requireAuth } from "../middlewares/auth";
 const config: AppConfig = module.require("../config/keys");
 
 @controller("/v1/votes")
@@ -62,14 +67,49 @@ export class VoteController {
     }
   }
 
+  @get("/contests/:id/result")
+  @use(requestValidator)
+  @use(requireAuth)
+  @authorize(canCreateContest)
+  async fetchContestVoteResult(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const contestId: string = req.params.id;
+      const voteTransactionBusiness = new VoteTransactionBusiness();
+      var result = await voteTransactionBusiness.fetchContestResult(
+        contestId,
+        req.user
+      );
+      if (result.error)
+        return next(
+          new PlatformError({
+            code: 404,
+            message: result.error,
+          })
+        );
+      return res.status(result.responseCode).json({
+        message: "Operation successful",
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(
+        new PlatformError({
+          code: 500,
+          message: "Internal Server error occured. Please try again later.",
+        })
+      );
+    }
+  }
+
   @post("/")
   // @requestValidators("id", "phone", "network", "shortcode", "message")
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("incoming request", req.body);
-      // console.log("apikey from info-tek", req.headers["x-signature"]);
       const apiKey: any = req.headers["x-signature"];
-      console.log("apiKey", apiKey);
       if (!apiKey) return res.sendStatus(400);
       if (
         !req.body.id ||

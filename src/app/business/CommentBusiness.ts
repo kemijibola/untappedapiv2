@@ -77,7 +77,7 @@ class CommentBusiness implements ICommentBusiness {
         404,
         `Could not update comment.Comment with Id ${id} not found`
       );
-    // console.log(item.likedBy);
+
     const updateObj = await this._commentRepository.update(comment._id, item);
     const commenterDetails = await this._userRepository.findById(
       updateObj.user

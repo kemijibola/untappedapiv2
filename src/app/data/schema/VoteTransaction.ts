@@ -36,6 +36,9 @@ const voteTransactionSchema: Schema = new Schema(
     voteStatus: {
       type: VoteStatus,
     },
+    reason: {
+      type: String,
+    },
     application: {
       type: Schema.Types.ObjectId,
       ref: "Application",

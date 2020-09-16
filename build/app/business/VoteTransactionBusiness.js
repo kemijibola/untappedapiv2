@@ -143,6 +143,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                     case 0:
                         if (!(item.keyword !== config.CONTEST_KEYWORD)) return [3 /*break*/, 2];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        item.reason = "Invalid Keyword";
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 1:
                         newVote_1 = _a.sent();
@@ -154,6 +155,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         contestEntry = _a.sent();
                         if (!!contestEntry) return [3 /*break*/, 5];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        item.reason = "Invalid contestant entry";
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 4:
                         newVote_2 = _a.sent();
@@ -165,6 +167,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         contest = _a.sent();
                         if (!!contest) return [3 /*break*/, 8];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        item.reason = "Invalid competition";
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 7:
                         newVote_3 = _a.sent();
@@ -173,6 +176,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         if (!contest) return [3 /*break*/, 10];
                         if (!date_fns_1.isAfter(Date.now(), contest.endDate)) return [3 /*break*/, 10];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        item.reason = "Competition has ended";
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 9:
                         newVote_4 = _a.sent();
@@ -278,8 +282,46 @@ var VoteTransactionBusiness = /** @class */ (function () {
                             });
                             return [2 /*return*/, contestants];
                         }
-                        console.log("finalist", contestants);
                         return [2 /*return*/, contestants];
+                }
+            });
+        });
+    };
+    VoteTransactionBusiness.prototype.fetchContestResult = function (contestId, createdBy) {
+        return __awaiter(this, void 0, void 0, function () {
+            var finalResult, contest, voteResults, i, _i, voteResults_1, item, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        finalResult = [];
+                        return [4 /*yield*/, this._contestRepository.findById(contestId)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (createdBy != contest.createdBy)
+                            return [2 /*return*/, Result_1.Result.fail(403, "You are not authorized to make reqest")];
+                        return [4 /*yield*/, this._voteTransactionRepository.fetch({ contestId: contest._id })];
+                    case 2:
+                        voteResults = _a.sent();
+                        i = 1;
+                        for (_i = 0, voteResults_1 = voteResults; _i < voteResults_1.length; _i++) {
+                            item = voteResults_1[_i];
+                            result = {
+                                sn: i++,
+                                id: item._id,
+                                competition_code: contest.code,
+                                phone: item.phone,
+                                network: item.network,
+                                shortcode: item.shortcode,
+                                contestant_code: item.contestantCode,
+                                channel_type: item.channelType,
+                                status: item.voteStatus.toString(),
+                                vote_date: item.createdAt,
+                            };
+                            finalResult = finalResult.concat([result]);
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, finalResult)];
                 }
             });
         });

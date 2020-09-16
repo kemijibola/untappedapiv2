@@ -72,18 +72,18 @@ var ApplicationController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: "Error occured. " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_1 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_1
+                                message: "Internal Server error occured." + err_1,
                             }))];
                     case 3: return [2 /*return*/];
                 }
@@ -98,18 +98,16 @@ var ApplicationController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         item = req.body;
-                        // refreshTokenExpiresIn is expressed in days 1,2,3,4
-                        console.log(item.refreshTokenExpiresIn);
                         newDate = date_fns_1.addDays(new Date(), item.refreshTokenExpiresIn);
                         if (!date_fns_1.isValid(newDate))
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
-                                    message: "refreshTokenExpiresIn is invalid, expects a numeric value."
+                                    message: "refreshTokenExpiresIn is invalid, expects a numeric value.",
                                 }))];
                         if (item.refreshTokenExpiresIn > 7) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: 400,
-                                    message: "refreshTokenExpiresIn can not be valid for more than 7 days"
+                                    message: "refreshTokenExpiresIn can not be valid for more than 7 days",
                                 }))];
                         }
                         item.clientId = item.clientId.toLowerCase();
@@ -120,18 +118,18 @@ var ApplicationController = /** @class */ (function () {
                         if (result.error) {
                             return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                     code: result.responseCode,
-                                    message: "Error occured. " + result.error
+                                    message: "Error occured. " + result.error,
                                 }))];
                         }
                         return [2 /*return*/, res.status(result.responseCode).json({
                                 message: "Operation successful",
-                                data: result.data
+                                data: result.data,
                             })];
                     case 2:
                         err_2 = _a.sent();
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
-                                message: "Internal Server error occured." + err_2
+                                message: "Internal Server error occured." + err_2,
                             }))];
                     case 3: return [2 /*return*/];
                 }

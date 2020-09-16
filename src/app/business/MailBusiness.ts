@@ -16,7 +16,6 @@ export class MailBusiness {
     mailBody: string
   ) {
     try {
-      console.log("sending mail....", receivers);
       const mailParams: IEmail = {
         receivers: [...receivers],
         subject,
@@ -28,7 +27,6 @@ export class MailBusiness {
       const mailer = EmailService.mailer(mailParams);
       await mailer.sendMail(ses);
     } catch (err) {
-      console.log("error", err);
       // log error
     }
   }

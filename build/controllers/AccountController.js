@@ -159,7 +159,6 @@ var AuthController = /** @class */ (function () {
                             })];
                     case 2:
                         err_2 = _a.sent();
-                        console.log(err_2.message);
                         // log err.message to a logger with name of action
                         return [2 /*return*/, next(new error_1.PlatformError({
                                 code: 500,

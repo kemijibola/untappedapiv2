@@ -143,7 +143,6 @@ export class AuthController {
         data: result.data,
       });
     } catch (err) {
-      console.log(err.message);
       // log err.message to a logger with name of action
       return next(
         new PlatformError({

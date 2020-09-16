@@ -69,7 +69,6 @@ mongoose.Query.prototype.exec = async function (...args: any[]) {
 
   // If we do, return that
   if (cacheValue) {
-    console.log("from cache...");
     return JSON.parse(cacheValue);
   }
 
@@ -77,7 +76,7 @@ mongoose.Query.prototype.exec = async function (...args: any[]) {
   const result = await exec.apply(this, args);
 
   client.hset(this.hashKey, key, JSON.stringify(result));
-  console.log("from db", result);
+
   return result;
 };
 

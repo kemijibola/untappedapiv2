@@ -92,7 +92,7 @@ export class MediaController {
     try {
       const updateObj: IMedia = req.body;
       updateObj.user = req.user;
-      console.log(updateObj);
+
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.updateExistingMedia(
         req.params.id,
@@ -165,7 +165,7 @@ export class MediaController {
       req.body.mediaType = mediaType;
       const newMedia: IMedia = req.body;
       newMedia.user = req.user;
-      console.log(newMedia);
+
       const mediaBusiness = new MediaBusiness();
       const result = await mediaBusiness.create(newMedia);
       if (result.error) {
@@ -299,7 +299,6 @@ export class MediaController {
       }
 
       const uploadType: string = req.query.uploadType.toLowerCase();
-      console.log(uploadType);
       const systemUploadTypes: string[] = Object.values(MediaUploadType);
       if (!systemUploadTypes.includes(uploadType) && uploadType !== "all") {
         return next(

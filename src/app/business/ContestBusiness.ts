@@ -1,3 +1,4 @@
+import { CompetitionParticipant } from "./../models/interfaces/custom/ContestList";
 import {
   IEntries,
   ContestWithEntriesPreview,
@@ -28,10 +29,17 @@ import {
   IContestList,
   IUserContestListAnalysis,
   IContestEntryPreview,
+  AllContestViewModel,
 } from "../models/interfaces/custom/ContestList";
 import { ContestSummary } from "../../utils/contests/ContestSummary";
 import { ContestListAnalysis } from "../../utils/contests/analyzers/ContestListAnalysis";
-import { getRandomId, getTime, ObjectKeyString } from "../../utils/lib";
+import {
+  getRandomId,
+  getTime,
+  ObjectKeyString,
+  generateCustomChar,
+  generateRandomNumber,
+} from "../../utils/lib";
 
 class ContestBusiness implements IContestBusiness {
   private _contestRepository: ContestRepository;
@@ -51,6 +59,50 @@ class ContestBusiness implements IContestBusiness {
   async fetch(condition: any): Promise<Result<IContest[]>> {
     const contests = await this._contestRepository.fetch(condition);
     return Result.ok<IContest[]>(200, contests);
+  }
+
+  async paginatedFetch(condition: any): Promise<Result<AllContestViewModel[]>> {
+    const contests = await this._contestRepository.fetchOrderByCreatedDate(
+      condition
+    );
+    const modified = await this.aggregateUserContest(contests);
+    return Result.ok<AllContestViewModel[]>(200, modified);
+  }
+
+  async fetchContestParticipants(
+    contestId: string,
+    createdBy: string
+  ): Promise<Result<CompetitionParticipant[]>> {
+    let finalResult: CompetitionParticipant[] = [];
+    const contest = await this._contestRepository.findById(contestId);
+    if (!contest)
+      return Result.fail<CompetitionParticipant[]>(
+        404,
+        "Competition not found"
+      );
+    if (createdBy != contest.createdBy)
+      return Result.fail<CompetitionParticipant[]>(
+        403,
+        "You are not authorized to make reqest"
+      );
+    const competitionParticipants: IContestEntry[] = await this._contestEntryRepository.fetch(
+      { contest: contest._id, approved: true }
+    );
+
+    let i = 1;
+    for (let item of competitionParticipants) {
+      const participant: CompetitionParticipant = {
+        sn: i++,
+        id: item._id,
+        competition_code: contest.code,
+        contestant_code: item.contestantCode,
+        entry: item.entry,
+        entry_date: item.createdAt,
+      };
+
+      finalResult = [...finalResult, participant];
+    }
+    return Result.ok<CompetitionParticipant[]>(200, finalResult);
   }
 
   async fetchContestList(
@@ -151,6 +203,37 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<ContestWithEntries>(200, contestDetails);
   }
 
+  async aggregateUserContest(
+    userContests: IContest[]
+  ): Promise<AllContestViewModel[]> {
+    let userContestResults: AllContestViewModel[] = [];
+    for (let item of userContests) {
+      const contestEntries: IContestEntry[] = await this._contestEntryRepository.fetch(
+        {
+          contest: item._id,
+        }
+      );
+
+      const totalContestVotes: VoteTransaction[] = await this._voteTransactionRepository.fetch(
+        { contestId: item._id }
+      );
+
+      let userContest: AllContestViewModel = {
+        _id: item._id,
+        code: item.code,
+        title: item.title,
+        totalEntries: contestEntries.length,
+        totalVotes: totalContestVotes.length,
+        createdDate: item.createdAt,
+        paymentStatus: item.paymentStatus,
+        contestStartDate: item.startDate,
+        contestEndDate: item.endDate,
+      };
+      userContestResults = [...userContestResults, userContest];
+    }
+    return userContestResults;
+  }
+
   async fetchContestListByUser(
     userId: string
   ): Promise<Result<IUserContestListAnalysis[]>> {
@@ -161,6 +244,7 @@ class ContestBusiness implements IContestBusiness {
     const userContests: IContest[] = await this._contestRepository.fetch({
       paymentStatus: PaymentStatus.Completed,
       approved: true,
+      isSmsOnly: false,
     });
 
     for (let item of userContests) {
@@ -211,6 +295,59 @@ class ContestBusiness implements IContestBusiness {
     return Result.ok<IContest>(200, contest);
   }
 
+  async createSMSVoteCompetition(item: IContest): Promise<Result<IContest>> {
+    item.views = 0;
+    item.isSmsOnly = true;
+    item.likedBy = [];
+    item.paymentStatus = PaymentStatus.Completed;
+    item.issues = [];
+    item.approved = true;
+    item.approvedBy = "";
+    item.isSmsOnly = true;
+    item.code = getRandomId();
+
+    const contestTitleChar = item.title.substring(0, 1);
+
+    let codeHasBeenAssigned = true;
+    const newContest = await this._contestRepository.create(item);
+
+    if (newContest) {
+      for (let i = 0; i < item.numberOfParticipants; i++) {
+        let contestantCode = "";
+        contestantCode = generateRandomNumber(4);
+        while (codeHasBeenAssigned) {
+          const contestCode = await this._contestEntryRepository.findByCriteria(
+            {
+              contest: newContest._id,
+              contestantCode,
+            }
+          );
+          if (contestCode) codeHasBeenAssigned = true;
+          else codeHasBeenAssigned = false;
+        }
+        const entry: IContestEntry = Object.assign({
+          user: newContest.createdBy,
+          contest: newContest._id,
+          title: "SMS Voting Competition",
+          entry: "SMS Voting Competition",
+          prizeRedeemed: true,
+          approved: true,
+          contestantCode: contestantCode,
+          position: EntryPosition.participant,
+        });
+        const newContestEntry = await this._contestEntryRepository.create(
+          entry
+        );
+        // newContest.contest
+        // newContest.contestantCodes = [
+        //   ...newContest.contestantCodes,
+        //   newContestEntry.contestantCode,
+        // ];
+      }
+    }
+    return Result.ok<IContest>(201, newContest);
+  }
+
   async create(item: IContest): Promise<Result<IContest>> {
     const contest = await this._contestRepository.findByCriteria({
       title: item.title,
@@ -227,8 +364,8 @@ class ContestBusiness implements IContestBusiness {
     item.paymentStatus = PaymentStatus.UnPaid;
     item.issues = [];
     item.approved = false;
+    item.isSmsOnly = false;
     item.approvedBy = "";
-    item.code = getRandomId();
 
     const newContest = await this._contestRepository.create(item);
     return Result.ok<IContest>(201, newContest);

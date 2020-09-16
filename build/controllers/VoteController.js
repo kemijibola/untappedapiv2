@@ -49,7 +49,9 @@ var decorators_1 = require("../decorators");
 var interfaces_1 = require("../app/models/interfaces");
 var VoteTransactionBusiness = require("../app/business/VoteTransactionBusiness");
 var ValidateRequest_1 = require("../middlewares/ValidateRequest");
+var PermissionConstant_1 = require("../utils/lib/PermissionConstant");
 var ContestBusiness = require("../app/business/ContestBusiness");
+var auth_1 = require("../middlewares/auth");
 var config = module.require("../config/keys");
 var VoteController = /** @class */ (function () {
     function VoteController() {
@@ -93,16 +95,47 @@ var VoteController = /** @class */ (function () {
             });
         });
     };
-    VoteController.prototype.create = function (req, res, next) {
+    VoteController.prototype.fetchContestVoteResult = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var apiKey, contestKeyPart, decoded, item, voteBusiness, result, err_2;
+            var contestId, voteTransactionBusiness, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        console.log("incoming request", req.body);
+                        contestId = req.params.id;
+                        voteTransactionBusiness = new VoteTransactionBusiness();
+                        return [4 /*yield*/, voteTransactionBusiness.fetchContestResult(contestId, req.user)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.error)
+                            return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                    code: 404,
+                                    message: result.error,
+                                }))];
+                        return [2 /*return*/, res.status(result.responseCode).json({
+                                message: "Operation successful",
+                                data: result.data,
+                            })];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [2 /*return*/, next(new ApplicationError_1.PlatformError({
+                                code: 500,
+                                message: "Internal Server error occured. Please try again later.",
+                            }))];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    VoteController.prototype.create = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var apiKey, contestKeyPart, decoded, item, voteBusiness, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
                         apiKey = req.headers["x-signature"];
-                        console.log("apiKey", apiKey);
                         if (!apiKey)
                             return [2 /*return*/, res.sendStatus(400)];
                         if (!req.body.id ||
@@ -141,7 +174,7 @@ var VoteController = /** @class */ (function () {
                                 data: result.data,
                             })];
                     case 2:
-                        err_2 = _a.sent();
+                        err_3 = _a.sent();
                         console.log("");
                         return [2 /*return*/, next(new ApplicationError_1.PlatformError({
                                 code: 500,
@@ -159,6 +192,15 @@ var VoteController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
     ], VoteController.prototype, "fetchContestEntries", null);
+    __decorate([
+        decorators_1.get("/contests/:id/result"),
+        decorators_1.use(ValidateRequest_1.requestValidator),
+        decorators_1.use(auth_1.requireAuth),
+        decorators_1.authorize(PermissionConstant_1.canCreateContest),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], VoteController.prototype, "fetchContestVoteResult", null);
     __decorate([
         decorators_1.post("/"),
         __metadata("design:type", Function),

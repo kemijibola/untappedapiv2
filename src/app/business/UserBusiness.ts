@@ -508,7 +508,7 @@ class UserBusiness implements IUserBusiness {
         `Oluwakemi (CEO, UntappedPool) <${config.UNTAPPED_CEO_EMAIL}>`,
         "UntappedPool Competitions",
         recievers,
-        `👋hi ${newUser.fullName}!`,
+        `Welcome to UntappedPool, ${newUser.fullName}! 👋`,
         emailBody
       );
     }

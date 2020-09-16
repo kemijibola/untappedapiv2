@@ -66,6 +66,57 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.paginatedFetch = function (condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contests, modified;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this._contestRepository.fetchOrderByCreatedDate(condition)];
+                    case 1:
+                        contests = _a.sent();
+                        return [4 /*yield*/, this.aggregateUserContest(contests)];
+                    case 2:
+                        modified = _a.sent();
+                        return [2 /*return*/, Result_1.Result.ok(200, modified)];
+                }
+            });
+        });
+    };
+    ContestBusiness.prototype.fetchContestParticipants = function (contestId, createdBy) {
+        return __awaiter(this, void 0, void 0, function () {
+            var finalResult, contest, competitionParticipants, i, _i, competitionParticipants_1, item, participant;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        finalResult = [];
+                        return [4 /*yield*/, this._contestRepository.findById(contestId)];
+                    case 1:
+                        contest = _a.sent();
+                        if (!contest)
+                            return [2 /*return*/, Result_1.Result.fail(404, "Competition not found")];
+                        if (createdBy != contest.createdBy)
+                            return [2 /*return*/, Result_1.Result.fail(403, "You are not authorized to make reqest")];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch({ contest: contest._id, approved: true })];
+                    case 2:
+                        competitionParticipants = _a.sent();
+                        i = 1;
+                        for (_i = 0, competitionParticipants_1 = competitionParticipants; _i < competitionParticipants_1.length; _i++) {
+                            item = competitionParticipants_1[_i];
+                            participant = {
+                                sn: i++,
+                                id: item._id,
+                                competition_code: contest.code,
+                                contestant_code: item.contestantCode,
+                                entry: item.entry,
+                                entry_date: item.createdAt,
+                            };
+                            finalResult = finalResult.concat([participant]);
+                        }
+                        return [2 /*return*/, Result_1.Result.ok(200, finalResult)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.fetchContestList = function (condition, perPage, page) {
         return __awaiter(this, void 0, void 0, function () {
             var contests, modified;
@@ -195,9 +246,50 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.aggregateUserContest = function (userContests) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userContestResults, _i, userContests_1, item, contestEntries, totalContestVotes, userContest;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        userContestResults = [];
+                        _i = 0, userContests_1 = userContests;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < userContests_1.length)) return [3 /*break*/, 5];
+                        item = userContests_1[_i];
+                        return [4 /*yield*/, this._contestEntryRepository.fetch({
+                                contest: item._id,
+                            })];
+                    case 2:
+                        contestEntries = _a.sent();
+                        return [4 /*yield*/, this._voteTransactionRepository.fetch({ contestId: item._id })];
+                    case 3:
+                        totalContestVotes = _a.sent();
+                        userContest = {
+                            _id: item._id,
+                            code: item.code,
+                            title: item.title,
+                            totalEntries: contestEntries.length,
+                            totalVotes: totalContestVotes.length,
+                            createdDate: item.createdAt,
+                            paymentStatus: item.paymentStatus,
+                            contestStartDate: item.startDate,
+                            contestEndDate: item.endDate,
+                        };
+                        userContestResults = userContestResults.concat([userContest]);
+                        _a.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 5: return [2 /*return*/, userContestResults];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.fetchContestListByUser = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var totalCommentCount, contestEntryCommentCountMap, userContestResults, userContests, _i, userContests_1, item, contestEntries, _a, contestEntries_1, entry, entryComment, userContestResult;
+            var totalCommentCount, contestEntryCommentCountMap, userContestResults, userContests, _i, userContests_2, item, contestEntries, _a, contestEntries_1, entry, entryComment, userContestResult;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -207,14 +299,15 @@ var ContestBusiness = /** @class */ (function () {
                         return [4 /*yield*/, this._contestRepository.fetch({
                                 paymentStatus: interfaces_1.PaymentStatus.Completed,
                                 approved: true,
+                                isSmsOnly: false,
                             })];
                     case 1:
                         userContests = _b.sent();
-                        _i = 0, userContests_1 = userContests;
+                        _i = 0, userContests_2 = userContests;
                         _b.label = 2;
                     case 2:
-                        if (!(_i < userContests_1.length)) return [3 /*break*/, 9];
-                        item = userContests_1[_i];
+                        if (!(_i < userContests_2.length)) return [3 /*break*/, 9];
+                        item = userContests_2[_i];
                         return [4 /*yield*/, this._contestEntryRepository.fetch({
                                 contest: item._id,
                             })];
@@ -295,6 +388,70 @@ var ContestBusiness = /** @class */ (function () {
             });
         });
     };
+    ContestBusiness.prototype.createSMSVoteCompetition = function (item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contestTitleChar, codeHasBeenAssigned, newContest, i, contestantCode, contestCode, entry, newContestEntry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        item.views = 0;
+                        item.isSmsOnly = true;
+                        item.likedBy = [];
+                        item.paymentStatus = interfaces_1.PaymentStatus.Completed;
+                        item.issues = [];
+                        item.approved = true;
+                        item.approvedBy = "";
+                        item.isSmsOnly = true;
+                        item.code = lib_1.getRandomId();
+                        contestTitleChar = item.title.substring(0, 1);
+                        codeHasBeenAssigned = true;
+                        return [4 /*yield*/, this._contestRepository.create(item)];
+                    case 1:
+                        newContest = _a.sent();
+                        if (!newContest) return [3 /*break*/, 8];
+                        i = 0;
+                        _a.label = 2;
+                    case 2:
+                        if (!(i < item.numberOfParticipants)) return [3 /*break*/, 8];
+                        contestantCode = "";
+                        contestantCode = lib_1.generateRandomNumber(4);
+                        _a.label = 3;
+                    case 3:
+                        if (!codeHasBeenAssigned) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this._contestEntryRepository.findByCriteria({
+                                contest: newContest._id,
+                                contestantCode: contestantCode,
+                            })];
+                    case 4:
+                        contestCode = _a.sent();
+                        if (contestCode)
+                            codeHasBeenAssigned = true;
+                        else
+                            codeHasBeenAssigned = false;
+                        return [3 /*break*/, 3];
+                    case 5:
+                        entry = Object.assign({
+                            user: newContest.createdBy,
+                            contest: newContest._id,
+                            title: "SMS Voting Competition",
+                            entry: "SMS Voting Competition",
+                            prizeRedeemed: true,
+                            approved: true,
+                            contestantCode: contestantCode,
+                            position: interfaces_1.EntryPosition.participant,
+                        });
+                        return [4 /*yield*/, this._contestEntryRepository.create(entry)];
+                    case 6:
+                        newContestEntry = _a.sent();
+                        _a.label = 7;
+                    case 7:
+                        i++;
+                        return [3 /*break*/, 2];
+                    case 8: return [2 /*return*/, Result_1.Result.ok(201, newContest)];
+                }
+            });
+        });
+    };
     ContestBusiness.prototype.create = function (item) {
         return __awaiter(this, void 0, void 0, function () {
             var contest, newContest;
@@ -313,8 +470,8 @@ var ContestBusiness = /** @class */ (function () {
                         item.paymentStatus = interfaces_1.PaymentStatus.UnPaid;
                         item.issues = [];
                         item.approved = false;
+                        item.isSmsOnly = false;
                         item.approvedBy = "";
-                        item.code = lib_1.getRandomId();
                         return [4 /*yield*/, this._contestRepository.create(item)];
                     case 2:
                         newContest = _a.sent();

@@ -50,7 +50,6 @@ var MailBusiness = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        console.log("sending mail....", receivers);
                         mailParams = {
                             receivers: receivers.slice(),
                             subject: subject,
@@ -65,7 +64,6 @@ var MailBusiness = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         err_1 = _a.sent();
-                        console.log("error", err_1);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

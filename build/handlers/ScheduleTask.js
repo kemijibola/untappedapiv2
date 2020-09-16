@@ -44,33 +44,32 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var AWS = __importStar(require("aws-sdk"));
-var config = module.require('../config/keys');
+var config = module.require("../config/keys");
 AWS.config.update({
     accessKeyId: config.SERVERLESS.access_key_id,
     secretAccessKey: config.SERVERLESS.secret_access_key,
-    region: 'us-east-1'
+    region: "us-east-1",
 });
-var stepfunctions = new AWS.StepFunctions({ region: 'us-east-1' });
+var stepfunctions = new AWS.StepFunctions({ region: "us-east-1" });
 exports.schedule = function (stateMachine, dueDate, data) { return __awaiter(_this, void 0, void 0, function () {
     var stateMachineArn, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                stateMachineArn = 'arn:aws:states:us-east-1:291509134824:stateMachine:EmailSchedulingStateMachine';
+                stateMachineArn = "arn:aws:states:us-east-1:291509134824:stateMachine:EmailSchedulingStateMachine";
                 return [4 /*yield*/, stepfunctions
                         .startExecution({
                         stateMachineArn: stateMachineArn,
                         input: JSON.stringify({
                             dueDate: dueDate,
-                            data: data
-                        })
+                            data: data,
+                        }),
                     })
                         .promise()];
             case 1: return [2 /*return*/, _a.sent()];
             case 2:
                 err_1 = _a.sent();
-                console.log('Error', err_1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }

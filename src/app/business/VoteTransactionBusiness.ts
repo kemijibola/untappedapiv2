@@ -9,6 +9,7 @@ import {
   VoteStatus,
   IContest,
   IContestEntry,
+  IVoteResult,
 } from "../models/interfaces";
 import { Result } from "../../utils/Result";
 import ContestRepository from "../repository/ContestRepository";
@@ -83,6 +84,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
   async createSMSVote(item: VoteTransaction): Promise<Result<VoteTransaction>> {
     if (item.keyword !== config.CONTEST_KEYWORD) {
       item.voteStatus = VoteStatus.invalid;
+      item.reason = "Invalid Keyword";
       const newVote = await this._voteTransactionRepository.create(item);
       return Result.ok<VoteTransaction>(201, newVote);
     }
@@ -91,6 +93,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
     });
     if (!contestEntry) {
       item.voteStatus = VoteStatus.invalid;
+      item.reason = "Invalid contestant entry";
       const newVote = await this._voteTransactionRepository.create(item);
       return Result.ok<VoteTransaction>(201, newVote);
     }
@@ -99,6 +102,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
     const contest = await this._contestRepository.findById(item.contestId);
     if (!contest) {
       item.voteStatus = VoteStatus.invalid;
+      item.reason = "Invalid competition";
       const newVote = await this._voteTransactionRepository.create(item);
       return Result.ok<VoteTransaction>(201, newVote);
     }
@@ -106,6 +110,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
     if (contest) {
       if (isAfter(Date.now(), contest.endDate)) {
         item.voteStatus = VoteStatus.invalid;
+        item.reason = "Competition has ended";
         const newVote = await this._voteTransactionRepository.create(item);
         this.FetchContestResult(contest);
         return Result.ok<VoteTransaction>(201, newVote);
@@ -180,8 +185,43 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
       );
       return contestants;
     }
-    console.log("finalist", contestants);
     return contestants;
+  }
+
+  async fetchContestResult(
+    contestId: string,
+    createdBy: string
+  ): Promise<Result<IVoteResult[]>> {
+    let finalResult: IVoteResult[] = [];
+    const contest = await this._contestRepository.findById(contestId);
+    if (!contest)
+      return Result.fail<IVoteResult[]>(404, "Competition not found");
+    if (createdBy != contest.createdBy)
+      return Result.fail<IVoteResult[]>(
+        403,
+        "You are not authorized to make reqest"
+      );
+    const voteResults: VoteTransaction[] = await this._voteTransactionRepository.fetch(
+      { contestId: contest._id }
+    );
+
+    let i = 1;
+    for (let item of voteResults) {
+      const result: IVoteResult = {
+        sn: i++,
+        id: item._id,
+        competition_code: contest.code,
+        phone: item.phone,
+        network: item.network,
+        shortcode: item.shortcode,
+        contestant_code: item.contestantCode,
+        channel_type: item.channelType,
+        status: item.voteStatus.toString(),
+        vote_date: item.createdAt,
+      };
+      finalResult = [...finalResult, result];
+    }
+    return Result.ok<IVoteResult[]>(200, finalResult);
   }
 
   async FetchContestResult(contest: IContest): Promise<ContestVoteResult> {

@@ -140,10 +140,20 @@ export function generateInvoiceNo(): string {
 export function generateRandomNumber(size: number): string {
   var otp = "";
   var possible = "0123456789";
-  for (var i = 0; i <= size; i++) {
+  for (var i = 0; i < size; i++) {
     otp += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return otp;
+}
+
+export function generateCustomChar(size: number): string {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ";
+
+  for (var i = 0; i < size; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 export function generateAutoPassword(): string {

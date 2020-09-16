@@ -88,7 +88,6 @@ export class UploadController {
         data: result.data,
       });
     } catch (err) {
-      console.log(err);
       if (err.code === 400) {
         return next(
           new PlatformError({
@@ -117,7 +116,6 @@ export class UploadController {
     next: NextFunction
   ) {
     try {
-      console.log("called");
       if (req.body.encodedImage.length < 1) {
         return next(
           new PlatformError({

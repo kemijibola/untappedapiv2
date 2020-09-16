@@ -32,6 +32,9 @@ var voteTransactionSchema = new mongoose_1.Schema({
     voteStatus: {
         type: interfaces_1.VoteStatus,
     },
+    reason: {
+        type: String,
+    },
     application: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Application",

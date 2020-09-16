@@ -4,6 +4,7 @@ import {
   PaymentStatus,
 } from "../../app/models/interfaces";
 import ContestRepository from "../../app/repository/ContestRepository";
+import { getRandomId } from "../lib/Helper";
 
 export class SettlementHandler {
   private _contestRepository: ContestRepository;
@@ -22,6 +23,7 @@ export class SettlementHandler {
         if (updateObj) {
           this._contestRepository.patch(item, {
             paymentStatus: PaymentStatus.Completed,
+            code: getRandomId(),
           });
         }
       }

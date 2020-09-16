@@ -1,4 +1,5 @@
 import { IContest } from "../Contest";
+import { IContestEntry } from "../ContestEntry";
 
 export interface IContestContestant {
   entryId: string;
@@ -31,6 +32,27 @@ export interface IContestList {
   viewCount: number;
   bannerImage: string;
   endDate: Date;
+}
+
+export interface CompetitionParticipant {
+  sn: number;
+  id: IContestEntry["_id"];
+  competition_code: string;
+  contestant_code: string;
+  entry: string;
+  entry_date: Date;
+}
+
+export interface AllContestViewModel {
+  _id: IContest["_id"];
+  code: string;
+  title: string;
+  totalEntries: number;
+  totalVotes: number;
+  createdDate: Date;
+  paymentStatus: string;
+  contestStartDate: Date;
+  contestEndDate: Date;
 }
 
 export interface IUserContestList {

@@ -12,6 +12,19 @@ export enum VoteStatus {
   invalid = "invalid",
 }
 
+export interface IVoteResult {
+  sn: number;
+  id: string;
+  competition_code: string;
+  phone: string;
+  network: string;
+  shortcode: number;
+  contestant_code: string;
+  channel_type: string;
+  status: string;
+  vote_date: Date;
+}
+
 export interface VoteTransaction
   extends ITimeStamp,
     IAppSpec,
@@ -25,4 +38,5 @@ export interface VoteTransaction
   channelType: ChannelType;
   voteStatus: VoteStatus;
   keyword: string;
+  reason?: string;
 }
