@@ -14,7 +14,7 @@ import {
 import { Result } from "../../utils/Result";
 import ContestRepository from "../repository/ContestRepository";
 import ContestEntryRepository from "../repository/ContestEntryRepository";
-import { isAfter } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 import PusherHelper = require("../../utils/wrappers/Pusher");
 import {
   AppConfig,
@@ -108,6 +108,13 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
     }
 
     if (contest) {
+      if (isBefore(Date.now(), contest.startDate)) {
+        item.voteStatus = VoteStatus.invalid;
+        item.reason = "Competition has not started";
+        const newVote = await this._voteTransactionRepository.create(item);
+        this.FetchContestResult(contest);
+        return Result.ok<VoteTransaction>(201, newVote);
+      }
       if (isAfter(Date.now(), contest.endDate)) {
         item.voteStatus = VoteStatus.invalid;
         item.reason = "Competition has ended";
@@ -218,6 +225,7 @@ class VoteTransactionBusiness implements IVoteTransactionBusiness {
         channel_type: item.channelType,
         status: item.voteStatus.toString(),
         vote_date: item.createdAt,
+        status_reason: item.reason || ""
       };
       finalResult = [...finalResult, result];
     }

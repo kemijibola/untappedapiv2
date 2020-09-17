@@ -137,7 +137,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
     };
     VoteTransactionBusiness.prototype.createSMSVote = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var newVote_1, contestEntry, newVote_2, contest, newVote_3, newVote_4, newVote;
+            var newVote_1, contestEntry, newVote_2, contest, newVote_3, newVote_4, newVote_5, newVote;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -173,19 +173,28 @@ var VoteTransactionBusiness = /** @class */ (function () {
                         newVote_3 = _a.sent();
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_3)];
                     case 8:
-                        if (!contest) return [3 /*break*/, 10];
-                        if (!date_fns_1.isAfter(Date.now(), contest.endDate)) return [3 /*break*/, 10];
+                        if (!contest) return [3 /*break*/, 12];
+                        if (!date_fns_1.isBefore(Date.now(), contest.startDate)) return [3 /*break*/, 10];
                         item.voteStatus = interfaces_1.VoteStatus.invalid;
-                        item.reason = "Competition has ended";
+                        item.reason = "Competition has not started";
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 9:
                         newVote_4 = _a.sent();
                         this.FetchContestResult(contest);
                         return [2 /*return*/, Result_1.Result.ok(201, newVote_4)];
                     case 10:
-                        item.voteStatus = interfaces_1.VoteStatus.valid;
+                        if (!date_fns_1.isAfter(Date.now(), contest.endDate)) return [3 /*break*/, 12];
+                        item.voteStatus = interfaces_1.VoteStatus.invalid;
+                        item.reason = "Competition has ended";
                         return [4 /*yield*/, this._voteTransactionRepository.create(item)];
                     case 11:
+                        newVote_5 = _a.sent();
+                        this.FetchContestResult(contest);
+                        return [2 /*return*/, Result_1.Result.ok(201, newVote_5)];
+                    case 12:
+                        item.voteStatus = interfaces_1.VoteStatus.valid;
+                        return [4 /*yield*/, this._voteTransactionRepository.create(item)];
+                    case 13:
                         newVote = _a.sent();
                         this.FetchContestResult(contest);
                         return [2 /*return*/, Result_1.Result.ok(201, newVote)];
@@ -318,6 +327,7 @@ var VoteTransactionBusiness = /** @class */ (function () {
                                 channel_type: item.channelType,
                                 status: item.voteStatus.toString(),
                                 vote_date: item.createdAt,
+                                status_reason: item.reason || ""
                             };
                             finalResult = finalResult.concat([result]);
                         }

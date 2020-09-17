@@ -23,6 +23,7 @@ export interface IVoteResult {
   channel_type: string;
   status: string;
   vote_date: Date;
+  status_reason?: string;
 }
 
 export interface VoteTransaction
