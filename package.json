@@ -56,7 +56,7 @@
     "@types/underscore": "^1.9.0",
     "@types/uuid": "^3.4.5",
     "aws-lambda": "^0.1.2",
-    "aws-sdk": "^2.478.0",
+    "aws-sdk": "^2.814.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.5",
     "btoa": "^1.2.1",
