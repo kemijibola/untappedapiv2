@@ -61,7 +61,7 @@
     "bluebird": "^3.5.5",
     "btoa": "^1.2.1",
     "concurrently": "^4.1.0",
-    "config": "^3.1.0",
+    "config": "^3.3.8",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
     "crypto-js": "^3.3.0",
@@ -83,7 +83,7 @@
     "serverless-pseudo-parameters": "^2.4.0",
     "serverless-step-functions": "^2.1.0",
     "source-map-support": "^0.5.10",
-    "ts-loader": "^6.0.4",
+    "ts-loader": "^9.4.2",
     "typescript": "^3.5.3",
     "underscore": "^1.9.1",
     "util": "^0.12.1",
@@ -93,6 +93,6 @@
   "devDependencies": {
     "@types/socket.io-client": "^1.4.33",
     "serverless-webpack": "^5.3.1",
-    "webpack": "^4.41.2"
+    "webpack": "^5.75.0"
   }
 }
